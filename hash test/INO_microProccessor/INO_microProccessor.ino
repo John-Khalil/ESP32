@@ -3,6 +3,8 @@
 #include <ESP8266WiFi.h>
 #include <Hash.h>
 
+#include "SHA1_HASH.h"
+
 #include "extendedIO.cpp"
 #include "spiConsole.cpp"
 #include "HCSR04.cpp"
@@ -71,6 +73,15 @@ volatile uint16_t *outputRegister=(uint16_t*)0x60000300;
 unsigned char UNDEFINED[10]="undefined";
 
 #define lengthInBytes(object) (unsigned char *)(&object+1)-(unsigned char *)(&object)
+
+
+unsigned char *sha1Hash(unsigned char *rawData){
+	Sha1.init();
+	Sha1.print(rawData);
+	return Sha1.result();
+}
+
+
 unsigned long strToUint32(unsigned char *str) {
 	unsigned char coun = 0;
 	unsigned long num;
@@ -582,7 +593,8 @@ unsigned char *secWebSocketAccept(unsigned char *clientBase64){
 	}
 	clientBase64=originalAddress;
 	unsigned char buffer1[21]="";
-    sha1((char*)clientBase64,&buffer1[0]);
+    // sha1((char*)clientBase64,&buffer1[0]);
+	sha1Hash((char*)clientBase64,&buffer1[0]);
 	unsigned char hashedText[21]="";
 	for(unsigned char hashCounter=0;hashCounter<20;hashCounter++){
 		hashedText[hashCounter]=buffer1[hashCounter];
