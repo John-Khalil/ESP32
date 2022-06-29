@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-#include <Hash.h>
+// #include <Hash.h>
 
 #include "SHA1_HASH.h"
 
@@ -77,7 +77,7 @@ unsigned char UNDEFINED[10]="undefined";
 
 unsigned char *sha1Hash(unsigned char *rawData){
 	Sha1.init();
-	Sha1.print(rawData);
+	Sha1.print((char*)rawData);
 	return Sha1.result();
 }
 
@@ -592,9 +592,9 @@ unsigned char *secWebSocketAccept(unsigned char *clientBase64){
 		readStr++;
 	}
 	clientBase64=originalAddress;
-	unsigned char buffer1[21]="";
+	// unsigned char buffer1[21]="";
     // sha1((char*)clientBase64,&buffer1[0]);
-	sha1Hash((char*)clientBase64,&buffer1[0]);
+	unsigned char* buffer1=sha1Hash(clientBase64);
 	unsigned char hashedText[21]="";
 	for(unsigned char hashCounter=0;hashCounter<20;hashCounter++){
 		hashedText[hashCounter]=buffer1[hashCounter];
@@ -1287,8 +1287,8 @@ int main(void){
 
 	const char *ssid="RISC-V";
 	const char *password="threadripper";
-	// ssidSave((unsigned char*)ssid);
-	// wifiPasswordSave((unsigned char*)password);
+	ssidSave((unsigned char*)ssid);
+	wifiPasswordSave((unsigned char*)password);
 	console.log(userSSID());
 	console.log("serial port");
 	console.log(userPassword());
