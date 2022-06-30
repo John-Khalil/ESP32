@@ -28,15 +28,16 @@ unsigned short stringCounter(unsigned char *counted) {
 	return counter;
 }
 
+typedef unsigned long loopVar;
 
-unsigned short _LOOP_COUNTER_ = 0;
-unsigned short *_NESTED_LOOPS_= (unsigned short *)malloc(1*sizeof(unsigned short));
+loopVar _LOOP_COUNTER_ = 0;
+loopVar *_NESTED_LOOPS_= (loopVar*)malloc(1*sizeof(loopVar));
 unsigned char _NESTED_LOOPS_COUNTER_ = 0;
-#define loop(_LOOP_ITERATIONS_,_LOOP_BODY_) _NESTED_LOOPS_[_NESTED_LOOPS_COUNTER_++]=_LOOP_COUNTER_; _NESTED_LOOPS_=(unsigned short *)realloc(_NESTED_LOOPS_,(_NESTED_LOOPS_COUNTER_+1) *sizeof(unsigned short));   _LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_; _LOOP_COUNTER_=_NESTED_LOOPS_[--_NESTED_LOOPS_COUNTER_];  _NESTED_LOOPS_=(unsigned short *)realloc(_NESTED_LOOPS_, (_NESTED_LOOPS_COUNTER_+1) * sizeof(unsigned short));
+#define loop(_LOOP_ITERATIONS_,_LOOP_BODY_) _NESTED_LOOPS_[_NESTED_LOOPS_COUNTER_++]=_LOOP_COUNTER_; _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_,(_NESTED_LOOPS_COUNTER_+1) *sizeof(loopVar));   _LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_; _LOOP_COUNTER_=_NESTED_LOOPS_[--_NESTED_LOOPS_COUNTER_];  _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_, (_NESTED_LOOPS_COUNTER_+1) * sizeof(loopVar));
 
 #define arrayCounter stringCounter 
 
-unsigned short _FOR_EACH_LOOP_COUNTER = 0;
+loopVar _FOR_EACH_LOOP_COUNTER = 0;
 #define forEach(_ARRAY_LIKE_STRUCTURE,_SINGLE_ELEMENT_,_FOREACH_LOOP_BODY_) _FOR_EACH_LOOP_COUNTER = 0; loop(arrayCounter(_ARRAY_LIKE_STRUCTURE),{_SINGLE_ELEMENT_=_ARRAY_LIKE_STRUCTURE[_FOR_EACH_LOOP_COUNTER++];_FOREACH_LOOP_BODY_;});
 
 //#define _ARRAY_LIKE_STRUCTURE.forEach((_SINGLE_ELEMENT_){_FOREACH_LOOP_BODY_}) _FOR_EACH_LOOP_COUNTER = 0; loop({_SINGLE_ELEMENT_=_ARRAY_LIKE_STRUCTURE[_FOR_EACH_LOOP_COUNTER++],_FOREACH_LOOP_BODY_;},arrayCounter(_ARRAY_LIKE_STRUCTURE))

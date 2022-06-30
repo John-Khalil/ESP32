@@ -9,9 +9,12 @@
 
 
 
-unsigned short _LOOP_COUNTER_ = 0;
-unsigned short _NESTED_LOOPS_ = 0;
-#define loop(_LOOP_BODY_,_LOOP_ITERATIONS_) _NESTED_LOOPS_=_LOOP_COUNTER_;_LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_;_LOOP_COUNTER_=_NESTED_LOOPS_;
+typedef unsigned long loopVar;
+
+loopVar _LOOP_COUNTER_ = 0;
+loopVar *_NESTED_LOOPS_= (loopVar*)malloc(1*sizeof(loopVar));
+unsigned char _NESTED_LOOPS_COUNTER_ = 0;
+#define within(_LOOP_ITERATIONS_,_LOOP_BODY_) _NESTED_LOOPS_[_NESTED_LOOPS_COUNTER_++]=_LOOP_COUNTER_; _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_,(_NESTED_LOOPS_COUNTER_+1) *sizeof(loopVar));_LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_; _LOOP_COUNTER_=_NESTED_LOOPS_[--_NESTED_LOOPS_COUNTER_];  _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_, (_NESTED_LOOPS_COUNTER_+1) * sizeof(loopVar));
 
 #define lengthInBytes(object) (unsigned char *)(&object+1)-(unsigned char *)(&object)
 
@@ -56,17 +59,13 @@ unsigned char *sha1Hash(unsigned char *rawData){
 
 
 void setup(){
-    Serial.begin(9600);
-    while(1){
-        Sha1.init();
-        Sha1.print("abc");
-        Serial.print("\n\n\n\n\n\n\nresult >> ");
-        Serial.println((char*)Sha1.result());
-        Serial.println("\n\n----------------------------\n");
-        // Serial.println("test");
-        while(1);
-    }
-
+    // Serial.begin(9600);
+    _PM(13,OUTPUT);
+    within(-1,{
+        outputRegisterLow^=(1<<13);
+        delay(250);
+       
+    });
 }
 
 
