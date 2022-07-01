@@ -45,6 +45,7 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
 
 
+
 unsigned long _CURRENT_TIME_;
 #define microSec(_DELAY_IN_US_) _CURRENT_TIME_=micros()+_DELAY_IN_US_;  while(micros()<_CURRENT_TIME_);
 
@@ -60,6 +61,10 @@ void delayAutoCalibrate(void){
 }
 
 
+
+#define _delay_us _US
+// #define RTosDelay_us(_TIME_IN_US_) vTaskDelay(_TIME_IN_US_ / ( ( TickType_t ) 1 / configTICK_RATE_HZ )) //this doess not really work
+#define _delay_ms(_TIME_IN_MS_) vTaskDelay(_TIME_IN_MS_ / portTICK_PERIOD_MS)
 
 
 unsigned char *sha1Hash(unsigned char *rawData){

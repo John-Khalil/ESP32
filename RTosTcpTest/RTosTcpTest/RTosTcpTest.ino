@@ -45,6 +45,7 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
 
 
+
 unsigned long _CURRENT_TIME_;
 #define microSec(_DELAY_IN_US_) _CURRENT_TIME_=micros()+_DELAY_IN_US_;  while(micros()<_CURRENT_TIME_);
 
@@ -61,6 +62,10 @@ void delayAutoCalibrate(void){
 
 
 
+#define _delay_us _US
+#define RTosDelay_us(_TIME_IN_US_) vTaskDelay(_TIME_IN_US_ / ( ( TickType_t ) 1 / configTICK_RATE_HZ ))
+#define _delay_ms(_TIME_IN_MS_) vTaskDelay(_TIME_IN_MS_ / portTICK_PERIOD_MS)
+
 
 unsigned char *sha1Hash(unsigned char *rawData){
 	Sha1.init();
@@ -71,12 +76,11 @@ unsigned char *sha1Hash(unsigned char *rawData){
 
 void setup(){
     delayAutoCalibrate();
-    Serial.begin(9600);
-    Serial.println(_DELAY_CALIBRATING_FACTOR_);
+    // Serial.begin(9600);
     _PM(13,OUTPUT);
     within(20,{
         outputRegisterLow^=(1<<13);
-        _US(100);
+        _delay_ms(1);
        
     });
 }
