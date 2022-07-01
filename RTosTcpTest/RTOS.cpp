@@ -45,8 +45,19 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
 
 
+unsigned long _CURRENT_TIME_;
+#define microSec(_DELAY_IN_US_) _CURRENT_TIME_=micros()+_DELAY_IN_US_;  while(micros()<_CURRENT_TIME_);
 
 
+unsigned long _CALIBRATED_DELAY_=0;
+float _DELAY_CALIBRATING_FACTOR_=1.0;
+#define _US(_US_DELAY_) _CALIBRATED_DELAY_=_US_DELAY_*_DELAY_CALIBRATING_FACTOR_; while(_CALIBRATED_DELAY_--)NOP();
+
+void delayAutoCalibrate(void){
+    unsigned long lastKnownTime=micros();
+    _US(1000000);
+    _DELAY_CALIBRATING_FACTOR_=1000000.0f/(float)(micros()-lastKnownTime);
+}
 
 
 
@@ -59,11 +70,12 @@ unsigned char *sha1Hash(unsigned char *rawData){
 
 
 void setup(){
+    delayAutoCalibrate();
     // Serial.begin(9600);
     _PM(13,OUTPUT);
-    within(-1,{
+    within(20,{
         outputRegisterLow^=(1<<13);
-        delay(250);
+        _US(250);
        
     });
 }
