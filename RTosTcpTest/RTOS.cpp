@@ -28,6 +28,8 @@ volatile uint32_t *_outputRegisterHighSet=((volatile uint32_t*)0X3FF44014UL);
 volatile uint32_t *_outputRegisterLowClear=((volatile uint32_t*)0X3FF4400CUL);
 volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
+spiConsole console;
+
 
 #define outputRegisterLow (*_outputRegisterLow)
 #define outputRegisterHigh (*_outputRegisterHigh)
@@ -66,6 +68,39 @@ void delayAutoCalibrate(void){
 // #define RTosDelay_us(_TIME_IN_US_) vTaskDelay(_TIME_IN_US_ / ( ( TickType_t ) 1 / configTICK_RATE_HZ )) //this doess not really work
 #define _delay_ms(_TIME_IN_MS_) vTaskDelay(_TIME_IN_MS_ / portTICK_PERIOD_MS)
 
+#define consoleClkPin 13
+#define consoleDataPin 12 
+
+const consoleClkPinValue=(1<<consoleClkPin);
+const consoleDataPinValue=(1<<consoleDataPin);
+
+
+void microSecDelay(unsigned long timeInMicroSec){
+    _delay_us(timeInMicroSec);
+}
+
+void consoleClk(unsigned char pinState){
+    outputRegisterLowSet|=consoleClkPinValue*(pinState!=0);
+    outputRegisterLowClear|=consoleClkPinValue*(!pinState);
+}
+
+void consoleData(unsigned char pinState){
+    outputRegisterLowSet|=consoleDataPinValue*(pinState!=0);
+    outputRegisterLowClear|=consoleDataPinValue*(!pinState);
+}
+
+unsigned char consoleSync(void){
+    return 1;
+}
+
+void consoleSetup(void){
+    _PM(consoleClkPin,OUTPUT);
+    _PM(consoleDataPin,OUTPUT);
+    console.setup(consoleClk,consoleData,consoleSync,microSecDelay,360000);
+}
+
+
+
 
 unsigned char *sha1Hash(unsigned char *rawData){
 	Sha1.init();
@@ -76,11 +111,13 @@ unsigned char *sha1Hash(unsigned char *rawData){
 
 void setup(){
     delayAutoCalibrate();
+    consoleSetup();
     // Serial.begin(9600);
     _PM(13,OUTPUT);
+    
     within(20,{
-        outputRegisterLow^=(1<<13);
-        _US(250);
+        console.log("first time from ESP32");
+        _delay_ms(500);
        
     });
 }
