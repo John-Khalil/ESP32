@@ -1,113 +1,115 @@
-#include <stdint.h>
-class spiConsole{
+#include "consoleLogger.h"
 
-    void (*_clkPin)(unsigned char);
-    void (*_dataPin)(unsigned char);
-    void (*_Delay_us)(unsigned long);
-    unsigned char (*_syncPin)(void);
-    float _clkSpeed=0;
+class consoleLogger{
 
-    unsigned char autoNLCR=1;
+    private:
+        void (*_clkPin)(unsigned char);
+        void (*_dataPin)(unsigned char);
+        void (*_Delay_us)(unsigned long);
+        unsigned char (*_syncPin)(void);
+        float _clkSpeed=0;
+
+        unsigned char autoNLCR=1;
 
 
-    unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
-    unsigned char * CLR(unsigned char *deletedString){
-        unsigned char *returnedString=deletedString;
-        while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
-            *deletedString=0;
-            deletedString++;	
+        unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
+        unsigned char * CLR(unsigned char *deletedString){
+            unsigned char *returnedString=deletedString;
+            while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
+                *deletedString=0;
+                deletedString++;	
+            }
+            return returnedString;
         }
-        return returnedString;
-    }
-    
+        
 
 
-    unsigned char inttostr(unsigned long num, unsigned char *str) {
-        static unsigned char ucoun;
-        for (unsigned char clrCoun = 0; clrCoun < ucoun; clrCoun++) {
-            str[clrCoun] = 0;
-        }
-        ucoun = 0;
-        if (num) {
-            unsigned long sum = 0;
-            unsigned long r = 10000000;
-            for (unsigned char i = 0; i < 8; i++) {
-                unsigned char flg = 0;
-                for (unsigned char j = 9; j > 0; j--) {
-                    if ((num - sum) >= r * j) {
-                        sum += r * j;
-                        *str = (j)+0x30;
+        unsigned char inttostr(unsigned long num, unsigned char *str) {
+            static unsigned char ucoun;
+            for (unsigned char clrCoun = 0; clrCoun < ucoun; clrCoun++) {
+                str[clrCoun] = 0;
+            }
+            ucoun = 0;
+            if (num) {
+                unsigned long sum = 0;
+                unsigned long r = 10000000;
+                for (unsigned char i = 0; i < 8; i++) {
+                    unsigned char flg = 0;
+                    for (unsigned char j = 9; j > 0; j--) {
+                        if ((num - sum) >= r * j) {
+                            sum += r * j;
+                            *str = (j)+0x30;
+                            ucoun++;
+                            str++;
+                            flg = 1;
+                            break;
+                        }
+                    }
+                    if (flg == 0 && sum != 0) {
+                        *str = 0x30;
                         ucoun++;
                         str++;
-                        flg = 1;
-                        break;
                     }
+                    r /= 10;
                 }
-                if (flg == 0 && sum != 0) {
-                    *str = 0x30;
-                    ucoun++;
-                    str++;
+            }
+            else {
+                *str = 0x30;
+                ucoun = 1;
+            }
+            return ucoun;
+        }
+
+
+
+        unsigned char _globalStringNameThatYouWillNeverUse[11]="";
+        unsigned char* inttostring(unsigned long num) {
+            CLR(_globalStringNameThatYouWillNeverUse);
+            inttostr(num, _globalStringNameThatYouWillNeverUse);
+            return _globalStringNameThatYouWillNeverUse;
+        }
+
+
+        unsigned char* longToString(long num){
+            unsigned char *signedStr=_globalStringNameThatYouWillNeverUse;
+            if(num<0){
+                *signedStr=0x2D;
+                signedStr++;
+                num*=(-1);
+            }
+            inttostr((unsigned long)num, signedStr);
+            return _globalStringNameThatYouWillNeverUse;
+        }
+
+
+        unsigned char *_spiConsoleLog(unsigned char *consoleData){
+            unsigned char *loggedData=consoleData;
+            while(!_syncPin());
+            _dataPin(0);
+            _Delay_us(60);										//to sync with the receiver
+            nlcrStartOver:
+            while(*consoleData){
+                unsigned char spiBitCounter=8;
+                while(spiBitCounter--){
+                    _dataPin((*consoleData&(1<<spiBitCounter))!=0);
+                    _Delay_us(_clkSpeed*0.4);
+                    _clkPin(1);
+                    _Delay_us(_clkSpeed);
+                    _clkPin(0);
+                    _Delay_us(_clkSpeed*0.6);
                 }
-                r /= 10;
+                consoleData++;
             }
-        }
-        else {
-            *str = 0x30;
-            ucoun = 1;
-        }
-        return ucoun;
-    }
-
-
-
-    unsigned char _globalStringNameThatYouWillNeverUse[11]="";
-    unsigned char* inttostring(unsigned long num) {
-        CLR(_globalStringNameThatYouWillNeverUse);
-        inttostr(num, _globalStringNameThatYouWillNeverUse);
-        return _globalStringNameThatYouWillNeverUse;
-    }
-
-
-    unsigned char* longToString(long num){
-        unsigned char *signedStr=_globalStringNameThatYouWillNeverUse;
-        if(num<0){
-            *signedStr=0x2D;
-            signedStr++;
-            num*=(-1);
-        }
-        inttostr((unsigned long)num, signedStr);
-        return _globalStringNameThatYouWillNeverUse;
-    }
-
-
-    unsigned char *_spiConsoleLog(unsigned char *consoleData){
-        unsigned char *loggedData=consoleData;
-        while(!_syncPin());
-        _dataPin(0);
-        _Delay_us(60);										//to sync with the receiver
-        nlcrStartOver:
-        while(*consoleData){
-            unsigned char spiBitCounter=8;
-            while(spiBitCounter--){
-                _dataPin((*consoleData&(1<<spiBitCounter))!=0);
-                _Delay_us(_clkSpeed*0.4);
-                _clkPin(1);
-                _Delay_us(_clkSpeed);
-                _clkPin(0);
-                _Delay_us(_clkSpeed*0.6);
+            if(autoNLCR){
+                unsigned char *nlcrStr=(unsigned char*)"\r\n";
+                if((consoleData-2)!=nlcrStr){
+                    consoleData=nlcrStr;
+                    goto nlcrStartOver;
+                }
             }
-            consoleData++;
+            _dataPin(1);
+            return loggedData;
         }
-        if(autoNLCR){
-            unsigned char *nlcrStr=(unsigned char*)"\r\n";
-            if((consoleData-2)!=nlcrStr){
-                consoleData=nlcrStr;
-                goto nlcrStartOver;
-            }
-        }
-        _dataPin(1);
-        return loggedData;
-    }
 
 
 

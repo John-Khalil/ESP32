@@ -28,7 +28,7 @@ volatile uint32_t *_outputRegisterHighSet=((volatile uint32_t*)0X3FF44014UL);
 volatile uint32_t *_outputRegisterLowClear=((volatile uint32_t*)0X3FF4400CUL);
 volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
-spiConsole console;
+
 
 
 #define outputRegisterLow (*_outputRegisterLow)
@@ -44,6 +44,8 @@ spiConsole console;
 #define _DW digitalWrite
 #define _DR digitalRead
 #define _PM pinMode
+
+spiConsole console;
 
 
 
@@ -71,8 +73,8 @@ void delayAutoCalibrate(void){
 #define consoleClkPin 13
 #define consoleDataPin 12 
 
-const consoleClkPinValue=(1<<consoleClkPin);
-const consoleDataPinValue=(1<<consoleDataPin);
+const uint32_t consoleClkPinValue=(1<<consoleClkPin);
+const uint32_t consoleDataPinValue=(1<<consoleDataPin);
 
 
 void microSecDelay(unsigned long timeInMicroSec){
