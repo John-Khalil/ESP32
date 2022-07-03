@@ -45,7 +45,7 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 #define _DR digitalRead
 #define _PM pinMode
 
-consoleLogger console;
+// consoleLogger console;
 
 
 
