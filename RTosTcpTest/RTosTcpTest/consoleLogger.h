@@ -2,9 +2,10 @@
 #define consoleLogger_h
 
 #include <stdint.h>
+#include "Print.h"
 
 
-class consoleLogger
+class consoleLogger 
 {
 public:
     void (*_clkPin)(unsigned char);
@@ -40,7 +41,7 @@ public:
     void log(char *consoleText,double consoleNum);
     void log(char *consoleText,unsigned char *consoleNum);
     void log(char *consoleText,char *consoleNum);    
-}console;
+};
 
 // consoleLogger::consoleLogger(/* args */)
 // {
@@ -49,5 +50,7 @@ public:
 // consoleLogger::~consoleLogger()
 // {
 // }
+
+consoleLogger console;
 
 #endif
