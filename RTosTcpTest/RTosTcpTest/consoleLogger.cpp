@@ -200,4 +200,4 @@ void consoleLogger::log(char *consoleText,char *consoleNum){
 // {
 // }
 
-consoleLogger console;
+// consoleLogger console;

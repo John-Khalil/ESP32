@@ -17,7 +17,7 @@ public:
     unsigned short CLR_LENGTH=0;
     unsigned char * CLR(unsigned char *deletedString);
     unsigned char inttostr(unsigned long num, unsigned char *str);
-    unsigned char _globalStringNameThatYouWillNeverUse[11]="";
+    unsigned char _globalStringNameThatYouWillNeverUse[11];
     unsigned char* inttostring(unsigned long num);
     unsigned char* longToString(long num);
     unsigned char *_spiConsoleLog(unsigned char *consoleData);
@@ -51,6 +51,6 @@ public:
 // {
 // }
 
-consoleLogger console;
+// extern consoleLogger console;
 
 #endif
