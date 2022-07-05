@@ -45,7 +45,7 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 #define _DR digitalRead
 #define _PM pinMode
 
-consoleLogger console;
+spiConsole console;
 
 
 
@@ -98,7 +98,7 @@ unsigned char consoleSync(void){
 void consoleSetup(void){
     _PM(consoleClkPin,OUTPUT);
     _PM(consoleDataPin,OUTPUT);
-    console.setup(consoleClk,consoleData,consoleSync,microSecDelay,360000);
+    console.setup(consoleClk,consoleData,consoleSync,microSecDelay,200000);
 }
 
 
@@ -116,10 +116,11 @@ void setup(){
     consoleSetup();
     // Serial.begin(9600);
     _PM(13,OUTPUT);
-    
+    console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
-        console.log("first time from ESP32");
-        _delay_ms(500);
+        
+        console.log("first time from ESP32 >> ",_LOOP_COUNTER_);
+        // _delay_ms(500);
        
     });
 }

@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <cstdlib>
 class spiConsole{
 
     void (*_clkPin)(unsigned char);
@@ -60,7 +61,7 @@ class spiConsole{
 
 
 
-    unsigned char _globalStringNameThatYouWillNeverUse[11]="";
+    unsigned char *_globalStringNameThatYouWillNeverUse=(unsigned char*)calloc(11,sizeof(unsigned char));
     unsigned char* inttostring(unsigned long num) {
         CLR(_globalStringNameThatYouWillNeverUse);
         inttostr(num, _globalStringNameThatYouWillNeverUse);
