@@ -129,6 +129,281 @@ unsigned char *sha1Hash(unsigned char *rawData){
 }
 
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+unsigned char GLOBAL_IPADDRESS_VARIABLE_NAME[16]="";
+unsigned char * ipAddressString(IPAddress deviceIP){
+		unsigned char *ipString=GLOBAL_IPADDRESS_VARIABLE_NAME;
+	while(*ipString){
+		*ipString=0;
+		ipString++;
+	}
+	ipString=GLOBAL_IPADDRESS_VARIABLE_NAME;
+	unsigned char byteCounter=0;
+	byteCounterEqual4:
+	unsigned char *byteCounterString=inttostring((unsigned long)deviceIP[byteCounter]);
+	while(*byteCounterString){
+		*ipString=*byteCounterString;
+		ipString++;
+		byteCounterString++;
+	}
+	if(byteCounter!=3){
+		byteCounter++;
+		*ipString=0x2E;
+		ipString++;
+		goto byteCounterEqual4;
+	}
+	return GLOBAL_IPADDRESS_VARIABLE_NAME;  
+}
+
+
+
+
+#define MAX_EEPROM_SIZE 512U
+#define SSID_MAX_LENGTH 32
+#define WIFI_PASSWORD_MAX_LENGTH 63
+#define WIFI_CONFIG 0
+
+#define EEPROM_BUFFER_SIZE 200
+unsigned char EEPROM_BUFFER[EEPROM_BUFFER_SIZE]="";
+
+
+
+unsigned char ssidSave(unsigned char *networkSSID){
+	unsigned short startAddress=WIFI_CONFIG;
+	while(startAddress<(WIFI_CONFIG+SSID_MAX_LENGTH)){
+		EEPROM.write(startAddress&((MAX_EEPROM_SIZE-1)),*networkSSID);
+		startAddress++;
+		networkSSID+=(*networkSSID!=0);
+	}
+	return (unsigned char)EEPROM.commit();
+}
+
+
+unsigned char wifiPasswordSave(unsigned char *networkPassword){
+	unsigned short startAddress=WIFI_CONFIG+SSID_MAX_LENGTH;
+	while(startAddress<(WIFI_CONFIG+SSID_MAX_LENGTH+WIFI_PASSWORD_MAX_LENGTH)){
+		EEPROM.write(startAddress&((MAX_EEPROM_SIZE-1)),*networkPassword);
+		startAddress++;
+		networkPassword+=(*networkPassword!=0);
+	}
+	return (unsigned char)EEPROM.commit();
+}
+
+
+
+unsigned char NETWORK_SSID[SSID_MAX_LENGTH+1]="";
+unsigned char NETWORK_PASSWORD[WIFI_PASSWORD_MAX_LENGTH+1]="";
+
+unsigned char *userSSID(void){
+	unsigned char *getSSID=NETWORK_SSID;
+	unsigned short startAddress=WIFI_CONFIG;
+	while(startAddress<(WIFI_CONFIG+SSID_MAX_LENGTH)){
+		*getSSID=EEPROM.read(startAddress);
+		getSSID++;
+		startAddress++;
+	}
+	return NETWORK_SSID;
+}
+
+
+unsigned char *userPassword(void){
+	unsigned char *getPassword=NETWORK_PASSWORD;
+	unsigned short startAddress=WIFI_CONFIG+SSID_MAX_LENGTH;
+	while(startAddress<(WIFI_CONFIG+SSID_MAX_LENGTH+WIFI_PASSWORD_MAX_LENGTH)){
+		*getPassword=EEPROM.read(startAddress);
+		getPassword++;
+		startAddress++;
+	}
+	return NETWORK_PASSWORD;
+}
+
+unsigned char FIRST_RUN=0;
+void eepromInit(void){
+	EEPROM.begin(MAX_EEPROM_SIZE);
+	if(EEPROM.read((MAX_EEPROM_SIZE-1))==0xFF){
+		for(unsigned short clearCounter=0;clearCounter<MAX_EEPROM_SIZE;clearCounter++){
+			EEPROM.write(clearCounter,0);
+		}
+		EEPROM.commit();
+		FIRST_RUN=1;
+		wifiPasswordSave((unsigned char*)"12345678");
+	}
+	return;
+}
+
+
+unsigned char *scanForWifi(unsigned char *networksObject){
+	unsigned char *orgLocation=networksObject;
+	int n = WiFi.scanNetworks();
+	const unsigned char baseStr[14]="{\"network\":[\"";
+	unsigned char *makeBaseStr=(unsigned char *)baseStr;
+	while(*makeBaseStr){
+		*networksObject=(*makeBaseStr);
+		makeBaseStr++;
+		networksObject++;
+	}
+	for (unsigned char i = 0; i < n; ++i) {
+		
+		unsigned char scannedSSIDLength=WiFi.SSID(i).length();
+		for(unsigned char makeObject=0;makeObject<scannedSSIDLength;makeObject++){
+			*networksObject=WiFi.SSID(i)[makeObject];
+			networksObject++;
+		}
+
+		*networksObject=0x22;
+		networksObject++;
+		*networksObject=0x2C;
+		networksObject++;
+
+		unsigned char *scannedRSSI=longToString(WiFi.RSSI(i));
+		unsigned char avoidErrorCounter=0;
+		while(*scannedRSSI&&avoidErrorCounter<3){
+			*networksObject=(*scannedRSSI);
+			scannedRSSI++;
+			networksObject++;
+			avoidErrorCounter++;
+		}
+
+		if(i!=(n-1)){
+			*networksObject=0x2C;
+			networksObject++;
+			*networksObject=0x22;
+			networksObject++;
+		}
+	}
+	*networksObject=0x5D;
+	networksObject++;
+	*networksObject=0x7D;
+	networksObject++;
+
+	while(*networksObject){
+		*networksObject=0;
+		networksObject++;
+	}
+
+
+	
+	return orgLocation;
+}
+
+unsigned short networkConnect(void){
+	unsigned char *ssid=userSSID();
+	unsigned char *password=userPassword();
+	unsigned short exitStatus;
+	WiFi.mode(WIFI_STA);
+	WiFi.softAP("",(char*)password);
+	WiFi.softAP((char*)ipAddressString(WiFi.softAPIP()),(char*)password);
+	if(stringCounter(ssid)){
+		WiFi.begin((char*)ssid,(char*)password);
+		unsigned short connectTimeout=0x8000;
+		while ((exitStatus=WiFi.status()) != WL_CONNECTED){
+			//ESP.wdtFeed();
+			if(!connectTimeout){
+				// WiFi.disconnect();
+				return exitStatus;
+			}
+			_delay_ms(1);
+			connectTimeout++;
+		}
+		WiFi.setAutoReconnect(true);
+		WiFi.persistent(true);
+		WiFi.softAP((char*)ipAddressString(WiFi.localIP()),(char*)password);
+	}
+	return exitStatus;
+}
+
+
+unsigned char *tcpGetString(WiFiClient &client,unsigned char *memoryBuffer){
+	unsigned char *tcpBuffer=memoryBuffer;
+	while(client.available()){
+		if(!(*memoryBuffer)){
+			*memoryBuffer=client.read();
+			memoryBuffer++;
+		}	
+		else{
+			client.read();
+		}
+	}
+	*memoryBuffer=0;
+	return tcpBuffer;
+}
+
+#define USER_REQUEST 0x01
+#define WEB_SOCKET 0x02
+#define UPLOADED_DATA 0x04
+#define WEB_SERVER 0x08
+unsigned char *EVENT_DATA;
+
+
+
+unsigned char eventIdentifier(unsigned char *userRequest){
+	unsigned char str1[5]="def:";
+	unsigned char str2[20]="Sec-WebSocket-Key: ";
+	unsigned char str3[6]="data:";
+	unsigned char str4[10]="GET /home";
+	#define cl1 4
+	#define cl2 19
+	#define cl3 5
+	#define cl4 9
+	unsigned char c1=0;
+	unsigned char c2=0;
+	unsigned char c3=0;
+	unsigned char c4=0;
+	while((cl1-c1)&&(cl2-c2)&&(cl3-c3)&&(cl4-c4)&&(*userRequest)){
+		c1*=((*userRequest)==str1[c1++]);
+		c2*=((*userRequest)==str2[c2++]);
+		c3*=((*userRequest)==str3[c3++]);
+		c4*=((*userRequest)==str4[c4++]);
+		userRequest++;
+	}
+	EVENT_DATA=userRequest;
+	return((USER_REQUEST*(c1==cl1))|(WEB_SOCKET*(c2==cl2))|(UPLOADED_DATA*(c3==cl3))|(WEB_SERVER*(c4==cl4)));
+}
+
+
+
+unsigned char *eventData(unsigned char* startLocation,unsigned char* originalString,unsigned char *endString){
+	unsigned char *endLocation=startLocation;
+	unsigned short endStringLength=stringCounter(endString);
+	unsigned short valueMatchCounter=0;
+	while((endStringLength-valueMatchCounter)&&(*endLocation)){
+		valueMatchCounter*=((*endLocation)==endString[valueMatchCounter++]);
+		endLocation++;
+	}
+	if(endStringLength==valueMatchCounter){
+		endLocation-=endStringLength;
+		unsigned char *makeStr=originalString;
+		while(startLocation<endLocation){
+			*makeStr=(*startLocation);
+			makeStr++;
+			startLocation++;
+		}
+		while(*makeStr){
+			*makeStr=0;
+			makeStr++;
+		}
+	}
+	return originalString;
+}
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void setup(){
     delayAutoCalibrate();
     consoleSetup();
