@@ -1127,6 +1127,169 @@ unsigned char *eventData(unsigned char* startLocation,unsigned char* originalStr
 }
 
 
+unsigned char responeseHeaders=0;
+#define fecthHeadersEnable() responeseHeaders=1
+#define fetchHeadersDisable() responeseHeaders=0
+
+unsigned char *urlEncode(unsigned char *originalUrl){
+	const unsigned char urlSpecialChars[23]="-._~:/?#[]@!$&'()*+,;=";
+	unsigned char *originalUrlStartLocation=originalUrl;
+	while(*originalUrlStartLocation){
+		if(!(((*originalUrlStartLocation>0x40)&&(*originalUrlStartLocation<0x5B))||((*originalUrlStartLocation>0x60)&&(*originalUrlStartLocation<0x7B))||((*originalUrlStartLocation>0x2F)&&(*originalUrlStartLocation<0x3A))||((*originalUrlStartLocation==0x25)&&validHex(originalUrlStartLocation+1)&&validHex(originalUrlStartLocation+2)))){
+			unsigned char specialCharCounter=sizeof(urlSpecialChars);
+			while((*originalUrlStartLocation!=urlSpecialChars[--specialCharCounter])&&specialCharCounter)
+			if(*originalUrlStartLocation!=urlSpecialChars[specialCharCounter]){
+				unsigned char *urlEncodedValue=intToHexaDecimal(*originalUrlStartLocation)+1;
+				urlEncodedValue[0]=0x25;
+				unsigned short originalUrlStartLocationLength=stringCounter(originalUrlStartLocation);
+				while(originalUrlStartLocationLength--){
+					originalUrlStartLocation[originalUrlStartLocationLength+2]=originalUrlStartLocation[originalUrlStartLocationLength];
+					originalUrlStartLocation[originalUrlStartLocationLength]=0;
+				}
+				_CS(originalUrlStartLocation,urlEncodedValue);
+			}
+		}
+		originalUrlStartLocation++;
+	}
+	return originalUrl;
+}
+
+struct httpLink{
+	unsigned char domain[40]="";
+	unsigned short port;
+	unsigned char secure;
+	unsigned char userName[30]="";
+	unsigned char password[30]="";
+	unsigned char authDefined=0;
+	unsigned char *requestPath=UNDEFINED;
+};
+
+struct httpLink urlBreakDown(unsigned char *httpRequest){
+	struct httpLink urlParameters;
+	unsigned short httpRequestLength=stringCounter(httpRequest);
+
+	unsigned short requestPathLocatorLimit=httpRequestLength;
+	unsigned short requestPathLocator=0;
+	unsigned char slashCounter=0;
+	while(((slashCounter+=(httpRequest[requestPathLocator++]==0x2F))<3)&&(requestPathLocatorLimit--));
+	if(slashCounter!=3)
+		urlParameters.requestPath=UNDEFINED;
+	else
+		urlParameters.requestPath=(httpRequest+requestPathLocator-1);
+
+	urlParameters.secure=(httpRequest[4]==0x73);
+	urlParameters.port=80+((443-80)*(httpRequest[4]==0x73));
+	unsigned short urlStartLocation=7+urlParameters.secure;
+
+	while((--httpRequestLength)&&(httpRequest[httpRequestLength]!=0x40));
+	if(httpRequestLength){			//get basic auth
+		urlParameters.authDefined=1;
+		unsigned char authCharCounter=0;
+		while(httpRequest[urlStartLocation]!=0x3A){	
+			urlParameters.userName[authCharCounter++]=httpRequest[urlStartLocation++];
+		}
+		urlStartLocation++;
+		authCharCounter=0;
+		while(httpRequest[urlStartLocation]!=0x40){
+			urlParameters.password[authCharCounter++]=httpRequest[urlStartLocation++];
+		}
+		urlStartLocation=httpRequestLength+1;
+	}
+
+	unsigned short domainStartLocation=urlStartLocation;
+	while((httpRequest[urlStartLocation]!=0x3A)&&(httpRequest[urlStartLocation++]!=0x2F));		//trying to locate : or /
+	if(httpRequest[(urlStartLocation)]==0x3A)
+		urlParameters.port=strint(httpRequest+urlStartLocation+1);
+	unsigned char domainFillCounter=0;
+	while(domainStartLocation<(urlStartLocation-=(httpRequest[(urlStartLocation-1)]==0x2F))){
+		urlParameters.domain[domainFillCounter++]=httpRequest[domainStartLocation++];
+	}
+	if(!urlParameters.port)
+		urlParameters.port=80+((443-80)*(httpRequest[4]==0x73));
+	return urlParameters;
+}
+
+unsigned short fetchMemoryLimiter=4069;
+
+unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsigned char *responseBuffer){
+	unsigned char* returnedBuffer=responseBuffer;
+	struct httpLink urlParameters=urlBreakDown(httpRequest);
+	unsigned char *requestBodyLocation=_CS(responseBuffer,(unsigned char*)((requestBody==UNDEFINED)?("GET "):("POST ")));
+	if(urlParameters.requestPath!=UNDEFINED)
+		urlEncode(_CS(requestBodyLocation,urlParameters.requestPath)+4+(requestBody!=UNDEFINED));
+	_CS(responseBuffer,(unsigned char*)((urlParameters.requestPath==UNDEFINED)?("/"):("")));
+	_CS(responseBuffer,(unsigned char*)" HTTP/1.1\r\n");
+	_CS(responseBuffer,(unsigned char*)"Host: ");
+	_CS(responseBuffer,urlParameters.domain);
+	if(urlParameters.port!=80+((443-80)*(httpRequest[4]==0x73))){
+		_CS(responseBuffer,(unsigned char*)":");
+		_CS(responseBuffer,inttostring((unsigned long)(urlParameters.port)));
+	}
+	_CS(responseBuffer,(unsigned char*)"\r\n");
+	_CS(responseBuffer,(unsigned char*)"User-Agent: PostmanRuntime/7.29.0\r\n");
+	_CS(responseBuffer,(unsigned char*)"Accept: */*\r\n");
+	_CS(responseBuffer,(unsigned char*)"Connection: keep-alive\r\n");
+	if(requestBody!=UNDEFINED){
+		_CS(responseBuffer,(unsigned char*)"Content-Type: application/json\r\n");
+		_CS(responseBuffer,(unsigned char*)"Content-Length: ");
+		_CS(responseBuffer,(unsigned char*)inttostring(stringCounter(requestBody)));
+		_CS(responseBuffer,(unsigned char*)"\r\n\r\n");
+		_CS(responseBuffer,requestBody);
+		_CS(responseBuffer,(unsigned char*)"\r\n");
+	}
+	_CS(responseBuffer,(unsigned char*)"\r\n");
+
+	if(urlParameters.secure){
+		WiFiClientSecure client;
+		client.setInsecure();
+		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
+			consoleLog("couldn't connect !!\n");
+			return UNDEFINED;
+		}
+		client.write((char*)responseBuffer);
+		CLR(responseBuffer);
+		while(!client.available());
+		unsigned char *makeStr=responseBuffer;
+		unsigned long memoryLimter=0;
+		while(client.available()){
+			if(memoryLimter<fetchMemoryLimiter){
+				*makeStr=client.read();
+				makeStr++;
+			}
+			else{
+				client.read();
+			}
+			memoryLimter++;
+		}
+		makeStr=responseBuffer;
+	}
+	else{
+		WiFiClient client;
+		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
+			consoleLog("couldn't connect !!\n");
+			return UNDEFINED;
+		}
+		client.write((char*)responseBuffer);
+		CLR(responseBuffer);
+		while(!client.available());
+		unsigned char *makeStr=responseBuffer;
+		unsigned long memoryLimter=0;
+		while(client.available()){
+			if(memoryLimter<fetchMemoryLimiter){
+				*makeStr=client.read();
+				makeStr++;
+			}
+			else{
+				client.read();
+			}
+			memoryLimter++;
+		}
+		makeStr=responseBuffer;
+	}
+
+	return returnedBuffer;
+}
+
 
 
 
@@ -1136,6 +1299,568 @@ unsigned char *eventData(unsigned char* startLocation,unsigned char* originalStr
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+#define REMOTE_HOST "192.168.1.130"
+#define REMOTE_PORT 80U
+#define GENERAL_RESPONSE "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: *\r\n\r\nSk9ITiBLSEFMSUw=\r\n"
+#define CORS_HEADERS (char *)"HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: *\r\n\r\n"
+#define CLIENT_ACK "REQUEST_ACK\r\n"
+
+#define EXPORTED_DATA_MAX_SIZE 10240UL
+unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
+
+
+int main(void){
+    disableAutoReset();
+	eepromInit();
+	spiConsoleSetup();
+	static unsigned short lastNetworkStat;
+
+	// unsigned char fileSystemMounted=1;
+	// if(!fileSystem.begin()){
+	// 	fileSystemMounted=0;
+	// 	consoleLog("cannot mount FileSystem\r\n");
+	// }
+
+	spiConsole console;
+	console.setup(clk,data,microSec,360000);
+// 
+// 
+	// console.log("test >> ", 5012);
+
+	
+
+	consoleLog("\nserial port\n");
+
+
+
+	const char *ssid="RISC-V";
+	const char *password="threadripper";
+	ssidSave((unsigned char*)ssid);
+	wifiPasswordSave((unsigned char*)password);
+	consoleLog(userSSID());
+	consoleLog("\nserial port\n");
+	consoleLog(userPassword());
+	consoleLog("\nserial port\n");
+	
+	externalPort();
+	lastNetworkStat=networkConnect();
+	consoleLog(inttostring(lastNetworkStat==WL_CONNECTED));
+ 	consoleLog(" connected\n");
+	unsigned char networkWasConnect=(lastNetworkStat==WL_CONNECTED);
+
+	WiFiServer server(80);
+	server.begin();
+
+
+	WiFiClient socket;
+	//socket.connect(REMOTE_HOST,REMOTE_PORT);
+	socket.setTimeout(5000);
+	// linkerSave((unsigned char*)"{\"D\":\"xtensa32plus.ddns.net\",\"P\":50,\"K\":\"0123456789123456\",\"U\":{\"auth\":\"test0\"}}");
+	unsigned char serverConnected=serverConnect(socket);
+	uint64_t lastServerTime=0;
+
+	WiFiClient client;
+	client.setTimeout(5000);
+
+	#define enc(_RAWTEXT) tcps((unsigned char*)_RAWTEXT,USER_KEY,EXPORTED_DATA)
+	unsigned char *_serverData;// not to call a pointer returnning func twice
+	#define SERVER_SEND(serverData)_serverData=serverData; if(serverConnected){socket.write((char*)enc(_serverData));dataMask((unsigned char*)_serverData,USER_KEY);CLR(EXPORTED_DATA);}
+
+	#define remoteUserData 0x00010000UL
+	#define remoteUserDisconnected 0x00020000UL
+	#define portListener 0x00040000UL
+	#define clientDisconnected 0x00080000UL
+
+	unsigned long eventListener=0;
+	unsigned long staticListener=0;
+	unsigned char clientJustConnected=0; //this method might lead to lots of synchronization problems but in a very few conditions
+	unsigned char socketConnection=0;
+	
+	consoleLog("start the loop\n");
+	while(1){
+		eventListener=0;
+		unsigned short reconnectTimer=0;
+		#define NETWORK_BUFFER_SIZE 2048
+		unsigned char tcpText[NETWORK_BUFFER_SIZE]="";
+
+		while(1){
+			//ESP.wdtFeed();
+			if(lastNetworkStat!=WiFi.status()){ //network event listener -auto handle
+				lastNetworkStat=WiFi.status();
+				if(lastNetworkStat==WL_CONNECTED){
+					networkWasConnect=1;
+					WiFi.softAP((char*)ipAddressString(WiFi.localIP()),(char*)userPassword());
+				}
+				else if(networkWasConnect){ //open up an access point with the matching ip address 
+					networkWasConnect=0;
+					WiFi.softAP("",(char*)userPassword());
+					WiFi.softAP((char*)ipAddressString(WiFi.softAPIP()),(char*)userPassword());
+				}
+			}
+			if(!clientJustConnected&&(!socketConnection)){//if there was a connection it would tell new connection simply to fuck off
+				if(client=server.available()){
+					clientJustConnected=1;
+				}
+			}
+			if((clientJustConnected||socketConnection)&&(client.available())){
+				clientJustConnected=0;
+				eventListener|=portListener;
+				staticListener|=portListener;
+			}
+			if(socketConnection&&(!client.connected())){
+				socketConnection=0;
+				eventListener|=clientDisconnected;
+				staticListener|=clientDisconnected;
+			}
+
+			if(socket.available()&&serverConnected){
+				tcpText[NETWORK_BUFFER_SIZE-1]=0xFF;
+				dataMask(base64Decode(tcpGetString(socket,tcpText)),base64Decode(json("K",linkerData())));
+				if(!lastServerTime){
+					lastServerTime=getInt(json("time",tcpText));
+					CLR(tcpText);
+				}
+				else if(getInt(json("time",tcpText))>lastServerTime){
+					lastServerTime=getInt(json("time",tcpText));
+
+					unsigned char timeDigits=stringCounter(json("time",tcpText))+9;
+					CLR(tcpText+(stringCounter(tcpText)-timeDigits));
+					unsigned char *orgLoc=tcpText;
+					unsigned char *dataLoc=tcpText+8;
+					while(*dataLoc){
+						*orgLoc=*dataLoc;
+						dataLoc++;
+						orgLoc++;
+					}
+					CLR(orgLoc);
+
+					eventListener|=remoteUserData;
+					staticListener|=remoteUserData;
+				}
+				else
+					CLR(tcpText);
+			}
+			if(!(--reconnectTimer)){
+				unsigned char *remoteHostObject=linkerData();
+				static unsigned char remoteConnectionResetTimer;
+				if(!(--remoteConnectionResetTimer)&&serverConnected)
+					socket.write("Sk9ITiBLSEFMSUw=");
+				if((json("D",remoteHostObject)!=UNDEFINED)&&(json("P",remoteHostObject)!=UNDEFINED)&&(json("K",remoteHostObject)!=UNDEFINED)&&(json("U",remoteHostObject)!=UNDEFINED)){
+					if(!serverConnected)
+						serverConnected=serverConnect(socket);
+					else if(!(serverConnected=socket.connected()))
+						consoleLog("server disconnected\n");
+						//socket.stop();
+				}
+			}
+
+			if(eventListener)
+				break;
+		}
+
+
+
+
+		ALL_EVENTS_HANDLER:
+		
+		
+		unsigned char *exportedData=EXPORTED_DATA;
+		CLR(exportedData);
+
+		if(eventListener&portListener){
+
+			unsigned char *makeStr=tcpText;
+			unsigned long memoryLimter=0;
+			while(client.available()){
+				if(memoryLimter<(NETWORK_BUFFER_SIZE-1)){
+					*makeStr=client.read();
+					makeStr++;
+				}
+				else{
+					client.read();
+				}
+				memoryLimter++;
+			}
+			makeStr=tcpText;
+
+			if(socketConnection){
+				webSocketDataFrame(tcpText,FRAME_DECODE);
+				if(WEBSOCKET_LAST_OPCODE==9){
+					unsigned char *webSocketPongFrame=webSocketDataFrame(tcpText,FRAME_ENCODE);
+					webSocketPongFrame[0]=0x8A;
+					_delay_ms(1);
+					client.write((char*)webSocketPongFrame);
+					CLR(tcpText);
+					CLR(webSocketPongFrame);
+					continue;
+				}
+				//client.write((char*)webSocketDataFrame(tcpText,FRAME_ENCODE));
+			}
+			else{
+				if(!((eventIdentifier(tcpText)&WEB_SERVER)==WEB_SERVER))
+					URIdecode(tcpText);
+			}
+			
+			consoleLog(tcpText);
+			consoleLog("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+
+
+
+			unsigned char eventType=eventIdentifier(tcpText);
+
+
+			if((eventType&WEB_SOCKET)==WEB_SOCKET){// never wanna mess with this line
+				consoleLog("user data >> ");
+				consoleLog(eventData(EVENT_DATA,tcpText,(unsigned char*)"\r\n"));
+				consoleLog("\n");
+
+				socketConnection=1;
+				client.write("HTTP/1.1 101 Switching Protocols\r\n");
+				client.write("Upgrade: websocket\r\n");
+				client.write("Connection: Upgrade\r\n");
+				client.write("Sec-WebSocket-Accept: ");
+				client.write((char*)secWebSocketAccept(tcpText));
+				client.write("\r\n\r\n");
+			}
+
+			
+			// else if(((eventType&WEB_SERVER)==WEB_SERVER)&&(!socketConnection)){
+			// 	unsigned char *filePath=URIdecode(eventData(EVENT_DATA,tcpText,(unsigned char*)" HTTP/"));
+			// 	consoleLog("filePath >> ");
+			// 	consoleLog(filePath);
+			// 	consoleLog(_endl);
+				
+			// 	if(fileSystemMounted){_WDF;
+			// 		client.write(CORS_HEADERS);
+			// 		unsigned char *finalFilePath=filePath;
+			// 		unsigned char homePageHTML[19]="/oscilloscope.html";
+			// 		if(equalStrings(filePath,(unsigned char*)"/")||(!stringCounter(filePath)))
+			// 			finalFilePath=homePageHTML;
+			// 		File xtensaFile=fileSystem.open((char*)finalFilePath,"r");
+			// 		while(1){_WDF;
+			// 			unsigned short webPageBuffer=4069;
+			// 			unsigned char *mkWebPageBuffer=exportedData;
+			// 			while((--webPageBuffer)&&xtensaFile.available()){_WDF;
+			// 				*mkWebPageBuffer=(unsigned char)xtensaFile.read();
+			// 				mkWebPageBuffer++;
+			// 			}
+			// 			client.write((char *)exportedData);
+			// 			CLR(exportedData);
+			// 			if(webPageBuffer)
+			// 				break;
+			// 		}
+			// 		client.flush();
+			// 		client.stop();
+			// 		xtensaFile.close();
+			// 	}
+			// 	else{
+			// 		client.write(GENERAL_RESPONSE);
+			// 		client.flush();
+			// 		client.stop();
+			// 	}
+			// 	CLR(tcpText);
+			// 	CLR(filePath);
+			// }
+
+
+
+			else if((eventType&UPLOADED_DATA)==UPLOADED_DATA){
+				#define SCAN_FOR_WIFI 0x00000001UL
+				#define NETWORK_DATA 0x00000002UL
+				#define LOGIC_ANALIZER 0x00000004UL
+				#define SUPER_SPEED_SAMPLE 0x00000008UL
+				#define ENABLE_SERIAL_PORT 0x00000010UL
+				#define SERVER_DATA 0x00000020UL
+				#define EXTERNAL_PORT 0x00000040UL
+				#define EXTERNAL_PORT_LIVE 0x00000100UL
+
+				consoleLog("user data >> ");
+				consoleLog(eventData(EVENT_DATA,tcpText,(unsigned char*)"<@>"));
+				consoleLog("\n");
+
+				unsigned char *instructionDecode=json("instruction",tcpText);
+				if(instructionDecode!=UNDEFINED){
+					unsigned long userInstruction=strint(instructionDecode);
+					consoleLog("user instruction >> ");
+					consoleLog(intToHexaDecimal(userInstruction));
+					consoleLog("\n");
+					
+					if(userInstruction&SCAN_FOR_WIFI){
+						if(socketConnection){
+							client.write((char*)webSocketDataFrame(scanForWifi(exportedData),FRAME_ENCODE));
+						}
+						else{
+							client.write(CORS_HEADERS);
+							client.write((char*)scanForWifi(exportedData));
+							client.flush();
+							client.stop();
+						}
+						CLR(exportedData);
+					}
+
+					if(userInstruction&NETWORK_DATA){
+						ssidSave(json("networkSSID",tcpText));
+						wifiPasswordSave(json("networkPASS",tcpText));
+						if(socketConnection){
+							client.write((char*)webSocketDataFrame((unsigned char*)CLIENT_ACK,FRAME_ENCODE));
+						}
+						else{
+							client.write(CORS_HEADERS);
+							client.write(CLIENT_ACK);
+							client.flush();
+							client.stop();
+						}
+						lastNetworkStat=networkConnect();
+						networkWasConnect=(lastNetworkStat==WL_CONNECTED);
+					}
+
+					if((userInstruction&SERVER_DATA)&&(!socketConnection)){
+						unsigned char *serverConfig;
+						client.write(CORS_HEADERS);
+						if((serverConfig=json("serverData",tcpText))!=UNDEFINED)
+							linkerSave(serverConfig);
+						client.write((char*)linkerData());
+						client.flush();
+						client.stop();
+					}
+
+					if(userInstruction&EXTERNAL_PORT){
+						unsigned char *checkLastServerTime;
+						if((checkLastServerTime=json("lastServerTime",tcpText))!=UNDEFINED){
+							uint64_t externalPortInstructionOrder=getInt(checkLastServerTime);
+							if(externalPortInstructionOrder!=lastServerTime){
+								lastServerTime=externalPortInstructionOrder;
+								externalPortSet(tcpText);
+								unsigned char *extPrtDirectBit;
+								if((extPrtDirectBit=json("extPrtDirectBit",tcpText))!=UNDEFINED){
+									externalPortBitToggle(getInt(extPrtDirectBit));
+								}
+							}
+						}
+						SERVER_SEND(externalPort());
+						if(socketConnection){
+							client.write((char*)webSocketDataFrame(externalPort(),FRAME_ENCODE));
+						}
+						else{
+							client.write(CORS_HEADERS);
+							client.write((char*)externalPort());
+							client.flush();
+							client.stop();
+						}
+					}
+					
+					if((userInstruction&EXTERNAL_PORT_LIVE)&&socketConnection){
+
+						while(client.connected()){
+							if(client.available()){
+								unsigned char *makeStr=exportedData;
+								unsigned long memoryLimter=0;
+								while(client.available()){
+									if(memoryLimter<(EXPORTED_DATA_MAX_SIZE-1)){
+										*makeStr=client.read();
+										makeStr++;
+									}
+									else{
+										client.read();
+									}
+									memoryLimter++;
+								}
+								makeStr=exportedData;
+								webSocketDataFrame(exportedData,FRAME_DECODE);
+
+								unsigned char *liveExternalPortObject;
+								if((liveExternalPortObject=json("liveExternalPort",exportedData))!=UNDEFINED){
+									uint64_t liveExternalPort=getInt(liveExternalPortObject);
+									unsigned long livePortBitCounter=32;											//limited to 4 bytes
+									while(livePortBitCounter--){
+										_DW(shiftRegisterData,((liveExternalPort&(1<<livePortBitCounter))!=0));		// !=0 not necessary but it only works that way 
+										_DW(shiftRegisterClk,1);
+										_delay_us(EXTERNAL_OUTPUT_SPEED);
+										_DW(shiftRegisterClk,0);
+										_delay_us(EXTERNAL_OUTPUT_SPEED);
+									}
+									_DW(shiftRegisterData,0);
+									_DW(shiftRegisterLatch,1);
+									_delay_us(EXTERNAL_OUTPUT_SPEED*10);
+									_DW(shiftRegisterLatch,0);
+									_delay_us(EXTERNAL_OUTPUT_SPEED);
+								}
+
+								else if(json("JRM",exportedData)!=UNDEFINED){
+									unsigned char *xtensaJrm=exportedData+9;
+									unsigned short clearTextSize=stringCounter(xtensaJrm);
+									base64Decode(xtensaJrm);					//JRM is not turing complete
+									#define JRM_OPERAND(OPERAND_POINTER) (unsigned long)((xtensaJrm[(OPERAND_POINTER*4)+3]|(xtensaJrm[(OPERAND_POINTER*4)+2]<<8)|(xtensaJrm[(OPERAND_POINTER*4)+1]<<16)|(xtensaJrm[OPERAND_POINTER*4]<<24))&0x3FFFFFFF)
+									#define JRM_OPCODE(OPCODE_POINTER) (xtensaJrm[OPCODE_POINTER*4]>>6)
+									
+									#define _output 		0
+									#define _delay 			1
+									#define _pointerSet 	2
+									#define _endOfStack 	3
+
+									unsigned short stackPointer=0;
+									unsigned short stackLimiter=-1;
+									while(stackLimiter--){
+										unsigned char opCode=JRM_OPCODE(stackPointer);
+										unsigned long operand=JRM_OPERAND(stackPointer);
+										stackPointer++;
+										if(opCode==_output){
+											const float JRM_PORT_SPEED=(1e6f/1000000)/2;
+											unsigned long livePortBitCounter=30;											//30 bits in total 
+											while(livePortBitCounter--){
+												_DW(shiftRegisterData,((operand&(1<<livePortBitCounter))!=0));		// !=0 not necessary but it only works that way 
+												_DW(shiftRegisterClk,1);
+												_delay_us(JRM_PORT_SPEED);
+												_DW(shiftRegisterClk,0);
+												_delay_us(JRM_PORT_SPEED);
+											}
+											_DW(shiftRegisterData,0);
+											_DW(shiftRegisterLatch,1);
+											_delay_us(JRM_PORT_SPEED*10);
+											_DW(shiftRegisterLatch,0);
+											_delay_us(JRM_PORT_SPEED);
+										}
+										else if(opCode==_delay){
+											_delay_us((operand&255));
+										}
+										else if(opCode==_pointerSet){
+											// gpioStack[stackPointer]&=0xC000FFFFUL;
+											// gpioStack[stackPointer]|=((operand>>16)-((operand>>16)!=0))<<16;
+											unsigned short countPointerDown=((operand>>16)-((operand>>16)!=0));
+											xtensaJrm[(stackPointer-1)*4]=0x80|(0x3f&((countPointerDown)>>8));
+											xtensaJrm[((stackPointer-1)*4)+1]=countPointerDown&0xFF;
+											if((operand>>16))
+												stackPointer=(unsigned short)(operand&0xFFFF);
+										}
+										else if(opCode==_endOfStack){
+											if(!operand)
+												break;
+											else{
+												xtensaJrm[(stackPointer-2)*4]=xtensaJrm[(stackPointer-1)*4]&0xBF;
+												xtensaJrm[((stackPointer-2)*4)+1]=xtensaJrm[((stackPointer-1)*4)+1];
+												xtensaJrm[((stackPointer-2)*4)+2]=xtensaJrm[((stackPointer-1)*4)+2];
+												xtensaJrm[((stackPointer-2)*4)+3]=xtensaJrm[((stackPointer-1)*4)+3];
+											}
+										}
+
+										static unsigned char clientCallTimeOut;
+										if(!(--clientCallTimeOut)){
+											if(client.available())
+												break;
+											if(!(client.connected()))
+												break;
+										}
+
+
+									}
+
+									CLR_LENGTH=clearTextSize;
+									CLR(xtensaJrm);_NOP();
+
+								}
+
+								// #define stackIdentifier "S"
+								// else if((liveExternalPortObject=json(stackIdentifier,tcpText))!=UNDEFINED){WD_FEED;
+								// 	unsigned short stackPointer=0;
+								// 	unsigned char stackIdentifierList[20]=stackIdentifier;
+								// 	stackIdentifierList[stringCounter(stackIdentifierList)]=0x5B;	//square bracket
+
+
+								// }
+								// CLR_LENGTH=EXPORTED_DATA_MAX_SIZE;
+								CLR(exportedData);
+							}
+						}
+						socketConnection=0;
+
+						
+					}
+
+				}	
+			}
+
+
+
+
+			else if(!socketConnection){
+				client.write(GENERAL_RESPONSE);
+				client.flush();
+				client.stop();
+			}
+			
+
+
+			
+		}
+
+		if(eventListener&=remoteUserData){
+			consoleLog("DATA FROM SERVER >> ");
+			consoleLog(tcpText);
+			consoleLog("\r\n");
+
+			#define SERVRE_EXTERNAL_PORT 0x00000040UL
+			#define SERVER_SYNC_EXTERNAL_PORT 0x00000080UL
+
+			unsigned char *serverInstructionDecode;
+			if((serverInstructionDecode=json("instruction",tcpText))!=UNDEFINED){
+				unsigned long serverInstruction=getInt(serverInstructionDecode);
+
+				if(serverInstruction&SERVRE_EXTERNAL_PORT){
+					externalPortSet(tcpText);
+					unsigned char *extPrtDirectBit;
+					if((extPrtDirectBit=json("extPrtDirectBit",tcpText))!=UNDEFINED){
+						SERVER_SEND(externalPortBitToggle(getInt(extPrtDirectBit)));		
+					}
+					else
+						SERVER_SEND(externalPort());
+				}
+
+				if(serverInstruction&SERVER_SYNC_EXTERNAL_PORT){
+					unsigned char *localPortValue=json("externalPort",externalPort());
+					CLR(exportedData);
+					unsigned char *localPortValueCopy=exportedData;
+					while(*localPortValue){
+						*localPortValueCopy=*localPortValue;
+						localPortValue++;
+						localPortValueCopy++;
+					}
+					if(!equalStrings(exportedData,json("externalPort",tcpText))){
+						externalPortSet(tcpText);
+						externalPort();
+					}
+					CLR(exportedData);
+				}
+			}
+		}
+
+
+
+		
+	}
+}
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 void setup(){
