@@ -128,7 +128,741 @@ unsigned char *sha1Hash(unsigned char *rawData){
 	return Sha1.result();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
+unsigned char UNDEFINED[10]="undefined";
+
+unsigned long strToUint32(unsigned char *str) {
+	unsigned char coun = 0;
+	unsigned long num;
+	while (*str) {
+		if (((*str) > 0x2F) && ((*str) < 0x3A)) {
+			if (!coun)
+				num =(unsigned) str;
+			coun++;
+		}
+		else if (coun)
+			break;
+		str++;
+	}
+	if (!coun)
+		return 0;
+	str = (unsigned char*)num;
+	unsigned long ret = 0;
+	unsigned x = 1;
+	while (coun) { //while (coun > 0)
+		ret += (str[coun - 1] - 0x30)*x;
+		x *= 10;
+		coun--;
+	}
+	return ret;
+}
+
+#define HEX_CHARS(FOUR_BIT) (((FOUR_BIT+0x30)*(FOUR_BIT<10))|((FOUR_BIT+0x37)*(FOUR_BIT>9)))
+void intToHex(unsigned long decimalFrom,unsigned char *hexaDecimalForm){
+	CLR(hexaDecimalForm);
+	unsigned char numLength=8-((((decimalFrom&0xFF000000UL)!=0)+((decimalFrom&0x00FF0000UL)!=0)+((decimalFrom&0x0000FF00UL)!=0)+1)*2);
+	for(unsigned char i=numLength;i<8;i++){
+		unsigned char fourBits=(unsigned char)((decimalFrom&((unsigned long)(0xf0000000>>(4*i))))>>(4*(7-i)));
+		*hexaDecimalForm=HEX_CHARS(fourBits);
+		hexaDecimalForm++;
+	}
+	return;
+}
+
+unsigned char inttostr(unsigned long num, unsigned char *str) {
+	static unsigned char ucoun;
+	for (unsigned char clrCoun = 0; clrCoun < ucoun; clrCoun++) {
+		str[clrCoun] = 0;
+	}
+	ucoun = 0;
+	if (num) {
+		unsigned long sum = 0;
+		unsigned long r = 10000000;
+		for (unsigned char i = 0; i < 8; i++) {
+			unsigned char flg = 0;
+			for (unsigned char j = 9; j > 0; j--) {
+				if ((num - sum) >= r * j) {
+					sum += r * j;
+					*str = (j)+0x30;
+					ucoun++;
+					str++;
+					flg = 1;
+					break;
+				}
+			}
+			if (flg == 0 && sum != 0) {
+				*str = 0x30;
+				ucoun++;
+				str++;
+			}
+			r /= 10;
+		}
+	}
+	else {
+		*str = 0x30;
+		ucoun = 1;
+	}
+	return ucoun;
+}
+
+
+
+unsigned char globalStringNameThatYouWillNeverUse[11]="";
+unsigned char* inttostring(unsigned long num) {
+	CLR(globalStringNameThatYouWillNeverUse);
+	inttostr(num, globalStringNameThatYouWillNeverUse);
+	return globalStringNameThatYouWillNeverUse;
+}
+
+unsigned char *intToHexaDecimal(unsigned long num){
+	unsigned char *makeStr=globalStringNameThatYouWillNeverUse;
+	*makeStr=0x30;
+	makeStr++;
+	*makeStr=0x78;
+	makeStr++;
+	intToHex(num,makeStr);
+	return globalStringNameThatYouWillNeverUse;
+}
+
+
+#define C_HEX intToHexaDecimal
+#define C_INT inttostring
+
+
+unsigned char* longToString(long num){
+	unsigned char *signedStr=globalStringNameThatYouWillNeverUse;
+	if(num<0){
+		*signedStr=0x2D;
+		signedStr++;
+		num*=(-1);
+	}
+	inttostr((unsigned long)num, signedStr);
+	return globalStringNameThatYouWillNeverUse;
+}
+
+
+unsigned strint(unsigned char *str){
+	unsigned ret=0;
+	unsigned char coun=0;
+	while((str[coun])&&(str[coun]>0x2F)&&(str[coun]<0x3A)){
+		coun++;
+	}
+	unsigned x=1;
+	while(coun>0){
+		ret+=(str[coun-1]-0x30)*x;
+		x*=10;
+		coun--;
+	}
+	return ret;
+}
+
+uint64_t getInt(unsigned char *numStr){
+	unsigned char numLength=stringCounter(numStr);
+	uint64_t result=0;
+	uint64_t factor=1;
+	while(numLength--){
+		result+=(numStr[numLength]-0x30)*factor;
+		factor*=10;
+	}
+	return result;
+}
+
+unsigned char UNDEFINED_VALUE=0;
+unsigned char *NO_DATA=&UNDEFINED_VALUE;
+
+
+unsigned short stringCounter(unsigned char *counted){
+	unsigned short counter=0;
+	while(*counted){
+		counter++;
+		counted++;
+	}
+	return counter;
+}
+
+unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
+unsigned char * CLR(unsigned char *deletedString){
+	unsigned char *returnedString=deletedString;
+	while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
+		*deletedString=0;
+		deletedString++;	
+	}
+	return returnedString;
+}
+
+unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPointer2){
+	unsigned short diffCounter;
+	if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
+		return 0;
+	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter)
+	return !diffCounter;
+}
+
+unsigned char *_CS(unsigned char *bigString,unsigned char *smallString){
+	unsigned char *smallStringLocation=bigString+stringCounter(bigString);		// lucky for us c/c++ support pointer arthematic
+	while(*smallString){
+		*smallStringLocation=*smallString;
+		smallString++;
+		smallStringLocation++;
+	}
+	return bigString;
+}
+
+unsigned char *skipStringJSON(unsigned char *jsonString){
+	if(*jsonString==0x22){//stop searching inside a string
+		unsigned char *backSlash=jsonString-1;
+		if(*backSlash==0x3A){
+			while((*jsonString!=0x22)&&(*backSlash!=0x5C)){
+			backSlash=jsonString-1;
+			jsonString++;
+			}
+		}
+	}
+	return jsonString;
+}
+
+unsigned char*skipArrayJSON(unsigned char *jsonString){
+	if(*jsonString==0x5B){//skip an array
+		jsonString++;
+		unsigned short arrayStart=1;
+		unsigned short arrayEnd=0;
+		while(arrayStart!=arrayEnd){
+			arrayStart+=(*jsonString==0x5B);
+			arrayEnd+=(*jsonString==0x5D);
+			jsonString=skipStringJSON(jsonString);
+			jsonString++;
+		}
+	}
+	return jsonString;
+}
+
+unsigned char *skipObjectJSON(unsigned char *jsonString){
+	if(*jsonString==0x7B){//skip an object
+		jsonString++;
+		unsigned short objectStart=1;
+		unsigned short objectEnd=0;
+		while(objectStart!=objectEnd){
+			objectStart+=(*jsonString==0x7B);
+			objectEnd+=(*jsonString==0x7D);
+			jsonString=skipStringJSON(jsonString);
+			jsonString++;
+		}
+	}
+	return jsonString;
+}
+
+unsigned char *JSON_OBJECT_FOUND_LOCATION=UNDEFINED;
+unsigned char JSON(unsigned char *requestedJSON,unsigned char *jsonString,unsigned char *objectString){
+	#define OBJECT_STRING_MAX_LENGTH 35
+	unsigned char objectBuffer[OBJECT_STRING_MAX_LENGTH]="";
+	unsigned short jsonArrayIndex=-1;
+	unsigned char subObject=1;
+	unsigned char *deadEndOfString=jsonString+stringCounter(jsonString);
+	unsigned char *objectScanner=requestedJSON;
+	while(*objectScanner){
+		subObject+=(*objectScanner==0x2E);
+		objectScanner++;
+	}
+	for(unsigned char subObjectCounter=0;subObjectCounter<subObject;subObjectCounter++){	//start
+		jsonString++;
+		jsonArrayIndex=-1;
+		unsigned char *jsonObject=objectBuffer;
+		*jsonObject=0x22;
+		jsonObject++;
+		while(*requestedJSON&&(*requestedJSON!=0x2E)&&(*requestedJSON!=0x5B)){
+			*jsonObject=*requestedJSON;
+			requestedJSON++;
+			jsonObject++;
+		}
+		*jsonObject=0x22;
+		jsonObject++;
+		while(jsonObject<(objectBuffer+OBJECT_STRING_MAX_LENGTH)){
+			*jsonObject=0;
+			jsonObject++;
+		}
+		jsonObject = objectBuffer;
+		if(*requestedJSON==0x2E){
+			requestedJSON++;
+		}
+		else if(*requestedJSON==0x5B){
+			requestedJSON++;
+			jsonArrayIndex=strint(requestedJSON);
+			requestedJSON+=stringCounter(inttostring((unsigned long)jsonArrayIndex))+1;//very inefficiant but i dont care!! its a cleaner code
+		}
+
+		while(*jsonObject){ //start searching
+			if(*jsonObject==*jsonString){//object to be found
+				unsigned char *notString=jsonString-1;
+				if(*notString!=0x3A){
+					jsonObject++;
+				}
+			}
+			else{
+				jsonObject=objectBuffer;
+			}
+			jsonString=skipStringJSON(jsonString);
+			jsonString=skipObjectJSON(jsonString);
+			jsonString=skipArrayJSON(jsonString);
+			if(jsonString==deadEndOfString){//object not found
+				return 0;
+			}
+			jsonString++;
+		}//object found
+
+		jsonString++;//skip the ":"
+		unsigned char objectTypeArray=0;
+		searchInsideArray:
+		unsigned short objectStartBracket=0;
+		unsigned short objectEndBracket=0;
+		unsigned short arrayStartBracket=0;
+		unsigned short arrayEndBracket=0;
+		unsigned short doubleQuoates=0;
+		unsigned char *objectLocation=jsonString;
+
+		while(1){
+			objectStartBracket+=(*objectLocation==0x7B);
+			objectEndBracket+=(*objectLocation==0x7D);
+			arrayStartBracket+=(*objectLocation==0x5B);
+			arrayEndBracket+=(*objectLocation==0x5D);
+			unsigned char *validStringCheck=objectLocation-1;
+			doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+			if(objectLocation==deadEndOfString){//object not found
+				return 0;
+			}
+			while(doubleQuoates&0x01){
+				objectLocation++;
+				validStringCheck=objectLocation-1;
+				doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+			}
+			if((*objectLocation==0x2C) && (objectStartBracket == objectEndBracket) && (arrayStartBracket == arrayEndBracket))
+				break;
+			if(objectEndBracket>objectStartBracket)
+				break;
+			if(arrayEndBracket>arrayStartBracket)
+				break;
+			objectLocation++;
+		}
+		
+		if(objectTypeArray){
+			goto backToArrayCounter;
+		}
+		deadEndOfString=objectLocation;
+		if((jsonArrayIndex!=0xFFFF)&&(*jsonString==0x5B)){
+			jsonString++;
+			objectTypeArray=1;
+			while(jsonArrayIndex){
+				goto searchInsideArray;
+				backToArrayCounter:
+				jsonString=objectLocation+1;
+				if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
+					return 0;
+				}
+				jsonArrayIndex--;
+			}
+			objectTypeArray=0;
+			jsonArrayIndex=-1;
+			goto searchInsideArray;
+		}
+	}
+
+	// JSON_OBJECT_FOUND_LOCATION=jsonString;
+	while(jsonString<deadEndOfString){
+		*objectString=*jsonString;
+		objectString++;
+		jsonString++;
+	}
+	while(*objectString){
+		*objectString=0;
+		objectString++;
+	}
+	return 1;
+}
+
+
+
+#define JSON_OBJECT_SIZE 101
+// unsigned char UNDEFINED[10]="undefined";
+unsigned char JSON_OBJECT_FOUND[JSON_OBJECT_SIZE]="";
+
+unsigned char *jsonParse(unsigned char *userObject,unsigned char *jsonObject){
+	if(JSON(userObject,jsonObject,JSON_OBJECT_FOUND)){
+		if(*JSON_OBJECT_FOUND==0x20){
+			unsigned short charSpaceCounter=1;
+			while(JSON_OBJECT_FOUND[charSpaceCounter++]==0x22);
+			charSpaceCounter--;
+			unsigned char *charSpacePointer=JSON_OBJECT_FOUND;
+			unsigned char *realDataPointer=charSpacePointer+charSpaceCounter;
+			while(*realDataPointer){
+				*charSpacePointer=*realDataPointer;
+				charSpacePointer++;
+				realDataPointer++;
+			}
+			CLR(charSpacePointer);
+		}
+		if((*JSON_OBJECT_FOUND)==0x22){
+			unsigned char* makeStrJSON=JSON_OBJECT_FOUND;
+			unsigned short jsonObjectLength=stringCounter(makeStrJSON)-2;
+			unsigned char *clearString=makeStrJSON+1;
+			while(jsonObjectLength){
+				(*makeStrJSON)=(*clearString);
+				*clearString=0;
+				clearString++;
+				makeStrJSON++;
+				jsonObjectLength--;
+			}
+			*clearString=0;
+		}
+		return JSON_OBJECT_FOUND;
+	}
+	return UNDEFINED;
+}
+
+#define json(argJSON1,argJSON2) jsonParse((unsigned char *)argJSON1,(unsigned char *)argJSON2)
+
+
+
+unsigned char inverseBase64Table(unsigned char transBuf){
+	return (transBuf-((65*((transBuf<0x5B)&&(transBuf>0x40)))|(71*((transBuf>0x60)&&(transBuf<0x7B)))|(-4*((transBuf>0x2F)&&(transBuf<0x3A)))|(-19*(transBuf==0x2B))|(-16*(transBuf==0x2F))))*(transBuf!=0x3D);//(char64-((0x41*(char64<26))|(71*((char64>25)&&(char64<52)))|(-4*((char64>51)&&(char64<62)))))
+}
+
+unsigned char *base64Decode(unsigned char *base64Text){
+	unsigned char *startAddress=base64Text;
+	unsigned char *lastAddress=startAddress+stringCounter(startAddress);
+	unsigned char *base256Text=base64Text;
+	unsigned short base64Counter=0;
+	while(base64Text[base64Counter]){
+		unsigned char base256Buffer[4]={inverseBase64Table(base64Text[base64Counter++]),inverseBase64Table(base64Text[base64Counter++]),inverseBase64Table(base64Text[base64Counter++]),inverseBase64Table(base64Text[base64Counter++])};
+		*base256Text=(base256Buffer[0]<<2)|((base256Buffer[1]&0x30)>>4);
+		base256Text++;
+		*base256Text=(base256Buffer[1]<<4)|((base256Buffer[2]&0x3C)>>2);
+		base256Text++;
+		*base256Text=(base256Buffer[2]<<6)|base256Buffer[3];
+		base256Text++;
+	}
+	while(base256Text<lastAddress){
+		*base256Text=0;
+		base256Text++;
+	}
+	return startAddress;
+}
+
+unsigned char base64Table(unsigned char transBuf){
+		return transBuf+((65*(transBuf<26))|(71*((transBuf>25)&&(transBuf<52)))|(-4*((transBuf>51)&&(transBuf<62)))|(-19*(transBuf==62))|(-16*(transBuf==63)));
+}
+unsigned short base64(unsigned char *rawData, unsigned char *base64Text) {
+	static unsigned short lastBase64Length;
+	unsigned char *clearText=base64Text;
+	while(lastBase64Length){
+		*clearText=0;
+		clearText++;
+		lastBase64Length--;
+	}
+	unsigned short rawDataLength = stringCounter(rawData);
+	unsigned char paddingCount = rawDataLength % 3;
+	rawDataLength -= paddingCount;
+	rawDataLength *= 1.3334f;
+	unsigned short base64Counter = 0;
+	unsigned char *rawData1 = rawData + 1;
+	unsigned char *rawData2 = rawData + 2;
+	while (base64Counter < rawDataLength) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table((((*rawData1) & 0x0F) << 2) | (((*rawData2) & 192) >> 6));
+		base64Text[base64Counter++] = base64Table((*rawData2) & 0x3F);
+		rawData += 3;
+		rawData1 += 3; 
+		rawData2 += 3;
+	}
+	if (paddingCount == 2) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table(((*rawData1) & 0x0F) << 2);
+		base64Text[base64Counter++] = 0x3D;
+	}
+	else if (paddingCount == 1) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table(((*rawData) & 0x03) << 4);
+		base64Text[base64Counter++] = 0x3D;
+		base64Text[base64Counter++] = 0x3D;
+	}
+	lastBase64Length=base64Counter;
+	return base64Counter;
+}
+
+unsigned short base64WebSocket(unsigned char *rawData, unsigned char *base64Text,unsigned short rawDataLength ) {
+	unsigned char *clearText=base64Text;
+	while(*clearText){
+		*clearText=0;
+		clearText++;
+	}
+	unsigned char paddingCount = rawDataLength % 3;
+	rawDataLength -= paddingCount;
+	rawDataLength *= 1.25;
+	unsigned short base64Counter = 0;
+	unsigned char *rawData1 = rawData + 1;
+	unsigned char *rawData2 = rawData + 2;
+	while (base64Counter < rawDataLength) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table((((*rawData1) & 0x0F) << 2) | (((*rawData2) & 192) >> 6));
+		base64Text[base64Counter++] = base64Table((*rawData2) & 0x3F);
+		rawData += 3;
+		rawData1 += 3; 
+		rawData2 += 3;
+	}
+	if (paddingCount == 2) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table(((*rawData1) & 0x0F) << 2);
+		base64Text[base64Counter++] = 0x3D;
+	}
+	else if (paddingCount == 1) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table(((*rawData) & 0x03) << 4);
+		base64Text[base64Counter++] = 0x3D;
+		base64Text[base64Counter++] = 0x3D;
+	}
+	return base64Counter;
+}
+
+unsigned char* base64Encoder(unsigned char* rawText,unsigned char* base64Text,unsigned short rawDataLength){
+	base64WebSocket(rawText,base64Text,rawDataLength);
+	return base64Text;
+}
+
+unsigned char *secWebSocketAccept(unsigned char *clientBase64){
+	unsigned char *originalAddress=clientBase64;
+	unsigned char RFC6455[37]="258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+	unsigned char *readStr=RFC6455;
+	clientBase64+=stringCounter(clientBase64);
+	while(*readStr){
+		*clientBase64=*readStr;
+		clientBase64++;
+		readStr++;
+	}
+	clientBase64=originalAddress;
+	// unsigned char buffer1[21]="";
+    // sha1((char*)clientBase64,&buffer1[0]);
+	unsigned char* buffer1=sha1Hash(clientBase64);
+	unsigned char hashedText[21]="";
+	for(unsigned char hashCounter=0;hashCounter<20;hashCounter++){
+		hashedText[hashCounter]=buffer1[hashCounter];
+	}
+	base64WebSocket(hashedText,clientBase64,20);
+	return originalAddress;
+}
+
+#define FRAME_DECODE 0
+#define FRAME_ENCODE 1
+#define WEBSOCKET_FRAME_SIZE 1024
+unsigned char WEBSOCKET_BUFFER_DATA[WEBSOCKET_FRAME_SIZE]="";
+unsigned char FINAL_WEBSOCKET_PAYLOAD=1;
+unsigned char WEBSOCKET_LAST_OPCODE=0;
+
+unsigned char *webSocketDataFrame(unsigned char *frameData,unsigned char operation){
+	unsigned char *originalLoaction=frameData;
+	if(operation==FRAME_DECODE){
+		unsigned char *payload=frameData+2;
+		unsigned char maskingKey[4]="";
+		FINAL_WEBSOCKET_PAYLOAD=((frameData[0]&128)==128);
+		unsigned char opcode=(frameData[0]&0x0F);
+		WEBSOCKET_LAST_OPCODE=opcode;
+		unsigned char dataMasked=((frameData[1]&128)==128);
+		unsigned long long payloadLength=(frameData[1]&0x7F);
+		payload+=(2*(payloadLength==126));
+		payload+=(8*(payloadLength==127));
+		unsigned char *maskingKeyLocation=payload;
+		payload+=(4*dataMasked);
+		if(dataMasked){
+			for(unsigned char maskCounter=0;maskCounter<4;maskCounter++){
+				maskingKey[maskCounter]=maskingKeyLocation[maskCounter];
+			}
+		}
+		unsigned char extraLength=(2*(payloadLength==126))|(8*(payloadLength==127));
+		if(extraLength){
+			unsigned char *payloadLengthLocation=maskingKeyLocation-1;
+			unsigned char loopCounter=0;
+			payloadLength=0;
+			while(extraLength){
+				payloadLength|=((*payloadLengthLocation)<<(8*loopCounter));
+				loopCounter++;
+				payloadLengthLocation--;
+				extraLength--;
+			}
+		}
+		unsigned long long frameLength=payloadLength+(payload-originalLoaction);
+		for(unsigned long long transfarCounter=0;transfarCounter<payloadLength;transfarCounter++){
+			*frameData=(*payload);
+			frameData++;
+			payload++;
+		}
+		unsigned char *endLocation=originalLoaction+frameLength; 
+		while(frameData<endLocation){
+			*frameData=0;
+			frameData++;
+		}
+		frameData=originalLoaction;
+		if(dataMasked){
+			for(unsigned long long transfarCounter=0;transfarCounter<payloadLength;transfarCounter++){
+				*frameData^=maskingKey[transfarCounter%4];
+				frameData++;
+			}
+		}
+	}
+	else if(operation==FRAME_ENCODE){
+		originalLoaction=WEBSOCKET_BUFFER_DATA;
+		while(*originalLoaction){
+			*originalLoaction=0;
+			originalLoaction++;
+		}
+		originalLoaction=WEBSOCKET_BUFFER_DATA;
+		*originalLoaction=0x81;
+		originalLoaction++;
+		unsigned long long payloadSize=stringCounter(frameData);
+		payloadSize=(payloadSize*(payloadSize<WEBSOCKET_FRAME_SIZE))|((WEBSOCKET_FRAME_SIZE-1)*(payloadSize>(WEBSOCKET_FRAME_SIZE-1)));
+		*originalLoaction=(((unsigned char)payloadSize)*(payloadSize<126))|(126*((payloadSize>125)&&(payloadSize<0x10000ULL)))|(127*(payloadSize>0xFFFF));
+		unsigned char extraSize=(2*((*originalLoaction)==126))|(8*((*originalLoaction)==127));
+		originalLoaction++;
+		while(extraSize){
+			extraSize--;
+			*originalLoaction=(unsigned char)((payloadSize&(0xFF<<(8*extraSize)))>>(8*extraSize));
+			originalLoaction++;
+		}
+		while(payloadSize){
+			*originalLoaction=(*frameData);
+			frameData++;
+			originalLoaction++;
+			payloadSize--;
+		}
+		originalLoaction=WEBSOCKET_BUFFER_DATA;
+	}
+	return originalLoaction;
+}
+
+unsigned char *webSocketDataFrameEncode(unsigned char *frameData){
+	uint64_t payloadSize=stringCounter(frameData);
+	unsigned char frameLength=(((unsigned char)payloadSize)*(payloadSize<126))|(126*((payloadSize>125)&&(payloadSize<0x10000ULL)))|(127*(payloadSize>0xFFFF));
+	unsigned char extraSize=(2*((frameLength)==126))|(8*((frameLength)==127));
+	unsigned char *originalLoaction=frameData-(2+extraSize);
+	unsigned char *webSocketData=originalLoaction;
+	*originalLoaction=0x81;
+	originalLoaction++;
+	*originalLoaction=frameLength;
+	originalLoaction++;
+	while(extraSize){
+		extraSize--;
+		*originalLoaction=(unsigned char)((payloadSize&(0xFF<<(8*extraSize)))>>(8*extraSize));
+		originalLoaction++;
+	}
+	return webSocketData;
+}
+
+unsigned char *webSocketDataFrameEncodeBinary(unsigned char *frameData){
+	uint64_t payloadSize=stringCounter(frameData);
+	unsigned char frameLength=(((unsigned char)payloadSize)*(payloadSize<126))|(126*((payloadSize>125)&&(payloadSize<0x10000ULL)))|(127*(payloadSize>0xFFFF));
+	unsigned char extraSize=(2*((frameLength)==126))|(8*((frameLength)==127));
+	unsigned char *originalLoaction=frameData-(2+extraSize);
+	unsigned char *webSocketData=originalLoaction;
+	*originalLoaction=0x82;
+	originalLoaction++;
+	*originalLoaction=frameLength;
+	originalLoaction++;
+	while(extraSize){
+		extraSize--;
+		*originalLoaction=(unsigned char)((payloadSize&(0xFF<<(8*extraSize)))>>(8*extraSize));
+		originalLoaction++;
+	}
+	return webSocketData;
+}
+
+unsigned char *dataMask(unsigned char *dataStr,unsigned char *keyStr){
+	unsigned short dataStrCounter=0;
+	unsigned char keyStrLength=stringCounter(keyStr);
+	unsigned short dataStrLength=stringCounter(dataStr);
+	while(dataStrLength--){
+		dataStr[dataStrCounter]=dataStr[dataStrCounter]^keyStr[(dataStrCounter++)%keyStrLength];
+	}	
+	return dataStr;
+}
+
+unsigned char *tcps(unsigned char *rawText,unsigned char *keyStr,unsigned char *cipherText){
+	base64(dataMask(rawText,keyStr),cipherText);
+	return cipherText;
+}
+
+unsigned long long encKey64(unsigned char *base256Str){
+	unsigned char encKeyCounter=0;
+	unsigned long long key64Bit=0;
+	while(encKeyCounter<8)
+		key64Bit|=base256Str[encKeyCounter++]<<(64-(encKeyCounter*8));
+	return key64Bit;
+}
+
+unsigned char asciiHex(unsigned char *base16){
+	unsigned char res=0;
+	for(unsigned char i=0;i<2;i++){
+		//res=res<<4;
+		if(((*base16)>0x2F)&&((*base16)<0x3A)){
+			res=res<<4;
+			res+=(*base16)-0x30;
+		}
+		else if(((*base16)>0x60)&&((*base16)<0x67)){
+			res=res<<4;
+			res+=(*base16)-0x57;
+		}
+		else if(((*base16)>0x40)&&((*base16)<0x47)){
+			res=res<<4;
+			res+=(*base16)-0x37;
+		}
+		base16++;
+	}
+	return res;
+}
+
+unsigned char validHex(unsigned char *base16){
+	return((((*base16)>0x2F)&&((*base16)<0x3A))||(((*base16)>0x60)&&((*base16)<0x67))||(((*base16)>0x40)&&((*base16)<0x47)));
+}
+
+unsigned char *URIdecode(unsigned char *url){ //this fuction will work without checking if the the chars followed by the percentage char is valid
+	unsigned char *originalLocation=url;
+	unsigned char *shift;
+	unsigned char *allocate;
+	while(*url){
+		if((*url)==0x25){
+			shift=url+1;
+			//if(validHex(shift)){
+				(*url)=asciiHex(shift);
+				allocate=shift+2;
+				while(*allocate){
+					(*shift)=(*allocate);
+					(*allocate)=0;
+					allocate++;
+					shift++;
+				}
+			//}
+		}
+		url++;
+	}
+	return originalLocation;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
