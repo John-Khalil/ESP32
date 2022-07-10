@@ -1377,7 +1377,7 @@ unsigned short fetchMemoryLimiter=4069;
 unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
 
 
-int serviceExecutable(void){
+void serviceExecutable(void*param){
 
     _delay_ms(500);
 
@@ -1453,8 +1453,9 @@ int serviceExecutable(void){
 		#define NETWORK_BUFFER_SIZE 2048
 		unsigned char tcpText[NETWORK_BUFFER_SIZE]="";
 		while(1){
-            _delay_ms(10);
-			//ESP.wdtFeed();
+            static unsigned char vTaskDelayToThreadRatio;
+            if(--vTaskDelayToThreadRatio)
+                _delay_ms(3);
 			if(lastNetworkStat!=WiFi.status()){ //network event listener -auto handle
 				lastNetworkStat=WiFi.status();
 				if(lastNetworkStat==WL_CONNECTED){
@@ -1740,13 +1741,21 @@ void setup(){
     // Serial.begin(9600);
     _PM(13,OUTPUT);
 
-    serviceExecutable();
+    // serviceExecutable();
+    xTaskCreate(
+        serviceExecutable,    // Function that should be called
+        "serviceExecutable",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
+    );
 
-    console.log("\n\n----------------------------------------------------------------------------------------------------\n");
+    // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
         
         console.log("first time from ESP32 >> ",_LOOP_COUNTER_);
-        // _delay_ms(500);
+        _delay_ms(1500);
        
     });
 }
