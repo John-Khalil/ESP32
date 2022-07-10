@@ -1379,7 +1379,7 @@ unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
 
 int serviceExecutable(void){
 
-_delay_ms(1500);
+    _delay_ms(500);
 
 	eepromInit();
 	
@@ -1711,7 +1711,7 @@ _delay_ms(1500);
 		if(eventListener&=remoteUserData){
 			console.log("DATA FROM SERVER >> ",tcpText);
 			
-
+            // SERVER_SEND((unsigned char*)"ACK");
 		
 		}
 
