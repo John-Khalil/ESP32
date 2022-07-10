@@ -1400,9 +1400,8 @@ _delay_ms(1500);
 
 	console.log("serial port");
 
-    unsigned long x=0;
 
-	const char *ssid="";
+	const char *ssid="RISC-V";
 	const char *password="threadripper";
 	ssidSave((unsigned char*)ssid);
 	wifiPasswordSave((unsigned char*)password);
@@ -1415,32 +1414,23 @@ _delay_ms(1500);
 	lastNetworkStat=networkConnect();
 	console.log(inttostring(lastNetworkStat==WL_CONNECTED)," connected");
  	
-    console.log("test >> ",++x);
 
 	unsigned char networkWasConnect=(lastNetworkStat==WL_CONNECTED);
-    console.log("test >> ",++x);
 
 	WiFiServer server(80);
-    console.log("test >> ",++x);
-	// server.begin();
-    console.log("test >> ",++x);
+	server.begin();
 
 
 	WiFiClient socket;
-    console.log("test >> ",++x);
 	//socket.connect(REMOTE_HOST,REMOTE_PORT);
 	socket.setTimeout(5000);
-    console.log("test >> ",++x);
 	// linkerSave((unsigned char*)"{\"D\":\"xtensa32plus.ddns.net\",\"P\":50,\"K\":\"0123456789123456\",\"U\":{\"auth\":\"test0\"}}");
-	unsigned char serverConnected=0;//serverConnect(socket);
-    console.log("test >> ",++x);
+	unsigned char serverConnected=serverConnect(socket);
 	uint64_t lastServerTime=0;
-    console.log("test >> ",++x);
+
 
 	WiFiClient client;
-    console.log("test >> ",++x);
 	client.setTimeout(5000);
-    console.log("test >> ",++x);
 
 	#define enc(_RAWTEXT) tcps((unsigned char*)_RAWTEXT,USER_KEY,EXPORTED_DATA)
 	unsigned char *_serverData;// not to call a pointer returnning func twice
@@ -1462,9 +1452,8 @@ _delay_ms(1500);
 		unsigned short reconnectTimer=0;
 		#define NETWORK_BUFFER_SIZE 2048
 		unsigned char tcpText[NETWORK_BUFFER_SIZE]="";
-        console.log("test >> ",++x);
 		while(1){
-            _delay_ms(1);
+            _delay_ms(10);
 			//ESP.wdtFeed();
 			if(lastNetworkStat!=WiFi.status()){ //network event listener -auto handle
 				lastNetworkStat=WiFi.status();
