@@ -1754,7 +1754,7 @@ void setup(){
     // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
         
-        console.log("first time from ESP32 >> ",_LOOP_COUNTER_);
+        console.log("ESP32 >> ",_LOOP_COUNTER_,".",".",".",".",".",".",".",'.',".");
         _delay_ms(1500);
        
     });

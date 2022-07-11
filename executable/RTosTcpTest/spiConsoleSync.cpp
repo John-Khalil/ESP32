@@ -154,6 +154,9 @@ class spiConsole{
         unsigned char *log(char *consoleData){
             return _spiConsoleLog((unsigned char*)consoleData);
         }
+        unsigned char *log(const char *consoleData){
+            return _spiConsoleLog((unsigned char*)consoleData);
+        }
         // unsigned char *log(int32_t consoleData){
         //     return _spiConsoleLog(longToString(consoleData));
         // }
@@ -163,6 +166,27 @@ class spiConsole{
         unsigned char *log(unsigned long consoleData){
             return _spiConsoleLog(inttostring(consoleData));
         }
+
+        unsigned char *log(unsigned short consoleData){
+            return _spiConsoleLog(inttostring(consoleData));
+        }
+
+        unsigned char *log(unsigned char consoleData){
+            return _spiConsoleLog(inttostring(consoleData));
+        }
+
+        unsigned char *log(long consoleData){
+            return _spiConsoleLog(longToString(consoleData));
+        }
+
+        unsigned char *log(short consoleData){
+            return _spiConsoleLog(longToString(consoleData));
+        }
+
+        unsigned char *log(char consoleData){
+            return _spiConsoleLog(longToString(consoleData));
+        }
+
         // unsigned char *log(int consoleData){
         //     return _spiConsoleLog(inttostring(consoleData));
         // }
@@ -202,86 +226,140 @@ class spiConsole{
 		// 	log(consoleNum);
 		// }
 
-        void log(unsigned char *consoleText,unsigned long consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
 
-        // void log(unsigned char *consoleText,int consoleNum){
+
+        void log(void){
+
+        }
+
+        template<typename T,typename... Types>
+        void log(T arg1,Types... arg2){
+            disableNL();
+            log(arg1);
+            autoNLCR=(sizeof...(Types)==1);
+            log(arg2...);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // template<typename T1,typename T2>
+        // void log(T1 consoleText,T2 consoleNum){
         //     disableNL();
 		// 	log(consoleText);
         //     enableNL();
 		// 	log(consoleNum);
 		// }
 
-        void log(unsigned char *consoleText,double consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
+        // template<typename T1,typename T2,typename T3>
+        // void log(T1 arg1,T2 arg2,T3 arg3){
+        //     disableNL();
+		// 	log(arg1);
+        //     log(arg2);
+        //     enableNL();
+		// 	log(arg3);
+		// }
 
-        void log(unsigned char *consoleText,unsigned char *consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
-        void log(unsigned char *consoleText,char *consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
+        // template<typename T1,typename T2,typename T3,typename T4>
+        // void log(T1 arg1,T2 arg2,T3 arg3,T4 arg4){
+        //     disableNL();
+		// 	log(arg1);
+        //     log(arg2);
+        //     log(arg3);
+        //     enableNL();
+		// 	log(arg4);
+		// }
 
-        // void log(char *consoleText,int32_t consoleNum){
+        // void log(unsigned char *consoleText,unsigned long consoleNum){
         //     disableNL();
 		// 	log(consoleText);
         //     enableNL();
 		// 	log(consoleNum);
 		// }
 
-        // void log(char *consoleText,uint32_t consoleNum){
+        // // void log(unsigned char *consoleText,int consoleNum){
+        // //     disableNL();
+		// // 	log(consoleText);
+        // //     enableNL();
+		// // 	log(consoleNum);
+		// // }
+
+        // void log(unsigned char *consoleText,double consoleNum){
         //     disableNL();
 		// 	log(consoleText);
         //     enableNL();
 		// 	log(consoleNum);
 		// }
 
-        void log(char *consoleText,unsigned long consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
-
-        // void log(char *consoleText,int consoleNum){
+        // void log(unsigned char *consoleText,unsigned char *consoleNum){
+        //     disableNL();
+		// 	log(consoleText);
+        //     enableNL();
+		// 	log(consoleNum);
+		// }
+        // void log(unsigned char *consoleText,char *consoleNum){
         //     disableNL();
 		// 	log(consoleText);
         //     enableNL();
 		// 	log(consoleNum);
 		// }
 
-        void log(char *consoleText,double consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
+        // // void log(char *consoleText,int32_t consoleNum){
+        // //     disableNL();
+		// // 	log(consoleText);
+        // //     enableNL();
+		// // 	log(consoleNum);
+		// // }
 
-        void log(char *consoleText,unsigned char *consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
-        void log(char *consoleText,char *consoleNum){
-            disableNL();
-			log(consoleText);
-            enableNL();
-			log(consoleNum);
-		}
+        // // void log(char *consoleText,uint32_t consoleNum){
+        // //     disableNL();
+		// // 	log(consoleText);
+        // //     enableNL();
+		// // 	log(consoleNum);
+		// // }
+
+        // void log(char *consoleText,unsigned long consoleNum){
+        //     disableNL();
+		// 	log(consoleText);
+        //     enableNL();
+		// 	log(consoleNum);
+		// }
+
+        // // void log(char *consoleText,int consoleNum){
+        // //     disableNL();
+		// // 	log(consoleText);
+        // //     enableNL();
+		// // 	log(consoleNum);
+		// // }
+
+        // void log(char *consoleText,double consoleNum){
+        //     disableNL();
+		// 	log(consoleText);
+        //     enableNL();
+		// 	log(consoleNum);
+		// }
+
+        // void log(char *consoleText,unsigned char *consoleNum){
+        //     disableNL();
+		// 	log(consoleText);
+        //     enableNL();
+		// 	log(consoleNum);
+		// }
+        // void log(char *consoleText,char *consoleNum){
+        //     disableNL();
+		// 	log(consoleText);
+        //     enableNL();
+		// 	log(consoleNum);
+		// }
 		
 };
