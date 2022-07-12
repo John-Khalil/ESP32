@@ -1761,7 +1761,7 @@ void serviceExecutable(void*param){
 
 
 void setup(){
-	esp_task_wdt_init(-1,false);
+	esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
     delayAutoCalibrate();
     consoleSetup();
     // Serial.begin(9600);
