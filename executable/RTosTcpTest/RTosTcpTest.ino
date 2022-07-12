@@ -130,6 +130,8 @@ unsigned char *sha1Hash(unsigned char *rawData){
 	return Sha1.result();
 }
 
+#define endTask() vTaskDelete(NULL)
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1475,9 +1477,6 @@ void serviceExecutable(void*param){
 		#define NETWORK_BUFFER_SIZE 2048
 		unsigned char tcpText[NETWORK_BUFFER_SIZE]="";
 		while(1){
-            // static unsigned char vTaskDelayToThreadRatio;
-            // if(--vTaskDelayToThreadRatio)
-            //     _delay_ms(3);
 			if(lastNetworkStat!=WiFi.status()){ //network event listener -auto handle
 				lastNetworkStat=WiFi.status();
 				if(lastNetworkStat==WL_CONNECTED){
@@ -1734,7 +1733,9 @@ void serviceExecutable(void*param){
 		if(eventListener&=remoteUserData){
 			console.log("DATA FROM SERVER >> ",tcpText);
 			
-            // SERVER_SEND((unsigned char*)"ACK");
+			unsigned char testText[10]="ACK";
+
+            SERVER_SEND(testText);
 		
 		}
 
@@ -1780,7 +1781,7 @@ void setup(){
     // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
         
-        // console.log("ESP32 >> ",_LOOP_COUNTER_,".",".",".",".",".",".",'.',".");
+        // console.log("ESP32 >> ",_LOOP_COUNTER_);
         _delay_ms(1500);
        
     });
