@@ -7,19 +7,47 @@
 #include "SHA1_HASH.h"
 #include "EEPROM.h"
 #include "spiConsoleSync.cpp"
+#include <functional>
 
 #include "consoleLogger.h"
 
 #include "esp_task_wdt.h"
 
-typedef unsigned long loopVar;
+// typedef unsigned long loopVar;
 
-loopVar _LOOP_COUNTER_ = 0;
-loopVar *_NESTED_LOOPS_= (loopVar*)malloc(1*sizeof(loopVar));
-unsigned char _NESTED_LOOPS_COUNTER_ = 0;
-#define within(_LOOP_ITERATIONS_,_LOOP_BODY_) _NESTED_LOOPS_[_NESTED_LOOPS_COUNTER_++]=_LOOP_COUNTER_; _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_,(_NESTED_LOOPS_COUNTER_+1) *sizeof(loopVar));_LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_; _LOOP_COUNTER_=_NESTED_LOOPS_[--_NESTED_LOOPS_COUNTER_];  _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_, (_NESTED_LOOPS_COUNTER_+1) * sizeof(loopVar));
+// loopVar _LOOP_COUNTER_ = 0;
+// loopVar *_NESTED_LOOPS_= (loopVar*)malloc(1*sizeof(loopVar));
+// unsigned char _NESTED_LOOPS_COUNTER_ = 0;
+// #define within(_LOOP_ITERATIONS_,_LOOP_BODY_) _NESTED_LOOPS_[_NESTED_LOOPS_COUNTER_++]=_LOOP_COUNTER_; _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_,(_NESTED_LOOPS_COUNTER_+1) *sizeof(loopVar));_LOOP_COUNTER_=_LOOP_ITERATIONS_;while(_LOOP_COUNTER_--) _LOOP_BODY_; _LOOP_COUNTER_=_NESTED_LOOPS_[--_NESTED_LOOPS_COUNTER_];  _NESTED_LOOPS_=(loopVar *)realloc(_NESTED_LOOPS_, (_NESTED_LOOPS_COUNTER_+1) * sizeof(loopVar));
 
 #define lengthInBytes(object) (unsigned char *)(&object+1)-(unsigned char *)(&object)
+
+
+
+// template<typename T>
+void withinTemplate(unsigned long loopIterations, const std::function<void(void)>loopCAllBack) {
+	// unsigned long loopCounter = loopIterations;	//just in case it was passed a const
+	while (loopIterations--) {
+		//we can do any other thing whithin this loop to do it sort of in parallel 
+		loopCAllBack();
+	}
+}
+
+
+// template<typename T2>
+void duringTemplate(unsigned long loopIterations, const std::function<void(unsigned long)>loopCAllBack) {
+	// unsigned long loopCounter = loopIterations;	//just in case it was passed a const
+	unsigned long loopCounter=0;
+	while (loopIterations--) {
+		//we can do any other thing whithin this loop to do it sort of in parallel 
+		// loopCAllBack((loopIterations - (loopCounter + 1)));
+		loopCAllBack(loopCounter++);
+	}
+}
+
+
+#define within(_LOOP_ITERATIONS_,_LOOP_BODY_) withinTemplate(_LOOP_ITERATIONS_,[&](void){_LOOP_BODY_})	//every thing is passed by ref 
+#define during(_LOOP_ITERATIONS_,_LOOP_BODY_) duringTemplate(_LOOP_ITERATIONS_,[&]_LOOP_BODY_)			//every thing is passed by ref
 
 
 volatile uint32_t *_outputRegisterLow=((volatile uint32_t*)0X3FF44004UL);
@@ -1795,10 +1823,18 @@ void setup(){
     // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
         
-        // console.log("ESP32 >> ",_LOOP_COUNTER_);
+        console.log("ESP32 >> ");
         _delay_ms(1500);
        
     });
+
+	during(20,(unsigned long index){
+        
+        console.log("ESP32 >> ",index);
+        _delay_ms(1500);
+       
+    });
+
 }
 
 
