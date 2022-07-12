@@ -1367,22 +1367,6 @@ unsigned short fetchMemoryLimiter=4069;
 /////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-unsigned char *_$StrLastUsedStr=(unsigned char*)malloc(1);
-unsigned char* _$Str(const char* basicStr){
-	free(_$StrLastUsedStr);
-	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr);		//better not to calculate it twice !!
-	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,basicStrLength);
-	_CS(_$StrLastUsedStr,(unsigned char*)basicStr);
-	return _$StrLastUsedStr;
-}
-
-unsigned char* _$Str(unsigned char* basicStr){
-	return basicStr;
-}
-
-unsigned char* _$Str(char* basicStr){
-	return (unsigned char*)basicStr;
-}
 
 
 void sayHello(void * uselessParam){
@@ -1474,7 +1458,7 @@ void serviceExecutable(void*param){
 
 	#define enc(_RAWTEXT) tcps((unsigned char*)_RAWTEXT,USER_KEY,EXPORTED_DATA)
 	unsigned char *_serverData;// not to call a pointer returnning func twice
-	#define SERVER_SEND(serverData) _serverData=_$Str(serverData); if(serverConnected){socket.write((char*)enc(_serverData));dataMask((unsigned char*)_serverData,USER_KEY);CLR(EXPORTED_DATA);}
+	#define SERVER_SEND(serverData)_serverData=serverData; if(serverConnected){socket.write((char*)enc(_serverData));dataMask((unsigned char*)_serverData,USER_KEY);CLR(EXPORTED_DATA);}
 
 	#define remoteUserData 0x00010000UL
 	#define remoteUserDisconnected 0x00020000UL
@@ -1749,7 +1733,9 @@ void serviceExecutable(void*param){
 		if(eventListener&=remoteUserData){
 			console.log("DATA FROM SERVER >> ",tcpText);
 			
-			SERVER_SEND("this should work!!");
+			unsigned char testText[10]="ACK";
+
+            SERVER_SEND(testText);
 		
 		}
 
