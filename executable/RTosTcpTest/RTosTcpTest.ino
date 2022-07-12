@@ -10,6 +10,8 @@
 
 #include "consoleLogger.h"
 
+#include "esp_task_wdt.h"
+
 typedef unsigned long loopVar;
 
 loopVar _LOOP_COUNTER_ = 0;
@@ -1365,6 +1367,14 @@ unsigned short fetchMemoryLimiter=4069;
 
 
 
+void sayHello(void * uselessParam){
+	within(20,{
+		console.log("hello!");
+		_delay_ms(2000);
+	});
+	vTaskDelete(NULL);
+}
+
 
 
 #define REMOTE_HOST "192.168.1.130"
@@ -1379,7 +1389,19 @@ unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
 
 void serviceExecutable(void*param){
 
+	// xTaskCreate(
+    //     sayHello,    // Function that should be called
+    //     "interuptSimulator",   // Name of the task (for debugging)
+    //     1000,            // Stack size (bytes)
+    //     NULL,            // Parameter to pass
+    //     1,               // Task priority
+    //     NULL             // Task handle
+    // );
+
+
     _delay_ms(500);
+
+
 
 	eepromInit();
 	
@@ -1453,9 +1475,9 @@ void serviceExecutable(void*param){
 		#define NETWORK_BUFFER_SIZE 2048
 		unsigned char tcpText[NETWORK_BUFFER_SIZE]="";
 		while(1){
-            static unsigned char vTaskDelayToThreadRatio;
-            if(--vTaskDelayToThreadRatio)
-                _delay_ms(3);
+            // static unsigned char vTaskDelayToThreadRatio;
+            // if(--vTaskDelayToThreadRatio)
+            //     _delay_ms(3);
 			if(lastNetworkStat!=WiFi.status()){ //network event listener -auto handle
 				lastNetworkStat=WiFi.status();
 				if(lastNetworkStat==WL_CONNECTED){
@@ -1511,7 +1533,7 @@ void serviceExecutable(void*param){
 				else
 					CLR(tcpText);
 			}
-			if(!(--reconnectTimer)){
+			if(!(--reconnectTimer%50)){
 				unsigned char *remoteHostObject=linkerData();
 				static unsigned char remoteConnectionResetTimer;
 				if(!(--remoteConnectionResetTimer)&&serverConnected)
@@ -1735,7 +1757,11 @@ void serviceExecutable(void*param){
 
 
 
+
+
+
 void setup(){
+	esp_task_wdt_init(-1,false);
     delayAutoCalibrate();
     consoleSetup();
     // Serial.begin(9600);
@@ -1754,7 +1780,7 @@ void setup(){
     // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
     within(20,{
         
-        console.log("ESP32 >> ",_LOOP_COUNTER_,".",".",".",".",".",".",".",'.',".");
+        // console.log("ESP32 >> ",_LOOP_COUNTER_,".",".",".",".",".",".",'.',".");
         _delay_ms(1500);
        
     });
