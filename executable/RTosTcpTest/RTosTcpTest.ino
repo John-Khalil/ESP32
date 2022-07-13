@@ -1400,7 +1400,7 @@ unsigned short fetchMemoryLimiter=4069;
 unsigned char *_$StrLastUsedStr=(unsigned char*)malloc(1);
 unsigned char* _$Str(const char* basicStr){
 	free(_$StrLastUsedStr);
-	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr);		//better not to calculate it twice !!
+	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr)+1;		//better not to calculate it twice !!
 	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,basicStrLength);
 	_CS(_$StrLastUsedStr,(unsigned char*)basicStr);
 	return _$StrLastUsedStr;
@@ -1481,6 +1481,7 @@ template<typename T,typename... Types>
 unsigned long variadicStringCounter(T strArg,Types... str2){
 
 	unsigned char* str1=_$Str(strArg);
+	console.log(">> ",str1);
 	globalVariadicStringCounter+=stringCounter(str1);
 
 	return variadicStringCounter(str2...);
@@ -1490,19 +1491,10 @@ unsigned long variadicStringCounter(T strArg,Types... str2){
 
 
 unsigned char *_$CS=(unsigned char*)malloc(1);
-unsigned long _$lastAddedSize=0;
 unsigned char _CSS_FirstTimeRunning=1;
-unsigned char **allArgsList=(unsigned char**)calloc(1,sizeof(unsigned char*));		//NULL should work
-unsigned char allArgsListCounter=0;
 
 
-unsigned char* _CSS(void){		// it turns out to be essential for the template to work as expected
-
-
-	// within(allArgsListCounter,{
-
-	// });
-
+unsigned char* $(void){
 	_CSS_FirstTimeRunning=1;
 	return _$CS;
 }
@@ -1510,55 +1502,17 @@ unsigned char* _CSS(void){		// it turns out to be essential for the template to 
 
 
 template<typename T,typename... Types>
-unsigned char* _CSS(T strArg,Types... str2){
-
-	// if(_CSS_FirstTimeRunning){
-	// 	allArgsListCounter=0;
-	// 	free(allArgsList);
-	// 	allArgsList=(unsigned char*)calloc(((sizeof...(Types))+1),((sizeof...(Types))+1)*sizeof(unsigned char*));
-	// 	_CSS_FirstTimeRunning=0;
-	// }
-
-	// unsigned char* str1=_$Str(strArg);
-	// globalVariadicStringCounter+=stringCounter(str1);
-
-	// allArgsList[allArgsListCounter++]=str1;
-
-
-	//  if(_CSS_FirstTimeRunning){
-	// 	free(_$CS);
-	// 	// _$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
-	// 	_CSS_FirstTimeRunning=0;
-	// }
-
-
-
-	// unsigned char* str1=_$Str(strArg);
-
-	// unsigned long currentStringSize=stringCounter(str1);
-
-	// _$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)+1);
-
-	// CLR_LENGTH=currentStringSize+1;
-	// CLR(_$CS+_$lastAddedSize);
-	// _CS(_$CS,str1);
-	// _$lastAddedSize+=currentStringSize;
-
-
-	// globalVariadicStringCounter=(stringCounter(str2)+...);
+unsigned char* $(T strArg,Types... str2){
 	if(_CSS_FirstTimeRunning){
-		variadicStringCounter(str2...);
+		globalVariadicStringCounter=variadicStringCounter(str2...)+stringCounter(_$Str(strArg))+1;
+		console.log(">>> ",globalVariadicStringCounter);
 		free(_$CS);
 		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
 		_CSS_FirstTimeRunning=0;
 	}
-
 	unsigned char* str1=_$Str(strArg);
 	_CS(_$CS,str1);
-
-	
-
-	return _CSS(str2...);
+	return $(str2...);
 }
 
 
@@ -1979,11 +1933,11 @@ void setup(){
        
     // });
 
-	_delay_ms(2000);
+	_delay_ms(900);
 
 	
 
-	console.log("test >> ",_CSS("test ", "to ", "see ", "if it works", "\n\n\n\n",2," - ",-3," hello world ",3.5,"\n"));
+	console.log("test >> ",$(-6.669));
 
 
 	// during(20,(unsigned long index){
