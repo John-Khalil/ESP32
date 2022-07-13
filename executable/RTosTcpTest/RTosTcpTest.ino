@@ -1492,9 +1492,17 @@ unsigned long variadicStringCounter(T strArg,Types... str2){
 unsigned char *_$CS=(unsigned char*)malloc(1);
 unsigned long _$lastAddedSize=0;
 unsigned char _CSS_FirstTimeRunning=1;
+unsigned char **allArgsList=(unsigned char**)calloc(1,sizeof(unsigned char*));		//NULL should work
+unsigned char allArgsListCounter=0;
 
 
 unsigned char* _CSS(void){		// it turns out to be essential for the template to work as expected
+
+
+	// within(allArgsListCounter,{
+
+	// });
+
 	_CSS_FirstTimeRunning=1;
 	return _$CS;
 }
@@ -1504,17 +1512,42 @@ unsigned char* _CSS(void){		// it turns out to be essential for the template to 
 template<typename T,typename... Types>
 unsigned char* _CSS(T strArg,Types... str2){
 
+	// if(_CSS_FirstTimeRunning){
+	// 	allArgsListCounter=0;
+	// 	free(allArgsList);
+	// 	allArgsList=(unsigned char*)calloc(((sizeof...(Types))+1),((sizeof...(Types))+1)*sizeof(unsigned char*));
+	// 	_CSS_FirstTimeRunning=0;
+	// }
+
+	// unsigned char* str1=_$Str(strArg);
+	// globalVariadicStringCounter+=stringCounter(str1);
+
+	// allArgsList[allArgsListCounter++]=str1;
+
+
+	//  if(_CSS_FirstTimeRunning){
+	// 	free(_$CS);
+	// 	// _$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
+	// 	_CSS_FirstTimeRunning=0;
+	// }
+
+
+
 	// unsigned char* str1=_$Str(strArg);
 
-	// unsigned long currentStringSize=stringCounter((unsigned char*)str1);
+	// unsigned long currentStringSize=stringCounter(str1);
 
-	// _$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)*sizeof(unsigned char));
-	// CLR_LENGTH=currentStringSize;
-	// CLR((unsigned char*)(_$CS+_$lastAddedSize));
-	// _CS(_$CS,(unsigned char*)str1);
+	// _$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)+1);
+
+	// CLR_LENGTH=currentStringSize+1;
+	// CLR(_$CS+_$lastAddedSize);
+	// _CS(_$CS,str1);
 	// _$lastAddedSize+=currentStringSize;
-	globalVariadicStringCounter=100;
+
+
+	// globalVariadicStringCounter=(stringCounter(str2)+...);
 	if(_CSS_FirstTimeRunning){
+		variadicStringCounter(str2...);
 		free(_$CS);
 		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
 		_CSS_FirstTimeRunning=0;
