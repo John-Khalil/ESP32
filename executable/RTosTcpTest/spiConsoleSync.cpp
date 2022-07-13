@@ -209,7 +209,8 @@ class spiConsole{
             biggerNumber[decimalPointIndex]=0x2E;                                                   //finally adding the decimal point
             if(!biggerNumber[decimalPointIndex+1])
                 biggerNumber[decimalPointIndex+1]=0x30;
-            _spiConsoleLog(biggerNumber);
+            return _spiConsoleLog(biggerNumber);
+             
         }
 
         // void log(unsigned char *consoleText,int32_t consoleNum){

@@ -24,30 +24,32 @@
 
 
 
-// template<typename T>
-void withinTemplate(unsigned long loopIterations, const std::function<void(void)>loopCAllBack) {
-	// unsigned long loopCounter = loopIterations;	//just in case it was passed a const
-	while (loopIterations--) {
+template <typename T,typename FUNC>
+void withinTemplate(T loopIterations,FUNC loopCAllBack) {
+	unsigned long loopCounter = loopIterations;	//just in case it was passed a const
+	while (loopCounter--) {
 		//we can do any other thing whithin this loop to do it sort of in parallel 
 		loopCAllBack();
 	}
 }
 
 
-// template<typename T2>
-void duringTemplate(unsigned long loopIterations, const std::function<void(unsigned long)>loopCAllBack) {
-	// unsigned long loopCounter = loopIterations;	//just in case it was passed a const
-	unsigned long loopCounter=0;
-	while (loopIterations--) {
+template<typename T,typename FUNC>
+void duringTemplate(T loopIterations,FUNC loopCAllBack) {
+	unsigned long loopCounter = loopIterations;	//just in case it was passed a const
+	while (loopCounter--) {
 		//we can do any other thing whithin this loop to do it sort of in parallel 
-		// loopCAllBack((loopIterations - (loopCounter + 1)));
-		loopCAllBack(loopCounter++);
+		loopCAllBack((loopIterations - (loopCounter + 1)));
 	}
 }
 
 
-#define within(_LOOP_ITERATIONS_,_LOOP_BODY_) withinTemplate(_LOOP_ITERATIONS_,[&](void){_LOOP_BODY_})	//every thing is passed by ref 
-#define during(_LOOP_ITERATIONS_,_LOOP_BODY_) duringTemplate(_LOOP_ITERATIONS_,[&]_LOOP_BODY_)			//every thing is passed by ref
+#define within(_LOOP_ITERATIONS_,_LOOP_BODY_) withinTemplate <const unsigned long,const std::function<void(void)>> (_LOOP_ITERATIONS_,[&](void){_LOOP_BODY_})			//every thing is passed by ref 
+#define during(_LOOP_ITERATIONS_,_LOOP_BODY_) duringTemplate <const unsigned long,const std::function<void(unsigned long)>> (_LOOP_ITERATIONS_,[&]_LOOP_BODY_)			//every thing is passed by ref
+
+
+
+
 
 
 volatile uint32_t *_outputRegisterLow=((volatile uint32_t*)0X3FF44004UL);
@@ -1413,6 +1415,89 @@ unsigned char* _$Str(char* basicStr){
 }
 
 
+
+unsigned char* _$Str(unsigned long num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(unsigned short num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(unsigned char num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(long num){
+	return longToString(num);
+}
+
+unsigned char* _$Str(short num){
+	return longToString(num);
+}
+
+unsigned char* _$Str(char num){
+	return longToString(num);
+}
+
+
+unsigned char* _$Str(int num){
+	return longToString(num);
+}
+
+unsigned char *_$Str(double num){
+	#define extraDigits 5
+	const float decimalPlace=1e5f;
+	unsigned char *biggerNumber=longToString(num*decimalPlace);
+	unsigned char biggerNumberCharCount=0;
+	while(biggerNumber[biggerNumberCharCount++]);
+	// biggerNumberCharCount--;                                                             //not sure why this is cancelled
+	unsigned char decimalPointIndex=(--biggerNumberCharCount)-extraDigits;
+	unsigned char endsWithZero=1;
+	while((biggerNumberCharCount--)-decimalPointIndex){
+		biggerNumber[biggerNumberCharCount+1]=biggerNumber[biggerNumberCharCount];
+		if(endsWithZero){
+			endsWithZero=!(biggerNumber[biggerNumberCharCount]-0x30);
+			biggerNumber[biggerNumberCharCount+1]*=(biggerNumber[biggerNumberCharCount+1]!=0x30);
+		}
+	}    
+	biggerNumber[decimalPointIndex]=0x2E;                                                   //finally adding the decimal point
+	if(!biggerNumber[decimalPointIndex+1])
+		biggerNumber[decimalPointIndex+1]=0x30;
+	return biggerNumber;
+}
+
+
+
+
+
+
+void _CS(void){		// it turns out to be essential for the template to work as expected
+
+}
+
+
+unsigned char *_$CS=NULL;
+unsigned long _$lastAddedSize=0;
+
+template<typename T,typename... Types>
+void _CS(T strArg,Types... str2){
+
+	unsigned char* str1=_$Str(strArg);
+
+	unsigned long currentStringSize=stringCounter((unsigned char*)str1);
+
+	_$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)*sizeof(unsigned char));
+	CLR_LENGTH=currentStringSize;
+	CLR((unsigned char*)(_$CS+_$lastAddedSize));
+	_CS(_$CS,(unsigned char*)str1);
+	_$lastAddedSize+=currentStringSize;
+	_CS(str2...);
+}
+
+
+
+
 void sayHello(void * uselessParam){
 	within(20,{
 		console.log("hello!");
@@ -1812,28 +1897,32 @@ void setup(){
 
     // serviceExecutable();
     xTaskCreate(
-        serviceExecutable,    // Function that should be called
-        "serviceExecutable",   // Name of the task (for debugging)
-        30000,            // Stack size (bytes)
-        NULL,            // Parameter to pass
-        1,               // Task priority
-        NULL             // Task handle
+        serviceExecutable,    			// Function that should be called
+        "serviceExecutable",   			// Name of the task (for debugging)
+        30000,            				// Stack size (bytes)
+        NULL,          		  			// Parameter to pass
+        1,               				// Task priority
+        NULL             				// Task handle
     );
 
-    // console.log("\n\n----------------------------------------------------------------------------------------------------\n");
-    within(20,{
+    console.log("\n\n-------------------\n");
+    // within(20,{
         
-        console.log("ESP32 >> ");
-        _delay_ms(1500);
+    //     console.log("ESP32 >> ");
+    //     _delay_ms(1500);
        
-    });
+    // });
+	_CS("test ", "to ", "see ", "if it works", "\n\n\n\n",2," - ",3," hello world ",3.5,"\n");
 
-	during(20,(unsigned long index){
+	console.log("test >> ",_$CS);
+
+
+	// during(20,(unsigned long index){
         
-        console.log("ESP32 >> ",index);
-        _delay_ms(1500);
+    //     console.log("ESP32 >> ",index);
+    //     _delay_ms(100);
        
-    });
+    // });
 
 }
 
