@@ -1481,7 +1481,6 @@ template<typename T,typename... Types>
 unsigned long variadicStringCounter(T strArg,Types... str2){
 
 	unsigned char* str1=_$Str(strArg);
-	console.log(">> ",str1);
 	globalVariadicStringCounter+=stringCounter(str1);
 
 	return variadicStringCounter(str2...);
@@ -1505,7 +1504,6 @@ template<typename T,typename... Types>
 unsigned char* $(T strArg,Types... str2){
 	if(_CSS_FirstTimeRunning){
 		globalVariadicStringCounter=variadicStringCounter(str2...)+stringCounter(_$Str(strArg))+1;
-		console.log(">>> ",globalVariadicStringCounter);
 		free(_$CS);
 		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
 		_CSS_FirstTimeRunning=0;
@@ -1935,9 +1933,11 @@ void setup(){
 
 	_delay_ms(900);
 
-	
+	during(10,(unsigned long index){
+		console.log($("index","\t-\t",index));
+		_delay_ms(500);
+	});
 
-	console.log("test >> ",$(-6.669));
 
 
 	// during(20,(unsigned long index){
