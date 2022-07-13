@@ -1472,27 +1472,60 @@ unsigned char *_$Str(double num){
 
 
 
-void _CS(void){		// it turns out to be essential for the template to work as expected
 
+unsigned long globalVariadicStringCounter=0;
+unsigned long variadicStringCounter(void){
+	return globalVariadicStringCounter;
+}
+template<typename T,typename... Types>
+unsigned long variadicStringCounter(T strArg,Types... str2){
+
+	unsigned char* str1=_$Str(strArg);
+	globalVariadicStringCounter+=stringCounter(str1);
+
+	return variadicStringCounter(str2...);
 }
 
 
-unsigned char *_$CS=NULL;
+
+
+unsigned char *_$CS=(unsigned char*)malloc(1);
 unsigned long _$lastAddedSize=0;
+unsigned char _CSS_FirstTimeRunning=1;
+
+
+unsigned char* _CSS(void){		// it turns out to be essential for the template to work as expected
+	_CSS_FirstTimeRunning=1;
+	return _$CS;
+}
+
+
 
 template<typename T,typename... Types>
-void _CS(T strArg,Types... str2){
+unsigned char* _CSS(T strArg,Types... str2){
+
+	// unsigned char* str1=_$Str(strArg);
+
+	// unsigned long currentStringSize=stringCounter((unsigned char*)str1);
+
+	// _$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)*sizeof(unsigned char));
+	// CLR_LENGTH=currentStringSize;
+	// CLR((unsigned char*)(_$CS+_$lastAddedSize));
+	// _CS(_$CS,(unsigned char*)str1);
+	// _$lastAddedSize+=currentStringSize;
+	globalVariadicStringCounter=100;
+	if(_CSS_FirstTimeRunning){
+		free(_$CS);
+		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
+		_CSS_FirstTimeRunning=0;
+	}
 
 	unsigned char* str1=_$Str(strArg);
+	_CS(_$CS,str1);
 
-	unsigned long currentStringSize=stringCounter((unsigned char*)str1);
+	
 
-	_$CS=(unsigned char*)realloc(_$CS,(_$lastAddedSize+currentStringSize)*sizeof(unsigned char));
-	CLR_LENGTH=currentStringSize;
-	CLR((unsigned char*)(_$CS+_$lastAddedSize));
-	_CS(_$CS,(unsigned char*)str1);
-	_$lastAddedSize+=currentStringSize;
-	_CS(str2...);
+	return _CSS(str2...);
 }
 
 
@@ -1905,16 +1938,19 @@ void setup(){
         NULL             				// Task handle
     );
 
-    console.log("\n\n-------------------\n");
+    // console.log("\n\n-------------------\n");
     // within(20,{
         
     //     console.log("ESP32 >> ");
     //     _delay_ms(1500);
        
     // });
-	_CS("test ", "to ", "see ", "if it works", "\n\n\n\n",2," - ",-3," hello world ",3.5,"\n");
 
-	console.log("test >> ",_$CS);
+	_delay_ms(2000);
+
+	
+
+	console.log("test >> ",_CSS("test ", "to ", "see ", "if it works", "\n\n\n\n",2," - ",-3," hello world ",3.5,"\n"));
 
 
 	// during(20,(unsigned long index){
