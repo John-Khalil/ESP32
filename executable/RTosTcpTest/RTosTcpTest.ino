@@ -1302,84 +1302,86 @@ struct httpLink urlBreakDown(unsigned char *httpRequest){
 
 unsigned short fetchMemoryLimiter=4069;
 
-// unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsigned char *responseBuffer){
-// 	unsigned char* returnedBuffer=responseBuffer;
-// 	struct httpLink urlParameters=urlBreakDown(httpRequest);
-// 	unsigned char *requestBodyLocation=_CS(responseBuffer,(unsigned char*)((requestBody==UNDEFINED)?("GET "):("POST ")));
-// 	if(urlParameters.requestPath!=UNDEFINED)
-// 		urlEncode(_CS(requestBodyLocation,urlParameters.requestPath)+4+(requestBody!=UNDEFINED));
-// 	_CS(responseBuffer,(unsigned char*)((urlParameters.requestPath==UNDEFINED)?("/"):("")));
-// 	_CS(responseBuffer,(unsigned char*)" HTTP/1.1\r\n");
-// 	_CS(responseBuffer,(unsigned char*)"Host: ");
-// 	_CS(responseBuffer,urlParameters.domain);
-// 	if(urlParameters.port!=80+((443-80)*(httpRequest[4]==0x73))){
-// 		_CS(responseBuffer,(unsigned char*)":");
-// 		_CS(responseBuffer,inttostring((unsigned long)(urlParameters.port)));
-// 	}
-// 	_CS(responseBuffer,(unsigned char*)"\r\n");
-// 	_CS(responseBuffer,(unsigned char*)"User-Agent: PostmanRuntime/7.29.0\r\n");
-// 	_CS(responseBuffer,(unsigned char*)"Accept: */*\r\n");
-// 	_CS(responseBuffer,(unsigned char*)"Connection: keep-alive\r\n");
-// 	if(requestBody!=UNDEFINED){
-// 		_CS(responseBuffer,(unsigned char*)"Content-Type: application/json\r\n");
-// 		_CS(responseBuffer,(unsigned char*)"Content-Length: ");
-// 		_CS(responseBuffer,(unsigned char*)inttostring(stringCounter(requestBody)));
-// 		_CS(responseBuffer,(unsigned char*)"\r\n\r\n");
-// 		_CS(responseBuffer,requestBody);
-// 		_CS(responseBuffer,(unsigned char*)"\r\n");
-// 	}
-// 	_CS(responseBuffer,(unsigned char*)"\r\n");
+unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsigned char *responseBuffer){
+	unsigned char* returnedBuffer=responseBuffer;
+	struct httpLink urlParameters=urlBreakDown(httpRequest);
+	unsigned char *requestBodyLocation=_CS(responseBuffer,(unsigned char*)((requestBody==UNDEFINED)?("GET "):("POST ")));
+	if(urlParameters.requestPath!=UNDEFINED)
+		urlEncode(_CS(requestBodyLocation,urlParameters.requestPath)+4+(requestBody!=UNDEFINED));
+	_CS(responseBuffer,(unsigned char*)((urlParameters.requestPath==UNDEFINED)?("/"):("")));
+	_CS(responseBuffer,(unsigned char*)" HTTP/1.1\r\n");
+	_CS(responseBuffer,(unsigned char*)"Host: ");
+	_CS(responseBuffer,urlParameters.domain);
+	if(urlParameters.port!=80+((443-80)*(httpRequest[4]==0x73))){
+		_CS(responseBuffer,(unsigned char*)":");
+		_CS(responseBuffer,inttostring((unsigned long)(urlParameters.port)));
+	}
+	_CS(responseBuffer,(unsigned char*)"\r\n");
+	_CS(responseBuffer,(unsigned char*)"User-Agent: PostmanRuntime/7.29.0\r\n");
+	_CS(responseBuffer,(unsigned char*)"Accept: */*\r\n");
+	_CS(responseBuffer,(unsigned char*)"Connection: keep-alive\r\n");
+	if(requestBody!=UNDEFINED){
+		_CS(responseBuffer,(unsigned char*)"Content-Type: application/json\r\n");
+		_CS(responseBuffer,(unsigned char*)"Content-Length: ");
+		_CS(responseBuffer,(unsigned char*)inttostring(stringCounter(requestBody)));
+		_CS(responseBuffer,(unsigned char*)"\r\n\r\n");
+		_CS(responseBuffer,requestBody);
+		_CS(responseBuffer,(unsigned char*)"\r\n");
+	}
+	_CS(responseBuffer,(unsigned char*)"\r\n");
 
-// 	if(urlParameters.secure){
-// 		WiFiClientSecure client;
-// 		client.setInsecure();
-// 		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
-// 			console.log("couldn't connect !!");
-// 			return UNDEFINED;
-// 		}
-// 		client.write((char*)responseBuffer);
-// 		CLR(responseBuffer);
-// 		while(!client.available());
-// 		unsigned char *makeStr=responseBuffer;
-// 		unsigned long memoryLimter=0;
-// 		while(client.available()){
-// 			if(memoryLimter<fetchMemoryLimiter){
-// 				*makeStr=client.read();
-// 				makeStr++;
-// 			}
-// 			else{
-// 				client.read();
-// 			}
-// 			memoryLimter++;
-// 		}
-// 		makeStr=responseBuffer;
-// 	}
-// 	else{
-// 		WiFiClient client;
-// 		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
-// 			console.log("couldn't connect !!");
-// 			return UNDEFINED;
-// 		}
-// 		client.write((char*)responseBuffer);
-// 		CLR(responseBuffer);
-// 		while(!client.available());
-// 		unsigned char *makeStr=responseBuffer;
-// 		unsigned long memoryLimter=0;
-// 		while(client.available()){
-// 			if(memoryLimter<fetchMemoryLimiter){
-// 				*makeStr=client.read();
-// 				makeStr++;
-// 			}
-// 			else{
-// 				client.read();
-// 			}
-// 			memoryLimter++;
-// 		}
-// 		makeStr=responseBuffer;
-// 	}
+	console.log(" >> ",responseBuffer,"\n---------------\n");
 
-// 	return returnedBuffer;
-// }
+	if(urlParameters.secure){
+		WiFiClientSecure client;
+		client.setInsecure();
+		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
+			console.log("couldn't connect !!");
+			return UNDEFINED;
+		}
+		client.println((char*)responseBuffer);
+		CLR(responseBuffer);
+		while(!client.available());
+		unsigned char *makeStr=responseBuffer;
+		unsigned long memoryLimter=0;
+		while(client.available()){
+			if(memoryLimter<fetchMemoryLimiter){
+				*makeStr=client.read();
+				makeStr++;
+			}
+			else{
+				client.read();
+			}
+			memoryLimter++;
+		}
+		makeStr=responseBuffer;
+	}
+	else{
+		WiFiClient client;
+		if(!client.connect((char*)urlParameters.domain,urlParameters.port)){
+			console.log("couldn't connect !!");
+			return UNDEFINED;
+		}
+		client.write((char*)responseBuffer);
+		CLR(responseBuffer);
+		while(!client.available());
+		unsigned char *makeStr=responseBuffer;
+		unsigned long memoryLimter=0;
+		while(client.available()){
+			if(memoryLimter<fetchMemoryLimiter){
+				*makeStr=client.read();
+				makeStr++;
+			}
+			else{
+				client.read();
+			}
+			memoryLimter++;
+		}
+		makeStr=responseBuffer;
+	}
+
+	return returnedBuffer;
+}
 
 
 
@@ -1938,6 +1940,9 @@ void setup(){
 		_delay_ms(500);
 	});
 
+	CLR(EXPORTED_DATA);
+	console.log(fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
+	CLR(EXPORTED_DATA);
 
 
 	// during(20,(unsigned long index){
