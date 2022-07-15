@@ -1510,6 +1510,12 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 		while(!client.available());
 		unsigned char *makeStr=responseBuffer;
 		unsigned long memoryLimter=0;
+		if(!responeseHeaders){
+			unsigned char headersPreset[5]="\r\n\r\n";
+			unsigned char passedHeadersPreset=0;
+			while(passedHeadersPreset!=4)
+				passedHeadersPreset*=(client.read()==headersPreset[passedHeadersPreset++]);
+		}
 		while(client.available()){
 			if(memoryLimter<fetchMemoryLimiter){
 				*makeStr=client.read();
@@ -1533,6 +1539,12 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 		while(!client.available());
 		unsigned char *makeStr=responseBuffer;
 		unsigned long memoryLimter=0;
+		if(!responeseHeaders){
+			unsigned char headersPreset[5]="\r\n\r\n";
+			unsigned char passedHeadersPreset=0;
+			while(passedHeadersPreset!=4)
+				passedHeadersPreset*=(client.read()==headersPreset[passedHeadersPreset++]);
+		}
 		while(client.available()){
 			if(memoryLimter<fetchMemoryLimiter){
 				*makeStr=client.read();
@@ -1545,6 +1557,8 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 		}
 		makeStr=responseBuffer;
 	}
+	if(equalStrings((unsigned char*)"\r\n\r\n",returnedBuffer+(stringCounter(returnedBuffer)-4)))
+		CLR(returnedBuffer+(stringCounter(returnedBuffer)-4));
 
 	return returnedBuffer;
 }
@@ -1991,7 +2005,7 @@ void setup(){
 	// });
 
 	CLR(EXPORTED_DATA);
-	console.log(fetch((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"),UNDEFINED,EXPORTED_DATA));
+	console.log("\n >> ",(fetch((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"),UNDEFINED,EXPORTED_DATA)));
 	// console.log(" >> ",urlEncodeUpgraded((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 	CLR(EXPORTED_DATA);
 
