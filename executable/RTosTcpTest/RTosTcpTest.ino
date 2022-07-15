@@ -43,6 +43,7 @@ void duringTemplate(T loopIterations,FUNC loopCAllBack) {
 	}
 }
 
+typedef unsigned long argLoop;
 
 #define within(_LOOP_ITERATIONS_,_LOOP_BODY_) withinTemplate <const unsigned long,const std::function<void(void)>> (_LOOP_ITERATIONS_,[&](void){_LOOP_BODY_})			//every thing is passed by ref 
 #define during(_LOOP_ITERATIONS_,_LOOP_BODY_) duringTemplate <const unsigned long,const std::function<void(unsigned long)>> (_LOOP_ITERATIONS_,[&]_LOOP_BODY_)			//every thing is passed by ref
@@ -161,6 +162,151 @@ unsigned char *sha1Hash(unsigned char *rawData){
 }
 
 #define endTask() vTaskDelete(NULL)
+
+
+
+
+
+
+
+
+
+
+
+
+
+unsigned char *_$StrLastUsedStr=(unsigned char*)malloc(1);
+unsigned char* _$Str(const char* basicStr){
+	free(_$StrLastUsedStr);
+	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr)+1;		//better not to calculate it twice !!
+	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,basicStrLength);
+	_CS(_$StrLastUsedStr,(unsigned char*)basicStr);
+	return _$StrLastUsedStr;
+}
+
+unsigned char* _$Str(unsigned char* basicStr){
+	return basicStr;
+}
+
+unsigned char* _$Str(char* basicStr){
+	return (unsigned char*)basicStr;
+}
+
+
+
+unsigned char* _$Str(unsigned long num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(unsigned short num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(unsigned char num){
+	return inttostring(num);
+}
+
+unsigned char* _$Str(long num){
+	return longToString(num);
+}
+
+unsigned char* _$Str(short num){
+	return longToString(num);
+}
+
+unsigned char* _$Str(char num){
+	return longToString(num);
+}
+
+
+unsigned char* _$Str(int num){
+	return longToString(num);
+}
+
+unsigned char *_$Str(double num){
+	#define extraDigits 5
+	const float decimalPlace=1e5f;
+	unsigned char *biggerNumber=longToString(num*decimalPlace);
+	unsigned char biggerNumberCharCount=0;
+	while(biggerNumber[biggerNumberCharCount++]);
+	// biggerNumberCharCount--;                                                             //not sure why this is cancelled
+	unsigned char decimalPointIndex=(--biggerNumberCharCount)-extraDigits;
+	unsigned char endsWithZero=1;
+	while((biggerNumberCharCount--)-decimalPointIndex){
+		biggerNumber[biggerNumberCharCount+1]=biggerNumber[biggerNumberCharCount];
+		if(endsWithZero){
+			endsWithZero=!(biggerNumber[biggerNumberCharCount]-0x30);
+			biggerNumber[biggerNumberCharCount+1]*=(biggerNumber[biggerNumberCharCount+1]!=0x30);
+		}
+	}    
+	biggerNumber[decimalPointIndex]=0x2E;                                                   //finally adding the decimal point
+	if(!biggerNumber[decimalPointIndex+1])
+		biggerNumber[decimalPointIndex+1]=0x30;
+	return biggerNumber;
+}
+
+
+
+
+
+
+
+unsigned long globalVariadicStringCounter=0;
+unsigned long variadicStringCounter(void){
+	return globalVariadicStringCounter;
+}
+template<typename T,typename... Types>
+unsigned long variadicStringCounter(T strArg,Types... str2){
+
+	unsigned char* str1=_$Str(strArg);
+	globalVariadicStringCounter+=stringCounter(str1);
+
+	return variadicStringCounter(str2...);
+}
+
+
+
+
+unsigned char *_$CS=(unsigned char*)malloc(1);
+unsigned char _CSS_FirstTimeRunning=1;
+
+
+unsigned char* $(void){
+	_CSS_FirstTimeRunning=1;
+	return _$CS;
+}
+
+
+
+template<typename T,typename... Types>
+unsigned char* $(T strArg,Types... str2){
+	if(_CSS_FirstTimeRunning){
+		globalVariadicStringCounter=variadicStringCounter(str2...)+stringCounter(_$Str(strArg))+1;
+		free(_$CS);
+		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
+		_CSS_FirstTimeRunning=0;
+	}
+	unsigned char* str1=_$Str(strArg);
+	_CS(_$CS,str1);
+	return $(str2...);
+}
+
+
+
+
+
+unsigned char included(unsigned char singleChar,unsigned char *targetStr){
+	unsigned short targetStrCounter=0;
+	while((singleChar!=targetStr[targetStrCounter])&&targetStr[targetStrCounter++]);
+	return (singleChar==targetStr[targetStrCounter-1]);
+}
+
+
+
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
@@ -1245,6 +1391,24 @@ unsigned char *urlEncode(unsigned char *originalUrl){
 	return originalUrl;
 }
 
+unsigned char *urlEncodeReturnStr=(unsigned char*)malloc(1);
+unsigned char *urlEncodeUpgraded(unsigned char *originalUrl) {
+	unsigned char urlSpecialChars[23]="-._~:/?#[]@!$&'()*+,;=";
+	unsigned char specialCharsCount=0;
+	during(stringCounter(originalUrl),(argLoop index){
+		specialCharsCount+=included(originalUrl[index],urlSpecialChars);
+	});
+	free(urlEncodeReturnStr);
+	specialCharsCount=stringCounter(originalUrl)+(specialCharsCount*2)+1;
+	urlEncodeReturnStr=(unsigned char*)calloc(specialCharsCount,specialCharsCount*sizeof(unsigned char));
+	_CS(urlEncodeReturnStr,$(specialCharsCount));
+	// during(stringCounter(originalUrl),(argLoop index){
+	// 	unsigned char charToStr[2]={originalUrl[index]};
+	// 	_CS(urlEncodeReturnStr,included(charToStr[0],urlSpecialChars)?(charToStr):$("%",intToHexaDecimal(charToStr[0])+2));
+	// });
+	return urlEncodeReturnStr;
+}
+
 struct httpLink{
 	unsigned char *domain=(unsigned char*)calloc(40,sizeof(unsigned char));
 	unsigned short port;
@@ -1398,122 +1562,6 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 //////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
-
-unsigned char *_$StrLastUsedStr=(unsigned char*)malloc(1);
-unsigned char* _$Str(const char* basicStr){
-	free(_$StrLastUsedStr);
-	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr)+1;		//better not to calculate it twice !!
-	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,basicStrLength);
-	_CS(_$StrLastUsedStr,(unsigned char*)basicStr);
-	return _$StrLastUsedStr;
-}
-
-unsigned char* _$Str(unsigned char* basicStr){
-	return basicStr;
-}
-
-unsigned char* _$Str(char* basicStr){
-	return (unsigned char*)basicStr;
-}
-
-
-
-unsigned char* _$Str(unsigned long num){
-	return inttostring(num);
-}
-
-unsigned char* _$Str(unsigned short num){
-	return inttostring(num);
-}
-
-unsigned char* _$Str(unsigned char num){
-	return inttostring(num);
-}
-
-unsigned char* _$Str(long num){
-	return longToString(num);
-}
-
-unsigned char* _$Str(short num){
-	return longToString(num);
-}
-
-unsigned char* _$Str(char num){
-	return longToString(num);
-}
-
-
-unsigned char* _$Str(int num){
-	return longToString(num);
-}
-
-unsigned char *_$Str(double num){
-	#define extraDigits 5
-	const float decimalPlace=1e5f;
-	unsigned char *biggerNumber=longToString(num*decimalPlace);
-	unsigned char biggerNumberCharCount=0;
-	while(biggerNumber[biggerNumberCharCount++]);
-	// biggerNumberCharCount--;                                                             //not sure why this is cancelled
-	unsigned char decimalPointIndex=(--biggerNumberCharCount)-extraDigits;
-	unsigned char endsWithZero=1;
-	while((biggerNumberCharCount--)-decimalPointIndex){
-		biggerNumber[biggerNumberCharCount+1]=biggerNumber[biggerNumberCharCount];
-		if(endsWithZero){
-			endsWithZero=!(biggerNumber[biggerNumberCharCount]-0x30);
-			biggerNumber[biggerNumberCharCount+1]*=(biggerNumber[biggerNumberCharCount+1]!=0x30);
-		}
-	}    
-	biggerNumber[decimalPointIndex]=0x2E;                                                   //finally adding the decimal point
-	if(!biggerNumber[decimalPointIndex+1])
-		biggerNumber[decimalPointIndex+1]=0x30;
-	return biggerNumber;
-}
-
-
-
-
-
-
-
-unsigned long globalVariadicStringCounter=0;
-unsigned long variadicStringCounter(void){
-	return globalVariadicStringCounter;
-}
-template<typename T,typename... Types>
-unsigned long variadicStringCounter(T strArg,Types... str2){
-
-	unsigned char* str1=_$Str(strArg);
-	globalVariadicStringCounter+=stringCounter(str1);
-
-	return variadicStringCounter(str2...);
-}
-
-
-
-
-unsigned char *_$CS=(unsigned char*)malloc(1);
-unsigned char _CSS_FirstTimeRunning=1;
-
-
-unsigned char* $(void){
-	_CSS_FirstTimeRunning=1;
-	return _$CS;
-}
-
-
-
-template<typename T,typename... Types>
-unsigned char* $(T strArg,Types... str2){
-	if(_CSS_FirstTimeRunning){
-		globalVariadicStringCounter=variadicStringCounter(str2...)+stringCounter(_$Str(strArg))+1;
-		free(_$CS);
-		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
-		_CSS_FirstTimeRunning=0;
-	}
-	unsigned char* str1=_$Str(strArg);
-	_CS(_$CS,str1);
-	return $(str2...);
-}
 
 
 
@@ -1935,13 +1983,14 @@ void setup(){
 
 	_delay_ms(900);
 
-	during(10,(unsigned long index){
-		console.log($("index","\t-\t",index));
-		_delay_ms(500);
-	});
+	// during(10,(unsigned long index){
+	// 	console.log($("index","\t-\t",index));
+	// 	_delay_ms(500);
+	// });
 
 	CLR(EXPORTED_DATA);
-	console.log(fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
+	// console.log(fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
+	console.log(" >> ",urlEncodeUpgraded((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 	CLR(EXPORTED_DATA);
 
 
