@@ -297,7 +297,7 @@ unsigned char* $(T strArg,Types... str2){
 
 unsigned char included(unsigned char singleChar,unsigned char *targetStr){
 	unsigned short targetStrCounter=0;
-	while((singleChar!=targetStr[targetStrCounter])&&targetStr[targetStrCounter++]);
+	while((singleChar!=targetStr[targetStrCounter++])&&targetStr[targetStrCounter-1]);	//that way its more consistant
 	return (singleChar==targetStr[targetStrCounter-1]);
 }
 
@@ -1368,7 +1368,7 @@ unsigned char responeseHeaders=0;
 #define fecthHeadersEnable() responeseHeaders=1
 #define fetchHeadersDisable() responeseHeaders=0
 
-unsigned char *urlEncode(unsigned char *originalUrl){
+unsigned char *urlEncodeNotUsed(unsigned char *originalUrl){
 	const unsigned char urlSpecialChars[23]="-._~:/?#[]@!$&'()*+,;=";
 	unsigned char *originalUrlStartLocation=originalUrl;
 	while(*originalUrlStartLocation){
@@ -1392,7 +1392,7 @@ unsigned char *urlEncode(unsigned char *originalUrl){
 }
 
 unsigned char *urlEncodeReturnStr=(unsigned char*)malloc(1);
-unsigned char *urlEncodeUpgraded(unsigned char *originalUrl) {
+unsigned char *urlEncode(unsigned char *originalUrl) {
 	unsigned char urlSpecialChars[23]="-._~:/?#[]@!$&'()*+,;=";
 	unsigned char specialCharsCount=0;
 	during(stringCounter(originalUrl),(argLoop index){
@@ -1401,11 +1401,13 @@ unsigned char *urlEncodeUpgraded(unsigned char *originalUrl) {
 	free(urlEncodeReturnStr);
 	specialCharsCount=stringCounter(originalUrl)+(specialCharsCount*2)+1;
 	urlEncodeReturnStr=(unsigned char*)calloc(specialCharsCount,specialCharsCount*sizeof(unsigned char));
-	_CS(urlEncodeReturnStr,$(specialCharsCount));
-	// during(stringCounter(originalUrl),(argLoop index){
-	// 	unsigned char charToStr[2]={originalUrl[index]};
-	// 	_CS(urlEncodeReturnStr,included(charToStr[0],urlSpecialChars)?(charToStr):$("%",intToHexaDecimal(charToStr[0])+2));
-	// });
+	// _CS(urlEncodeReturnStr,$(specialCharsCount));
+	unsigned char charToStr[2]="";
+	during(stringCounter(originalUrl),(argLoop index){
+		charToStr[0]=originalUrl[index];
+		_CS(urlEncodeReturnStr,included(originalUrl[index],urlSpecialChars)?($("%",(intToHexaDecimal(originalUrl[index])+2))):(charToStr));
+		// console.log(" >>> ",$("%",(intToHexaDecimal(originalUrl[index])+2)));
+	});
 	return urlEncodeReturnStr;
 }
 
@@ -1494,7 +1496,7 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 	}
 	_CS(responseBuffer,(unsigned char*)"\r\n");
 
-	console.log(" >> ",responseBuffer,"\n---------------\n");
+	// console.log(" >> ",responseBuffer,"\n---------------\n");
 
 	if(urlParameters.secure){
 		WiFiClientSecure client;
@@ -1981,7 +1983,7 @@ void setup(){
        
     // });
 
-	_delay_ms(900);
+	_delay_ms(9000);
 
 	// during(10,(unsigned long index){
 	// 	console.log($("index","\t-\t",index));
@@ -1989,8 +1991,8 @@ void setup(){
 	// });
 
 	CLR(EXPORTED_DATA);
-	// console.log(fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
-	console.log(" >> ",urlEncodeUpgraded((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+	console.log(fetch((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"),UNDEFINED,EXPORTED_DATA));
+	// console.log(" >> ",urlEncodeUpgraded((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 	CLR(EXPORTED_DATA);
 
 
