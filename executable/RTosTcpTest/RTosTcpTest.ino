@@ -1563,6 +1563,20 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 	return returnedBuffer;
 }
 
+unsigned char *fetchDynamicBuffer=(unsigned char*)malloc(1);
+template <typename httpRequest_t,typename requestBody_t>
+unsigned char *fetch(httpRequest_t httpRequest,requestBody_t requestBody){
+	free(fetchDynamicBuffer);
+	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,(fetchMemoryLimiter+1)*sizeof(unsigned char));
+	return fetch((unsigned char*)httpRequest,(unsigned char*)requestBody,fetchDynamicBuffer);
+}
+
+template <typename httpRequest_t>
+unsigned char *fetch(httpRequest_t httpRequest){
+	free(fetchDynamicBuffer);
+	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,(fetchMemoryLimiter+1)*sizeof(unsigned char));
+	return fetch((unsigned char*)httpRequest,UNDEFINED,fetchDynamicBuffer);
+}
 
 
 
@@ -2005,7 +2019,7 @@ void setup(){
 	// });
 
 	CLR(EXPORTED_DATA);
-	console.log("\n >> ",(fetch((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"),UNDEFINED,EXPORTED_DATA)));
+	console.log("\n >> ",fetch((unsigned char*)"https://api.plos.org/search?q=title:DNA",UNDEFINED,EXPORTED_DATA));
 	// console.log(" >> ",urlEncodeUpgraded((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 	CLR(EXPORTED_DATA);
 

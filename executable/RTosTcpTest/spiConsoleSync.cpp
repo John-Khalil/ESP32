@@ -29,7 +29,14 @@ class spiConsole{
         return returnedString;
     }
     
-
+    
+    unsigned short checkSum(unsigned char *packetInBytes){
+        unsigned long packetCounter=0;
+        unsigned short finalCheckSum=0;
+        while(packetInBytes[packetCounter])
+            finalCheckSum+=(packetInBytes[packetCounter++]=packetInBytes[packetCounter++]);
+        return finalCheckSum;
+    }
 
     unsigned char inttostr(unsigned long num, unsigned char *str) {
         static unsigned char ucoun;
@@ -106,6 +113,9 @@ class spiConsole{
                 _Delay_us(_clkSpeed*0.6);
             }
             consoleData++;
+            // static unsigned char spiConsoleByteCounter;
+            // if(!(--spiConsoleByteCounter))
+            //     _Delay_us(10);
         }
         if(autoNLCR){
             unsigned char *nlcrStr=(unsigned char*)"\r\n";
@@ -114,6 +124,9 @@ class spiConsole{
                 goto nlcrStartOver;
             }
         }
+        // unsigned short finalPacketChe 
+        // unsigned char checkSumAdd[3]={}
+
         _dataPin(1);
         return loggedData;
     }
