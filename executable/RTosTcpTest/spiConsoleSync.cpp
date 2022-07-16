@@ -98,9 +98,10 @@ class spiConsole{
 
     unsigned char *_spiConsoleLog(unsigned char *consoleData){
         unsigned char *loggedData=consoleData;
+        unsigned short finalPacketCheckSum=0;
         while(!_syncPin());
         _dataPin(0);
-        _Delay_us(60);										//to sync with the receiver
+        _Delay_us(80);										//to sync with the receiver
         nlcrStartOver:
         while(*consoleData){
             unsigned char spiBitCounter=8;
@@ -124,15 +125,22 @@ class spiConsole{
                 goto nlcrStartOver;
             }
         }
-        // unsigned short finalPacketChe 
-        // unsigned char checkSumAdd[3]={}
-
+        // if(!finalPacketCheckSum){
+        //     finalPacketCheckSum=checkSum(loggedData);
+        //     unsigned char checkSumAdd[3]={(finalPacketCheckSum>>8),(finalPacketCheckSum&0xff)};
+        //     consoleData=checkSumAdd;
+        //     goto nlcrStartOver;
+        // }
         _dataPin(1);
+
+
         return loggedData;
     }
 
+    // unsigned char *_spiConsoleLog(unsigned char *consoleData){
 
 
+    // }
 
 
 

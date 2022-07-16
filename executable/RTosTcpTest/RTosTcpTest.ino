@@ -148,7 +148,7 @@ void consoleSetup(void){
         [&](unsigned long timeInMicroSec){
             _delay_us(timeInMicroSec);
         },
-        200000
+        500000
     );
 }
 
