@@ -148,6 +148,25 @@ void consoleSetup(void){
         [&](unsigned long timeInMicroSec){
             _delay_us(timeInMicroSec);
         },
+
+		[&](unsigned char pinState){
+            if(pinState)
+				_PM(consoleClkPin,OUTPUT);
+			else
+				_PM(consoleClkPin,INPUT_PULLUP);
+        },
+		[&](unsigned char pinState){
+            if(pinState)
+				_PM(consoleDataPin,OUTPUT);
+			else
+				_PM(consoleDataPin,INPUT_PULLUP);
+        },
+		[&](void){
+            return ((inputRegisterLow>>consoleClkPin)&0x01);
+        },
+		[&](void){
+            return ((inputRegisterLow>>consoleDataPin)&0x01);
+        },
         500000
     );
 }

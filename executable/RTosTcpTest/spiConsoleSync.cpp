@@ -13,6 +13,11 @@ class spiConsole{
     std::function<unsigned char(void)>_syncPin;
     std::function<void(unsigned long)>_Delay_us;
 
+    std::function<void(unsigned char)>_clkPinChangeDirection;
+    std::function<void(unsigned char)>_dataPinChangeDirection;
+    std::function<unsigned char(void)>_clkPinRead;
+    std::function<unsigned char(void)>_dataPinRead;
+
 
     float _clkSpeed=0;
 
@@ -101,6 +106,10 @@ class spiConsole{
         unsigned short finalPacketCheckSum=0;
         while(!_syncPin());
         _dataPin(0);
+
+
+
+
         _Delay_us(80);										//to sync with the receiver
         nlcrStartOver:
         while(*consoleData){
@@ -125,12 +134,12 @@ class spiConsole{
                 goto nlcrStartOver;
             }
         }
-        // if(!finalPacketCheckSum){
-        //     finalPacketCheckSum=checkSum(loggedData);
-        //     unsigned char checkSumAdd[3]={(finalPacketCheckSum>>8),(finalPacketCheckSum&0xff)};
-        //     consoleData=checkSumAdd;
-        //     goto nlcrStartOver;
-        // }
+        if(!finalPacketCheckSum){
+            finalPacketCheckSum=checkSum(loggedData);
+            unsigned char checkSumAdd[3]={(finalPacketCheckSum>>8),(finalPacketCheckSum&0xff)};
+            consoleData=checkSumAdd;
+            goto nlcrStartOver;
+        }
         _dataPin(1);
 
 
@@ -155,11 +164,32 @@ class spiConsole{
         //     _syncPin=syncPin;
         //     _clkSpeed=(1e6f/clkSpeed)/2;
         // }
-        void setup(const std::function<void(unsigned char)>&clkPin,const std::function<void(unsigned char)>&dataPin,const std::function<unsigned char(void)>&syncPin,const std::function<void(unsigned long)>&delayMicroSec,unsigned long clkSpeed){
+        void setup(
+            const std::function<void(unsigned char)>&clkPin,
+            const std::function<void(unsigned char)>&dataPin,
+            const std::function<unsigned char(void)>&syncPin,
+            const std::function<void(unsigned long)>&delayMicroSec,
+            const std::function<void(unsigned char)>&clkPinChangeDirection,
+            const std::function<void(unsigned char)>&dataPinChangeDirection,
+            const std::function<unsigned char(void)>&clkPinRead,
+            const std::function<unsigned char(void)>&dataPinRead,
+            unsigned long clkSpeed){
+
+
+
+
             _clkPin=clkPin;
             _dataPin=dataPin;
             _Delay_us=delayMicroSec;
             _syncPin=syncPin;
+
+            _clkPinChangeDirection=clkPinChangeDirection;
+            _dataPinChangeDirection=dataPinChangeDirection;
+            _clkPinRead=clkPinRead;
+            _dataPinRead=dataPinRead;
+
+
+
             _clkSpeed=(1e6f/clkSpeed)/2;
         }
         void disableNL(void){
