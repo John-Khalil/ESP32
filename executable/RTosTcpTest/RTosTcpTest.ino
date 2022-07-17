@@ -167,7 +167,7 @@ void consoleSetup(void){
 		[&](void){
             return ((inputRegisterLow>>consoleDataPin)&0x01);
         },
-        500000
+        200000
     );
 }
 
@@ -2032,13 +2032,13 @@ void setup(){
 
 	_delay_ms(9000);
 
-	// during(10,(unsigned long index){
-	// 	console.log($("index","\t-\t",index));
-	// 	_delay_ms(500);
-	// });
+	during(10,(unsigned long index){
+		console.log($("index","\t-\t",index));
+		_delay_ms(500);
+	});
 
 	CLR(EXPORTED_DATA);
-	console.log("\n >> ",fetch((unsigned char*)"https://api.plos.org/search?q=title:DNA",UNDEFINED,EXPORTED_DATA));
+	console.log("\n >> ",fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
 	// console.log(" >> ",urlEncodeUpgraded((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 	CLR(EXPORTED_DATA);
 

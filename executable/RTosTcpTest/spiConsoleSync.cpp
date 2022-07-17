@@ -39,7 +39,7 @@ class spiConsole{
         unsigned long packetCounter=0;
         unsigned short finalCheckSum=0;
         while(packetInBytes[packetCounter])
-            finalCheckSum+=(packetInBytes[packetCounter++]=packetInBytes[packetCounter++]);
+            finalCheckSum+=(packetInBytes[packetCounter++]+packetInBytes[packetCounter++]);
         return finalCheckSum;
     }
 
@@ -104,13 +104,16 @@ class spiConsole{
     unsigned char *_spiConsoleLog(unsigned char *consoleData){
         unsigned char *loggedData=consoleData;
         unsigned short finalPacketCheckSum=0;
+        unsigned char pinOnChangeEvent=0;
+        unsigned char lastPinState;
         while(!_syncPin());
         _dataPin(0);
-
-
-
-
-        _Delay_us(80);										//to sync with the receiver
+        // _clkPinChangeDirection(0);
+        // // catching onchange event on the pin
+        // lastPinState=_clkPinRead();     // this should always be either 1 or 0
+        // while((pinOnChangeEvent+=(lastPinState^=_clkPinRead()))<2);     //detecting the pin has changed atleast twice
+        // _clkPinChangeDirection(1);
+        _Delay_us(60);										//to sync with the receiver
         nlcrStartOver:
         while(*consoleData){
             unsigned char spiBitCounter=8;
@@ -134,14 +137,30 @@ class spiConsole{
                 goto nlcrStartOver;
             }
         }
-        if(!finalPacketCheckSum){
-            finalPacketCheckSum=checkSum(loggedData);
-            unsigned char checkSumAdd[3]={(finalPacketCheckSum>>8),(finalPacketCheckSum&0xff)};
-            consoleData=checkSumAdd;
-            goto nlcrStartOver;
-        }
-        _dataPin(1);
 
+        _dataPin(1);
+        // if(!finalPacketCheckSum){
+        //     finalPacketCheckSum=checkSum(loggedData)+((13+10)*autoNLCR);
+        //     // unsigned char checkSumAdd[3]={(unsigned char)(finalPacketCheckSum>>8),(unsigned char)(finalPacketCheckSum&0xff)};
+        //     unsigned char *checkSumAdd=(unsigned char*)calloc(3,sizeof(unsigned char));
+        //     checkSumAdd[0]=(unsigned char)(finalPacketCheckSum>>8);
+        //     checkSumAdd[1]=(unsigned char)(finalPacketCheckSum&0xff);
+        //     consoleData=checkSumAdd;
+        //     goto nlcrStartOver;
+        // }
+        // _dataPin(1);
+        // _dataPinChangeDirection(0);
+        // pinOnChangeEvent=0;
+        // lastPinState=_dataPinRead(); 
+        // unsigned short pinOnChangeTimer=0;
+        // while(--pinOnChangeTimer)
+        //     pinOnChangeEvent+=(lastPinState^=_dataPinRead());
+        // static unsigned char recursionLimiter=20;
+        // if(pinOnChangeEvent>5&&(--recursionLimiter))
+        //     return _spiConsoleLog(loggedData);
+        // recursionLimiter=20;
+
+        // _dataPinChangeDirection(1);
 
         return loggedData;
     }
