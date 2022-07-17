@@ -198,7 +198,7 @@ unsigned char *_$StrLastUsedStr=(unsigned char*)malloc(1);
 unsigned char* _$Str(const char* basicStr){
 	free(_$StrLastUsedStr);
 	unsigned short basicStrLength=stringCounter((unsigned char*)basicStr)+1;		//better not to calculate it twice !!
-	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,basicStrLength);
+	_$StrLastUsedStr=(unsigned char*)calloc(basicStrLength,sizeof(unsigned char));
 	_CS(_$StrLastUsedStr,(unsigned char*)basicStr);
 	return _$StrLastUsedStr;
 }
@@ -302,7 +302,7 @@ unsigned char* $(T strArg,Types... str2){
 	if(_CSS_FirstTimeRunning){
 		globalVariadicStringCounter=variadicStringCounter(str2...)+stringCounter(_$Str(strArg))+1;
 		free(_$CS);
-		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,globalVariadicStringCounter*sizeof(unsigned char));
+		_$CS=(unsigned char*)calloc(globalVariadicStringCounter,sizeof(unsigned char));
 		_CSS_FirstTimeRunning=0;
 	}
 	unsigned char* str1=_$Str(strArg);
@@ -1419,7 +1419,7 @@ unsigned char *urlEncode(unsigned char *originalUrl) {
 	});
 	free(urlEncodeReturnStr);
 	specialCharsCount=stringCounter(originalUrl)+(specialCharsCount*2)+1;
-	urlEncodeReturnStr=(unsigned char*)calloc(specialCharsCount,specialCharsCount*sizeof(unsigned char));
+	urlEncodeReturnStr=(unsigned char*)calloc(specialCharsCount,sizeof(unsigned char));
 	// _CS(urlEncodeReturnStr,$(specialCharsCount));
 	unsigned char charToStr[2]="";
 	during(stringCounter(originalUrl),(argLoop index){
@@ -1586,14 +1586,14 @@ unsigned char *fetchDynamicBuffer=(unsigned char*)malloc(1);
 template <typename httpRequest_t,typename requestBody_t>
 unsigned char *fetch(httpRequest_t httpRequest,requestBody_t requestBody){
 	free(fetchDynamicBuffer);
-	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,(fetchMemoryLimiter+1)*sizeof(unsigned char));
+	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,sizeof(unsigned char));
 	return fetch((unsigned char*)httpRequest,(unsigned char*)requestBody,fetchDynamicBuffer);
 }
 
 template <typename httpRequest_t>
 unsigned char *fetch(httpRequest_t httpRequest){
 	free(fetchDynamicBuffer);
-	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,(fetchMemoryLimiter+1)*sizeof(unsigned char));
+	fetchDynamicBuffer=(unsigned char*)calloc(fetchMemoryLimiter+1,sizeof(unsigned char));
 	return fetch((unsigned char*)httpRequest,UNDEFINED,fetchDynamicBuffer);
 }
 
@@ -2033,14 +2033,16 @@ void setup(){
 	_delay_ms(9000);
 
 	during(10,(unsigned long index){
-		console.log($("index","\t-\t",index));
+		// console.log($("index","\t-\t",index));
+		console.log("\n >> ",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 		_delay_ms(500);
 	});
 
-	CLR(EXPORTED_DATA);
-	console.log("\n >> ",fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
+	// CLR(EXPORTED_DATA);
+	// console.log("\n >> ",fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
+	// console.log("\n >> ",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 	// console.log(" >> ",urlEncodeUpgraded((unsigned char*)("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
-	CLR(EXPORTED_DATA);
+	// CLR(EXPORTED_DATA);
 
 
 	// during(20,(unsigned long index){
