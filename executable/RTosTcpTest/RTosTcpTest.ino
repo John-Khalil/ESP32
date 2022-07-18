@@ -722,6 +722,158 @@ unsigned char *jsonParse(unsigned char *userObject,unsigned char *jsonObject){
 #define json(argJSON1,argJSON2) jsonParse((unsigned char *)argJSON1,(unsigned char *)argJSON2)
 
 
+unsigned char *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=NULL;
+unsigned char *JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND=NULL;
+
+unsigned char JSON_LOW_MEMORY_USAGE(unsigned char *requestedJSON,unsigned char *jsonString){		//this has to be only used with one object to avoid memory corruption  
+	#define OBJECT_STRING_MAX_LENGTH 35
+	unsigned char objectBuffer[OBJECT_STRING_MAX_LENGTH]="";
+	unsigned short jsonArrayIndex=-1;
+	unsigned char subObject=1;
+	unsigned char *deadEndOfString=jsonString+stringCounter(jsonString);
+	unsigned char *objectScanner=requestedJSON;
+	while(*objectScanner){
+		subObject+=(*objectScanner==0x2E);
+		objectScanner++;
+	}
+	for(unsigned char subObjectCounter=0;subObjectCounter<subObject;subObjectCounter++){	//start
+		jsonString++;
+		jsonArrayIndex=-1;
+		unsigned char *jsonObject=objectBuffer;
+		*jsonObject=0x22;
+		jsonObject++;
+		while(*requestedJSON&&(*requestedJSON!=0x2E)&&(*requestedJSON!=0x5B)){
+			*jsonObject=*requestedJSON;
+			requestedJSON++;
+			jsonObject++;
+		}
+		*jsonObject=0x22;
+		jsonObject++;
+		while(jsonObject<(objectBuffer+OBJECT_STRING_MAX_LENGTH)){
+			*jsonObject=0;
+			jsonObject++;
+		}
+		jsonObject = objectBuffer;
+		if(*requestedJSON==0x2E){
+			requestedJSON++;
+		}
+		else if(*requestedJSON==0x5B){
+			requestedJSON++;
+			jsonArrayIndex=strint(requestedJSON);
+			requestedJSON+=stringCounter(inttostring((unsigned long)jsonArrayIndex))+1;//very inefficiant but i dont care!! its a cleaner code
+		}
+
+		while(*jsonObject){ //start searching
+			if(*jsonObject==*jsonString){//object to be found
+				unsigned char *notString=jsonString-1;
+				if(*notString!=0x3A){
+					jsonObject++;
+				}
+			}
+			else{
+				jsonObject=objectBuffer;
+			}
+			jsonString=skipStringJSON(jsonString);
+			jsonString=skipObjectJSON(jsonString);
+			jsonString=skipArrayJSON(jsonString);
+			if(jsonString==deadEndOfString){//object not found
+				return 0;
+			}
+			jsonString++;
+		}//object found
+
+		jsonString++;//skip the ":"
+		unsigned char objectTypeArray=0;
+		searchInsideArray:
+		unsigned short objectStartBracket=0;
+		unsigned short objectEndBracket=0;
+		unsigned short arrayStartBracket=0;
+		unsigned short arrayEndBracket=0;
+		unsigned short doubleQuoates=0;
+		unsigned char *objectLocation=jsonString;
+
+		while(1){
+			objectStartBracket+=(*objectLocation==0x7B);
+			objectEndBracket+=(*objectLocation==0x7D);
+			arrayStartBracket+=(*objectLocation==0x5B);
+			arrayEndBracket+=(*objectLocation==0x5D);
+			unsigned char *validStringCheck=objectLocation-1;
+			doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+			if(objectLocation==deadEndOfString){//object not found
+				return 0;
+			}
+			while(doubleQuoates&0x01){
+				objectLocation++;
+				validStringCheck=objectLocation-1;
+				doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+			}
+			if((*objectLocation==0x2C) && (objectStartBracket == objectEndBracket) && (arrayStartBracket == arrayEndBracket))
+				break;
+			if(objectEndBracket>objectStartBracket)
+				break;
+			if(arrayEndBracket>arrayStartBracket)
+				break;
+			objectLocation++;
+		}
+		
+		if(objectTypeArray){
+			goto backToArrayCounter;
+		}
+		deadEndOfString=objectLocation;
+		if((jsonArrayIndex!=0xFFFF)&&(*jsonString==0x5B)){
+			jsonString++;
+			objectTypeArray=1;
+			while(jsonArrayIndex){
+				goto searchInsideArray;
+				backToArrayCounter:
+				jsonString=objectLocation+1;
+				if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
+					return 0;
+				}
+				jsonArrayIndex--;
+			}
+			objectTypeArray=0;
+			jsonArrayIndex=-1;
+			goto searchInsideArray;
+		}
+	}
+
+	// JSON_OBJECT_FOUND_LOCATION=jsonString;
+
+	JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=deadEndOfString;
+	JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND=jsonString;
+
+
+	// while(jsonString<deadEndOfString){
+	// 	*objectString=*jsonString;
+	// 	objectString++;
+	// 	jsonString++;
+	// }
+	// while(*objectString){
+	// 	*objectString=0;
+	// 	objectString++;
+	// }
+	return 1;
+}
+
+unsigned char *LAST_CONST_JSON_OBJECT;
+unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString){
+	static unsigned char lastByteRemoved;
+	LAST_CONST_JSON_OBJECT=jsonString;
+	if(lastByteRemoved&&(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR!=NULL)&&(!(*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)))
+		*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved;		//lucky for us cpp support pointer arthematic
+	unsigned char objectDefined=JSON_LOW_MEMORY_USAGE(requestedJSON,jsonString);
+	lastByteRemoved=*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR;
+	*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=0;
+	if(!objectDefined)
+		return UNDEFINED;
+	return JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND;
+}
+
+#define clearConstJsonBuffer() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=1; CLR(LAST_CONST_JSON_OBJECT);
+
+#define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
+
 
 unsigned char inverseBase64Table(unsigned char transBuf){
 	return (transBuf-((65*((transBuf<0x5B)&&(transBuf>0x40)))|(71*((transBuf>0x60)&&(transBuf<0x7B)))|(-4*((transBuf>0x2F)&&(transBuf<0x3A)))|(-19*(transBuf==0x2B))|(-16*(transBuf==0x2F))))*(transBuf!=0x3D);//(char64-((0x41*(char64<26))|(71*((char64>25)&&(char64<52)))|(-4*((char64>51)&&(char64<62)))))
@@ -2032,11 +2184,17 @@ void setup(){
 
 	_delay_ms(9000);
 
-	during(10,(unsigned long index){
-		// console.log($("index","\t-\t",index));
-		console.log("\n >> ",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
-		_delay_ms(500);
-	});
+	unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+	console.log(" >> ",constJson("xtensa",testJson));
+	console.log(" >> ",constJson("webHost",testJson));
+	console.log(" >> ",constJson("webHostdsv",testJson));
+
+
+	// during(10,(unsigned long index){
+	// 	// console.log($("index","\t-\t",index));
+	// 	console.log("\n >> ",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+	// 	_delay_ms(500);
+	// });
 
 	// CLR(EXPORTED_DATA);
 	// console.log("\n >> ",fetch((unsigned char*)"https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json",UNDEFINED,EXPORTED_DATA));
