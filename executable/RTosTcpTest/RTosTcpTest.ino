@@ -863,6 +863,9 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 	if(lastByteRemoved&&(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR!=NULL)&&(!(*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)))
 		*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved;		//lucky for us cpp support pointer arthematic
 	unsigned char objectDefined=JSON_LOW_MEMORY_USAGE(requestedJSON,jsonString);
+	while(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x20)JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND++;		//when you make a simple algorithm it really pays off
+	JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x22);			//when you make a simple algorithm it really pays off
+	JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x22);			//when you make a simple algorithm it really pays off
 	lastByteRemoved=*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR;
 	*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=0;
 	if(!objectDefined)
@@ -2188,6 +2191,7 @@ void setup(){
 	console.log(" >> ",constJson("xtensa",testJson));
 	console.log(" >> ",constJson("webHost",testJson));
 	console.log(" >> ",constJson("webHostdsv",testJson));
+	console.log(" >> ",constJson("thisLink",testJson));
 
 
 	// during(10,(unsigned long index){
