@@ -1488,6 +1488,7 @@ unsigned char *EVENT_DATA;
 
 
 unsigned char eventIdentifier(unsigned char *userRequest){
+	unsigned char *orginalRequest=userRequest;
 	unsigned char str1[5]="def:";
 	unsigned char str2[20]="Sec-WebSocket-Key: ";
 	unsigned char str3[6]="data:";
@@ -1508,6 +1509,25 @@ unsigned char eventIdentifier(unsigned char *userRequest){
 		userRequest++;
 	}
 	EVENT_DATA=userRequest;
+	if(!(*userRequest)){
+		userRequest=orginalRequest;
+		unsigned char *headersEnding=(unsigned char*)"\r\n\r\n";
+		unsigned short dataLocationChecker=0;
+		while(((dataLocationChecker*=(*userRequest==headersEnding[dataLocationChecker++]))<4)&&*(userRequest++));
+		--userRequest;
+		CLR(userRequest+stringCounter(userRequest)-2*equalStrings((unsigned char*)"\r\n",userRequest));
+		
+		
+		console.log(" => ",*(userRequest)," - ",*(userRequest+1));
+
+		if(!(*userRequest))
+			return 0;	 
+		*(userRequest-1)=0;
+		CLR(orginalRequest);
+		_CS(orginalRequest,userRequest);
+		CLR(orginalRequest+stringCounter(orginalRequest));
+		return UPLOADED_DATA;
+	}
 	return((USER_REQUEST*(c1==cl1))|(WEB_SOCKET*(c2==cl2))|(UPLOADED_DATA*(c3==cl3))|(WEB_SERVER*(c4==cl4)));
 }
 
