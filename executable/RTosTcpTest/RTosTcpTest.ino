@@ -1514,31 +1514,9 @@ unsigned char eventIdentifier(unsigned char *userRequest){
 		unsigned char *headersEnding=(unsigned char*)"\r\n\r\n";
 		unsigned short dataLocationChecker=0;
 		while(((dataLocationChecker*=(*(userRequest++)==headersEnding[dataLocationChecker++]))<4)&&*(userRequest-1));
-		// --userRequest;
-		// CLR(userRequest+(unsigned short)(stringCounter(userRequest)-2*equalStrings((unsigned char*)"\r\n",userRequest)));
-		
-		
-		// console.log(" => ",*(userRequest)," - ",*(userRequest+1));
-
-		// console.log(" >> ",(unsigned short)(stringCounter(userRequest)-(2*(unsigned short)equalStrings((unsigned char*)"\r\r",userRequest))));
-
-		*(userRequest)*=(*(userRequest)!=13);
-		*(userRequest+1)*=(*(userRequest+1)!=10);
-		console.log(" >> ",userRequest," -len ",stringCounter(userRequest));
-
 		if(!(*userRequest))
 			return 0;	 
-		
-		// *(userRequest-1)=0;
-		// CLR(orginalRequest);
-		// _CS(orginalRequest,userRequest);
-		// CLR(orginalRequest+stringCounter(orginalRequest));
-
-		// CLR(userRequest+(stringCounter(userRequest)-2));
 		EVENT_DATA=userRequest;
-
-
-
 		return UPLOADED_DATA;
 	}
 	return((USER_REQUEST*(c1==cl1))|(WEB_SOCKET*(c2==cl2))|(UPLOADED_DATA*(c3==cl3))|(WEB_SERVER*(c4==cl4)));
