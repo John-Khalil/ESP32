@@ -1554,18 +1554,17 @@ unsigned char *eventData(unsigned char* startLocation,unsigned char* originalStr
 		valueMatchCounter*=((*endLocation)==endString[valueMatchCounter++]);
 		endLocation++;
 	}
-	if(endStringLength==valueMatchCounter){
-		endLocation-=endStringLength;
-		unsigned char *makeStr=originalString;
-		while(startLocation<endLocation){
-			*makeStr=(*startLocation);
-			makeStr++;
-			startLocation++;
-		}
-		while(*makeStr){
-			*makeStr=0;
-			makeStr++;
-		}
+	endLocation-=endStringLength*(endStringLength==valueMatchCounter);
+	CLR(endLocation);
+	unsigned char *makeStr=originalString;
+	while(*startLocation){
+		*makeStr=(*startLocation);
+		makeStr++;
+		startLocation++;
+	}
+	while(*makeStr){
+		*makeStr=0;
+		makeStr++;
 	}
 	return originalString;
 }
