@@ -1515,10 +1515,15 @@ unsigned char eventIdentifier(unsigned char *userRequest){
 		unsigned short dataLocationChecker=0;
 		while(((dataLocationChecker*=(*userRequest==headersEnding[dataLocationChecker++]))<4)&&*(userRequest++));
 		--userRequest;
-		CLR(userRequest+stringCounter(userRequest)-2*equalStrings((unsigned char*)"\r\n",userRequest));
+		// CLR(userRequest+(unsigned short)(stringCounter(userRequest)-2*equalStrings((unsigned char*)"\r\n",userRequest)));
 		
 		
-		console.log(" => ",*(userRequest)," - ",*(userRequest+1));
+		// console.log(" => ",*(userRequest)," - ",*(userRequest+1));
+
+		// console.log(" >> ",(unsigned short)(stringCounter(userRequest)-(2*(unsigned short)equalStrings((unsigned char*)"\r\r",userRequest))));
+
+		*(userRequest)*=(*(userRequest)!=13);
+		*(userRequest+1)*=(*(userRequest+1)!=10);
 
 		if(!(*userRequest))
 			return 0;	 
@@ -2205,13 +2210,13 @@ void setup(){
        
     // });
 
-	_delay_ms(9000);
+	// _delay_ms(9000);
 
-	unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
-	console.log(" >> ",constJson("xtensa",testJson));
-	console.log(" >> ",constJson("webHost",testJson));
-	console.log(" >> ",constJson("webHostdsv",testJson));
-	console.log(" >> ",constJson("thisLink",testJson));
+	// unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+	// console.log(" >> ",constJson("xtensa",testJson));
+	// console.log(" >> ",constJson("webHost",testJson));
+	// console.log(" >> ",constJson("webHostdsv",testJson));
+	// console.log(" >> ",constJson("thisLink",testJson));
 
 
 	// during(10,(unsigned long index){
