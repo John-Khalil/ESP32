@@ -1754,8 +1754,8 @@ unsigned char *fetch(unsigned char *httpRequest,unsigned char *requestBody,unsig
 		}
 		makeStr=responseBuffer;
 	}
-	if(equalStrings((unsigned char*)"\r\n\r\n",returnedBuffer+(stringCounter(returnedBuffer)-4)))
-		CLR(returnedBuffer+(stringCounter(returnedBuffer)-4));
+	// if(equalStrings((unsigned char*)"\r\n\r\n",returnedBuffer+(stringCounter(returnedBuffer)-4)))
+	// 	CLR(returnedBuffer+(stringCounter(returnedBuffer)-4));
 
 	return returnedBuffer;
 }
@@ -1794,7 +1794,7 @@ unsigned char *fetch(httpRequest_t httpRequest){
 void virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){									// digtal output operator
-			console.log("digital output >> ",subExecutable);
+			console.log("digital output >> ",constJson("outputStream",subExecutable));
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// delay operator
@@ -2230,35 +2230,12 @@ void setup(){
         NULL             				// Task handle
     );
 
-    // console.log("\n\n-------------------\n");
-    // within(20,{
-        
-    //     console.log("ESP32 >> ");
-    //     _delay_ms(1500);
-       
-    // });
-
+    
 	_delay_ms(9000);
 
-	console.log("\n\n-----------------------------------\n\n");
+	console.log($("hello ","world >> ",-35));
 
-	unsigned char *testPtr=fetch("http://192.168.1.15:766");
-	_CS(testPtr,(unsigned char*)"0}]}");
-
-	// console.log(" -->> ",(unsigned long)getInt((unsigned char*)"123"));
-
-	virtualController(testPtr);
-
-	// unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
-	// testJson=$(testJson,"ksjcdbhvksajdvb");
-	// // CLR(testJson+140);
-	// console.log(" >>> ",testJson);
-	// console.log(" >> ",constJson("xtensa",testJson));
-	// console.log(" >> ",constJson("webHost",testJson));
-	// console.log(" >> ",constJson("webHostdsv",testJson));
-	// console.log(" >> ",constJson("thisLink",testJson));
-
-
+	virtualController(fetch("http://192.168.1.15:766"));
 
 
 	// during(10,(unsigned long index){

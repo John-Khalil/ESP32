@@ -35,14 +35,17 @@ const loop=(_loopCounter,_loopBody)=>{
 app.get('/',(req,res)=>{
     console.log(req);
     var finalStack=[];
+
     finalStack.push(digitalOutput(65535,[1,2,78,563,9552]));
     finalStack.push(delay(500));
+
     finalStack.push(digitalOutput(65535,[1,2,78,563,9552]));
     finalStack.push(delay(500));
+
     finalStack.push(digitalOutput(65535,[1,2,78,563,9552]));
     finalStack.push(delay(500));
    
-    res.send(JSON.stringify(loop(2,finalStack)));
+    res.send(JSON.stringify(loop(3,finalStack)));
 });
 
 app.listen(port,()=>{
