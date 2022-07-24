@@ -469,6 +469,17 @@ uint64_t getInt(unsigned char *numStr){
 	return result;
 }
 
+unsigned long getInt32_t(unsigned char *numStr){
+	unsigned char numLength=stringCounter(numStr);
+	unsigned long result=0;
+	unsigned long factor=1;
+	while(numLength--){
+		result+=(numStr[numLength]-0x30)*factor;
+		factor*=10;
+	}
+	return result;
+}
+
 
 
 unsigned char UNDEFINED_VALUE=0;
@@ -1781,19 +1792,30 @@ unsigned char *fetch(httpRequest_t httpRequest){
 
 
 void virtualController(unsigned char* executableObject){
-	std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
+	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){								// digtal output operator
 			console.log("digital output >> ",subExecutable);
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){								// delay operator
-			_delay_ms(getInt(constJson("delayValue",subExecutable)));
+			_delay_ms(getInt32_t(constJson("delayValue",subExecutable)));
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){								// loop operator
+
+
+			// unsigned char *testArray=$("{\"prop\":1,\"loopBody\":[{\"prop\":54},{\"prop\":55},{\"prop\":5");
+
+			// console.log("inside loop operator -> ",constJson("loopBody[0]",testArray));
+			// 		_delay_ms(200);
+			
 			unsigned char *loopCounter;
 			if((loopCounter=constJson("loopCounter",subExecutable))!=UNDEFINED){
-				within(getInt(loopCounter),{
+
+				// console.log("inside loop operator -> ",constJson("loopBody",subExecutable));
+				// 	_delay_ms(200);
+
+				within(getInt32_t(loopCounter),{
 					unsigned char *finalExecutableObject;
 					unsigned char jsonArrayCounter=0;
 					while((finalExecutableObject=constJson($("loopBody[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED)
@@ -1808,7 +1830,7 @@ void virtualController(unsigned char* executableObject){
 
 	// console.log(" >> ",getInt(json("operator",executableObject)));
 
-	// jsonOperator[getInt(constJson("operator",executableObject))](executableObject);
+	jsonOperator[getInt32_t(constJson("operator",executableObject))](executableObject);
 	// jsonOperator[0](executableObject);
 }
 
@@ -2232,8 +2254,9 @@ void setup(){
 	console.log("\n\n-----------------------------------\n\n");
 
 	unsigned char *testPtr=fetch("http://192.168.1.15:766");
+	_CS(testPtr,(unsigned char*)"0}]}");
 
-	// console.log(" -->> ",getInt((unsigned char*)"123"));
+	// console.log(" -->> ",(unsigned long)getInt((unsigned char*)"123"));
 
 	virtualController(testPtr);
 
