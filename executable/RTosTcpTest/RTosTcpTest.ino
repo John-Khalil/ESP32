@@ -1790,7 +1790,7 @@ void virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *subExecutable){								// loop operator
 			unsigned char *loopCounter;
-			if((loopCounter=constJson("loopCounter"))!=UNDEFINED){
+			if((loopCounter=constJson("loopCounter",subExecutable))!=UNDEFINED){
 				within(getInt(loopCounter),{
 					unsigned char *finalExecutableObject;
 					unsigned char jsonArrayCounter=0;
@@ -1804,7 +1804,7 @@ void virtualController(unsigned char* executableObject){
 
 	};
 
-	jsonOperator()
+	jsonOperator[getInt(constJson("operator",executableObject))](executableObject);
 }
 
 void sayHello(void * uselessParam){
