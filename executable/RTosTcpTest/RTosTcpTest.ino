@@ -1778,7 +1778,34 @@ unsigned char *fetch(httpRequest_t httpRequest){
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 
+void virtualController(unsigned char* executableObject){
+	std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
+		[&](unsigned char *subExecutable){								// digtal output operator
+			console.log("digital output >> ",subExecutable);
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){								// delay operator
+			_delay_ms(getInt(constJson("delayValue",subExecutable)));
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){								// loop operator
+			unsigned char *loopCounter;
+			if((loopCounter=constJson("loopCounter"))!=UNDEFINED){
+				within(getInt(loopCounter),{
+					unsigned char *finalExecutableObject;
+					unsigned char jsonArrayCounter=0;
+					while((finalExecutableObject=constJson($("loopBody[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED)
+						virtualController(finalExecutableObject);
+					
+				});
+			}
+			return subExecutable;
+		}
 
+	};
+
+	jsonOperator()
+}
 
 void sayHello(void * uselessParam){
 	within(20,{
@@ -2003,9 +2030,9 @@ void serviceExecutable(void*param){
 				if(!((eventIdentifier(tcpText)&WEB_SERVER)==WEB_SERVER))
 					URIdecode(tcpText);
 			}
-			
+			console.log("\n \\/  \\/  \\/  \\/  \\/  NEW-REQUEST \\/  \\/  \\/  \\/  \\/ \n");
 			console.log(tcpText);
-			console.log("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+			
 
 
 
@@ -2013,7 +2040,7 @@ void serviceExecutable(void*param){
 
 
 			if((eventType&WEB_SOCKET)==WEB_SOCKET){// never wanna mess with this line
-				console.log("user data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"\r\n"));
+				console.log("\n\nuser data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"\r\n"));
 				
 
 				socketConnection=1;
@@ -2077,7 +2104,7 @@ void serviceExecutable(void*param){
 				#define EXTERNAL_PORT_LIVE 0x00000100UL
 
 			
-				console.log("user data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"<@>"));
+				console.log("\n\nuser data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"<@>"));
 				
 
 				unsigned char *instructionDecode=json("instruction",tcpText);
@@ -2195,13 +2222,18 @@ void setup(){
        
     // });
 
-	// _delay_ms(9000);
+	_delay_ms(9000);
 
-	// unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
-	// console.log(" >> ",constJson("xtensa",testJson));
-	// console.log(" >> ",constJson("webHost",testJson));
-	// console.log(" >> ",constJson("webHostdsv",testJson));
-	// console.log(" >> ",constJson("thisLink",testJson));
+	unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+	testJson=$(testJson,"ksjcdbhvksajdvb");
+	// CLR(testJson+140);
+	console.log(" >>> ",testJson);
+	console.log(" >> ",constJson("xtensa",testJson));
+	console.log(" >> ",constJson("webHost",testJson));
+	console.log(" >> ",constJson("webHostdsv",testJson));
+	console.log(" >> ",constJson("thisLink",testJson));
+
+
 
 
 	// during(10,(unsigned long index){

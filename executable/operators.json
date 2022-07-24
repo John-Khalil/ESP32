@@ -1,0 +1,41 @@
+// digital output
+{
+    "operator":4294967295,
+    "portAddress":65535,
+    "outputStream":[]
+}
+
+//digital input
+
+{
+    "operator":4294967295,
+    "portAddress":65535,
+    "sampleRate":1000,
+    "sampleArray":[]
+}
+
+//onchange digital input listener
+{
+    "operator":4294967295,
+    "portAddress":65535,
+    "enableInput":4294967295
+}
+
+// delay operator
+{
+    "operator":4294967295,
+    "delayValueMicroSec":65535,
+    "delayValue":65535
+}
+
+// loop operator
+{
+    "operator":4294967295,
+    "loopCounter":65535,
+    "loopBody":[]
+}
+
+//create empty buffer
+{
+
+}
