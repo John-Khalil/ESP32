@@ -469,6 +469,8 @@ uint64_t getInt(unsigned char *numStr){
 	return result;
 }
 
+
+
 unsigned char UNDEFINED_VALUE=0;
 unsigned char *NO_DATA=&UNDEFINED_VALUE;
 
