@@ -1793,28 +1793,17 @@ unsigned char *fetch(httpRequest_t httpRequest){
 
 void virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
-		[&](unsigned char *subExecutable){								// digtal output operator
+		[&](unsigned char *subExecutable){									// digtal output operator
 			console.log("digital output >> ",subExecutable);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){								// delay operator
+		[&](unsigned char *subExecutable){									// delay operator
 			_delay_ms(getInt32_t(constJson("delayValue",subExecutable)));
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){								// loop operator
-
-
-			// unsigned char *testArray=$("{\"prop\":1,\"loopBody\":[{\"prop\":54},{\"prop\":55},{\"prop\":5");
-
-			// console.log("inside loop operator -> ",constJson("loopBody[0]",testArray));
-			// 		_delay_ms(200);
-			
+		[&](unsigned char *subExecutable){									// loop operator
 			unsigned char *loopCounter;
 			if((loopCounter=constJson("loopCounter",subExecutable))!=UNDEFINED){
-
-				// console.log("inside loop operator -> ",constJson("loopBody",subExecutable));
-				// 	_delay_ms(200);
-
 				within(getInt32_t(loopCounter),{
 					unsigned char *finalExecutableObject;
 					unsigned char jsonArrayCounter=0;
