@@ -1804,7 +1804,10 @@ void virtualController(unsigned char* executableObject){
 
 	};
 
-	jsonOperator[getInt(constJson("operator",executableObject))](executableObject);
+	// console.log(" >> ",getInt(json("operator",executableObject)));
+
+	// jsonOperator[getInt(constJson("operator",executableObject))](executableObject);
+	// jsonOperator[0](executableObject);
 }
 
 void sayHello(void * uselessParam){
@@ -2224,14 +2227,22 @@ void setup(){
 
 	_delay_ms(9000);
 
-	unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
-	testJson=$(testJson,"ksjcdbhvksajdvb");
-	// CLR(testJson+140);
-	console.log(" >>> ",testJson);
-	console.log(" >> ",constJson("xtensa",testJson));
-	console.log(" >> ",constJson("webHost",testJson));
-	console.log(" >> ",constJson("webHostdsv",testJson));
-	console.log(" >> ",constJson("thisLink",testJson));
+	console.log("\n\n-----------------------------------\n\n");
+
+	unsigned char *testPtr=fetch("http://192.168.1.15:766");
+
+	// console.log(" -->> ",getInt((unsigned char*)"123"));
+
+	virtualController(testPtr);
+
+	// unsigned char *testJson=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+	// testJson=$(testJson,"ksjcdbhvksajdvb");
+	// // CLR(testJson+140);
+	// console.log(" >>> ",testJson);
+	// console.log(" >> ",constJson("xtensa",testJson));
+	// console.log(" >> ",constJson("webHost",testJson));
+	// console.log(" >> ",constJson("webHostdsv",testJson));
+	// console.log(" >> ",constJson("thisLink",testJson));
 
 
 
