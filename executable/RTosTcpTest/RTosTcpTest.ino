@@ -1945,6 +1945,8 @@ void serviceExecutable(void*param){
 	unsigned char socketConnection=0;
 	
 	console.log("start the loop");
+	MDNS.begin("xtensa-lx6");
+	MDNS.addService("http", "tcp", 80);
 
 	virtualController(fetch("http://192.168.1.15:766"));
 
@@ -2243,6 +2245,8 @@ void setup(){
     // Serial.begin(9600);
     _PM(13,OUTPUT);
 
+	
+
     // serviceExecutable();
     xTaskCreate(
         serviceExecutable,    			// Function that should be called
@@ -2255,6 +2259,8 @@ void setup(){
 
     
 	_delay_ms(9000);
+
+	
 
 	// console.log($("hello ","world >> ",-35));
 
