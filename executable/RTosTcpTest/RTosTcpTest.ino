@@ -1790,24 +1790,44 @@ unsigned char *fetch(httpRequest_t httpRequest){
 /////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+typedef const char* JSON_ATTRIBUTE;
+
+
+JSON_ATTRIBUTE JSON_OPERATOR="OP";				// generic operator
+
+
+// digital output
+JSON_ATTRIBUTE OUTPUT_STREAM="OS";				// digital output stream
+JSON_ATTRIBUTE PORT_ADDRESS="PA";				// digital output port address
+
+// delay operator
+JSON_ATTRIBUTE DELAY_MICRO_SEC="US";			// micro second delay
+JSON_ATTRIBUTE DELAY_MILLI_SEC="MS";			// milli second delay
+
+// loop operator
+JSON_ATTRIBUTE LOOP_COUNTER="LC";				// loop counter
+JSON_ATTRIBUTE LOOP_BODY="LB";					// loop body
+
+
+
 
 void virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){									// digtal output operator
-			console.log("digital output >> ",constJson("outputStream",subExecutable));
+			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// delay operator
-			_delay_ms(getInt32_t(constJson("delayValue",subExecutable)));
+			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// loop operator
 			unsigned char *loopCounter;
-			if((loopCounter=constJson("loopCounter",subExecutable))!=UNDEFINED){
+			if((loopCounter=constJson(LOOP_COUNTER,subExecutable))!=UNDEFINED){
 				within(getInt32_t(loopCounter),{
 					unsigned char *finalExecutableObject;
 					unsigned char jsonArrayCounter=0;
-					while((finalExecutableObject=constJson($("loopBody[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED)
+					while((finalExecutableObject=constJson($(LOOP_BODY,"[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED)
 						virtualController(finalExecutableObject);
 					
 				});
@@ -1819,7 +1839,7 @@ void virtualController(unsigned char* executableObject){
 
 	// console.log(" >> ",getInt(json("operator",executableObject)));
 
-	jsonOperator[getInt32_t(constJson("operator",executableObject))](executableObject);
+	jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
 	// jsonOperator[0](executableObject);
 }
 
@@ -1925,6 +1945,9 @@ void serviceExecutable(void*param){
 	unsigned char socketConnection=0;
 	
 	console.log("start the loop");
+
+	virtualController(fetch("http://192.168.1.15:766"));
+
 	while(1){
 		eventListener=0;
 		unsigned short reconnectTimer=0;
@@ -2233,9 +2256,9 @@ void setup(){
     
 	_delay_ms(9000);
 
-	console.log($("hello ","world >> ",-35));
+	// console.log($("hello ","world >> ",-35));
 
-	virtualController(fetch("http://192.168.1.15:766"));
+	// virtualController(fetch("http://192.168.1.15:766"));
 
 
 	// during(10,(unsigned long index){
