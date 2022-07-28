@@ -1818,32 +1818,18 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		//new elemnt has been added
 		lastAddedElement=virtualMemoryAddress;
 		unsigned long orginalMemorySize=stringCounter(virtualControllerMemory);
-		
-		// virtualControllerMemory[finalMemorySize-1]=0;
-		
 		CLR(virtualControllerMemory+(orginalMemorySize-2));
 		_CS(virtualControllerMemory,(*(virtualControllerMemory+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
 		_CS(virtualControllerMemory,savedData);
 		_CS(virtualControllerMemory,(unsigned char*)"]}");
-		// _CS(virtualControllerMemory,(unsigned char*)"]}");
-
 	}
 	else{
-		// console.log("this should not appear");
 		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");		// i can not use $ cause it has a shared buffer for every instance
 		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemory);free(getValueFromJson);
 		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
-
-
 		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
-
 		unsigned long finalMemorySize=stringCounter(virtualControllerMemory)+differenceSize+1;
-		// virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,finalMemorySize*sizeof(unsigned char));
-		
-		
-
-
 		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
 		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize!=0),{
 			JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter];
@@ -1854,11 +1840,6 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 		during((JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR+differenceSize)-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+1,(argLoop index){
 			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[index]=savedData[index];
 		});
-		// CLR_LENGTH=stringCounter(savedData)-1;
-		// CLR(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
-		// _CS(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND,savedData);
-		// virtualControllerMemory[finalMemorySize-1]=0;
-
 	}
 	return virtualControllerMemory;
 }
@@ -2360,6 +2341,8 @@ void setup(){
 	console.log(" >> ",highLevelMemory(2,(unsigned char*)"last element"));
 	console.log(" >> ",highLevelMemory(1,(unsigned char*)"short str"));
 	console.log(" >> ",highLevelMemory(1,(unsigned char*)"very--long--string"));
+	console.log(" >> ",highLevelMemory(2,(unsigned char*)"changed"));
+	console.log(" >> ",highLevelMemory(0,(unsigned char*)"test0-=-=-="));
 	
 
 	// console.log($("hello ","world >> ",-35));
