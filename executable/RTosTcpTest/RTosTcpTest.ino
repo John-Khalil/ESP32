@@ -1810,6 +1810,7 @@ void initializeVirtualControllerMemory(void){
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
+	initializeVirtualControllerMemory();
 	static unsigned short lastAddedElement;
 	if(virtualMemoryAddress>lastAddedElement){		//new elemnt has been added
 		lastAddedElement=virtualMemoryAddress;
@@ -1826,13 +1827,21 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");		// i can not use $ cause it has a shared buffer for every instance
 		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemory);free(getValueFromJson);
-		signed long differenceSize=stringCounter(savedData)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR);
-		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,(stringCounter(virtualControllerMemory)+differenceSize+1)*sizeof(unsigned char));
-
+		signed long differenceSize=stringCounter(savedData)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,(stringCounter(virtualControllerMemory)+differenceSize)*sizeof(unsigned char));
+		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
+		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR),{
+			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[memoryAllocationCounter];
+			memoryAllocationCounter-=(differenceSize>0);
+			memoryAllocationCounter+=(differenceSize<0);
+		});
+		CLR_LENGTH=stringCounter(savedData);
+		CLR(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+		_CS(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND,savedData);
 
 
 	}
-	return savedData;
+	return virtualControllerMemory;
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
