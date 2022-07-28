@@ -1823,7 +1823,14 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 
 	}
 	else{
-		
+		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");		// i can not use $ cause it has a shared buffer for every instance
+		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemory);free(getValueFromJson);
+		signed long differenceSize=stringCounter(savedData)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR);
+		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,(stringCounter(virtualControllerMemory)+differenceSize+1)*sizeof(unsigned char));
+
+
+
 	}
 	return savedData;
 }
