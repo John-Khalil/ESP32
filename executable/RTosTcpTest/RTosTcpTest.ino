@@ -1795,50 +1795,69 @@ unsigned char *fetch(httpRequest_t httpRequest){
 #define POINT_BUFFER 0
 #define DELETE_BUFFER 1
 
-unsigned char *virtualControllerMemory=(unsigned char*)malloc(1);
-unsigned char *virtualControllerMemoryIndex=(unsigned char*)malloc(1);
+#define VIRTUAL_MEMORY_SIZE 4096
+unsigned char *virtualControllerMemory=(unsigned char*)calloc(VIRTUAL_MEMORY_SIZE,sizeof(unsigned char));
+unsigned char *virtualControllerMemoryIndex=(unsigned char*)calloc(VIRTUAL_MEMORY_SIZE,sizeof(unsigned char));
+
+
 void initializeVirtualControllerMemory(void){
 	static unsigned char setupMemory;
 	if(setupMemory)
 		return;
 	unsigned char *memoryJson=(unsigned char *)"{\"memory\":[]}";
-	virtualControllerMemory=(unsigned char*)calloc(stringCounter(memoryJson),sizeof(unsigned char));
+	// virtualControllerMemory=(unsigned char*)calloc(stringCounter(memoryJson)+1,sizeof(unsigned char));
 	_CS(virtualControllerMemory,memoryJson);
-	virtualControllerMemoryIndex=(unsigned char*)calloc(stringCounter(memoryJson),sizeof(unsigned char));
+	// virtualControllerMemoryIndex=(unsigned char*)calloc(stringCounter(memoryJson)+1,sizeof(unsigned char));
 	_CS(virtualControllerMemoryIndex,memoryJson);
 	setupMemory=1;
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
 	initializeVirtualControllerMemory();
-	static unsigned short lastAddedElement;
-	if(virtualMemoryAddress>lastAddedElement){		//new elemnt has been added
+	static unsigned short lastAddedElement=(unsigned short)-1;
+	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		//new elemnt has been added
 		lastAddedElement=virtualMemoryAddress;
 		unsigned long orginalMemorySize=stringCounter(virtualControllerMemory);
-		unsigned long finalMemorySize=orginalMemorySize+stringCounter(savedData)+(*(virtualControllerMemory+(orginalMemorySize-3))!='[')+1;
-		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,finalMemorySize*sizeof(unsigned char));
+		
+		// virtualControllerMemory[finalMemorySize-1]=0;
+		
 		CLR(virtualControllerMemory+(orginalMemorySize-2));
 		_CS(virtualControllerMemory,(*(virtualControllerMemory+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
 		_CS(virtualControllerMemory,savedData);
 		_CS(virtualControllerMemory,(unsigned char*)"]}");
+		// _CS(virtualControllerMemory,(unsigned char*)"]}");
 
 	}
 	else{
+		// console.log("this should not appear");
 		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");		// i can not use $ cause it has a shared buffer for every instance
 		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemory);free(getValueFromJson);
-		signed long differenceSize=stringCounter(savedData)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
-		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,(stringCounter(virtualControllerMemory)+differenceSize)*sizeof(unsigned char));
+		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
+
+
+		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+
+		unsigned long finalMemorySize=stringCounter(virtualControllerMemory)+differenceSize+1;
+		// virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,finalMemorySize*sizeof(unsigned char));
+		
+		
+
+
 		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
-		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR),{
-			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[memoryAllocationCounter];
+		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize!=0),{
+			JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter];
 			memoryAllocationCounter-=(differenceSize>0);
 			memoryAllocationCounter+=(differenceSize<0);
 		});
-		CLR_LENGTH=stringCounter(savedData);
-		CLR(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
-		_CS(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND,savedData);
-
+		CLR(virtualControllerMemory+stringCounter(virtualControllerMemory)+differenceSize);
+		during((JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR+differenceSize)-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+1,(argLoop index){
+			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[index]=savedData[index];
+		});
+		// CLR_LENGTH=stringCounter(savedData)-1;
+		// CLR(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+		// _CS(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND,savedData);
+		// virtualControllerMemory[finalMemorySize-1]=0;
 
 	}
 	return virtualControllerMemory;
@@ -1854,7 +1873,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 
 unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
 	initializeVirtualControllerMemory();
-	static unsigned long 
+	// static unsigned long 
 	if(operation==POINT_BUFFER){
 
 	}
@@ -2023,7 +2042,7 @@ void serviceExecutable(void*param){
 	MDNS.begin("xtensa-lx6");
 	MDNS.addService("http", "tcp", 80);
 
-	virtualController(fetch("http://192.168.1.15:766"));
+	// virtualController(fetch("http://192.168.1.15:766"));
 
 	while(1){
 		eventListener=0;
@@ -2333,8 +2352,14 @@ void setup(){
     );
 
     
-	_delay_ms(9000);
-
+	_delay_ms(2000);
+	initializeVirtualControllerMemory();
+	console.log(virtualControllerMemory);
+	console.log(" >> ",highLevelMemory(0,(unsigned char*)"test0"));
+	console.log(" >> ",highLevelMemory(1,(unsigned char*)"hello world"));
+	console.log(" >> ",highLevelMemory(2,(unsigned char*)"last element"));
+	console.log(" >> ",highLevelMemory(1,(unsigned char*)"short str"));
+	console.log(" >> ",highLevelMemory(1,(unsigned char*)"very--long--string"));
 	
 
 	// console.log($("hello ","world >> ",-35));
