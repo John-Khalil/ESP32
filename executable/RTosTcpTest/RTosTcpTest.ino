@@ -1790,6 +1790,40 @@ unsigned char *fetch(httpRequest_t httpRequest){
 /////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+#define POINT_BUFFER 0
+#define DELETE_BUFFER 1
+
+unsigned char *virtualControllerMemory=(unsigned char*)malloc(1);
+unsigned char *virtualControllerMemoryIndex=(unsigned char*)malloc(1);
+void initializeVirtualControllerMemory(void){
+	static unsigned char setupMemory;
+	if(setupMemory)
+		return;
+	unsigned char *memoryJson=(unsigned char *)"{\"memory\":[]}";
+	virtualControllerMemory=(unsigned char*)calloc(stringCounter(memoryJson),sizeof(unsigned char));
+	_CS(virtualControllerMemory,memoryJson);
+	virtualControllerMemoryIndex=(unsigned char*)calloc(stringCounter(memoryJson),sizeof(unsigned char));
+	_CS(virtualControllerMemoryIndex,memoryJson);
+	setupMemory=1;
+}
+
+
+
+unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
+	initializeVirtualControllerMemory();
+	static unsigned long 
+	if(operation==POINT_BUFFER){
+
+	}
+	else if(operation==DELETE_BUFFER){
+		
+	}
+}
+
+
+
 typedef const char* JSON_ATTRIBUTE;
 
 
@@ -1811,7 +1845,7 @@ JSON_ATTRIBUTE LOOP_BODY="LB";					// loop body
 
 
 
-void virtualController(unsigned char* executableObject){
+unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){									// digtal output operator
 			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
@@ -1839,7 +1873,7 @@ void virtualController(unsigned char* executableObject){
 
 	// console.log(" >> ",getInt(json("operator",executableObject)));
 
-	jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
+	return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
 	// jsonOperator[0](executableObject);
 }
 

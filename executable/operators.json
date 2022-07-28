@@ -39,3 +39,31 @@
 {
 
 }
+
+
+//buffer
+{
+    "operator": int,
+    "bufferIdentifier":int,
+    "sizeRequired":int,
+    "delete":bool
+}
+
+//write buffer
+{
+    "operator":int,
+    "bufferIdentifier":int,
+    "data":data form another operator
+}
+
+//read buffer
+{
+    "operator":int,
+    "bufferIdentifier":int
+}
+
+//free buffer
+{
+    "operator":int,
+    "bufferIdentifier":int
+}
