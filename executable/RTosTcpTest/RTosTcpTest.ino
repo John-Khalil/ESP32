@@ -1809,6 +1809,31 @@ void initializeVirtualControllerMemory(void){
 	setupMemory=1;
 }
 
+unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
+	static unsigned short lastAddedElement;
+	if(virtualMemoryAddress>lastAddedElement){		//new elemnt has been added
+		lastAddedElement=virtualMemoryAddress;
+		unsigned long orginalMemorySize=stringCounter(virtualControllerMemory);
+		unsigned long finalMemorySize=orginalMemorySize+stringCounter(savedData)+(*(virtualControllerMemory+(orginalMemorySize-3))!='[')+1;
+		virtualControllerMemory=(unsigned char *)realloc(virtualControllerMemory,finalMemorySize*sizeof(unsigned char));
+		CLR(virtualControllerMemory+(orginalMemorySize-2));
+		_CS(virtualControllerMemory,(*(virtualControllerMemory+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
+		_CS(virtualControllerMemory,savedData);
+		_CS(virtualControllerMemory,(unsigned char*)"]}");
+
+	}
+	else{
+		
+	}
+	return savedData;
+}
+
+unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
+	unsigned char *savedData;
+	
+	return savedData;
+}
+
 
 
 unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
