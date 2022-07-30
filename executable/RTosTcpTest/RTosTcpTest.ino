@@ -1797,7 +1797,7 @@ unsigned char *fetch(httpRequest_t httpRequest){
 
 #define VIRTUAL_MEMORY_SIZE 4096
 unsigned char *virtualControllerMemory=(unsigned char*)calloc(VIRTUAL_MEMORY_SIZE,sizeof(unsigned char));
-unsigned char *virtualControllerMemoryIndex=(unsigned char*)calloc(VIRTUAL_MEMORY_SIZE,sizeof(unsigned char));
+unsigned char *virtualControllerMemoryIndex=(unsigned char*)calloc((size_t)(VIRTUAL_MEMORY_SIZE/2),sizeof(unsigned char));
 
 
 void initializeVirtualControllerMemory(void){
@@ -1813,6 +1813,8 @@ void initializeVirtualControllerMemory(void){
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
+	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
+		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
 	static unsigned short lastAddedElement=(unsigned short)-1;
 	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		//new elemnt has been added
@@ -1845,8 +1847,54 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
-	unsigned char *savedData;
-	
+	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
+	free(getValueFromJson);
+	return savedData;
+}
+
+
+
+unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress,unsigned char *savedData){
+	if((stringCounter(savedData)+stringCounter(virtualControllerMemoryIndex)+5)>(VIRTUAL_MEMORY_SIZE/2))			
+		return virtualControllerMemoryIndex;
+	initializeVirtualControllerMemory();
+	static unsigned short lastAddedElement=(unsigned short)-1;
+	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		
+		lastAddedElement=virtualMemoryAddress;
+		unsigned long orginalMemorySize=stringCounter(virtualControllerMemoryIndex);
+		CLR(virtualControllerMemoryIndex+(orginalMemorySize-2));
+		_CS(virtualControllerMemoryIndex,(*(virtualControllerMemoryIndex+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
+		_CS(virtualControllerMemoryIndex,savedData);
+		_CS(virtualControllerMemoryIndex,(unsigned char*)"]}");
+	}
+	else{
+		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemoryIndex);free(getValueFromJson);
+		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
+		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+		unsigned long finalMemorySize=stringCounter(virtualControllerMemoryIndex)+differenceSize+1;
+		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
+		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize!=0),{
+			JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter];
+			memoryAllocationCounter-=(differenceSize>0);
+			memoryAllocationCounter+=(differenceSize<0);
+		});
+		CLR(virtualControllerMemoryIndex+stringCounter(virtualControllerMemoryIndex)+differenceSize);
+		during((JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR+differenceSize)-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+1,(argLoop index){
+			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[index]=savedData[index];
+		});
+	}
+	return virtualControllerMemoryIndex;
+}
+
+unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress){
+	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemoryIndex);
+	free(getValueFromJson);
 	return savedData;
 }
 
