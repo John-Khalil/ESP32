@@ -1902,7 +1902,17 @@ unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress){
 
 unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
 	initializeVirtualControllerMemory();
-	// static unsigned long 
+	unsigned short scanForIndex=0;
+	unsigned char *scanForPointerIndex;
+	while((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED){
+		if(getInt32_t(scanForPointerIndex)==bufferIdentifier){
+			bufferIdentifier=scanForIndex-1;
+			goto realIndexIsNowSet;
+		}
+	}
+	highLevelMemoryIndex(scanForIndex,(unsigned char *)"");
+	bufferIdentifier=scanForIndex;
+	realIndexIsNowSet:
 	if(operation==POINT_BUFFER){
 
 	}
