@@ -870,8 +870,9 @@ unsigned char JSON_LOW_MEMORY_USAGE(unsigned char *requestedJSON,unsigned char *
 }
 
 unsigned char *LAST_CONST_JSON_OBJECT;
+unsigned char lastByteRemoved=0;
 unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString){
-	static unsigned char lastByteRemoved;
+	// static unsigned char lastByteRemoved;
 	LAST_CONST_JSON_OBJECT=jsonString;
 	if(lastByteRemoved&&(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR!=NULL)&&(!(*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)))
 		*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved;		//lucky for us cpp support pointer arthematic
@@ -887,6 +888,8 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 }
 
 #define clearConstJsonBuffer() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=1; CLR(LAST_CONST_JSON_OBJECT);
+
+#define contJsonReset() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
@@ -1893,33 +1896,62 @@ unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress,unsigned 
 unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress){
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemoryIndex);
+	unsigned char *savedData=json(getValueFromJson,virtualControllerMemoryIndex);
 	free(getValueFromJson);
 	return savedData;
 }
 
+
+unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
+	static unsigned long registeredAddress[51]={};
+	//we have to init here before we go
+	#define nullValue -1UL
+	during(51*(registeredAddress[50]!=nullValue),(argLoop index){
+		registeredAddress[index]=nullValue;
+	});
+		
+	static unsigned long lastAddedElement;
+	unsigned char registeredAddressCounter=0;
+	while((registeredAddress[registeredAddressCounter++]!=userAddress)&&(registeredAddress[registeredAddressCounter-1]!=nullValue));
+	registeredAddress[registeredAddressCounter-1]=userAddress;
+
+	if(operation==DELETE_BUFFER)
+		registeredAddress[registeredAddressCounter-1]=nullValue;
+
+	return registeredAddressCounter-1;
+	
+}
 
 
 unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
 	initializeVirtualControllerMemory();
 	unsigned short scanForIndex=0;
 	unsigned char *scanForPointerIndex;
-	while((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED){
-		if(getInt32_t(scanForPointerIndex)==bufferIdentifier){
-			bufferIdentifier=scanForIndex-1;
-			goto realIndexIsNowSet;
-		}
-	}
+	// contJsonReset();
+	// console.log(highLevelMemoryIndex(0));
+	// console.log(highLevelMemoryIndex(1));
+	// while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED)){	
+	// 	// checking if the memory was not allocated or been cleared before
+	// 	if(getInt32_t(scanForPointerIndex)==bufferIdentifier){
+	// 		bufferIdentifier=scanForIndex-1;
+	// 		goto realIndexIsNowSet;
+	// 	}
+	// }
+	
+	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+
+	while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex))!=UNDEFINED)&&(getInt32_t(scanForPointerIndex)!=bufferIdentifier)){scanForIndex++;console.log("loop");}
+	if(getInt32_t(scanForPointerIndex)!=bufferIdentifier)	
+		goto realIndexIsNowSet;
+	contJsonReset();
 	highLevelMemoryIndex(scanForIndex,inttostring(bufferIdentifier));
 	highLevelMemory(scanForIndex,(unsigned char *)"");
-	bufferIdentifier=scanForIndex;
 	realIndexIsNowSet:
-	if(operation==POINT_BUFFER){
-
-	}
-	else if(operation==DELETE_BUFFER){
-		
-	}
+	if(operation==DELETE_BUFFER)
+		highLevelMemoryIndex(scanForIndex,UNDEFINED);
+	return scanForIndex;
 }
 
 
@@ -1977,13 +2009,53 @@ unsigned char* virtualController(unsigned char* executableObject){
 	// jsonOperator[0](executableObject);
 }
 
-void sayHello(void * uselessParam){
-	within(20,{
-		console.log("hello!");
-		_delay_ms(2000);
-	});
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+////////////////////	testing stuff goes here		//////////////
+//////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+void testingFuction(void * uselessParam){
+
+	_delay_ms(4000);
+	initializeVirtualControllerMemory();
+
+	console.log(virtualControllerMemoryIndex);_delay_ms(200);
+
+	console.log(" -1->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
+	console.log(" -->>-->> ",smartPointer(556,POINT_BUFFER));_delay_ms(200);
+	console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
+	console.log(" -->>-->> ",smartPointer(785,POINT_BUFFER));_delay_ms(200);
+	console.log(" -->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
+	console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
+
+	smartPointer(987,DELETE_BUFFER);
+
+
+	console.log(" >> ",smartPointer(886,POINT_BUFFER));
 	vTaskDelete(NULL);
 }
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+////////////////////	testing stuff goes here		//////////////
+//////////////////////////////////////////////////////////////////
 
 
 
@@ -1999,15 +2071,7 @@ unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
 
 void serviceExecutable(void*param){
 
-	// xTaskCreate(
-    //     sayHello,    // Function that should be called
-    //     "interuptSimulator",   // Name of the task (for debugging)
-    //     1000,            // Stack size (bytes)
-    //     NULL,            // Parameter to pass
-    //     1,               // Task priority
-    //     NULL             // Task handle
-    // );
-
+	
 
     _delay_ms(500);
 
@@ -2079,8 +2143,20 @@ void serviceExecutable(void*param){
 	unsigned char socketConnection=0;
 	
 	console.log("start the loop");
-	MDNS.begin("xtensa-lx6");
-	MDNS.addService("http", "tcp", 80);
+	// MDNS.begin("xtensa-lx6");
+	// MDNS.addService("http", "tcp", 80);
+
+
+	xTaskCreate(
+        testingFuction,    // Function that should be called
+        "interuptSimulator",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
+    );
+
+
 
 	// virtualController(fetch("http://192.168.1.15:766"));
 
@@ -2392,16 +2468,21 @@ void setup(){
     );
 
     
-	_delay_ms(2000);
-	initializeVirtualControllerMemory();
-	console.log(virtualControllerMemory);
-	console.log(" >> ",highLevelMemory(0,(unsigned char*)"test0"));
-	console.log(" >> ",highLevelMemory(1,(unsigned char*)"hello world"));
-	console.log(" >> ",highLevelMemory(2,(unsigned char*)"last element"));
-	console.log(" >> ",highLevelMemory(1,(unsigned char*)"short str"));
-	console.log(" >> ",highLevelMemory(1,(unsigned char*)"very--long--string"));
-	console.log(" >> ",highLevelMemory(2,(unsigned char*)"changed"));
-	console.log(" >> ",highLevelMemory(0,(unsigned char*)"test0-=-=-="));
+	// _delay_ms(2000);
+
+
+	// initializeVirtualControllerMemory();
+	// console.log(virtualControllerMemory);
+	// console.log(" >> ",highLevelMemoryIndex(0,(unsigned char*)"test0"));
+	// console.log(" >> ",highLevelMemoryIndex(1,(unsigned char*)"hello world"));
+	// console.log(" >> ",highLevelMemoryIndex(2,(unsigned char*)"last element"));
+	// console.log(" >> ",highLevelMemoryIndex(1,(unsigned char*)"short str"));
+	// console.log(" >> ",highLevelMemoryIndex(1,(unsigned char*)"very--long--string"));
+	// console.log(" >> ",highLevelMemoryIndex(2,(unsigned char*)"changed"));
+	// console.log(" >> ",highLevelMemoryIndex(0,(unsigned char*)"test0-=-=-="));
+
+
+
 	
 
 	// console.log($("hello ","world >> ",-35));
