@@ -1910,7 +1910,8 @@ unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char oper
 			goto realIndexIsNowSet;
 		}
 	}
-	highLevelMemoryIndex(scanForIndex,(unsigned char *)"");
+	highLevelMemoryIndex(scanForIndex,inttostring(bufferIdentifier));
+	highLevelMemory(scanForIndex,(unsigned char *)"");
 	bufferIdentifier=scanForIndex;
 	realIndexIsNowSet:
 	if(operation==POINT_BUFFER){
