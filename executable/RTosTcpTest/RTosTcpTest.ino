@@ -1974,7 +1974,12 @@ JSON_ATTRIBUTE DELAY_MILLI_SEC="MS";			// milli second delay
 JSON_ATTRIBUTE LOOP_COUNTER="LC";				// loop counter
 JSON_ATTRIBUTE LOOP_BODY="LB";					// loop body
 
+// virtual controller memory
+JSON_ATTRIBUTE BUFFER_IDENTIFIER="BI";
+JSON_ATTRIBUTE BUFFER_DATA="BD";
 
+// console logger
+JSON_ATTRIBUTE CONSOLE_DATA="CD";
 
 
 unsigned char* virtualController(unsigned char* executableObject){
@@ -1999,14 +2004,36 @@ unsigned char* virtualController(unsigned char* executableObject){
 				});
 			}
 			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){									// console logger operator
+			console.log(constJson(CONSOLE_DATA,subExecutable));
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){									// hardware id
+			return (unsigned char*)"\"ESP32-BASED-virtual-controller\"";
+		},
+		[&](unsigned char *subExecutable){									// virtual constroller memory wrtie
+			highLevelMemory(
+				smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER),		// address is now defined 
+				virtualController(constJson(BUFFER_DATA,subExecutable))
+			);
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){									// virtual constroller memory read
+			return highLevelMemory(smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER));
+		},
+		[&](unsigned char *subExecutable){									// virtual constroller memory delete
+			smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),DELETE_BUFFER);
+			return subExecutable;
 		}
+
 
 	};
 
-	// console.log(" >> ",getInt(json("operator",executableObject)));
 
-	return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
-	// jsonOperator[0](executableObject);
+	if(constJson(JSON_OPERATOR,executableObject)!=UNDEFINED)
+		return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
+	return executableObject;
 }
 
 
@@ -2028,22 +2055,22 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 void testingFuction(void * uselessParam){
 
-	_delay_ms(4000);
-	initializeVirtualControllerMemory();
+	// _delay_ms(4000);
+	// initializeVirtualControllerMemory();
 
-	console.log(virtualControllerMemoryIndex);_delay_ms(200);
+	// console.log(virtualControllerMemoryIndex);_delay_ms(200);
 
-	console.log(" -1->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
-	console.log(" -->>-->> ",smartPointer(556,POINT_BUFFER));_delay_ms(200);
-	console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
-	console.log(" -->>-->> ",smartPointer(785,POINT_BUFFER));_delay_ms(200);
-	console.log(" -->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
-	console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -1->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -->>-->> ",smartPointer(556,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -->>-->> ",smartPointer(785,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
 
-	smartPointer(987,DELETE_BUFFER);
+	// smartPointer(987,DELETE_BUFFER);
 
 
-	console.log(" >> ",smartPointer(886,POINT_BUFFER));
+	// console.log(" >> ",smartPointer(886,POINT_BUFFER));
 	vTaskDelete(NULL);
 }
 

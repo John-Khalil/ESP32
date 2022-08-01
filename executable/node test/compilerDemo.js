@@ -27,6 +27,13 @@ const DELAY_MILLI_SEC="MS";			// milli second delay
 const LOOP_COUNTER="LC";				// loop counter
 const LOOP_BODY="LB";					// loop body
 
+// virtual controller memory
+const BUFFER_IDENTIFIER="BI";          
+const BUFFER_DATA="BD";     
+
+// console logger
+const CONSOLE_DATA="CD";
+
 
 
 const delay=delayValueMS=>{
