@@ -41,13 +41,13 @@
 }
 
 
-//buffer
-{
-    "operator": int,
-    "bufferIdentifier":int,
-    "sizeRequired":int,
-    "delete":bool
-}
+// //buffer
+// {
+//     "operator": int,
+//     "bufferIdentifier":int,
+//     "sizeRequired":int,
+//     "delete":bool
+// }
 
 //write buffer
 {
@@ -56,7 +56,7 @@
     "data":data form another operator
 }
 
-//read buffer
+//read buffer           // return data from that address
 {
     "operator":int,
     "bufferIdentifier":int
@@ -67,3 +67,40 @@
     "operator":int,
     "bufferIdentifier":int
 }
+
+
+//operator console logger
+{
+    "operator":int,
+    "consoleData":string
+}
+
+
+
+// operator device identifier       // returns predefined string
+{
+    "operator":int,
+    "deviceIdentifier":string
+}
+
+
+
+//  those operators are for future implementation 
+
+
+
+// operator offload virtual controller memory
+{
+
+}
+
+// operator set virtual controller memory
+{
+
+}
+
+// clear virtual controller memory
+{
+
+}
+

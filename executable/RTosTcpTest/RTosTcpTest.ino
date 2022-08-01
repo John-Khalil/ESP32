@@ -1859,47 +1859,47 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 
 
 
-unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress,unsigned char *savedData){
-	if((stringCounter(savedData)+stringCounter(virtualControllerMemoryIndex)+5)>(VIRTUAL_MEMORY_SIZE/2))			
-		return virtualControllerMemoryIndex;
-	initializeVirtualControllerMemory();
-	static unsigned short lastAddedElement=(unsigned short)-1;
-	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		
-		lastAddedElement=virtualMemoryAddress;
-		unsigned long orginalMemorySize=stringCounter(virtualControllerMemoryIndex);
-		CLR(virtualControllerMemoryIndex+(orginalMemorySize-2));
-		_CS(virtualControllerMemoryIndex,(*(virtualControllerMemoryIndex+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
-		_CS(virtualControllerMemoryIndex,savedData);
-		_CS(virtualControllerMemoryIndex,(unsigned char*)"]}");
-	}
-	else{
-		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
-		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemoryIndex);free(getValueFromJson);
-		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
-		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
-		unsigned long finalMemorySize=stringCounter(virtualControllerMemoryIndex)+differenceSize+1;
-		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
-		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize!=0),{
-			JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter];
-			memoryAllocationCounter-=(differenceSize>0);
-			memoryAllocationCounter+=(differenceSize<0);
-		});
-		CLR(virtualControllerMemoryIndex+stringCounter(virtualControllerMemoryIndex)+differenceSize);
-		during((JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR+differenceSize)-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+1,(argLoop index){
-			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[index]=savedData[index];
-		});
-	}
-	return virtualControllerMemoryIndex;
-}
+// unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress,unsigned char *savedData){
+// 	if((stringCounter(savedData)+stringCounter(virtualControllerMemoryIndex)+5)>(VIRTUAL_MEMORY_SIZE/2))			
+// 		return virtualControllerMemoryIndex;
+// 	initializeVirtualControllerMemory();
+// 	static unsigned short lastAddedElement=(unsigned short)-1;
+// 	if(virtualMemoryAddress>lastAddedElement||(lastAddedElement==(unsigned short)-1)){		
+// 		lastAddedElement=virtualMemoryAddress;
+// 		unsigned long orginalMemorySize=stringCounter(virtualControllerMemoryIndex);
+// 		CLR(virtualControllerMemoryIndex+(orginalMemorySize-2));
+// 		_CS(virtualControllerMemoryIndex,(*(virtualControllerMemoryIndex+(orginalMemorySize-3))!='[')?((unsigned char*)","):((unsigned char*)""));
+// 		_CS(virtualControllerMemoryIndex,savedData);
+// 		_CS(virtualControllerMemoryIndex,(unsigned char*)"]}");
+// 	}
+// 	else{
+// 		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+// 		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+// 		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemoryIndex);free(getValueFromJson);
+// 		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
+// 		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+// 		unsigned long finalMemorySize=stringCounter(virtualControllerMemoryIndex)+differenceSize+1;
+// 		unsigned long memoryAllocationCounter=stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize>0);
+// 		within(stringCounter(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)*(differenceSize!=0),{
+// 			JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter+differenceSize]=JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR[memoryAllocationCounter];
+// 			memoryAllocationCounter-=(differenceSize>0);
+// 			memoryAllocationCounter+=(differenceSize<0);
+// 		});
+// 		CLR(virtualControllerMemoryIndex+stringCounter(virtualControllerMemoryIndex)+differenceSize);
+// 		during((JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR+differenceSize)-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+1,(argLoop index){
+// 			JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND[index]=savedData[index];
+// 		});
+// 	}
+// 	return virtualControllerMemoryIndex;
+// }
 
-unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress){
-	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
-	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-	unsigned char *savedData=json(getValueFromJson,virtualControllerMemoryIndex);
-	free(getValueFromJson);
-	return savedData;
-}
+// unsigned char *highLevelMemoryIndex(unsigned long virtualMemoryAddress){
+// 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
+// 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+// 	unsigned char *savedData=json(getValueFromJson,virtualControllerMemoryIndex);
+// 	free(getValueFromJson);
+// 	return savedData;
+// }
 
 
 unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
@@ -1923,36 +1923,36 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 }
 
 
-unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
-	initializeVirtualControllerMemory();
-	unsigned short scanForIndex=0;
-	unsigned char *scanForPointerIndex;
-	// contJsonReset();
-	// console.log(highLevelMemoryIndex(0));
-	// console.log(highLevelMemoryIndex(1));
-	// while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED)){	
-	// 	// checking if the memory was not allocated or been cleared before
-	// 	if(getInt32_t(scanForPointerIndex)==bufferIdentifier){
-	// 		bufferIdentifier=scanForIndex-1;
-	// 		goto realIndexIsNowSet;
-	// 	}
-	// }
+// unsigned long pointerAllocator(unsigned long bufferIdentifier,unsigned char operation){
+// 	initializeVirtualControllerMemory();
+// 	unsigned short scanForIndex=0;
+// 	unsigned char *scanForPointerIndex;
+// 	// contJsonReset();
+// 	// console.log(highLevelMemoryIndex(0));
+// 	// console.log(highLevelMemoryIndex(1));
+// 	// while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED)){	
+// 	// 	// checking if the memory was not allocated or been cleared before
+// 	// 	if(getInt32_t(scanForPointerIndex)==bufferIdentifier){
+// 	// 		bufferIdentifier=scanForIndex-1;
+// 	// 		goto realIndexIsNowSet;
+// 	// 	}
+// 	// }
 	
-	console.log(highLevelMemoryIndex(0));_delay_ms(200);
-	console.log(highLevelMemoryIndex(0));_delay_ms(200);
-	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+// 	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+// 	console.log(highLevelMemoryIndex(0));_delay_ms(200);
+// 	console.log(highLevelMemoryIndex(0));_delay_ms(200);
 
-	while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex))!=UNDEFINED)&&(getInt32_t(scanForPointerIndex)!=bufferIdentifier)){scanForIndex++;console.log("loop");}
-	if(getInt32_t(scanForPointerIndex)!=bufferIdentifier)	
-		goto realIndexIsNowSet;
-	contJsonReset();
-	highLevelMemoryIndex(scanForIndex,inttostring(bufferIdentifier));
-	highLevelMemory(scanForIndex,(unsigned char *)"");
-	realIndexIsNowSet:
-	if(operation==DELETE_BUFFER)
-		highLevelMemoryIndex(scanForIndex,UNDEFINED);
-	return scanForIndex;
-}
+// 	while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex))!=UNDEFINED)&&(getInt32_t(scanForPointerIndex)!=bufferIdentifier)){scanForIndex++;console.log("loop");}
+// 	if(getInt32_t(scanForPointerIndex)!=bufferIdentifier)	
+// 		goto realIndexIsNowSet;
+// 	contJsonReset();
+// 	highLevelMemoryIndex(scanForIndex,inttostring(bufferIdentifier));
+// 	highLevelMemory(scanForIndex,(unsigned char *)"");
+// 	realIndexIsNowSet:
+// 	if(operation==DELETE_BUFFER)
+// 		highLevelMemoryIndex(scanForIndex,UNDEFINED);
+// 	return scanForIndex;
+// }
 
 
 
