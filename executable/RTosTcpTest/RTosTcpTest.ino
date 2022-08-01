@@ -1915,8 +1915,10 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 	while((registeredAddress[registeredAddressCounter++]!=userAddress)&&(registeredAddress[registeredAddressCounter-1]!=nullValue));
 	registeredAddress[registeredAddressCounter-1]=userAddress;
 
-	if(operation==DELETE_BUFFER)
+	if(operation==DELETE_BUFFER){
 		registeredAddress[registeredAddressCounter-1]=nullValue;
+		highLevelMemory(registeredAddressCounter-1,(unsigned char*)"\"\"");			// free the actual memory used
+	}
 
 	return registeredAddressCounter-1;
 	
