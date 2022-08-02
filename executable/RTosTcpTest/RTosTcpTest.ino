@@ -2032,8 +2032,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 	};
 
+	const unsigned short operatorsCount=sizeof(jsonOperator)/sizeof(jsonOperator[0]);
 
-	if(constJson(JSON_OPERATOR,executableObject)!=UNDEFINED)
+	unsigned char *jsonOperatorExist;
+	if((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject)!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
 		return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
 	return executableObject;
 }
