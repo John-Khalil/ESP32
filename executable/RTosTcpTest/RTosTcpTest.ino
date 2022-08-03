@@ -894,6 +894,179 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
 
+
+class JSON_PARSER{
+	public:
+	unsigned char *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT=NULL;
+	unsigned char *JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT=NULL;
+
+	unsigned char JSON_LOW_MEMORY_USAGE_OBJECT(unsigned char *requestedJSON,unsigned char *jsonString){		//this has to be only used with one object to avoid memory corruption  
+		#define OBJECT_STRING_MAX_LENGTH 35
+		unsigned char objectBuffer[OBJECT_STRING_MAX_LENGTH]="";
+		unsigned short jsonArrayIndex=-1;
+		unsigned char subObject=1;
+		unsigned char *deadEndOfString=jsonString+stringCounter(jsonString);
+		unsigned char *objectScanner=requestedJSON;
+		while(*objectScanner){
+			subObject+=(*objectScanner==0x2E);
+			objectScanner++;
+		}
+		for(unsigned char subObjectCounter=0;subObjectCounter<subObject;subObjectCounter++){	//start
+			jsonString++;
+			jsonArrayIndex=-1;
+			unsigned char *jsonObject=objectBuffer;
+			*jsonObject=0x22;
+			jsonObject++;
+			while(*requestedJSON&&(*requestedJSON!=0x2E)&&(*requestedJSON!=0x5B)){
+				*jsonObject=*requestedJSON;
+				requestedJSON++;
+				jsonObject++;
+			}
+			*jsonObject=0x22;
+			jsonObject++;
+			while(jsonObject<(objectBuffer+OBJECT_STRING_MAX_LENGTH)){
+				*jsonObject=0;
+				jsonObject++;
+			}
+			jsonObject = objectBuffer;
+			if(*requestedJSON==0x2E){
+				requestedJSON++;
+			}
+			else if(*requestedJSON==0x5B){
+				requestedJSON++;
+				jsonArrayIndex=strint(requestedJSON);
+				requestedJSON+=stringCounter(inttostring((unsigned long)jsonArrayIndex))+1;//very inefficiant but i dont care!! its a cleaner code
+			}
+
+			while(*jsonObject){ //start searching
+				if(*jsonObject==*jsonString){//object to be found
+					unsigned char *notString=jsonString-1;
+					if(*notString!=0x3A){
+						jsonObject++;
+					}
+				}
+				else{
+					jsonObject=objectBuffer;
+				}
+				jsonString=skipStringJSON(jsonString);
+				jsonString=skipObjectJSON(jsonString);
+				jsonString=skipArrayJSON(jsonString);
+				if(jsonString==deadEndOfString){//object not found
+					return 0;
+				}
+				jsonString++;
+			}//object found
+
+			jsonString++;//skip the ":"
+			unsigned char objectTypeArray=0;
+			searchInsideArray:
+			unsigned short objectStartBracket=0;
+			unsigned short objectEndBracket=0;
+			unsigned short arrayStartBracket=0;
+			unsigned short arrayEndBracket=0;
+			unsigned short doubleQuoates=0;
+			unsigned char *objectLocation=jsonString;
+
+			while(1){
+				objectStartBracket+=(*objectLocation==0x7B);
+				objectEndBracket+=(*objectLocation==0x7D);
+				arrayStartBracket+=(*objectLocation==0x5B);
+				arrayEndBracket+=(*objectLocation==0x5D);
+				unsigned char *validStringCheck=objectLocation-1;
+				doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+				if(objectLocation==deadEndOfString){//object not found
+					return 0;
+				}
+				while(doubleQuoates&0x01){
+					objectLocation++;
+					validStringCheck=objectLocation-1;
+					doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+				}
+				if((*objectLocation==0x2C) && (objectStartBracket == objectEndBracket) && (arrayStartBracket == arrayEndBracket))
+					break;
+				if(objectEndBracket>objectStartBracket)
+					break;
+				if(arrayEndBracket>arrayStartBracket)
+					break;
+				objectLocation++;
+			}
+			
+			if(objectTypeArray){
+				goto backToArrayCounter;
+			}
+			deadEndOfString=objectLocation;
+			if((jsonArrayIndex!=0xFFFF)&&(*jsonString==0x5B)){
+				jsonString++;
+				objectTypeArray=1;
+				while(jsonArrayIndex){
+					goto searchInsideArray;
+					backToArrayCounter:
+					jsonString=objectLocation+1;
+					if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
+						return 0;
+					}
+					jsonArrayIndex--;
+				}
+				objectTypeArray=0;
+				jsonArrayIndex=-1;
+				goto searchInsideArray;
+			}
+		}
+
+		// JSON_OBJECT_FOUND_LOCATION=jsonString;
+
+		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT=deadEndOfString;
+		JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT=jsonString;
+
+
+		// while(jsonString<deadEndOfString){
+		// 	*objectString=*jsonString;
+		// 	objectString++;
+		// 	jsonString++;
+		// }
+		// while(*objectString){
+		// 	*objectString=0;
+		// 	objectString++;
+		// }
+		return 1;
+	}
+
+
+	unsigned char *LAST_CONST_JSON_OBJECT_OBJECT;
+	unsigned char lastByteRemoved_OBJECT=0;
+	unsigned char *parse(unsigned char *requestedJSON,unsigned char *jsonString){
+		// static unsigned char lastByteRemoved_OBJECT;
+		LAST_CONST_JSON_OBJECT_OBJECT=jsonString;
+		if(lastByteRemoved_OBJECT&&(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT!=NULL)&&(!(*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT)))
+			*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT=lastByteRemoved_OBJECT;		//lucky for us cpp support pointer arthematic
+		unsigned char objectDefined=JSON_LOW_MEMORY_USAGE(requestedJSON,jsonString);
+		while(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT==0x20)JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT++;		//when you make a simple algorithm it really pays off
+		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT-=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT==0x22);			//when you make a simple algorithm it really pays off
+		JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT+=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT==0x22);			//when you make a simple algorithm it really pays off
+		lastByteRemoved_OBJECT=*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT;
+		*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR_OBJECT=0;
+		if(!objectDefined)
+			return UNDEFINED;
+		return JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND_OBJECT;
+	}
+
+	unsigned char *parse(char *requestedJson,unsigned char *jsonString){
+		return parse((unsigned char*)requestedJson,jsonString);
+	}
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
 unsigned char inverseBase64Table(unsigned char transBuf){
 	return (transBuf-((65*((transBuf<0x5B)&&(transBuf>0x40)))|(71*((transBuf>0x60)&&(transBuf<0x7B)))|(-4*((transBuf>0x2F)&&(transBuf<0x3A)))|(-19*(transBuf==0x2B))|(-16*(transBuf==0x2F))))*(transBuf!=0x3D);//(char64-((0x41*(char64<26))|(71*((char64>25)&&(char64<52)))|(-4*((char64>51)&&(char64<62)))))
 }
@@ -2035,7 +2208,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 	const unsigned short operatorsCount=sizeof(jsonOperator)/sizeof(jsonOperator[0]);
 
 	unsigned char *jsonOperatorExist;
-	if((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject)!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
+	if(((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject))!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
 		return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
 	return executableObject;
 }
@@ -2051,7 +2224,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 //////////////////////////////////////////////////////////////////
 
 
-
+JSON_PARSER jsonObject0;
 
 
 
@@ -2059,7 +2232,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 void testingFuction(void * uselessParam){
 
-	// _delay_ms(4000);
+	_delay_ms(4000);
 	// initializeVirtualControllerMemory();
 
 	// console.log(virtualControllerMemoryIndex);_delay_ms(200);
@@ -2075,6 +2248,28 @@ void testingFuction(void * uselessParam){
 
 
 	// console.log(" >> ",smartPointer(886,POINT_BUFFER));
+
+
+	unsigned char *sampleData=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+
+
+	// console.log(sampleData);
+	
+
+	console.log("xtensa : ",jsonObject0.parse("xtensa",sampleData));
+	// console.log("dev : ",jsonObject0.parse("dev",sampleData));
+
+	// console.log("thisLink : ",jsonObject0.parse("thisLink",sampleData));
+	// console.log("webHost : ",jsonObject0.parse("webHost",sampleData));
+
+	// console.log("xtensa : ",json("xtensa",sampleData));
+	// console.log("dev : ",json("dev",sampleData));
+
+	// console.log("thisLink : ",json("thisLink",sampleData));
+	// console.log("webHost : ",json("webHost",sampleData));
+
+
+
 	vTaskDelete(NULL);
 }
 
