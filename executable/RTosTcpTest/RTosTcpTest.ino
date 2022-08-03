@@ -2025,6 +2025,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
+	contJsonReset(); // this should solve the shared poniter problem
 	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
 	free(getValueFromJson);
 	return savedData;
@@ -2232,7 +2233,7 @@ JSON_PARSER jsonObject0;
 
 void testingFuction(void * uselessParam){
 
-	_delay_ms(4000);
+	// _delay_ms(4000);
 	// initializeVirtualControllerMemory();
 
 	// console.log(virtualControllerMemoryIndex);_delay_ms(200);
@@ -2250,13 +2251,13 @@ void testingFuction(void * uselessParam){
 	// console.log(" >> ",smartPointer(886,POINT_BUFFER));
 
 
-	unsigned char *sampleData=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
+	// unsigned char *sampleData=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
 
 
 	// console.log(sampleData);
 	
 
-	console.log("xtensa : ",jsonObject0.parse("xtensa",sampleData));
+	// console.log("xtensa : ",jsonObject0.parse("xtensa",sampleData));
 	// console.log("dev : ",jsonObject0.parse("dev",sampleData));
 
 	// console.log("thisLink : ",jsonObject0.parse("thisLink",sampleData));
