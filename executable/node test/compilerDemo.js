@@ -2,11 +2,17 @@ const express =require('express');
 const app =express();
 const port =766;
 
+var operatorIndex=0;
 
+const digitalOutputOperator=operatorIndex++;
+const delayOperator=operatorIndex++;
+const loopOperator=operatorIndex++;
 
-const digitalOutputOperator=0;
-const delayOperator=1;
-const loopOperator=2;
+const consoleLoggerOperator=operatorIndex++;
+const hardwareIDOperator=operatorIndex++;
+const memoryWriteOperator=operatorIndex++;
+const memoryReadOperator=operatorIndex++;
+const memoryDeleteOperator=operatorIndex++;
 
 
 
@@ -59,6 +65,42 @@ const loop=(_loopCounter,_loopBody)=>{
     return returnStack;
 }
 
+const consoleLogger=()=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=consoleLoggerOperator;
+
+    return returnStack;
+}
+
+const hardwareID=()=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=hardwareIDOperator;
+
+    return returnStack;
+}
+
+const memoryWrite=()=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=memoryWriteOperator;
+
+    return returnStack;
+}
+
+const memoryRead=()=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=memoryReadOperator;
+
+    return returnStack;
+}
+
+const memoryDelete=()=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=memoryDeleteOperator;
+
+    return returnStack;
+}
+
+////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
 app.get('/',(req,res)=>{
     console.log(req);
