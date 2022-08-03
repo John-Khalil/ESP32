@@ -2023,6 +2023,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
+	initializeVirtualControllerMemory();
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
 	// contJsonReset(); // this should solve the shared poniter problem
@@ -2078,6 +2079,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 
 
 unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
+	initializeVirtualControllerMemory();
 	static unsigned long registeredAddress[51]={};
 	//we have to init here before we go
 	#define nullValue -1UL
@@ -2092,7 +2094,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 
 	if(operation==DELETE_BUFFER){
 		registeredAddress[registeredAddressCounter-1]=nullValue;
-		highLevelMemory(registeredAddressCounter-1,(unsigned char*)"\"\"");			// free the actual memory used
+		highLevelMemory(registeredAddressCounter-1,(unsigned char*)"\"null\"");			// free the actual memory used
 	}
 
 	return registeredAddressCounter-1;
@@ -2239,12 +2241,14 @@ void testingFuction(void * uselessParam){
 
 	// console.log(virtualControllerMemoryIndex);_delay_ms(200);
 
-	// console.log(" -1->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -->>-->> ",smartPointer(556,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -->>-->> ",smartPointer(785,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -->>-->> ",smartPointer(9968,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -->>-->> ",smartPointer(987,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
+
+	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
+
+	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
+	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
+	
 
 	// smartPointer(987,DELETE_BUFFER);
 
