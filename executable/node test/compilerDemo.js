@@ -65,38 +65,38 @@ const loop=(_loopCounter,_loopBody)=>{
     return returnStack;
 }
 
-const consoleLogger=()=>{
+const consoleLogger=(consoleData)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=consoleLoggerOperator;
-
+    returnStack[CONSOLE_DATA]=consoleData;
     return returnStack;
 }
 
 const hardwareID=()=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=hardwareIDOperator;
-
     return returnStack;
 }
 
-const memoryWrite=()=>{
+const memoryWrite=(bufferIdentifier,bufferData)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=memoryWriteOperator;
-
+    returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
+    returnStack[BUFFER_DATA]=bufferData;
     return returnStack;
 }
 
-const memoryRead=()=>{
+const memoryRead=(bufferIdentifier)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=memoryReadOperator;
-
+    returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
     return returnStack;
 }
 
-const memoryDelete=()=>{
+const memoryDelete=(bufferIdentifier)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=memoryDeleteOperator;
-
+    returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
     return returnStack;
 }
 
@@ -106,17 +106,18 @@ app.get('/',(req,res)=>{
     console.log(req);
     var finalStack=[];
 
-    finalStack.push(digitalOutput(65535,[1,2,78,563,9552]));
-    finalStack.push(delay(100));
+    finalStack.push(memoryWrite(100,"test to see if it works"));
 
-    finalStack.push(digitalOutput(65535,[1,2,999,9552]));
-    finalStack.push(delay(100));
+    finalStack.push(consoleLogger(memoryRead(100)));
 
+    finalStack.push(memoryDelete(100));
+
+    finalStack.push(consoleLogger(memoryRead(100)));
     
    
-    res.send(JSON.stringify(loop(2,[loop(3,finalStack)])));
+    res.send(JSON.stringify(loop(2,[loop(1,finalStack)])));
 });
 
 app.listen(port,()=>{
-    console.log(`-------- server starte @ port ${port}`);
+    console.log(`-------- server started @ port ${port}`);
 });

@@ -2025,8 +2025,9 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-	contJsonReset(); // this should solve the shared poniter problem
-	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
+	// contJsonReset(); // this should solve the shared poniter problem
+	// unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
+	unsigned char *savedData=json(getValueFromJson,virtualControllerMemory);
 	free(getValueFromJson);
 	return savedData;
 }
@@ -2182,7 +2183,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// console logger operator
-			console.log(constJson(CONSOLE_DATA,subExecutable));
+			console.log(virtualController(constJson(CONSOLE_DATA,subExecutable)));
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// hardware id
@@ -2581,6 +2582,8 @@ void serviceExecutable(void*param){
 				#define EXTERNAL_PORT 0x00000040UL
 				#define EXTERNAL_PORT_LIVE 0x00000100UL
 
+				#define VIRTUAL_CONTROLLER 0x00000200UL
+
 			
 				console.log("\n\nuser data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"<@>"));
 				
@@ -2629,6 +2632,15 @@ void serviceExecutable(void*param){
 						client.flush();
 						client.stop();
 					}
+
+					if(userInstruction&VIRTUAL_CONTROLLER){
+						client.write(CORS_HEADERS);
+						client.write(CLIENT_ACK);
+						client.flush();
+						client.stop();
+						virtualController(fetch("http://192.168.1.15:766"));
+					}
+
 				}	
 			}
 
