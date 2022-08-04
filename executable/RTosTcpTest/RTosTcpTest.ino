@@ -2247,9 +2247,9 @@ JSON_PARSER jsonObject0;
 
 void testingFuction(void * uselessParam){
 
-	_delay_ms(4000);
+	// _delay_ms(4000);
 
-	fetch("http://192.168.1.15:766",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
+	// fetch("http://192.168.1.15:766",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 
 	// initializeVirtualControllerMemory();
 
