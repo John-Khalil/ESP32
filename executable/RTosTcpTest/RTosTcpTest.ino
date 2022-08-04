@@ -1989,6 +1989,7 @@ void initializeVirtualControllerMemory(void){
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
+	contJsonReset();
 	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
 		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
@@ -2026,9 +2027,9 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 	initializeVirtualControllerMemory();
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-	// contJsonReset(); // this should solve the shared poniter problem
-	// unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
-	unsigned char *savedData=json(getValueFromJson,virtualControllerMemory);
+	contJsonReset(); // this should solve the shared poniter problem
+	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
+	// unsigned char *savedData=json(getValueFromJson,virtualControllerMemory);
 	free(getValueFromJson);
 	return savedData;
 }
@@ -2185,7 +2186,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// console logger operator
-			console.log(virtualController(constJson(CONSOLE_DATA,subExecutable)));
+			console.log(" -> ",virtualController(constJson(CONSOLE_DATA,subExecutable))," <- ");
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){									// hardware id
@@ -2513,8 +2514,8 @@ void serviceExecutable(void*param){
 				if(!((eventIdentifier(tcpText)&WEB_SERVER)==WEB_SERVER))
 					URIdecode(tcpText);
 			}
-			console.log("\n \\/  \\/  \\/  \\/  \\/  NEW-REQUEST \\/  \\/  \\/  \\/  \\/ \n");
-			console.log(tcpText);
+			// console.log("\n \\/  \\/  \\/  \\/  \\/  NEW-REQUEST \\/  \\/  \\/  \\/  \\/ \n");
+			// console.log(tcpText);
 			
 
 

@@ -105,29 +105,25 @@ const memoryDelete=(bufferIdentifier)=>{
 var counter=0;
 
 app.get('/',(req,res)=>{
-    console.log(req);
+    
     var finalStack=[];
 
 
-    // finalStack.push(consoleLogger("-------------------------------new request"));
-    // finalStack.push(delay(100));
-    finalStack.push(consoleLogger(memoryRead(100)));
+    
+    
     if((counter++)&1)
         finalStack.push(memoryWrite(100,hardwareID()));
     else   
         finalStack.push(memoryDelete(100));
-    // finalStack.push(delay(100));
-    // finalStack.push(memoryWrite(100,"samer"));
 
-
-    // finalStack.push(consoleLogger(memoryRead(100)));
-
-    // finalStack.push(memoryDelete(100));
-
-    // finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(consoleLogger(memoryRead(100)));
+    
     
    
-    res.send(JSON.stringify(loop(2,[loop(1,finalStack)])));
+    res.send(JSON.stringify(loop(1,finalStack)));
+
+    console.log(finalStack);
+
 });
 
 app.listen(port,()=>{
