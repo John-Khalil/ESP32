@@ -126,6 +126,13 @@ app.get('/',(req,res)=>{
 
 });
 
+app.post("/",(req,res)=>{
+    console.log("port request body >> ",req);
+    res.send("ack");
+});
+
+
+
 app.listen(port,()=>{
     console.log(`-------- server started @ port ${port}`);
 });
