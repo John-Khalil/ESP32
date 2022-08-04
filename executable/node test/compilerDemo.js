@@ -1,5 +1,13 @@
 const express =require('express');
+const cors=require('cors');
+const bodyParser = require('body-parser');
+
+
 const app =express();
+app.use(cors());
+
+app.use(bodyParser.json());
+
 const port =766;
 
 var operatorIndex=0;
@@ -127,7 +135,7 @@ app.get('/',(req,res)=>{
 });
 
 app.post("/",(req,res)=>{
-    console.log("port request body >> ",req);
+    console.log("port request body >> ",req.body);
     res.send("ack");
 });
 
