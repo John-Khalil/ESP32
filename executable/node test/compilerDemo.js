@@ -22,6 +22,8 @@ const memoryWriteOperator=operatorIndex++;
 const memoryReadOperator=operatorIndex++;
 const memoryDeleteOperator=operatorIndex++;
 
+const fetchOperator=operatorIndex++;
+
 
 
 const JSON_OPERATOR="OP";				// generic operator
@@ -47,6 +49,10 @@ const BUFFER_DATA="BD";
 
 // console logger
 const CONSOLE_DATA="CD";
+
+// fetch operator
+const WEB_HOST="WH";
+const POST_BODY="PB";
 
 
 
@@ -105,6 +111,15 @@ const memoryDelete=(bufferIdentifier)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=memoryDeleteOperator;
     returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
+    return returnStack;
+}
+
+const controllerFetch=(fetchWebHost,fetchData)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=fetchOperator;
+    returnStack[WEB_HOST]=fetchWebHost;
+    if(fetchData!==undefined)
+        returnStack[POST_BODY]=fetchData;
     return returnStack;
 }
 

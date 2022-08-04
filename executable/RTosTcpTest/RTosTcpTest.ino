@@ -2161,18 +2161,22 @@ JSON_ATTRIBUTE BUFFER_DATA="BD";
 // console logger
 JSON_ATTRIBUTE CONSOLE_DATA="CD";
 
+// fetch operator
+JSON_ATTRIBUTE WEB_HOST="WH";
+JSON_ATTRIBUTE POST_BODY="PB";
+
 
 unsigned char* virtualController(unsigned char* executableObject){
-	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={		// functional should be included so we can use lambda expression while passing variabels by ref
-		[&](unsigned char *subExecutable){									// digtal output operator
+	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
+		[&](unsigned char *subExecutable){											// digtal output operator
 			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){									// delay operator
+		[&](unsigned char *subExecutable){											// delay operator
 			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){									// loop operator
+		[&](unsigned char *subExecutable){											// loop operator
 			unsigned char *loopCounter;
 			if((loopCounter=constJson(LOOP_COUNTER,subExecutable))!=UNDEFINED){
 				within(getInt32_t(loopCounter),{
@@ -2185,26 +2189,32 @@ unsigned char* virtualController(unsigned char* executableObject){
 			}
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){									// console logger operator
+		[&](unsigned char *subExecutable){											// console logger operator
 			console.log(" -> ",virtualController(constJson(CONSOLE_DATA,subExecutable))," <- ");
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){									// hardware id
+		[&](unsigned char *subExecutable){											// hardware id
 			return (unsigned char*)"\"ESP32-BASED-virtual-controller\"";
 		},
-		[&](unsigned char *subExecutable){									// virtual constroller memory wrtie
+		[&](unsigned char *subExecutable){											// virtual constroller memory wrtie
 			highLevelMemory(
 				smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER),		// address is now defined 
 				virtualController(constJson(BUFFER_DATA,subExecutable))
 			);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){									// virtual constroller memory read
+		[&](unsigned char *subExecutable){											// virtual constroller memory read
 			return highLevelMemory(smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER));
 		},
-		[&](unsigned char *subExecutable){									// virtual constroller memory delete
+		[&](unsigned char *subExecutable){											// virtual constroller memory delete
 			smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),DELETE_BUFFER);
 			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){
+			unsigned char *webHostUrlBuffer=calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
+			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController(constJson(POST_BODY,subExecutable)));
+			free(webHostUrlBuffer);
+			return dataFromFetch;
 		}
 
 

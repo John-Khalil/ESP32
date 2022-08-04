@@ -82,6 +82,13 @@
     "operator":int,
 }
 
+// operator fetch
+{
+    "operator":int,
+    "webHost":str,
+    "postBody":str,
+} 
+
 
 
 //  those operators are for future implementation 
