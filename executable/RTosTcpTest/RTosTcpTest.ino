@@ -510,7 +510,7 @@ unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPo
 	if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
 		return 0;
 	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter)
-	return !diffCounter;
+	return (diffCounter!=0);
 }
 
 unsigned char *_CS(unsigned char *bigString,unsigned char *smallString){
@@ -2216,14 +2216,12 @@ unsigned char* virtualController(unsigned char* executableObject){
 			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(postBodyBuffer,virtualController($(constJson(POST_BODY,subExecutable)))));
 
 
-			unsigned char *testPrt=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));
+			unsigned char *testPrt=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
 			console.log(" ---> ",testPrt);
 
 			unsigned char *dataFromFetch;
-			if(!equalStrings(testPrt,(unsigned char*)"undefined")){
-				dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)));
-				console.log("5555555555555555 da5alt hena");
-			}	
+			if(!equalStrings(testPrt,(unsigned char*)"undefined"))
+				dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),$(testPrt));	
 			else
 				dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)));
 			free(webHostUrlBuffer);

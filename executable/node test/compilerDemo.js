@@ -142,14 +142,14 @@ app.get('/',(req,res)=>{
     // else   
     //     finalStack.push(memoryDelete(100));
 
-    finalStack.push(consoleLogger(controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    // finalStack.push(consoleLogger(controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
 
     
 
     // finalStack.push(controllerFetch("http://192.168.1.15:776",(memoryRead(100))));
 
     
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("http://192.168.1.15:766")));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
     
     
     // finalStack.push(delay(100));
