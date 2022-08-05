@@ -132,24 +132,29 @@ app.get('/',(req,res)=>{
     var finalStack=[];
 
 
-    
-    
-    if((counter++)&1)
-        finalStack.push(memoryWrite(100,hardwareID()));
-    else   
-        finalStack.push(memoryDelete(100));
-
     // finalStack.push(consoleLogger(memoryRead(100)));
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger(memoryRead(100))));
+
+    // finalStack.push(memoryWrite(100,(hardwareID())));
+    
+    // if((counter++)&1)
+    //     finalStack.push(memoryWrite(100,hardwareID()));
+    // else   
+    //     finalStack.push(memoryDelete(100));
+
+    finalStack.push(consoleLogger(controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
 
     
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger("test")));
+
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",(memoryRead(100))));
+
+    
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("http://192.168.1.15:766")));
     
     
     // finalStack.push(delay(100));
     
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
     
    
     res.send(JSON.stringify(loop(1,finalStack)));
