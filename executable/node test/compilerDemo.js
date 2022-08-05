@@ -139,13 +139,15 @@ app.get('/',(req,res)=>{
     else   
         finalStack.push(memoryDelete(100));
 
-    finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(consoleLogger(memoryRead(100)));
+
+    finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger(memoryRead(100))));
     
     
    
     res.send(JSON.stringify(loop(1,finalStack)));
 
-    console.log(finalStack);
+    console.log(JSON.stringify(finalStack));
 
 });
 

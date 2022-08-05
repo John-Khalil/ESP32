@@ -2211,8 +2211,9 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){
-			unsigned char *webHostUrlBuffer=calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
-			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController(constJson(POST_BODY,subExecutable)));
+			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
+			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController(json(POST_BODY,subExecutable)));
+			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController((unsigned char *)"{}"));
 			free(webHostUrlBuffer);
 			return dataFromFetch;
 		}
@@ -2239,7 +2240,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 //////////////////////////////////////////////////////////////////
 
 
-JSON_PARSER jsonObject0;
+// JSON_PARSER jsonObject0;
 
 
 
@@ -2249,7 +2250,7 @@ void testingFuction(void * uselessParam){
 
 	// _delay_ms(4000);
 
-	// fetch("http://192.168.1.15:766",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
+	// fetch("http://192.168.1.13",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
 
 	// initializeVirtualControllerMemory();
 

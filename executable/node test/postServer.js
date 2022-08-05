@@ -11,8 +11,9 @@ app.use(bodyParser.json());
 const port =776;
 
 app.post("/",(req,res)=>{
-    console.log("port request body >> ",req.body);
     res.send("ack");
+    console.log("port request body >> ",req.body);
+    
 });
 
 
