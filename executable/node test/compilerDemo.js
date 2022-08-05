@@ -135,22 +135,24 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    // finalStack.push(memoryWrite(100,(hardwareID())));
+    finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
      
     // if((counter++)&1)
     //     finalStack.push(memoryWrite(100,hardwareID()));
     // else   
     //     finalStack.push(memoryDelete(100));
 
-    // finalStack.push(consoleLogger(controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    finalStack.push(consoleLogger(memoryRead(100)));
 
     
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[254,32,689])));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(100)));
+
+    finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[564,98])));
 
     
-    finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
-    finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
     
     
     // finalStack.push(delay(100));
