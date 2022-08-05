@@ -2213,14 +2213,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 		[&](unsigned char *subExecutable){
 			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
 			unsigned char *postBodyBuffer=(unsigned char *)calloc(512,sizeof(unsigned  char));
-			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(postBodyBuffer,virtualController($(constJson(POST_BODY,subExecutable)))));
-
-			// fetch("192.168.1.13",postBodyBuffer);
-			
-
-			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(dataFromFetch,virtualController((unsigned char*)"{}")));
-			
-			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController((unsigned char *)"{}"));
+			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(postBodyBuffer,virtualController($(constJson(POST_BODY,subExecutable)))));
+			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable))));
 			free(webHostUrlBuffer);
 			free(postBodyBuffer);
 			return dataFromFetch;
@@ -2665,7 +2659,9 @@ void serviceExecutable(void*param){
 						client.write(CLIENT_ACK);
 						client.flush();
 						client.stop();
-						virtualController(fetch("http://192.168.1.15:766"));
+						unsigned char *virtualControllerStack=(unsigned char*)calloc(fetchMemoryLimiter+1,sizeof(unsigned char*));
+						virtualController(_CS(virtualControllerStack,fetch("http://192.168.1.15:766")));
+						free(virtualControllerStack);
 					}
 
 				}	

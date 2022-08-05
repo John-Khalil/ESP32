@@ -142,9 +142,14 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
     finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger(memoryRead(100))));
+
+    
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger("test")));
     
     
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",({test:101})));
+    // finalStack.push(delay(100));
+    
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
     
    
     res.send(JSON.stringify(loop(1,finalStack)));
