@@ -131,7 +131,7 @@ void microSecDelay(unsigned long timeInMicroSec){
 
 void consoleSetup(void){
     _PM(consoleClkPin,OUTPUT);
-    _PM(consoleDataPin,OUTPUT);
+    _PM(consoleDataPin,INPUT_PULLUP);					// this should be defined as OUTPUT but its handeled internally by the class
     // console.setup(consoleClk,consoleData,consoleSync,microSecDelay,200000);
     console.setup(
         [&](unsigned char pinState){

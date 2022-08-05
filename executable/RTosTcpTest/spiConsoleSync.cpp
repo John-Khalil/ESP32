@@ -101,7 +101,7 @@ class spiConsole{
     }
 
 
-    unsigned char *_spiConsoleLog(unsigned char *consoleData){
+    unsigned char *_spiConsoleLog(unsigned char *consoleData){  _dataPinChangeDirection(1);
         unsigned char *loggedData=consoleData;
         unsigned short finalPacketCheckSum=0;
         unsigned char pinOnChangeEvent=0;
@@ -138,7 +138,7 @@ class spiConsole{
             }
         }
 
-        _dataPin(1);
+        _dataPin(1);            _dataPinChangeDirection(0);
         // if(!finalPacketCheckSum){
         //     finalPacketCheckSum=checkSum(loggedData)+((13+10)*autoNLCR);
         //     // unsigned char checkSumAdd[3]={(unsigned char)(finalPacketCheckSum>>8),(unsigned char)(finalPacketCheckSum&0xff)};
