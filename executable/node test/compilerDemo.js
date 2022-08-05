@@ -150,6 +150,7 @@ app.get('/',(req,res)=>{
 
     
     finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
     
     
     // finalStack.push(delay(100));
