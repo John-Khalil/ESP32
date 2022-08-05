@@ -144,6 +144,8 @@ app.get('/',(req,res)=>{
     finalStack.push(controllerFetch("http://192.168.1.15:776",consoleLogger(memoryRead(100))));
     
     
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",({test:101})));
+    
    
     res.send(JSON.stringify(loop(1,finalStack)));
 

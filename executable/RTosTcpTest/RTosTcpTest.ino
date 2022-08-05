@@ -2212,9 +2212,16 @@ unsigned char* virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *subExecutable){
 			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
-			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController(json(POST_BODY,subExecutable)));
-			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController((unsigned char *)"{}"));
+			unsigned char *postBodyBuffer=(unsigned char *)calloc(512,sizeof(unsigned  char));
+			unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(postBodyBuffer,virtualController($(constJson(POST_BODY,subExecutable)))));
+
+			// fetch("192.168.1.13",postBodyBuffer);
+
+			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(dataFromFetch,virtualController((unsigned char*)"{}")));
+			
+			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),virtualController((unsigned char *)"{}"));
 			free(webHostUrlBuffer);
+			free(postBodyBuffer);
 			return dataFromFetch;
 		}
 
