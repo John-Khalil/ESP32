@@ -2216,14 +2216,23 @@ unsigned char* virtualController(unsigned char* executableObject){
 			// unsigned char *dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),_CS(postBodyBuffer,virtualController($(constJson(POST_BODY,subExecutable)))));
 
 
-			unsigned char *testPrt=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
-			console.log(" ---> ",testPrt);
+			unsigned char *finalPostBody=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
+			unsigned char *finalWebHostUrl=_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable));
+			console.log(" ---> ",finalPostBody);
+
+
+			unsigned long forceCachingCounter=0;
+			within(stringCounter(finalPostBody),{
+				postBodyBuffer[forceCachingCounter]=finalPostBody[forceCachingCounter++];
+			});
+			CLR(postBodyBuffer+forceCachingCounter);
+
 
 			unsigned char *dataFromFetch;
-			if(!equalStrings(testPrt,(unsigned char*)"undefined"))
-				dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)),$(testPrt));	
+			if(!equalStrings(finalPostBody,(unsigned char*)"undefined"))
+				dataFromFetch=fetch(finalWebHostUrl,postBodyBuffer);
 			else
-				dataFromFetch=fetch(_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable)));
+				dataFromFetch=fetch(finalWebHostUrl);
 			free(webHostUrlBuffer);
 			free(postBodyBuffer);
 			return dataFromFetch;

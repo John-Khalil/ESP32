@@ -146,7 +146,7 @@ app.get('/',(req,res)=>{
 
     
 
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",(memoryRead(100))));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[254,32,689])));
 
     
     finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
