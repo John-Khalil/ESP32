@@ -136,7 +136,7 @@ app.get('/',(req,res)=>{
 
 
     // finalStack.push(memoryWrite(100,(hardwareID())));
-    
+     
     // if((counter++)&1)
     //     finalStack.push(memoryWrite(100,hardwareID()));
     // else   
