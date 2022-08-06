@@ -149,11 +149,13 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
     // finalStack.push(consoleLogger(consoleLogger(delay(20))));
 
+    finalStack.push(consoleLogger(memoryRead(101)));
+
     
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",hardwareID(),{test:'test'}));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
 
     // finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[564,98])));
 
@@ -174,12 +176,13 @@ app.get('/',(req,res)=>{
 });
 
 app.post("/",(req,res)=>{
-    console.log("port request body >> ",req.body);
+    console.log("post request body >> ",req.body);
     res.send("ack");
 });
 
 
 
 app.listen(port,()=>{
+    console.clear();
     console.log(`-------- server started @ port ${port}`);
 });
