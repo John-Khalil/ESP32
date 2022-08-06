@@ -90,6 +90,14 @@
 } 
 
 
+// operator $
+{
+    "operator":int,
+    "totalLength":int,
+    "subString":[]
+}
+
+
 
 //  those operators are for future implementation 
 

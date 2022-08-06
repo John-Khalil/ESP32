@@ -893,6 +893,11 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
+unsigned char *recursiveJsonAlgorithm(unsigned char *recursiveAlgorithmData){
+	contJsonReset();
+	return recursiveAlgorithmData;
+}
+
 
 
 class JSON_PARSER{
@@ -2164,6 +2169,11 @@ JSON_ATTRIBUTE CONSOLE_DATA="CD";
 // fetch operator
 JSON_ATTRIBUTE WEB_HOST="WH";
 JSON_ATTRIBUTE POST_BODY="PB";
+JSON_ATTRIBUTE REQUEST_PARAM="RP";
+
+// $tring operataor
+JSON_ATTRIBUTE TOTAL_LENGTH="TL";
+JSON_ATTRIBUTE SUB_STRING="SS";
 
 
 unsigned char* virtualController(unsigned char* executableObject){
@@ -2196,14 +2206,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 		[&](unsigned char *subExecutable){											// hardware id
 			return (unsigned char*)"\"ESP32-BASED-virtual-controller\"";
 		},
-		[&](unsigned char *subExecutable){											// virtual constroller memory wrtie
+		[&](unsigned char *subExecutable){											// virtual controller memory wrtie
 			highLevelMemory(
 				smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER),		// address is now defined 
 				virtualController(constJson(BUFFER_DATA,subExecutable))
 			);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){											// virtual constroller memory read
+		[&](unsigned char *subExecutable){											// virtual controller memory read
 			static unsigned char *readVirtualMemoryAllocator=NULL;
 			if(readVirtualMemoryAllocator!=NULL)
 				free(readVirtualMemoryAllocator);
@@ -2211,13 +2221,33 @@ unsigned char* virtualController(unsigned char* executableObject){
 			readVirtualMemoryAllocator=(unsigned char *)calloc(stringCounter(finalDataFromVirtualMemory)+1,sizeof(unsigned char));
 			return _CS(readVirtualMemoryAllocator,finalDataFromVirtualMemory);
 		},
-		[&](unsigned char *subExecutable){											// virtual constroller memory delete
+		[&](unsigned char *subExecutable){											// virtual controller memory delete
 			smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),DELETE_BUFFER);
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){
 			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
-			unsigned char *postBodyBuffer=(unsigned char *)calloc(1024,sizeof(unsigned  char));
+			// unsigned char *postBodyBuffer=(unsigned char *)calloc(1024,sizeof(unsigned  char));
+
+
+			unsigned char *mainPostBodyBuffer=(unsigned char *)calloc(1024,sizeof(unsigned  char));
+
+			unsigned char *postBodyBuffer=mainPostBodyBuffer;
+
+			unsigned char *postRequestParams;
+			if((postRequestParams=constJson(REQUEST_PARAM,subExecutable))!=UNDEFINED){
+				_CS(mainPostBodyBuffer,(unsigned char*)"{\"");
+				_CS(mainPostBodyBuffer,(unsigned char*)REQUEST_PARAM);
+				_CS(mainPostBodyBuffer,(unsigned char*)"\":");
+				_CS(mainPostBodyBuffer,(unsigned char*)postRequestParams);
+				_CS(mainPostBodyBuffer,(unsigned char*)",\"");
+				_CS(mainPostBodyBuffer,(unsigned char*)POST_BODY);
+				_CS(mainPostBodyBuffer,(unsigned char*)"\":");
+				postBodyBuffer+=stringCounter(mainPostBodyBuffer);
+			}
+
+
+
 			unsigned char *finalWebHostUrl=_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable));
 			unsigned char *finalPostBody=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
 			// console.log(" ===> ",finalWebHostUrl);
@@ -2229,12 +2259,20 @@ unsigned char* virtualController(unsigned char* executableObject){
 			});
 			CLR(postBodyBuffer+forceCachingCounter);
 			unsigned char *dataFromFetch;
+
+
+			if(postRequestParams!=UNDEFINED){
+				_CS(mainPostBodyBuffer+stringCounter(mainPostBodyBuffer),(unsigned char*)"}");
+			}
+
+			console.log(" ---> ",mainPostBodyBuffer);
+
 			if(!equalStrings(finalPostBody,(unsigned char*)"undefined"))
 				dataFromFetch=fetch(finalWebHostUrl,postBodyBuffer);
 			else
 				dataFromFetch=fetch(finalWebHostUrl);
 			free(webHostUrlBuffer);
-			free(postBodyBuffer);
+			free(mainPostBodyBuffer);
 			return dataFromFetch;
 		}
 

@@ -53,6 +53,7 @@ const CONSOLE_DATA="CD";
 // fetch operator
 const WEB_HOST="WH";
 const POST_BODY="PB";
+const REQUEST_PARAM="RP";
 
 
 
@@ -114,12 +115,14 @@ const memoryDelete=(bufferIdentifier)=>{
     return returnStack;
 }
 
-const controllerFetch=(fetchWebHost,fetchData)=>{
+const controllerFetch=(fetchWebHost,fetchData,fetchParams)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=fetchOperator;
     returnStack[WEB_HOST]=fetchWebHost;
     if(fetchData!==undefined)
         returnStack[POST_BODY]=fetchData;
+    if((fetchParams!=undefined)&&(fetchData!==undefined))
+        returnStack[REQUEST_PARAM]=fetchParams;
     return returnStack;
 }
 
@@ -135,7 +138,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
     finalStack.push(memoryWrite(101,memoryRead(100)));
      
     // if((counter++)&1)
@@ -144,8 +147,11 @@ app.get('/',(req,res)=>{
     //     finalStack.push(memoryDelete(100));
 
     // finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(consoleLogger(consoleLogger(delay(20))));
 
     
+
+    finalStack.push(controllerFetch("http://192.168.1.15:776",hardwareID(),{test:569}));
 
     finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
 
