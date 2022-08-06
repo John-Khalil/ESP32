@@ -2268,7 +2268,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			console.log(" ---> ",mainPostBodyBuffer);
 
 			if(!equalStrings(finalPostBody,(unsigned char*)"undefined"))
-				dataFromFetch=fetch(finalWebHostUrl,postBodyBuffer);
+				dataFromFetch=fetch(finalWebHostUrl,mainPostBodyBuffer);
 			else
 				dataFromFetch=fetch(finalWebHostUrl);
 			free(webHostUrlBuffer);

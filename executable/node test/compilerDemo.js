@@ -151,7 +151,7 @@ app.get('/',(req,res)=>{
 
     
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",hardwareID(),{test:569}));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",hardwareID(),{test:'test'}));
 
     finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
 
