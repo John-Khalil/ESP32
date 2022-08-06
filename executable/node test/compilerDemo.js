@@ -136,22 +136,23 @@ app.get('/',(req,res)=>{
 
 
     finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    finalStack.push(memoryWrite(101,memoryRead(100)));
      
     // if((counter++)&1)
     //     finalStack.push(memoryWrite(100,hardwareID()));
     // else   
     //     finalStack.push(memoryDelete(100));
 
-    finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(consoleLogger(memoryRead(100)));
 
     
 
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(100)));
+    finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[564,98])));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[564,98])));
 
     
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
     // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
     
     
