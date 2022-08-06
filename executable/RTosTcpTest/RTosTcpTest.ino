@@ -2218,16 +2218,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 		[&](unsigned char *subExecutable){
 			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
 			unsigned char *postBodyBuffer=(unsigned char *)calloc(1024,sizeof(unsigned  char));
-
 			unsigned char *finalWebHostUrl=_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable));
-
 			unsigned char *finalPostBody=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
-			console.log(" ===> ",finalWebHostUrl);
-			// if(json(JSON_OPERATOR,finalPostBody)!=UNDEFINED)
-				contJsonReset();
-			console.log(" ---> ",finalPostBody);
-
-
+			// console.log(" ===> ",finalWebHostUrl);
+			contJsonReset();
+			// console.log(" ---> ",finalPostBody);
 			unsigned long forceCachingCounter=0;
 			within(stringCounter(finalPostBody),{
 				postBodyBuffer[forceCachingCounter]=finalPostBody[forceCachingCounter++];
