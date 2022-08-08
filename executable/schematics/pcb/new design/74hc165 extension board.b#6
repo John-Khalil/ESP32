@@ -698,6 +698,14 @@ design rules under a new name.</description>
 <attribute name="NAME" x="61.087" y="69.596" size="1.27" layer="25" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="64.643" y="69.596" size="1.27" layer="27" ratio="10" rot="R90"/>
 </element>
+<element name="E$18" library="diode" library_urn="urn:adsk.eagle:library:210" package="DO34-7" package3d_urn="urn:adsk.eagle:package:43348/1" value="" x="46.99" y="66.04">
+<attribute name="NAME" x="45.466" y="67.183" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="45.466" y="63.627" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="E$19" library="diode" library_urn="urn:adsk.eagle:library:210" package="DO34-7" package3d_urn="urn:adsk.eagle:package:43348/1" value="" x="66.04" y="71.12" rot="R90">
+<attribute name="NAME" x="64.897" y="69.596" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="68.453" y="69.596" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
 </elements>
 <signals>
 <signal name="S$1">
@@ -1049,9 +1057,11 @@ design rules under a new name.</description>
 <wire x1="52.07" y1="69.342" x2="67.62563125" y2="69.342" width="0.6096" layer="16"/>
 <wire x1="67.62563125" y1="69.342" x2="69.342" y2="67.62563125" width="0.6096" layer="16"/>
 <wire x1="38.1" y1="68.58" x2="46.99" y2="68.58" width="0.6096" layer="16"/>
-<wire x1="46.99" y1="68.58" x2="46.99" y2="66.04" width="0.6096" layer="16"/>
-<wire x1="46.99" y1="66.04" x2="45.72" y2="64.77" width="0.6096" layer="16"/>
-<wire x1="45.72" y1="64.77" x2="36.83" y2="64.77" width="0.6096" layer="16"/>
+<wire x1="36.83" y1="64.77" x2="43.18" y2="64.77" width="0.6096" layer="16"/>
+<wire x1="43.18" y1="64.77" x2="44.323" y2="63.627" width="0.6096" layer="16"/>
+<wire x1="44.323" y1="63.627" x2="45.72" y2="63.627" width="0.6096" layer="16"/>
+<wire x1="45.72" y1="63.627" x2="46.99" y2="64.897" width="0.6096" layer="16"/>
+<wire x1="46.99" y1="64.897" x2="46.99" y2="68.58" width="0.6096" layer="16"/>
 </signal>
 <signal name="S$22">
 <contactref element="E$3" pad="22"/>
