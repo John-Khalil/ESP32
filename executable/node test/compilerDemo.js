@@ -23,6 +23,7 @@ const memoryReadOperator=operatorIndex++;
 const memoryDeleteOperator=operatorIndex++;
 
 const fetchOperator=operatorIndex++;
+const addEventOperator=operatorIndex++;
 
 
 
@@ -54,6 +55,14 @@ const CONSOLE_DATA="CD";
 const WEB_HOST="WH";
 const POST_BODY="PB";
 const REQUEST_PARAM="RP";
+
+
+// add event listener operator
+const EVENT_ADDRESS="EA";
+const EVENT_EXECUTABLE="EE";
+const HANDLER_EXECUTABLE="HE";
+const ONCHANGE_ADDRESS="CA";
+
 
 
 
@@ -126,6 +135,19 @@ const controllerFetch=(fetchWebHost,fetchData,fetchParams)=>{
     return returnStack;
 }
 
+const controllerEventListener=(eventAddress,onchangeAddress,eventExecutable,handlerExecutable)=>{
+    var returnStack={};
+    var nestedReturnStack={};
+    nestedReturnStack[EVENT_EXECUTABLE]=eventExecutable;
+    nestedReturnStack[HANDLER_EXECUTABLE]=handlerExecutable;
+    nestedReturnStack[ONCHANGE_ADDRESS]=onchangeAddress;
+    
+    returnStack[JSON_OPERATOR]=addEventOperator;
+    returnStack[EVENT_ADDRESS]=eventAddress;
+    returnStack[EVENT_EXECUTABLE]=nestedReturnStack;
+    return returnStack;
+}
+
 ////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
 var counter=0;
@@ -138,7 +160,10 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
+    // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
+    // finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(controllerEventListener(100,200,{event:6523},{handler:654321}));
+    
     finalStack.push(memoryWrite(101,memoryRead(100)));
      
     // if((counter++)&1)
@@ -149,7 +174,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
     // finalStack.push(consoleLogger(consoleLogger(delay(20))));
 
-    finalStack.push(consoleLogger(memoryRead(101)));
+    finalStack.push(consoleLogger(memoryRead(100)));
 
     
 
