@@ -98,6 +98,18 @@
 }
 
 
+// operator add event listener
+{
+    "operator":int,
+    "eventAddress":int,
+    "eventExecutable":{
+        "eventExecutable":{},
+        "handlerExecutable":{},
+        "onchangeAddress":int
+    }
+}
+
+
 
 //  those operators are for future implementation 
 

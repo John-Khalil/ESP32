@@ -2140,6 +2140,10 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 // }
 
 
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=10;
+#define VIRTUAL_CONTROLLER_MAX_EVENTS 100
+unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
+
 
 typedef const char* JSON_ATTRIBUTE;
 
@@ -2171,9 +2175,15 @@ JSON_ATTRIBUTE WEB_HOST="WH";
 JSON_ATTRIBUTE POST_BODY="PB";
 JSON_ATTRIBUTE REQUEST_PARAM="RP";
 
-// $tring operataor
+// $tring operator
 JSON_ATTRIBUTE TOTAL_LENGTH="TL";
 JSON_ATTRIBUTE SUB_STRING="SS";
+
+// add event listener operator
+JSON_ATTRIBUTE EVENT_ADDRESS="EA";
+JSON_ATTRIBUTE EVENT_EXECUTABLE="EE";
+JSON_ATTRIBUTE HANDLER_EXECUTABLE="HE";
+JSON_ATTRIBUTE ONCHANGE_ADDRESS="CA";
 
 
 unsigned char* virtualController(unsigned char* executableObject){
@@ -2274,6 +2284,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(webHostUrlBuffer);
 			free(mainPostBodyBuffer);
 			return dataFromFetch;
+		},
+		[&](unsigned char *subExecutable){											// add event listener operator
+			highLevelMemory(
+				smartPointer(getInt32_t(constJson(EVENT_ADDRESS,subExecutable)),POINT_BUFFER),		
+				constJson(EVENT_EXECUTABLE,subExecutable)
+			);
+			return subExecutable;
 		}
 
 
@@ -2287,7 +2304,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 	return executableObject;
 }
 
-
+void virtualControllerEventListener(void *params){
+	unsigned long eventCheckerCounter=0;
+	while(1){
+		
+		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
+	}
+	endTask();
+}
 
 
 
