@@ -160,9 +160,11 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
+    finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
+    
+    
     // finalStack.push(consoleLogger(memoryRead(100)));
-    finalStack.push(controllerEventListener(100,200,{event:6523},{handler:654321}));
+    // finalStack.push(controllerEventListener(500,200,hardwareID(),hardwareID()));
     
     finalStack.push(memoryWrite(101,memoryRead(100)));
      
@@ -174,7 +176,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
     // finalStack.push(consoleLogger(consoleLogger(delay(20))));
 
-    finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(consoleLogger(memoryRead(500)));
 
     
 

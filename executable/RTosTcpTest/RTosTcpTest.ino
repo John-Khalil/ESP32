@@ -889,12 +889,12 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 
 #define clearConstJsonBuffer() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=1; CLR(LAST_CONST_JSON_OBJECT);
 
-#define contJsonReset() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved
+#define constJsonReset() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
 unsigned char *recursiveJsonAlgorithm(unsigned char *recursiveAlgorithmData){
-	contJsonReset();
+	constJsonReset();
 	return recursiveAlgorithmData;
 }
 
@@ -1994,7 +1994,7 @@ void initializeVirtualControllerMemory(void){
 }
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
-	contJsonReset();
+	constJsonReset();
 	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
 		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
@@ -2032,7 +2032,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 	initializeVirtualControllerMemory();
 	unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 	_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");
-	contJsonReset(); // this should solve the shared poniter problem
+	constJsonReset(); // this should solve the shared poniter problem
 	unsigned char *savedData=constJson(getValueFromJson,virtualControllerMemory);
 	// unsigned char *savedData=json(getValueFromJson,virtualControllerMemory);
 	free(getValueFromJson);
@@ -2112,7 +2112,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 // 	initializeVirtualControllerMemory();
 // 	unsigned short scanForIndex=0;
 // 	unsigned char *scanForPointerIndex;
-// 	// contJsonReset();
+// 	// constJsonReset();
 // 	// console.log(highLevelMemoryIndex(0));
 // 	// console.log(highLevelMemoryIndex(1));
 // 	// while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex++))!=UNDEFINED)){	
@@ -2130,7 +2130,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 // 	while(((scanForPointerIndex=highLevelMemoryIndex(scanForIndex))!=UNDEFINED)&&(getInt32_t(scanForPointerIndex)!=bufferIdentifier)){scanForIndex++;console.log("loop");}
 // 	if(getInt32_t(scanForPointerIndex)!=bufferIdentifier)	
 // 		goto realIndexIsNowSet;
-// 	contJsonReset();
+// 	constJsonReset();
 // 	highLevelMemoryIndex(scanForIndex,inttostring(bufferIdentifier));
 // 	highLevelMemory(scanForIndex,(unsigned char *)"");
 // 	realIndexIsNowSet:
@@ -2261,7 +2261,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char *finalWebHostUrl=_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable));
 			unsigned char *finalPostBody=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
 			// console.log(" ===> ",finalWebHostUrl);
-			contJsonReset();
+			constJsonReset();
 			// console.log(" ---> ",finalPostBody);
 			unsigned long forceCachingCounter=0;
 			within(stringCounter(finalPostBody),{
