@@ -2060,9 +2060,7 @@ void initializeVirtualControllerMemory(void){
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
 	constJsonReset();
-	console.log("savedData >> ",savedData);_delay_ms(200);
 	constJsonValidate(savedData);
-	console.log("savedData >> ",savedData);_delay_ms(200);
 	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
 		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
