@@ -2062,7 +2062,7 @@ void initializeVirtualControllerMemory(void){
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
 	constJsonReset();
-	constJsonValidate(savedData);
+	// constJsonValidate(savedData);
 	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
 		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
@@ -2078,7 +2078,10 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 	else{
 		unsigned char *getValueFromJson=(unsigned char*)calloc((stringCounter((unsigned char*)"memory[")+stringCounter(inttostring(virtualMemoryAddress))+stringCounter((unsigned char*)"]")+1),sizeof(unsigned char));
 		_CS(getValueFromJson,(unsigned char*)"memory[");_CS(getValueFromJson,inttostring(virtualMemoryAddress));_CS(getValueFromJson,(unsigned char*)"]");		// i can not use $ cause it has a shared buffer for every instance
+		// constJsonReset();
 		JSON_LOW_MEMORY_USAGE(getValueFromJson,virtualControllerMemory);free(getValueFromJson);
+		// console.log("virtualControllerMemory >> ",JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
+		// constJsonValidate(JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
 		JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR--;
 		signed long differenceSize=(stringCounter(savedData)-1)-(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND);
 		unsigned long finalMemorySize=stringCounter(virtualControllerMemory)+differenceSize+1;
@@ -2095,6 +2098,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char 
 	}
 	return virtualControllerMemory;
 }
+
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 	initializeVirtualControllerMemory();
@@ -2285,10 +2289,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return (unsigned char*)"\"ESP32-BASED-virtual-controller\"";
 		},
 		[&](unsigned char *subExecutable){											// virtual controller memory wrtie
+			unsigned long finalMemorryAddress=smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER);
+			unsigned char *savedData=virtualController(constJson(BUFFER_DATA,subExecutable));
+			unsigned char *finalSavedData=(unsigned char*)calloc(stringCounter(savedData)+1,sizeof(unsigned char));
 			highLevelMemory(
-				smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER),		// address is now defined 
-				virtualController(constJson(BUFFER_DATA,subExecutable))
+				finalMemorryAddress,		// address is now defined 
+				_CS(finalSavedData,savedData)
 			);
+			free(finalSavedData);
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											// virtual controller memory read
@@ -2358,10 +2366,20 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char eventAllocatorCounter=0;
 			while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]);	// this should be initialized with 0s
 			VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter-1]=eventListenerAddress*(eventAllocatorCounter!=VIRTUAL_CONTROLLER_MAX_EVENTS);
+			// highLevelMemory(
+			// 	smartPointer(eventListenerAddress,POINT_BUFFER),		
+			// 	$(constJson(EVENT_EXECUTABLE,subExecutable))
+			// );
+
+			unsigned long finalMemorryAddress=smartPointer(eventListenerAddress,POINT_BUFFER);
+			unsigned char *savedData=constJson(EVENT_EXECUTABLE,subExecutable);
+			unsigned char *finalSavedData=(unsigned char*)calloc(stringCounter(savedData)+1,sizeof(unsigned char));
 			highLevelMemory(
-				smartPointer(eventListenerAddress,POINT_BUFFER),		
-				constJson(EVENT_EXECUTABLE,subExecutable)
+				finalMemorryAddress,		// address is now defined 
+				_CS(finalSavedData,savedData)
 			);
+			free(finalSavedData);
+
 			return subExecutable;
 		}
 

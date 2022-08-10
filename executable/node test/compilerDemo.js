@@ -156,6 +156,28 @@ app.get('/',(req,res)=>{
     
     var finalStack=[];
 
+    finalStack.push(consoleLogger("just started "));
+
+
+    finalStack.push(delay(500));
+
+    finalStack.push(memoryWrite(100,{test:"samer"}));
+    
+    finalStack.push(memoryWrite(101,memoryRead(100)));
+
+
+    finalStack.push(consoleLogger(memoryRead(101)));
+
+
+    // finalStack.push(delay(500));
+
+    // finalStack.push(memoryWrite(100,{test:"samer-1"}));
+    
+    // // finalStack.push(memoryWrite(101,memoryRead(100)));
+
+
+    // finalStack.push(consoleLogger(memoryRead(100)));
+
 
     // finalStack.push(consoleLogger(memoryRead(100)));
 
@@ -166,22 +188,22 @@ app.get('/',(req,res)=>{
     
     finalStack.push(controllerEventListener(500,200,hardwareID(),hardwareID()));
     
+    // // finalStack.push(memoryWrite(101,memoryRead(100)));
+
+
+    // // finalStack.push(consoleLogger(memoryRead(101)));
+
+    finalStack.push(consoleLogger(memoryRead(500)));
+    // // finalStack.push(consoleLogger(memoryRead(500)));
+
+    // finalStack.push(delay(500));
+
+    // finalStack.push(memoryWrite(100,{test:"samer"}));
+    
     // finalStack.push(memoryWrite(101,memoryRead(100)));
 
 
     // finalStack.push(consoleLogger(memoryRead(101)));
-
-    finalStack.push(consoleLogger(memoryRead(500)));
-    // finalStack.push(consoleLogger(memoryRead(500)));
-
-    finalStack.push(delay(500));
-
-    finalStack.push(memoryWrite(100,{test:"samer"}));
-    
-    finalStack.push(memoryWrite(101,memoryRead(100)));
-
-
-    finalStack.push(consoleLogger(memoryRead(101)));
     
 
     finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
@@ -216,7 +238,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
     
    
-    res.send(JSON.stringify(loop(2,finalStack)));
+    res.send(JSON.stringify(loop(1,finalStack)));
 
     console.log(JSON.stringify(finalStack));
 
