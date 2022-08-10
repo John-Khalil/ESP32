@@ -952,6 +952,8 @@ unsigned char *constJsonValidate(unsigned char *jsonString){
 		goto searchInsideArray;
 	}
 
+	JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=deadEndOfString;
+
 	lastByteRemoved=*deadEndOfString;
 	*deadEndOfString=0;
 
@@ -2811,6 +2813,7 @@ void serviceExecutable(void*param){
 						client.stop();
 						unsigned char *virtualControllerStack=(unsigned char*)calloc(fetchMemoryLimiter+1,sizeof(unsigned char*));
 						virtualController(_CS(virtualControllerStack,fetch("http://192.168.1.15:766")));
+						constJsonReset();
 						free(virtualControllerStack);
 					}
 
