@@ -893,6 +893,71 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
+unsigned char *constJsonValidate(unsigned char *jsonString){
+	constJsonReset();
+	unsigned char *validJsonString=jsonString;
+	unsigned char *deadEndOfString=jsonString+stringCounter(jsonString);
+	unsigned short jsonArrayIndex=-1;
+	unsigned char objectTypeArray=0;
+	searchInsideArray:
+	unsigned short objectStartBracket=0;
+	unsigned short objectEndBracket=0;
+	unsigned short arrayStartBracket=0;
+	unsigned short arrayEndBracket=0;
+	unsigned short doubleQuoates=0;
+	unsigned char *objectLocation=jsonString;
+
+	while(1){
+		objectStartBracket+=(*objectLocation==0x7B);
+		objectEndBracket+=(*objectLocation==0x7D);
+		arrayStartBracket+=(*objectLocation==0x5B);
+		arrayEndBracket+=(*objectLocation==0x5D);
+		unsigned char *validStringCheck=objectLocation-1;
+		doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+		if(objectLocation==deadEndOfString){//object not found
+			return validJsonString;
+		}
+		while(doubleQuoates&0x01){
+			objectLocation++;
+			validStringCheck=objectLocation-1;
+			doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
+		}
+		if((*objectLocation==0x2C) && (objectStartBracket == objectEndBracket) && (arrayStartBracket == arrayEndBracket))
+			break;
+		if(objectEndBracket>objectStartBracket)
+			break;
+		if(arrayEndBracket>arrayStartBracket)
+			break;
+		objectLocation++;
+	}
+	
+	if(objectTypeArray){
+		goto backToArrayCounter;
+	}
+	deadEndOfString=objectLocation;
+	if((jsonArrayIndex!=0xFFFF)&&(*jsonString==0x5B)){
+		jsonString++;
+		objectTypeArray=1;
+		while(jsonArrayIndex){
+			goto searchInsideArray;
+			backToArrayCounter:
+			jsonString=objectLocation+1;
+			if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
+				return validJsonString;
+			}
+			jsonArrayIndex--;
+		}
+		objectTypeArray=0;
+		jsonArrayIndex=-1;
+		goto searchInsideArray;
+	}
+
+	lastByteRemoved=*deadEndOfString;
+	*deadEndOfString=0;
+
+	return validJsonString;
+}
+
 unsigned char *recursiveJsonAlgorithm(unsigned char *recursiveAlgorithmData){
 	constJsonReset();
 	return recursiveAlgorithmData;
@@ -1995,6 +2060,9 @@ void initializeVirtualControllerMemory(void){
 
 unsigned char *highLevelMemory(unsigned long virtualMemoryAddress,unsigned char *savedData){
 	constJsonReset();
+	console.log("savedData >> ",savedData);_delay_ms(200);
+	constJsonValidate(savedData);
+	console.log("savedData >> ",savedData);_delay_ms(200);
 	if((stringCounter(savedData)+stringCounter(virtualControllerMemory)+5)>VIRTUAL_MEMORY_SIZE)			// the alogorithm depends on prealocated memory cause realloc didnt work, so we're just making sure we're not running out of memory
 		return virtualControllerMemory;
 	initializeVirtualControllerMemory();
