@@ -161,7 +161,7 @@ app.get('/',(req,res)=>{
 
     finalStack.push(delay(500));
 
-    finalStack.push(memoryWrite(100,delay(1)));
+    finalStack.push(memoryWrite(100,{test:"memory"}));
     
     finalStack.push(memoryWrite(101,memoryRead(100)));
 

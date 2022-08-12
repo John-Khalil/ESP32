@@ -916,7 +916,7 @@ unsigned char *constJsonValidate(unsigned char *jsonString){
 		unsigned char *validStringCheck=objectLocation-1;
 		doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
 		if(objectLocation==deadEndOfString){//object not found
-			constJsonResetUndo();
+			// constJsonResetUndo();
 			return validJsonString;
 		}
 		while(doubleQuoates&0x01){
@@ -945,7 +945,7 @@ unsigned char *constJsonValidate(unsigned char *jsonString){
 			backToArrayCounter:
 			jsonString=objectLocation+1;
 			if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
-				constJsonResetUndo();
+				// constJsonResetUndo();
 				return validJsonString;
 			}
 			jsonArrayIndex--;
@@ -2393,7 +2393,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 	unsigned char *jsonOperatorExist;
 	if(((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject))!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
-		return constJsonValidate(jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject));
+		return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
 	return executableObject;
 }
 
@@ -2405,9 +2405,13 @@ void virtualControllerEventListener(void *params){
 				
 				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
+				unsigned char *unchangedEventVAlue=highLevelMemory(smartPointer(onchangeAddress));
 				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
 				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				console.log("eventChecker >> ",constJsonValidate(eventChecker)," - ",handlerExecutable," @ ",onchangeAddress);
+				console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
+				console.log("eventChecker >> ",constJsonValidate(unchangedEventVAlue));_delay_ms(200);
+
+				console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
 
 			}
 		});
