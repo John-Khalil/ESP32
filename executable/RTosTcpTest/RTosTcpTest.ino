@@ -890,6 +890,7 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 #define clearConstJsonBuffer() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=1; CLR(LAST_CONST_JSON_OBJECT);
 
 #define constJsonReset() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved
+#define constJsonResetUndo() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=0
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
@@ -915,6 +916,7 @@ unsigned char *constJsonValidate(unsigned char *jsonString){
 		unsigned char *validStringCheck=objectLocation-1;
 		doubleQuoates+=((*validStringCheck!=0x5C)&&(*objectLocation==0x22));
 		if(objectLocation==deadEndOfString){//object not found
+			constJsonResetUndo();
 			return validJsonString;
 		}
 		while(doubleQuoates&0x01){
@@ -943,6 +945,7 @@ unsigned char *constJsonValidate(unsigned char *jsonString){
 			backToArrayCounter:
 			jsonString=objectLocation+1;
 			if((*objectLocation!=0x2C)&&jsonArrayIndex!=1){
+				constJsonResetUndo();
 				return validJsonString;
 			}
 			jsonArrayIndex--;
@@ -2156,7 +2159,7 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 // }
 
 
-unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
+unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POINT_BUFFER){
 	initializeVirtualControllerMemory();
 	static unsigned long registeredAddress[51]={};
 	//we have to init here before we go
@@ -2212,7 +2215,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation){
 // }
 
 
-unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=10;
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=1000;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2390,14 +2393,24 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 	unsigned char *jsonOperatorExist;
 	if(((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject))!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
-		return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
+		return constJsonValidate(jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject));
 	return executableObject;
 }
 
 void virtualControllerEventListener(void *params){
 	unsigned long eventCheckerCounter=0;
 	while(1){
-		
+		during(VIRTUAL_CONTROLLER_MAX_EVENTS,(unsigned long index){
+			if(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]){
+				
+				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
+				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
+				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
+				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
+				console.log("eventChecker >> ",constJsonValidate(eventChecker)," - ",handlerExecutable," @ ",onchangeAddress);
+
+			}
+		});
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 	endTask();
@@ -2575,7 +2588,14 @@ void serviceExecutable(void*param){
         NULL             // Task handle
     );
 
-
+	xTaskCreate(
+        virtualControllerEventListener,    // Function that should be called
+        "virtualControllerEventListener",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
+    );
 
 	// virtualController(fetch("http://192.168.1.15:766"));
 

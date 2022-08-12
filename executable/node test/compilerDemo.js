@@ -161,7 +161,7 @@ app.get('/',(req,res)=>{
 
     finalStack.push(delay(500));
 
-    finalStack.push(memoryWrite(100,{test:"samer"}));
+    finalStack.push(memoryWrite(100,delay(1)));
     
     finalStack.push(memoryWrite(101,memoryRead(100)));
 
@@ -241,6 +241,7 @@ app.get('/',(req,res)=>{
     res.send(JSON.stringify(loop(1,finalStack)));
 
     console.log(JSON.stringify(finalStack));
+    console.log(JSON.parse(JSON.stringify(finalStack)));
 
 });
 
