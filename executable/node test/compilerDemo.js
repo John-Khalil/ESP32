@@ -156,17 +156,17 @@ app.get('/',(req,res)=>{
     
     var finalStack=[];
 
-    finalStack.push(consoleLogger("just started "));
+    // finalStack.push(consoleLogger("just started "));
 
 
-    finalStack.push(delay(500));
+    // finalStack.push(delay(500));
 
-    finalStack.push(memoryWrite(100,{test:"memory"}));
+    // finalStack.push(memoryWrite(100,{test:"memory"}));
     
-    finalStack.push(memoryWrite(101,memoryRead(100)));
+    // finalStack.push(memoryWrite(101,memoryRead(100)));
 
 
-    finalStack.push(consoleLogger(memoryRead(101)));
+    // finalStack.push(consoleLogger(memoryRead(101)));
 
 
     // finalStack.push(delay(500));
@@ -198,7 +198,7 @@ app.get('/',(req,res)=>{
 
     // // finalStack.push(consoleLogger(memoryRead(101)));
 
-    finalStack.push(consoleLogger(memoryRead(500)));
+    // finalStack.push(consoleLogger(memoryRead(500)));
     // // finalStack.push(consoleLogger(memoryRead(500)));
 
     // finalStack.push(delay(500));

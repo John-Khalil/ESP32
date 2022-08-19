@@ -2289,7 +2289,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											// hardware id
-			return (unsigned char*)"\"ESP32-BASED-virtual-controller\"";
+			return (unsigned char*)"{\"Type\":\"ESP32-BASED-virtual-controller\"}";
 		},
 		[&](unsigned char *subExecutable){											// virtual controller memory wrtie
 			unsigned long finalMemorryAddress=smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER);
@@ -2405,23 +2405,71 @@ void virtualControllerEventListener(void *params){
 				
 				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
-				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
-				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
-				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				
-				console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
-				console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
 
-				console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
+
+				
+				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
+				unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
+
+				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
+				eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
+				
+				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
+				handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+				
+				// console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
+				// console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
+
+				// console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
+
+
+
+
 
 				unsigned char *genericBuffer=NULL;
-				constJsonValidate(eventChecker);
-				if(!equalStrings(_CS((genericBuffer=(unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker),constJsonValidate(unchangedEventValue))){		// check if the value have changed then update it
-					console.log("genericBuffer >> ",genericBuffer);
-					highLevelMemory(smartPointer(onchangeAddress),genericBuffer);		// store the new value
-					virtualController(constJsonValidate(handlerExecutable));
+				
+				// constJsonValidate(eventChecker);
+
+				// constJsonValidate(eventChecker);
+				// eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
+				
+				// constJsonValidate(unchangedEventValue);
+				// unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
+				
+				// constJsonValidate(handlerExecutable);
+				// handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+
+				// if(!equalStrings(_CS((genericBuffer=(unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker),constJsonValidate(unchangedEventValue))){		// check if the value have changed then update it
+				// 	console.log("genericBuffer >> ",genericBuffer);
+				// 	highLevelMemory(smartPointer(onchangeAddress),genericBuffer);		// store the new value
+				// 	virtualController(constJsonValidate(handlerExecutable));
+				// }
+
+
+				
+
+
+
+				if(!equalStrings(eventChecker,unchangedEventValue)){		// check if the value have changed then update it
+					// console.log("genericBuffer >> ",eventChecker);
+					
+					
+
+					highLevelMemory(smartPointer(onchangeAddress),eventChecker);		// store the new value
+					virtualController((handlerExecutable));
+
+					// console.log("unchangedEventValue >> ",(unchangedEventValue));_delay_ms(200);
+					// console.log("eventChecker >> ",(eventChecker));_delay_ms(200);
+					// console.log("handlerExecutable >> ",(handlerExecutable));_delay_ms(200);
+
+
 				}
-				free(genericBuffer);
+
+				free(unchangedEventValue);
+				free(eventChecker);
+				free(handlerExecutable);
+
+				// free(genericBuffer);
 
 				
 
