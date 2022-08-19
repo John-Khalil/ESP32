@@ -2401,17 +2401,29 @@ void virtualControllerEventListener(void *params){
 	unsigned long eventCheckerCounter=0;
 	while(1){
 		during(VIRTUAL_CONTROLLER_MAX_EVENTS,(unsigned long index){
-			if(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]){
+			if(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]){				// all the values are null unless event do exist
 				
 				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
-				unsigned char *unchangedEventVAlue=highLevelMemory(smartPointer(onchangeAddress));
+				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
 				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
 				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
-				console.log("eventChecker >> ",constJsonValidate(unchangedEventVAlue));_delay_ms(200);
+				
+				// console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
+				// console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
 
-				console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
+				// console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
+
+				unsigned char *genericBuffer=NULL;
+				constJsonValidate(eventChecker);
+				if(!equalStrings(_CS((genericBuffer=(unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker),constJsonValidate(unchangedEventValue))){		// check if the value have changed then update it
+					highLevelMemory(smartPointer(onchangeAddress),genericBuffer);		// store the new value
+					virtualController(constJsonValidate(handlerExecutable));
+				}
+				free(genericBuffer);
+
+				
+
 
 			}
 		});
