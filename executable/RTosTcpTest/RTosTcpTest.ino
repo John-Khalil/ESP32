@@ -2409,14 +2409,15 @@ void virtualControllerEventListener(void *params){
 				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
 				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
 				
-				// console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
-				// console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
+				console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
+				console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
 
-				// console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
+				console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
 
 				unsigned char *genericBuffer=NULL;
 				constJsonValidate(eventChecker);
 				if(!equalStrings(_CS((genericBuffer=(unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker),constJsonValidate(unchangedEventValue))){		// check if the value have changed then update it
+					console.log("genericBuffer >> ",genericBuffer);
 					highLevelMemory(smartPointer(onchangeAddress),genericBuffer);		// store the new value
 					virtualController(constJsonValidate(handlerExecutable));
 				}

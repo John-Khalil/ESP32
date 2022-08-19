@@ -186,7 +186,12 @@ app.get('/',(req,res)=>{
     
     
     
-    finalStack.push(controllerEventListener(500,200,hardwareID(),hardwareID()));
+    finalStack.push(controllerEventListener(
+        500,
+        200,
+        hardwareID(),
+        controllerFetch("http://192.168.1.15:776",memoryRead(200),{test:1245})
+    ));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));
 
@@ -206,8 +211,8 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(101)));
     
 
-    finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
-    finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(500),{test:6544}));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
+    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(500),{test:6544}));
      
     // if((counter++)&1)
     //     finalStack.push(memoryWrite(100,hardwareID()));
