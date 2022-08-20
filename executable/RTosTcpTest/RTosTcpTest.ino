@@ -969,6 +969,30 @@ unsigned char *recursiveJsonAlgorithm(unsigned char *recursiveAlgorithmData){
 }
 
 
+unsigned char *makeJsonObject(unsigned char **objectKeys,unsigned char **objectValues){
+	unsigned long finalObjectSize=3;													// taking acount for {} and \0
+	static unsigned char *finalObject=NULL;
+	if(finalObject!=NULL)
+		free(finalObject);
+	unsigned long objectKeysCounter=0;
+	unsigned long objectValuesCounter=0;
+	while((objectKeys[objectKeysCounter++]!=NULL)&&(objectValues[objectValuesCounter]!=UNDEFINED))			// following the rules of ecma script skipping undefined objects
+		finalObjectSize+=stringCounter(objectKeys[objectKeysCounter-1])+stringCounter((objectValues[objectValuesCounter]==NULL)? (unsigned char*)"null" : objectValues[objectValuesCounter++])+4;				// taking acount for the "":,
+	finalObject=(unsigned char*)calloc(finalObjectSize,sizeof(unsigned char));
+	_CS(finalObject,(unsigned char*)"{");
+	objectKeysCounter=0;
+	objectValuesCounter=0;
+	while((objectKeys[objectKeysCounter++]!=NULL)&&(objectValues[objectValuesCounter]!=UNDEFINED)){
+		_CS(finalObject,(unsigned char*)"\"");
+		_CS(finalObject,objectKeys[objectKeysCounter-1]);
+		_CS(finalObject,(unsigned char*)"\":");
+		_CS(finalObject,((objectValues[objectValuesCounter]==NULL)? (unsigned char*)"null" : objectValues[objectValuesCounter++]));
+		_CS(finalObject,(unsigned char*)",");
+	}
+	finalObject[stringCounter(finalObject)-1]=0x7D;
+	return finalObject;
+}
+
 
 class JSON_PARSER{
 	public:
