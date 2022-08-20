@@ -2498,6 +2498,13 @@ void virtualControllerEventListener(void *params){
 
 void testingFuction(void * uselessParam){
 
+	
+	// unsigned char* testArray[] = { (unsigned char*)"test0",(unsigned char*)"test1",(unsigned char*)"test2",NULL};
+	// unsigned char* testArray2[] = { (unsigned char*)"123",(unsigned char*)"234",(unsigned char*)"345",NULL };
+	// _delay_ms(200);
+	// console.log(" >> ",makeJsonObject(testArray, testArray2));_delay_ms(200);
+
+
 	// _delay_ms(4000);
 
 	// fetch("http://192.168.1.13",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
