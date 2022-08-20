@@ -2408,71 +2408,25 @@ void virtualControllerEventListener(void *params){
 
 
 				
-				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
-				unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
-
 				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
 				eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
-				
-				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
-				
-				// console.log("eventChecker >> ",constJsonValidate(eventChecker));_delay_ms(200);
-				// console.log("eventChecker >> ",constJsonValidate(unchangedEventValue));_delay_ms(200);
 
-				// console.log("eventChecker >> ",constJsonValidate(handlerExecutable));_delay_ms(200);
-
-
-
-
-
-				unsigned char *genericBuffer=NULL;
-				
-				// constJsonValidate(eventChecker);
-
-				// constJsonValidate(eventChecker);
-				// eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
-				
-				// constJsonValidate(unchangedEventValue);
+				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
 				// unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
 				
-				// constJsonValidate(handlerExecutable);
+				// unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
 				// handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
-
-				// if(!equalStrings(_CS((genericBuffer=(unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker),constJsonValidate(unchangedEventValue))){		// check if the value have changed then update it
-				// 	console.log("genericBuffer >> ",genericBuffer);
-				// 	highLevelMemory(smartPointer(onchangeAddress),genericBuffer);		// store the new value
-				// 	virtualController(constJsonValidate(handlerExecutable));
-				// }
-
-
-				
-
 
 
 				if(!equalStrings(eventChecker,unchangedEventValue)){		// check if the value have changed then update it
-					// console.log("genericBuffer >> ",eventChecker);
-					
-					
-
 					highLevelMemory(smartPointer(onchangeAddress),eventChecker);		// store the new value
-					virtualController((handlerExecutable));
-
-					// console.log("unchangedEventValue >> ",(unchangedEventValue));_delay_ms(200);
-					// console.log("eventChecker >> ",(eventChecker));_delay_ms(200);
-					// console.log("handlerExecutable >> ",(handlerExecutable));_delay_ms(200);
-
-
+					virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
 				}
 
-				free(unchangedEventValue);
-				free(eventChecker);
-				free(handlerExecutable);
-
-				// free(genericBuffer);
-
 				
-
+				free(eventChecker);
+				// free(unchangedEventValue);
+				// free(handlerExecutable);
 
 			}
 		});
