@@ -2511,6 +2511,7 @@ void testingFuction(void * uselessParam){
 	// unsigned char* testArray2[] = { (unsigned char*)"123",(unsigned char*)"234",(unsigned char*)"345",NULL };
 	// _delay_ms(200);
 	// console.log(" >> ",makeJsonObject(testArray, testArray2));_delay_ms(200);
+	// console.log(" >> ",makeJsonObject(testArray, testArray2));_delay_ms(200);
 
 
 	// _delay_ms(4000);
