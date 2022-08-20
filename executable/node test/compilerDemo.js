@@ -13,6 +13,7 @@ const port =766;
 var operatorIndex=0;
 
 const digitalOutputOperator=operatorIndex++;
+const digitalInputOperator=operatorIndex++;
 const delayOperator=operatorIndex++;
 const loopOperator=operatorIndex++;
 

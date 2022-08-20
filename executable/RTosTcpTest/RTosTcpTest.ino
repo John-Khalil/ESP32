@@ -2226,9 +2226,14 @@ typedef const char* JSON_ATTRIBUTE;
 JSON_ATTRIBUTE JSON_OPERATOR="OP";				// generic operator
 
 
-// digital output
+// digital output & input
 JSON_ATTRIBUTE OUTPUT_STREAM="OS";				// digital output stream
 JSON_ATTRIBUTE PORT_ADDRESS="PA";				// digital output port address
+JSON_ATTRIBUTE PORT_VALUE="PV";
+
+// digital input
+// JSON_ATTRIBUTE PORT_ADDRESS="PA";				// digital input port address
+
 
 // delay operator
 JSON_ATTRIBUTE DELAY_MICRO_SEC="US";			// micro second delay
@@ -2266,6 +2271,23 @@ unsigned char* virtualController(unsigned char* executableObject){
 		[&](unsigned char *subExecutable){											// digtal output operator
 			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
 			return subExecutable;
+		},
+		[&](unsigned char *	subExecutable){											// digtal input operator
+			static unsigned char *digitalInputPortRaed=NULL;
+			if(digitalInputPortRaed!=NULL)
+				free(digitalInputPortRaed);
+			unsigned long digitalPortRaed=0;						// this would later be assigned a value
+
+			unsigned short finalObjectSize=1;
+			finalObjectSize+=stringCounter((unsigned char*)"{\"");
+			finalObjectSize+=stringCounter((unsigned char*)PORT_VALUE);
+			finalObjectSize+=stringCounter((unsigned char*)"\":");
+			finalObjectSize+=stringCounter(inttostring(finalObjectSize));
+			finalObjectSize+=stringCounter((unsigned char*)"}");
+			
+
+
+			return digitalInputPortRaed;
 		},
 		[&](unsigned char *subExecutable){											// delay operator
 			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));

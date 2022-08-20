@@ -11,8 +11,10 @@
     "operator":4294967295,
     "portAddress":65535,
     "sampleRate":1000,
-    "sampleArray":[]
+    "sampleSize":int,           // null should return and a number in form of a string
+    "sampleArray":[]            // this should be what would return
 }
+
 
 //onchange digital input listener
 {
@@ -129,6 +131,14 @@
 {
 
 }
+
+
+// digital input operator simplified
+{
+    "operator":int,
+    "portAddress":int
+}
+
 
 {"memory":[{"EE":{"OP":4},"HE":{"OP":4},"CA":200},{"OP":3,"CD":{"OP":6,"BI":100}}]}
 
