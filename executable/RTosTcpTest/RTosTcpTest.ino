@@ -1020,11 +1020,29 @@ unsigned char **jsonObjectKeys(T key,Types... keys){
 			free(makeJsonObjectKeys);
 		makeJsonObjectKeys=(unsigned char **)calloc((sizeof...(Types)+2),sizeof(unsigned char*));
 	}
-	makeJsonObjectKeys[jsonObjectKeysCounter++]=key;
+	makeJsonObjectKeys[jsonObjectKeysCounter++]=(unsigned char*)key;
 	return jsonObjectKeys(keys...);
 }
 
+unsigned char jsonObjectValuesInitializer=0;
+unsigned short jsonObjectValuesCounter=0;
+unsigned char **jsonObjectValues(void){
+	jsonObjectValuesInitializer=0;
+	jsonObjectValuesCounter=0;
+	return makeJsonObjectValues;
+}
 
+template<typename T,typename... Types>
+unsigned char **jsonObjectValues(T value,Types... values){
+	if(!jsonObjectValuesInitializer){
+		jsonObjectValuesInitializer=1;
+		if(makeJsonObjectValues!=NULL)
+			free(makeJsonObjectValues);
+		makeJsonObjectValues=(unsigned char **)calloc((sizeof...(Types)+2),sizeof(unsigned char*));
+	}
+	makeJsonObjectValues[jsonObjectValuesCounter++]=(unsigned char*)value;
+	return jsonObjectValues(values...);
+}
 
 
 class JSON_PARSER{
