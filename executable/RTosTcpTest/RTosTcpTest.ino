@@ -1001,6 +1001,31 @@ unsigned char *makeJsonObject(unsigned char **objectKeys,unsigned char **objectV
 	return finalObject;
 }
 
+unsigned char **makeJsonObjectKeys=NULL;
+unsigned char **makeJsonObjectValues=NULL;
+
+unsigned char jsonObjectKeysInitializer=0;
+unsigned short jsonObjectKeysCounter=0;
+unsigned char **jsonObjectKeys(void){
+	jsonObjectKeysInitializer=0;
+	jsonObjectKeysCounter=0;
+	return makeJsonObjectKeys;
+}
+
+template<typename T,typename... Types>
+unsigned char **jsonObjectKeys(T key,Types... keys){
+	if(!jsonObjectKeysInitializer){
+		jsonObjectKeysInitializer=1;
+		if(makeJsonObjectKeys!=NULL)
+			free(makeJsonObjectKeys);
+		makeJsonObjectKeys=(unsigned char **)calloc((sizeof...(Types)+2),sizeof(unsigned char*));
+	}
+	makeJsonObjectKeys[jsonObjectKeysCounter++]=key;
+	return jsonObjectKeys(keys...);
+}
+
+
+
 
 class JSON_PARSER{
 	public:
@@ -2310,12 +2335,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				free(digitalInputPortRaed);
 			unsigned long digitalPortRaed=0;						// this would later be assigned a value
 
-			unsigned short finalObjectSize=1;
-			finalObjectSize+=stringCounter((unsigned char*)"{\"");
-			finalObjectSize+=stringCounter((unsigned char*)PORT_VALUE);
-			finalObjectSize+=stringCounter((unsigned char*)"\":");
-			finalObjectSize+=stringCounter(inttostring(finalObjectSize));
-			finalObjectSize+=stringCounter((unsigned char*)"}");
+			
 			
 
 
