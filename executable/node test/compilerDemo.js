@@ -198,7 +198,7 @@ app.get('/',(req,res)=>{
         63,
         58,
         digitalInput(69),
-        controllerFetch("http://192.168.1.15:776",hardwareID(),{test:1245})
+        controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
     ));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));

@@ -511,7 +511,7 @@ unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPo
 	unsigned short diffCounter;
 	if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
 		return 0;
-	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter)
+	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter);
 	return (diffCounter!=0);
 }
 
@@ -2294,7 +2294,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
-unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=10;
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=200;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2496,7 +2496,7 @@ void virtualControllerEventListener(void *params){
 	while(1){
 		during(VIRTUAL_CONTROLLER_MAX_EVENTS,(unsigned long index){
 			if(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]){				// all the values are null unless event do exist
-				console.log("__EVENT__",VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]);_delay_ms(200);				
+				// console.log("__EVENT__",VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]);_delay_ms(200);				
 				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
 
@@ -2511,14 +2511,14 @@ void virtualControllerEventListener(void *params){
 				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
 				handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
 
-				console.log(" >> ",unchangedEventValue);_delay_ms(200);
-				console.log(" >> ",eventChecker);_delay_ms(200);
+				// console.log(" >> ",unchangedEventValue);_delay_ms(200);
+				// console.log(" >> ",eventChecker);_delay_ms(200);
 
 
 				if(!equalStrings(eventChecker,unchangedEventValue)){		// check if the value have changed then update it
 					highLevelMemory(smartPointer(onchangeAddress),eventChecker);		// store the new value
 					virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
-					console.log("__EVENT_TRIG___");_delay_ms(200);
+					// console.log("__EVENT_TRIG___");_delay_ms(200);
 				}
 
 				
