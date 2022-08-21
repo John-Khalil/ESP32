@@ -1042,7 +1042,7 @@ unsigned char **jsonObjectValues(T value,Types... values){
 			free(makeJsonObjectValues);
 		makeJsonObjectValues=(unsigned char **)calloc((sizeof...(Types)+2),sizeof(unsigned char*));
 	}
-	makeJsonObjectValues[jsonObjectValuesCounter++]=_$Str(value);
+	makeJsonObjectValues[jsonObjectValuesCounter++]=(unsigned char*)value;
 	return jsonObjectValues(values...);
 }
 
@@ -2294,7 +2294,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
-unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=1000;
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=10;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2355,10 +2355,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			unsigned long digitalPortRead=0;										// this would later be assigned a value
+			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
 
 			
-			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(digitalPortRead));
+			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
 			return CACHE_BYTES(digitalInputPortRaed);
 		},
 		[&](unsigned char *subExecutable){											// delay operator
@@ -2496,7 +2496,7 @@ void virtualControllerEventListener(void *params){
 	while(1){
 		during(VIRTUAL_CONTROLLER_MAX_EVENTS,(unsigned long index){
 			if(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]){				// all the values are null unless event do exist
-				
+				console.log("__EVENT__",VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]);_delay_ms(200);				
 				unsigned char *eventExecutable=highLevelMemory(smartPointer(VIRTUAL_CONTROLLER_EVENT_ADDRESS[index]));
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
 
@@ -2506,21 +2506,25 @@ void virtualControllerEventListener(void *params){
 				eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
 
 				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
-				// unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
+				unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
 				
-				// unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				// handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
+				handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+
+				console.log(" >> ",unchangedEventValue);_delay_ms(200);
+				console.log(" >> ",eventChecker);_delay_ms(200);
 
 
 				if(!equalStrings(eventChecker,unchangedEventValue)){		// check if the value have changed then update it
 					highLevelMemory(smartPointer(onchangeAddress),eventChecker);		// store the new value
 					virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
+					console.log("__EVENT_TRIG___");_delay_ms(200);
 				}
 
 				
 				free(eventChecker);
-				// free(unchangedEventValue);
-				// free(handlerExecutable);
+				free(unchangedEventValue);
+				free(handlerExecutable);
 
 			}
 		});

@@ -31,10 +31,10 @@ const addEventOperator=operatorIndex++;
 const JSON_OPERATOR="OP";				// generic operator
 
 
-// digital output
+// digital output & input
 const OUTPUT_STREAM="OS";				// digital output stream
 const PORT_ADDRESS="PA";				// digital output port address
-
+const PORT_VALUE="PV";
 
 
 // delay operator
@@ -79,6 +79,13 @@ const digitalOutput=(outputPort,portStream)=>{
     returnStack[JSON_OPERATOR]=digitalOutputOperator;
     returnStack[PORT_ADDRESS]=outputPort;
     returnStack[OUTPUT_STREAM]=portStream;
+    return returnStack;
+}
+
+const digitalInput=(inputPort)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=digitalInputOperator;
+    returnStack[PORT_ADDRESS]=inputPort;
     return returnStack;
 }
 
@@ -180,7 +187,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    // finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(consoleLogger(digitalInput(100)));
 
 
     // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
@@ -188,10 +195,10 @@ app.get('/',(req,res)=>{
     
     
     finalStack.push(controllerEventListener(
-        500,
-        200,
-        hardwareID(),
-        controllerFetch("http://192.168.1.15:776",memoryRead(200),{test:1245})
+        63,
+        58,
+        digitalInput(69),
+        controllerFetch("http://192.168.1.15:776",hardwareID(),{test:1245})
     ));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));
