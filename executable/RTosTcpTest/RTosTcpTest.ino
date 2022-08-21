@@ -311,6 +311,8 @@ unsigned char* $(T strArg,Types... str2){
 }
 
 
+#define CACHE_BYTES(CACHED_DATA) (CACHED_DATA=_CS(((unsigned char*)calloc(stringCounter(CACHED_DATA)+1,sizeof(unsigned char))),CACHED_DATA))
+
 
 
 
@@ -1040,10 +1042,12 @@ unsigned char **jsonObjectValues(T value,Types... values){
 			free(makeJsonObjectValues);
 		makeJsonObjectValues=(unsigned char **)calloc((sizeof...(Types)+2),sizeof(unsigned char*));
 	}
-	makeJsonObjectValues[jsonObjectValuesCounter++]=(unsigned char*)value;
+	makeJsonObjectValues[jsonObjectValuesCounter++]=_$Str(value);
 	return jsonObjectValues(values...);
 }
 
+#define JSON_KEYS jsonObjectKeys
+#define JSON_VALUES jsonObjectValues
 
 class JSON_PARSER{
 	public:
@@ -2351,13 +2355,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			unsigned long digitalPortRaed=0;						// this would later be assigned a value
+			unsigned long digitalPortRead=0;										// this would later be assigned a value
 
 			
-			
-
-
-			return digitalInputPortRaed;
+			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(digitalPortRead));
+			return CACHE_BYTES(digitalInputPortRaed);
 		},
 		[&](unsigned char *subExecutable){											// delay operator
 			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));
