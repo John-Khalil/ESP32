@@ -512,7 +512,7 @@ unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPo
 	if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
 		return 0;
 	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter);
-	return (diffCounter!=0);
+	return (diffCounter==0);
 }
 
 unsigned char *_CS(unsigned char *bigString,unsigned char *smallString){
