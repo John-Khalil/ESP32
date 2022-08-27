@@ -2294,7 +2294,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
-unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=200;
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=100;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2448,7 +2448,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				_CS(mainPostBodyBuffer+stringCounter(mainPostBodyBuffer),(unsigned char*)"}");
 			}
 
-			console.log(" ---> ",mainPostBodyBuffer);
+			// console.log(" ---> ",mainPostBodyBuffer);
 
 			if(!equalStrings(finalPostBody,(unsigned char*)"undefined"))
 				dataFromFetch=fetch(finalWebHostUrl,mainPostBodyBuffer);
@@ -2718,7 +2718,7 @@ void serviceExecutable(void*param){
         "virtualControllerEventListener",   // Name of the task (for debugging)
         30000,            // Stack size (bytes)
         NULL,            // Parameter to pass
-        1,               // Task priority
+        2,               // Task priority
         NULL             // Task handle
     );
 
