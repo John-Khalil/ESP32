@@ -2294,7 +2294,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
-unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=100;
+unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2343,6 +2343,7 @@ JSON_ATTRIBUTE EVENT_ADDRESS="EA";
 JSON_ATTRIBUTE EVENT_EXECUTABLE="EE";
 JSON_ATTRIBUTE HANDLER_EXECUTABLE="HE";
 JSON_ATTRIBUTE ONCHANGE_ADDRESS="CA";
+JSON_ATTRIBUTE POLLING_RATE="PR";
 
 
 unsigned char* virtualController(unsigned char* executableObject){
@@ -2355,7 +2356,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
+			unsigned long digitalPortRead=millis()/100;										// this would later be assigned a value
 
 			
 			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
@@ -2477,6 +2478,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 			);
 			free(finalSavedData);
 
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){		//  remove event listener operator
+			
+			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){		//  change event polling rate operator
+			VIRTUAL_CONTROLLER_POLLING_RATE=getInt32_t(constJson(POLLING_RATE,subExecutable));
 			return subExecutable;
 		}
 

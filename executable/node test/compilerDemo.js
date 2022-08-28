@@ -179,27 +179,37 @@ app.get('/',(req,res)=>{
 
     // finalStack.push(delay(500));
 
-    // finalStack.push(memoryWrite(100,{test:"samer-1"}));
+    finalStack.push(memoryWrite(100,{test:"samer-15"}));
+    finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(delay(500));
+    finalStack.push(memoryWrite(100,{test:"samer-5"}));
+    finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(delay(500));
+    finalStack.push(memoryWrite(100,{test:"samer-96666666"}));
+    finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(delay(500));
     
-    // // finalStack.push(memoryWrite(101,memoryRead(100)));
+    // finalStack.push(memoryWrite(100,memoryRead(100)));
+    // finalStack.push(memoryWrite(100,memoryRead(100)));
+    // finalStack.push(memoryWrite(100,memoryRead(100)));
 
 
     // finalStack.push(consoleLogger(memoryRead(100)));
 
 
-    finalStack.push(consoleLogger(digitalInput(100)));
+    // finalStack.push(consoleLogger(digitalInput(100)));
 
 
     // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
     
     
     
-    finalStack.push(controllerEventListener(
-        63,
-        58,
-        digitalInput(69),
-        controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
-    ));
+    // finalStack.push(controllerEventListener(
+    //     63,
+    //     58,
+    //     hardwareID(69),
+    //     controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
+    // ));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));
 

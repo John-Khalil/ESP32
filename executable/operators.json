@@ -112,6 +112,19 @@
 }
 
 
+// remove event listener
+{
+    "operator":int,
+    "eventAddress":int
+}
+
+
+// change event polling rate
+{
+    "operator":int,
+    "pollingRate":int
+}
+
 
 //  those operators are for future implementation 
 
