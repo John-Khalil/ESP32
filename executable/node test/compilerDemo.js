@@ -25,6 +25,8 @@ const memoryDeleteOperator=operatorIndex++;
 
 const fetchOperator=operatorIndex++;
 const addEventOperator=operatorIndex++;
+const removeEventOperator=operatorIndex++;
+const setEventPollingOperator=operatorIndex++;
 
 
 
@@ -63,6 +65,7 @@ const EVENT_ADDRESS="EA";
 const EVENT_EXECUTABLE="EE";
 const HANDLER_EXECUTABLE="HE";
 const ONCHANGE_ADDRESS="CA";
+const POLLING_RATE="PR";
 
 
 
@@ -156,6 +159,23 @@ const controllerEventListener=(eventAddress,onchangeAddress,eventExecutable,hand
     return returnStack;
 }
 
+
+const controllerRemoveEventListener=(eventAddress)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=removeEventOperator;
+    returnStack[EVENT_ADDRESS]=eventAddress;
+    return returnStack;
+}
+
+
+const controllerEventPollingRate=(pollingRate)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=setEventPollingOperator;
+    returnStack[POLLING_RATE]=pollingRate;
+    return returnStack;
+}
+
+
 ////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
 var counter=0;
@@ -179,15 +199,15 @@ app.get('/',(req,res)=>{
 
     // finalStack.push(delay(500));
 
-    finalStack.push(memoryWrite(100,{test:"samer-15"}));
-    finalStack.push(consoleLogger(memoryRead(100)));
-    finalStack.push(delay(500));
-    finalStack.push(memoryWrite(100,{test:"samer-5"}));
-    finalStack.push(consoleLogger(memoryRead(100)));
-    finalStack.push(delay(500));
-    finalStack.push(memoryWrite(100,{test:"samer-96666666"}));
-    finalStack.push(consoleLogger(memoryRead(100)));
-    finalStack.push(delay(500));
+    // finalStack.push(memoryWrite(100,{test:"samer-15"}));
+    // finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(delay(500));
+    // finalStack.push(memoryWrite(100,{test:"samer-5"}));
+    // finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(delay(500));
+    // finalStack.push(memoryWrite(100,{test:"samer-96666666"}));
+    // finalStack.push(consoleLogger(memoryRead(100)));
+    // finalStack.push(delay(500));
     
     // finalStack.push(memoryWrite(100,memoryRead(100)));
     // finalStack.push(memoryWrite(100,memoryRead(100)));
@@ -204,12 +224,12 @@ app.get('/',(req,res)=>{
     
     
     
-    // finalStack.push(controllerEventListener(
-    //     63,
-    //     58,
-    //     hardwareID(69),
-    //     controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
-    // ));
+    finalStack.push(controllerEventListener(
+        63,
+        58,
+        hardwareID(69),
+        controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
+    ));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));
 

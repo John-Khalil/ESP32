@@ -2356,7 +2356,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			unsigned long digitalPortRead=millis()/100;										// this would later be assigned a value
+			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
 
 			
 			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
