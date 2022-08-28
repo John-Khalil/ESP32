@@ -227,9 +227,17 @@ app.get('/',(req,res)=>{
     finalStack.push(controllerEventListener(
         63,
         58,
-        hardwareID(69),
+        digitalInput(69),
         controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
     ));
+
+
+    finalStack.push(delay(10000));
+
+
+    finalStack.push(controllerRemoveEventListener(63));
+
+    finalStack.push(consoleLogger(memoryRead(63)));
     
     // // finalStack.push(memoryWrite(101,memoryRead(100)));
 
