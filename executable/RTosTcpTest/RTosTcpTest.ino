@@ -2481,7 +2481,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){		//  remove event listener operator
-			
+			unsigned long eventListenerAddress=getInt32_t(constJson(EVENT_ADDRESS,subExecutable));
+			unsigned char eventAllocatorCounter=0;
+			while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]!=eventListenerAddress);	// the very last address should always be zero
+			VIRTUAL_CONTROLLER_EVENT_ADDRESS[--eventAllocatorCounter]*=(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter]!=eventListenerAddress);
+			smartPointer(eventListenerAddress,DELETE_BUFFER);
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){		//  change event polling rate operator
