@@ -2346,6 +2346,11 @@ JSON_ATTRIBUTE ONCHANGE_ADDRESS="CA";
 JSON_ATTRIBUTE POLLING_RATE="PR";
 
 
+// operator json
+JSON_ATTRIBUTE OBJECT_KEY="OK";
+JSON_ATTRIBUTE EXECUTABLE_JSON="EJ";
+
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											// digtal output operator
@@ -2491,6 +2496,19 @@ unsigned char* virtualController(unsigned char* executableObject){
 		[&](unsigned char *subExecutable){		//  change event polling rate operator
 			VIRTUAL_CONTROLLER_POLLING_RATE=getInt32_t(constJson(POLLING_RATE,subExecutable));
 			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){		//  operator json
+			static unsigned char *operatorJsonReturn=NULL;
+			if(operatorJsonReturn!=NULL)
+				free(operatorJsonReturn);
+			unsigned char *objectKey=virtualController(constJson(OBJECT_KEY,subExecutable));
+			CACHE_BYTES(objectKey);
+			unsigned char *executableJson=virtualController(constJson(EXECUTABLE_JSON,subExecutable));
+			CACHE_BYTES(executableJson);
+			operatorJsonReturn=constJson(objectKey,executableJson);
+			free(objectKey);
+			free(executableJson);
+			return CACHE_BYTES(operatorJsonReturn);
 		}
 
 

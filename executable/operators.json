@@ -126,6 +126,14 @@
 }
 
 
+// operator json
+{
+    "operator":int,
+    "objectKey":executable,
+    "executableJson":executable
+}
+
+
 //  those operators are for future implementation 
 
 
@@ -149,7 +157,7 @@
 // digital input operator simplified
 {
     "operator":int,
-    "portAddress":int
+    "portAddress":
 }
 
 
