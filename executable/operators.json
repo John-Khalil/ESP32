@@ -134,6 +134,26 @@
 }
 
 
+// create function operator
+{
+    "operator":int,
+    "functionAddress":int,
+    "functionObject":{
+        "parameterAddress":int,
+        "stackExecutable":executable,
+        "returnExecutable":executable
+    }
+}
+
+
+// call function operator
+{
+    "operator":int,
+    "functionAddress":int,
+    "parameterObject":{}
+}
+
+
 //  those operators are for future implementation 
 
 

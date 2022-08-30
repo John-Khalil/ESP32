@@ -2351,6 +2351,15 @@ JSON_ATTRIBUTE OBJECT_KEY="OK";
 JSON_ATTRIBUTE EXECUTABLE_JSON="EJ";
 
 
+// function operator create & call
+JSON_ATTRIBUTE FUNCTION_ADDRESS="FA";
+JSON_ATTRIBUTE FUNCTION_OBJECT="FO";
+JSON_ATTRIBUTE PARAMETER_ADDRESS="PA";
+JSON_ATTRIBUTE STACK_EXECUTABLE="SE";
+JSON_ATTRIBUTE RETURN_EXECUTABLE="RE";
+JSON_ATTRIBUTE parameter_OBJECT="PO";
+
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											// digtal output operator
@@ -2509,6 +2518,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(objectKey);
 			free(executableJson);
 			return CACHE_BYTES(operatorJsonReturn);
+		},
+		[&](unsigned char *subExecutable){
+			
+			return subExecutable;
 		}
 
 
