@@ -2357,7 +2357,7 @@ JSON_ATTRIBUTE FUNCTION_OBJECT="FO";
 JSON_ATTRIBUTE PARAMETER_ADDRESS="PA";
 JSON_ATTRIBUTE STACK_EXECUTABLE="SE";
 JSON_ATTRIBUTE RETURN_EXECUTABLE="RE";
-JSON_ATTRIBUTE parameter_OBJECT="PO";
+JSON_ATTRIBUTE PARAMETER_OBJECT="PO";
 
 
 unsigned char* virtualController(unsigned char* executableObject){
@@ -2520,14 +2520,31 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return CACHE_BYTES(operatorJsonReturn);
 		},
 		[&](unsigned char *subExecutable){											//& create new function
-			
+			unsigned long functionAddress=getInt32_t(constJson(FUNCTION_ADDRESS,subExecutable));		// in this case the address of the function is a const
+			unsigned char *functionObject=constJson(FUNCTION_OBJECT,subExecutable);
+			highLevelMemory(
+				smartPointer(functionAddress),
+				CACHE_BYTES(functionObject)
+			);
+			free(functionObject);
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											//& call function
 			static unsigned char *functionReturn=NULL;
 			if(functionReturn!=NULL)
 				free(functionReturn);
+
+			unsigned char *parameterObject=constJson(PARAMETER_OBJECT,subExecutable);
+			CACHE_BYTES(parameterObject);
+
+			unsigned char *functionObject=highLevelMemory(smartPointer(getInt32_t(constJson(FUNCTION_ADDRESS,subExecutable))));
+			CACHE_BYTES(functionObject);
+
+			unsigned long parameterAddress=getInt32_t(constJson(PARAMETER_ADDRESS,functionObject));
 			
+
+			free(functionObject);
+			free(parameterObject);
 			return CACHE_BYTES(functionReturn);
 		}
 
