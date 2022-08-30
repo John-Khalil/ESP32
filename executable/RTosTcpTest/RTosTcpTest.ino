@@ -2541,7 +2541,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 			CACHE_BYTES(functionObject);
 
 			unsigned long parameterAddress=getInt32_t(constJson(PARAMETER_ADDRESS,functionObject));
+			highLevelMemory(
+				smartPointer(parameterAddress),
+				parameterObject
+			);
+
 			
+
 
 			free(functionObject);
 			free(parameterObject);
