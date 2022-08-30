@@ -2116,9 +2116,9 @@ unsigned char *fetch(httpRequest_t httpRequest){
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
+//^ 					//////////////////////////////////////////////////////////////////////////////////////////////
+//^ 					/////////////////////////////////    SERVICE-EXECUTABLE    ///////////////////////////////////
+//^ 					//////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -2362,11 +2362,11 @@ JSON_ATTRIBUTE parameter_OBJECT="PO";
 
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
-		[&](unsigned char *subExecutable){											// digtal output operator
+		[&](unsigned char *subExecutable){											//& digtal output operator
 			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
 			return subExecutable;
 		},
-		[&](unsigned char *	subExecutable){											// digtal input operator
+		[&](unsigned char *	subExecutable){											//& digtal input operator
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
@@ -2376,11 +2376,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
 			return CACHE_BYTES(digitalInputPortRaed);
 		},
-		[&](unsigned char *subExecutable){											// delay operator
+		[&](unsigned char *subExecutable){											//& delay operator
 			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){											// loop operator
+		[&](unsigned char *subExecutable){											//& loop operator
 			unsigned char *loopCounter;
 			if((loopCounter=constJson(LOOP_COUNTER,subExecutable))!=UNDEFINED){
 				within(getInt32_t(loopCounter),{
@@ -2393,14 +2393,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 			}
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){											// console logger operator
+		[&](unsigned char *subExecutable){											//& console logger operator
 			console.log(" -> ",virtualController(constJson(CONSOLE_DATA,subExecutable))," <- ");
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){											// hardware id
+		[&](unsigned char *subExecutable){											//& hardware id
 			return (unsigned char*)"{\"Type\":\"ESP32-BASED-virtual-controller\"}";
 		},
-		[&](unsigned char *subExecutable){											// virtual controller memory wrtie
+		[&](unsigned char *subExecutable){											//& virtual controller memory wrtie
 			unsigned long finalMemorryAddress=smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),POINT_BUFFER);
 			unsigned char *savedData=virtualController(constJson(BUFFER_DATA,subExecutable));
 			unsigned char *finalSavedData=(unsigned char*)calloc(stringCounter(savedData)+1,sizeof(unsigned char));
@@ -2411,7 +2411,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(finalSavedData);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){											// virtual controller memory read
+		[&](unsigned char *subExecutable){											//& virtual controller memory read
 			static unsigned char *readVirtualMemoryAllocator=NULL;
 			if(readVirtualMemoryAllocator!=NULL)
 				free(readVirtualMemoryAllocator);
@@ -2419,11 +2419,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 			readVirtualMemoryAllocator=(unsigned char *)calloc(stringCounter(finalDataFromVirtualMemory)+1,sizeof(unsigned char));
 			return _CS(readVirtualMemoryAllocator,finalDataFromVirtualMemory);
 		},
-		[&](unsigned char *subExecutable){											// virtual controller memory delete
+		[&](unsigned char *subExecutable){											//& virtual controller memory delete
 			smartPointer(getInt32_t(constJson(BUFFER_IDENTIFIER,subExecutable)),DELETE_BUFFER);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){
+		[&](unsigned char *subExecutable){											//& fetch operator
 			unsigned char *webHostUrlBuffer=(unsigned char*)calloc(256,sizeof(unsigned char));		//creating a buffer for the url as the object will change as the value gets used
 			// unsigned char *postBodyBuffer=(unsigned char *)calloc(1024,sizeof(unsigned  char));
 
@@ -2473,7 +2473,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(mainPostBodyBuffer);
 			return dataFromFetch;
 		},
-		[&](unsigned char *subExecutable){											// add event listener operator
+		[&](unsigned char *subExecutable){											//& add event listener operator
 			unsigned long eventListenerAddress=getInt32_t(constJson(EVENT_ADDRESS,subExecutable));
 			unsigned char eventAllocatorCounter=0;
 			while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]);	// this should be initialized with 0s
@@ -2494,7 +2494,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){		//  remove event listener operator
+		[&](unsigned char *subExecutable){											//&  remove event listener operator
 			unsigned long eventListenerAddress=getInt32_t(constJson(EVENT_ADDRESS,subExecutable));
 			unsigned char eventAllocatorCounter=0;
 			while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]!=eventListenerAddress);	// the very last address should always be zero
@@ -2502,11 +2502,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 			smartPointer(eventListenerAddress,DELETE_BUFFER);
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){		//  change event polling rate operator
+		[&](unsigned char *subExecutable){											//&  change event polling rate operator
 			VIRTUAL_CONTROLLER_POLLING_RATE=getInt32_t(constJson(POLLING_RATE,subExecutable));
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){		//  operator json
+		[&](unsigned char *subExecutable){											//&  operator json
 			static unsigned char *operatorJsonReturn=NULL;
 			if(operatorJsonReturn!=NULL)
 				free(operatorJsonReturn);
@@ -2519,9 +2519,16 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(executableJson);
 			return CACHE_BYTES(operatorJsonReturn);
 		},
-		[&](unsigned char *subExecutable){
+		[&](unsigned char *subExecutable){											//& create new function
 			
 			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){											//& call function
+			static unsigned char *functionReturn=NULL;
+			if(functionReturn!=NULL)
+				free(functionReturn);
+			
+			return CACHE_BYTES(functionReturn);
 		}
 
 
