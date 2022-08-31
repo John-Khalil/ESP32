@@ -1,5 +1,6 @@
 const express =require('express');
 const cors=require('cors');
+const util = require('util')
 const bodyParser = require('body-parser');
 
 
@@ -27,6 +28,10 @@ const fetchOperator=operatorIndex++;
 const addEventOperator=operatorIndex++;
 const removeEventOperator=operatorIndex++;
 const setEventPollingOperator=operatorIndex++;
+
+const operatorJsonOperator=operatorIndex++;
+const createfunctionOperator=operatorIndex++;
+const callFunctionOperator=operatorIndex++;
 
 
 
@@ -66,6 +71,20 @@ const EVENT_EXECUTABLE="EE";
 const HANDLER_EXECUTABLE="HE";
 const ONCHANGE_ADDRESS="CA";
 const POLLING_RATE="PR";
+
+
+// operator json
+const OBJECT_KEY="OK";
+const EXECUTABLE_JSON="EJ";
+
+
+// function operator create & call
+const FUNCTION_ADDRESS="FA";
+const FUNCTION_OBJECT="FO";
+const PARAMETER_ADDRESS="PA";
+const STACK_EXECUTABLE="SE";
+const RETURN_EXECUTABLE="RE";
+const PARAMETER_OBJECT="PO";
 
 
 
@@ -172,6 +191,15 @@ const controllerEventPollingRate=(pollingRate)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=setEventPollingOperator;
     returnStack[POLLING_RATE]=pollingRate;
+    return returnStack;
+}
+
+
+const operatorJson=(objectKey,jsonObject)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=operatorJsonOperator;
+    returnStack[OBJECT_KEY]=objectKey;
+    returnStack[EXECUTABLE_JSON]=jsonObject;
     return returnStack;
 }
 
@@ -292,7 +320,7 @@ app.get('/',(req,res)=>{
     res.send(JSON.stringify(loop(1,finalStack)));
 
     console.log(JSON.stringify(finalStack));
-    console.log(JSON.parse(JSON.stringify(finalStack)));
+    console.log(util.inspect(JSON.parse(JSON.stringify(finalStack)), false, null, true));
 
 });
 

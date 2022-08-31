@@ -2546,11 +2546,15 @@ unsigned char* virtualController(unsigned char* executableObject){
 				parameterObject
 			);
 
-			
-
+			unsigned char *stackExecutable=constJson(STACK_EXECUTABLE,functionObject);
+			virtualController(CACHE_BYTES(stackExecutable));
+			unsigned char *returnExecutable=constJson(RETURN_EXECUTABLE,functionObject);
+			functionReturn=virtualController(CACHE_BYTES(returnExecutable));
 
 			free(functionObject);
 			free(parameterObject);
+			free(stackExecutable);
+			free(functionReturn);
 			return CACHE_BYTES(functionReturn);
 		}
 
@@ -2611,9 +2615,9 @@ void virtualControllerEventListener(void *params){
 
 
 
-//////////////////////////////////////////////////////////////////
-////////////////////	testing stuff goes here		//////////////
-//////////////////////////////////////////////////////////////////
+//! //////////////////////////////////////////////////////////////////
+//! ////////////////////	testing stuff goes here		//////////////
+//! //////////////////////////////////////////////////////////////////
 
 
 // JSON_PARSER jsonObject0;
