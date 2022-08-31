@@ -210,7 +210,7 @@ const functionArgument=(parameter)=>{
 }
 
 
-const createfunction=(functionAddress,parameterAddress,stackExecutable,returnExecutable)=>{
+const createFunction=(functionAddress,parameterAddress,stackExecutable,returnExecutable)=>{
     creatingFunctionParameterAddress=parameterAddress;
     stackExecutable=stackExecutable();
     var returnStack={};
@@ -222,6 +222,15 @@ const createfunction=(functionAddress,parameterAddress,stackExecutable,returnExe
     returnStack[JSON_OPERATOR]=createfunctionOperator;
     returnStack[FUNCTION_ADDRESS]=functionAddress;
     returnStack[FUNCTION_OBJECT]=functionObject;
+    return returnStack;
+}
+
+
+const callFunction=(functionAddress,parameterObject)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=callFunctionOperator;
+    returnStack[FUNCTION_ADDRESS]=functionAddress;
+    returnStack[PARAMETER_OBJECT]=parameterObject;
     return returnStack;
 }
 
