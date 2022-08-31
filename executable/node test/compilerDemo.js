@@ -204,6 +204,28 @@ const operatorJson=(objectKey,jsonObject)=>{
 }
 
 
+var creatingFunctionParameterAddress=0;
+const functionArgument=(parameter)=>{
+    return operatorJson(parameter,memoryRead(creatingFunctionParameterAddress));
+}
+
+
+const createfunction=(functionAddress,parameterAddress,stackExecutable,returnExecutable)=>{
+    creatingFunctionParameterAddress=parameterAddress;
+    stackExecutable=stackExecutable();
+    var returnStack={};
+    var functionObject={};
+    functionObject[PARAMETER_ADDRESS]=parameterAddress;
+    functionObject[STACK_EXECUTABLE]=stackExecutable;
+    functionObject[RETURN_EXECUTABLE]=returnExecutable;
+
+    returnStack[JSON_OPERATOR]=createfunctionOperator;
+    returnStack[FUNCTION_ADDRESS]=functionAddress;
+    returnStack[FUNCTION_OBJECT]=functionObject;
+    return returnStack;
+}
+
+
 ////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
 var counter=0;
