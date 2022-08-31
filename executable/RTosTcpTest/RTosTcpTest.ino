@@ -2551,10 +2551,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char *returnExecutable=constJson(RETURN_EXECUTABLE,functionObject);
 			functionReturn=virtualController(CACHE_BYTES(returnExecutable));
 
-			free(functionObject);
-			free(parameterObject);
-			free(stackExecutable);
-			free(functionReturn);
+			free(functionObject);	//~ _delay_ms(200),console.log("exception-1");
+			free(parameterObject);	//~ _delay_ms(200),console.log("exception-2");
+			free(stackExecutable);	//~ _delay_ms(200),console.log("exception-3");
+			free(returnExecutable);	//~ _delay_ms(200),console.log("exception-4");
 			return CACHE_BYTES(functionReturn);
 		}
 

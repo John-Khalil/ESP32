@@ -273,7 +273,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(memoryWrite(100,memoryRead(100)));
 
 
-    // finalStack.push(consoleLogger(memoryRead(100)));
+    finalStack.push(consoleLogger("hello world"));
 
 
     // finalStack.push(consoleLogger(digitalInput(100)));
@@ -281,24 +281,25 @@ app.get('/',(req,res)=>{
 
     // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
     
+
     
     
-    finalStack.push(controllerEventListener(
-        63,
-        58,
-        digitalInput(69),
-        controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
-    ));
+    // finalStack.push(controllerEventListener(
+    //     63,
+    //     58,
+    //     digitalInput(69),
+    //     controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
+    // ));
 
 
-    finalStack.push(delay(10000));
+    // finalStack.push(delay(10000));
 
 
-    finalStack.push(controllerRemoveEventListener(63));
+    // finalStack.push(controllerRemoveEventListener(63));
 
-    finalStack.push(consoleLogger(memoryRead(63)));
+    // finalStack.push(consoleLogger(memoryRead(63)));
     
-    // // finalStack.push(memoryWrite(101,memoryRead(100)));
+    // // // finalStack.push(memoryWrite(101,memoryRead(100)));
 
 
     // // finalStack.push(consoleLogger(memoryRead(101)));
@@ -346,6 +347,41 @@ app.get('/',(req,res)=>{
     // finalStack.push(delay(100));
     
     // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
+
+
+
+
+    finalStack.push(createFunction(
+        1025,
+        1026,
+        ()=>{
+            // return loop(1,[
+            //     controllerRemoveEventListener(63),
+            //     consoleLogger(functionArgument("randomParam")),
+            //     controllerEventListener(
+            //         63,
+            //         58,
+            //         digitalInput(69),
+            //         controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+            //     )
+            // ])
+            return consoleLogger(functionArgument("randomParam"));
+        },
+        hardwareID()
+    ));
+
+    finalStack.push(delay(1000));
+    // finalStack.push(consoleLogger(memoryRead(1025)));
+
+    finalStack.push(callFunction(1025,{randomParam:{test:1478}}));
+
+    finalStack.push(delay(1000));
+    // finalStack.push(consoleLogger(memoryRead(1025)));
+
+    finalStack.push(callFunction(1025,{randomParam:"some random text"}));
+
+
+
     
    
     res.send(JSON.stringify(loop(1,finalStack)));
