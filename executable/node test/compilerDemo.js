@@ -33,6 +33,7 @@ const operatorJsonOperator=operatorIndex++;
 const createfunctionOperator=operatorIndex++;
 const callFunctionOperator=operatorIndex++;
 
+const executableStackOperator=operatorIndex++;
 
 
 const JSON_OPERATOR="OP";				// generic operator
@@ -85,6 +86,11 @@ const PARAMETER_ADDRESS="PA";
 const STACK_EXECUTABLE="SE";
 const RETURN_EXECUTABLE="RE";
 const PARAMETER_OBJECT="PO";
+
+
+// ececutable Stack operator
+const EXECUTABLE_COUNTER="EC";
+const EXECUTABLE_STACK="ES"; 
 
 
 
@@ -231,6 +237,15 @@ const callFunction=(functionAddress,parameterObject)=>{
     returnStack[JSON_OPERATOR]=callFunctionOperator;
     returnStack[FUNCTION_ADDRESS]=functionAddress;
     returnStack[PARAMETER_OBJECT]=parameterObject;
+    return returnStack;
+}
+
+
+const executableStack=(executableCounter,executableStackArray)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=executableStackOperator;
+    returnStack[EXECUTABLE_COUNTER]=executableCounter;
+    returnStack[EXECUTABLE_STACK]=executableStackArray;
     return returnStack;
 }
 
