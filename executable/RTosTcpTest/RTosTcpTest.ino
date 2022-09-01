@@ -2294,6 +2294,8 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
+
+
 unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
@@ -2576,6 +2578,61 @@ unsigned char* virtualController(unsigned char* executableObject){
 				}
 			}
 			return subExecutable;
+		},
+		[&](unsigned char *subExecutable){
+			const std::function<unsigned long(unsigned long,unsigned long)>turingComplete[]={			// it was called turing complete cause the arthematic and logic operators should be included to make it turing complete
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ ADD 		-ARITHMATIC
+					return firstOperand+secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SUB 		-ARITHMATIC
+					return firstOperand-secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MUL 		-ARITHMATIC
+					return firstOperand*secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ DIV 		-ARITHMATIC
+					return firstOperand/secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MOD 		-ARITHMATIC
+					return firstOperand%secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ 2's COMP 	-ARITHMATIC
+					return (~firstOperand)+1;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ XOR 		-BITWISE
+					return firstOperand^secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 			-BITWISE
+					return firstOperand^secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 		-BITWISE
+					return firstOperand&secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ COMP 		-BITWISE
+					return ~firstOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT RIGHT -BITWISE
+					return firstOperand>>secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT LEFT 	-BITWISE
+					return firstOperand<<secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ EQUAL 		-LOGIC
+					return (firstOperand==secondOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT EQUAL 	-LOGIC
+					return (firstOperand!=secondOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 		-LOGIC
+					return firstOperand&&secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 			-LOGIC
+					return firstOperand||secondOperand;
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT 		-LOGIC
+					return (!firstOperand);
+				},
+			}
 		}
 
 
