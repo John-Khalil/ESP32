@@ -2568,6 +2568,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
 			unsigned char *executableStackElement=NULL;
 			while(executableCounter--){
+				// _delay_ms(200);console.log(" >> ",executableCounter);
+				executableStackCounter=0;
 				while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
 					virtualController(CACHE_BYTES(executableStackElement));
 					free(executableStackElement);

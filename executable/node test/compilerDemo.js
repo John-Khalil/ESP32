@@ -253,6 +253,7 @@ const executableStack=(executableCounter,executableStackArray)=>{
 ////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
 var counter=0;
+var staticTesting=0;
 
 app.get('/',(req,res)=>{
     
@@ -365,30 +366,31 @@ app.get('/',(req,res)=>{
 
 
 
-
-    // finalStack.push(createFunction(
-    //     1025,
-    //     1026,
-    //     ()=>{
-    //         // return loop(1,[
-    //         //     consoleLogger(functionArgument("randomParam")),
-    //         //     // controllerEventListener(
-    //         //     //     63,
-    //         //     //     58,
-    //         //     //     digitalInput(69),
-    //         //     //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-    //         //     // )
-    //         // ])
-    //         return consoleLogger(functionArgument("randomParam"));
-    //         // return controllerEventListener(
-    //         //     63,
-    //         //     58,
-    //         //     digitalInput(69),
-    //         //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-    //         // )
-    //     },
-    //     hardwareID()
-    // ));
+    if(!(staticTesting++))
+    finalStack.push(createFunction(
+        1025,
+        1026,
+        ()=>{
+            return executableStack(3,[
+                consoleLogger(functionArgument("randomParam")),
+                delay(1000)
+                // controllerEventListener(
+                //     63,
+                //     58,
+                //     digitalInput(69),
+                //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+                // )
+            ])
+            return consoleLogger(functionArgument("randomParam"));
+            // return controllerEventListener(
+            //     63,
+            //     58,
+            //     digitalInput(69),
+            //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+            // )
+        },
+        hardwareID()
+    ));
 
     finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
