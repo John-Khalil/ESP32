@@ -9,6 +9,12 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
+
+var variableMemoryBaseAddress=0;
+const newVariable=()=>{
+    return variableMemoryBaseAddress++;
+}
+
 const port =766;
 
 var operatorIndex=0;
@@ -364,16 +370,23 @@ app.get('/',(req,res)=>{
     
     // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
 
-
+    const laodToMemory=newVariable();
 
     if(!(staticTesting++))
     finalStack.push(createFunction(
         1025,
         1026,
         ()=>{
-            return executableStack(3,[
+            return executableStack(1,[
+                // memoryWrite(laodToMemory,functionArgument("randomParam")),
+                // executableStack(3,[
+                //     consoleLogger(memoryRead(laodToMemory)),
+                //     delay(1000)
+                // ]),
                 consoleLogger(functionArgument("randomParam")),
-                delay(1000)
+                delay(200),
+                controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback"))
+                
                 // controllerEventListener(
                 //     63,
                 //     58,
@@ -381,7 +394,7 @@ app.get('/',(req,res)=>{
                 //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
                 // )
             ])
-            return consoleLogger(functionArgument("randomParam"));
+            // return consoleLogger(functionArgument("randomParam"));
             // return controllerEventListener(
             //     63,
             //     58,
@@ -395,7 +408,7 @@ app.get('/',(req,res)=>{
     finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(callFunction(1025,{randomParam:{test:"some random text"}}));
+    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
 
     // finalStack.push(delay(1000));
     // // finalStack.push(consoleLogger(memoryRead(1025)));

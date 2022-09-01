@@ -2519,7 +2519,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			CACHE_BYTES(objectKey);
 			unsigned char *executableJson=virtualController(constJson(EXECUTABLE_JSON,subExecutable));
 			CACHE_BYTES(executableJson);
-			operatorJsonReturn=constJson(objectKey,executableJson);
+			operatorJsonReturn=virtualController(constJson(objectKey,executableJson));
 			free(objectKey);
 			free(executableJson);
 			return CACHE_BYTES(operatorJsonReturn);
