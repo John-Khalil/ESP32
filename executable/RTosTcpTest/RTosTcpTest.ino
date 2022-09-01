@@ -2564,7 +2564,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(returnExecutable);
 			return CACHE_BYTES(functionReturn);
 		},
-		[&](unsigned char *subExecutable){											//& EXECUTABLE STACK			
+		[&](unsigned char *subExecutable){											//& EXECUTABLE STACK
 			unsigned long executableCounter=getInt32_t(virtualController(constJson(EXECUTABLE_COUNTER,subExecutable)));
 			unsigned long executableStackCounter=0;
 			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
@@ -2579,58 +2579,70 @@ unsigned char* virtualController(unsigned char* executableObject){
 			}
 			return subExecutable;
 		},
-		[&](unsigned char *subExecutable){
+		[&](unsigned char *subExecutable){											//& TURING COMPLETE
 			const std::function<unsigned long(unsigned long,unsigned long)>turingComplete[]={			// it was called turing complete cause the arthematic and logic operators should be included to make it turing complete
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ ADD 		-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ ADD 				-ARITHMATIC
 					return firstOperand+secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SUB 		-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SUB 				-ARITHMATIC
 					return firstOperand-secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MUL 		-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MUL 				-ARITHMATIC
 					return firstOperand*secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ DIV 		-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ DIV 				-ARITHMATIC
 					return firstOperand/secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MOD 		-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ MOD 				-ARITHMATIC
 					return firstOperand%secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ 2's COMP 	-ARITHMATIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ 2's COMP 			-ARITHMATIC
 					return (~firstOperand)+1;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ XOR 		-BITWISE
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ XOR 				-BITWISE
 					return firstOperand^secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 			-BITWISE
-					return firstOperand^secondOperand;
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 					-BITWISE
+					return firstOperand|secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 		-BITWISE
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 				-BITWISE
 					return firstOperand&secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ COMP 		-BITWISE
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ COMP 				-BITWISE
 					return ~firstOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT RIGHT -BITWISE
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT RIGHT 		-BITWISE
 					return firstOperand>>secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT LEFT 	-BITWISE
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT LEFT 			-BITWISE
 					return firstOperand<<secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ EQUAL 		-LOGIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ EQUAL 				-LOGIC
 					return (firstOperand==secondOperand);
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT EQUAL 	-LOGIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT EQUAL 			-LOGIC
 					return (firstOperand!=secondOperand);
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 		-LOGIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 				-LOGIC
 					return firstOperand&&secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 			-LOGIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 					-LOGIC
 					return firstOperand||secondOperand;
 				},
-				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT 		-LOGIC
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT 				-LOGIC
 					return (!firstOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SMALLER 			-LOGIC
+					return (firstOperand<secondOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ GREATER 			-LOGIC
+					return (firstOperand>secondOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ SMALLER OR EQUAL	-LOGIC
+					return (firstOperand<=secondOperand);
+				},
+				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ GREATER OR EQUAL	-LOGIC
+					return (firstOperand>=secondOperand);
 				},
 			}
 		}
