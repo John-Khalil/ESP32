@@ -351,34 +351,39 @@ app.get('/',(req,res)=>{
 
 
 
-    finalStack.push(createFunction(
-        1025,
-        1026,
-        ()=>{
-            // return loop(1,[
-            //     controllerRemoveEventListener(63),
-            //     consoleLogger(functionArgument("randomParam")),
-            //     controllerEventListener(
-            //         63,
-            //         58,
-            //         digitalInput(69),
-            //         controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-            //     )
-            // ])
-            return consoleLogger(functionArgument("randomParam"));
-        },
-        hardwareID()
-    ));
+    // finalStack.push(createFunction(
+    //     1025,
+    //     1026,
+    //     ()=>{
+    //         // return loop(1,[
+    //         //     consoleLogger(functionArgument("randomParam")),
+    //         //     // controllerEventListener(
+    //         //     //     63,
+    //         //     //     58,
+    //         //     //     digitalInput(69),
+    //         //     //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+    //         //     // )
+    //         // ])
+    //         return consoleLogger(functionArgument("randomParam"));
+    //         // return controllerEventListener(
+    //         //     63,
+    //         //     58,
+    //         //     digitalInput(69),
+    //         //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+    //         // )
+    //     },
+    //     hardwareID()
+    // ));
 
     finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(callFunction(1025,{randomParam:{test:1478}}));
+    finalStack.push(callFunction(1025,{randomParam:{test:"some random text"}}));
 
-    finalStack.push(delay(1000));
-    // finalStack.push(consoleLogger(memoryRead(1025)));
+    // finalStack.push(delay(1000));
+    // // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(callFunction(1025,{randomParam:"some random text"}));
+    // finalStack.push(callFunction(1025,{randomParam:"some random text"}));
 
 
 

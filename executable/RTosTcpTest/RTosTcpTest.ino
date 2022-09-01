@@ -2360,6 +2360,11 @@ JSON_ATTRIBUTE RETURN_EXECUTABLE="RE";
 JSON_ATTRIBUTE PARAMETER_OBJECT="PO";
 
 
+// ececutable Stack operator
+JSON_ATTRIBUTE EXECUTABLE_COUNTER="EC";
+JSON_ATTRIBUTE EXECUTABLE_STACK="ES";
+
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
@@ -2386,9 +2391,9 @@ unsigned char* virtualController(unsigned char* executableObject){
 				within(getInt32_t(loopCounter),{
 					unsigned char *finalExecutableObject;
 					unsigned char jsonArrayCounter=0;
-					while((finalExecutableObject=constJson($(LOOP_BODY,"[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED)
+					while((finalExecutableObject=constJson($(LOOP_BODY,"[",jsonArrayCounter++,"]"),subExecutable))!=UNDEFINED){
 						virtualController(finalExecutableObject);
-					
+					}
 				});
 			}
 			return subExecutable;
@@ -2433,7 +2438,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char *postBodyBuffer=mainPostBodyBuffer;
 
 			unsigned char *postRequestParams;
-			if((postRequestParams=constJson(REQUEST_PARAM,subExecutable))!=UNDEFINED){
+			if((postRequestParams=virtualController(constJson(REQUEST_PARAM,subExecutable)))!=UNDEFINED){
 				_CS(mainPostBodyBuffer,(unsigned char*)"{\"");
 				_CS(mainPostBodyBuffer,(unsigned char*)REQUEST_PARAM);
 				_CS(mainPostBodyBuffer,(unsigned char*)"\":");
@@ -2551,11 +2556,15 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char *returnExecutable=constJson(RETURN_EXECUTABLE,functionObject);
 			functionReturn=virtualController(CACHE_BYTES(returnExecutable));
 
-			free(functionObject);	//~ _delay_ms(200),console.log("exception-1");
-			free(parameterObject);	//~ _delay_ms(200),console.log("exception-2");
-			free(stackExecutable);	//~ _delay_ms(200),console.log("exception-3");
-			free(returnExecutable);	//~ _delay_ms(200),console.log("exception-4");
+			free(functionObject);
+			free(parameterObject);
+			free(stackExecutable);
+			free(returnExecutable);
 			return CACHE_BYTES(functionReturn);
+		},
+		[&](unsigned char *subExecutable){
+			
+			return subExecutable;
 		}
 
 

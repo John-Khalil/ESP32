@@ -153,6 +153,16 @@
     "parameterObject":{}
 }
 
+// executable stack operator
+{
+    "operator":int,
+    "executableCounter":executable,
+    "executableStack":[executable]
+}
+
+
+// 
+
 
 //  those operators are for future implementation 
 
