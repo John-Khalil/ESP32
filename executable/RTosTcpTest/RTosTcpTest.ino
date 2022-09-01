@@ -2562,8 +2562,17 @@ unsigned char* virtualController(unsigned char* executableObject){
 			free(returnExecutable);
 			return CACHE_BYTES(functionReturn);
 		},
-		[&](unsigned char *subExecutable){
-			
+		[&](unsigned char *subExecutable){											//& EXECUTABLE STACK			
+			unsigned long executableCounter=getInt32_t(virtualController(constJson(EXECUTABLE_COUNTER,subExecutable)));
+			unsigned long executableStackCounter=0;
+			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
+			unsigned char *executableStackElement=NULL;
+			while(executableCounter--){
+				while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
+					virtualController(CACHE_BYTES(executableStackElement));
+					free(executableStackElement);
+				}
+			}
 			return subExecutable;
 		}
 
