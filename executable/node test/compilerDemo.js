@@ -377,7 +377,7 @@ app.get('/',(req,res)=>{
         1025,
         1026,
         ()=>{
-            return executableStack(1,[
+            return executableStack(2,[
                 // memoryWrite(laodToMemory,functionArgument("randomParam")),
                 // executableStack(3,[
                 //     consoleLogger(memoryRead(laodToMemory)),
@@ -408,7 +408,7 @@ app.get('/',(req,res)=>{
     finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
+    finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
 
     // finalStack.push(delay(1000));
     // // finalStack.push(consoleLogger(memoryRead(1025)));
