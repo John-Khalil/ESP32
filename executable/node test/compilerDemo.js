@@ -41,6 +41,8 @@ const callFunctionOperator=operatorIndex++;
 
 const executableStackOperator=operatorIndex++;
 
+const arithmaticLogicUnitOperator=operatorIndex++;
+
 
 const JSON_OPERATOR="OP";				// generic operator
 
@@ -97,6 +99,12 @@ const PARAMETER_OBJECT="PO";
 // ececutable Stack operator
 const EXECUTABLE_COUNTER="EC";
 const EXECUTABLE_STACK="ES"; 
+
+
+// ALU operator
+const ALU_OPERATION="AO";
+const FIRST_OPERAND="FO";
+const SECOND_OPERAND="SO";
 
 
 
@@ -252,6 +260,16 @@ const executableStack=(executableCounter,executableStackArray)=>{
     returnStack[JSON_OPERATOR]=executableStackOperator;
     returnStack[EXECUTABLE_COUNTER]=executableCounter;
     returnStack[EXECUTABLE_STACK]=executableStackArray;
+    return returnStack;
+}
+
+
+const ALU=(firstOperand,operation,secondOperand)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=arithmaticLogicUnitOperator;
+    returnStack[FIRST_OPERAND]=firstOperand;
+    returnStack[ALU_OPERATION]=operationSelector(operation);
+    returnStack[SECOND_OPERAND]=secondOperand||0;
     return returnStack;
 }
 
