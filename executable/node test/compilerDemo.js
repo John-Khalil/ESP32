@@ -347,7 +347,7 @@ app.get('/',(req,res)=>{
     // finalStack.push(memoryWrite(100,memoryRead(100)));
 
 
-    finalStack.push(consoleLogger("hello world"));
+    // finalStack.push(consoleLogger("hello world"));
 
 
     // finalStack.push(consoleLogger(digitalInput(100)));
@@ -422,50 +422,54 @@ app.get('/',(req,res)=>{
     
     // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
 
-    const laodToMemory=newVariable();
+    // const laodToMemory=newVariable();
 
-    if(!(staticTesting++))
-    finalStack.push(createFunction(
-        1025,
-        1026,
-        ()=>{
-            return executableStack(2,[
-                // memoryWrite(laodToMemory,functionArgument("randomParam")),
-                // executableStack(3,[
-                //     consoleLogger(memoryRead(laodToMemory)),
-                //     delay(1000)
-                // ]),
-                consoleLogger(functionArgument("randomParam")),
-                delay(200),
-                controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback"))
+    // if(!(staticTesting++))
+    // finalStack.push(createFunction(
+    //     1025,
+    //     1026,
+    //     ()=>{
+    //         return executableStack(2,[
+    //             // memoryWrite(laodToMemory,functionArgument("randomParam")),
+    //             // executableStack(3,[
+    //             //     consoleLogger(memoryRead(laodToMemory)),
+    //             //     delay(1000)
+    //             // ]),
+    //             consoleLogger(functionArgument("randomParam")),
+    //             delay(200),
+    //             controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback"))
                 
-                // controllerEventListener(
-                //     63,
-                //     58,
-                //     digitalInput(69),
-                //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-                // )
-            ])
-            // return consoleLogger(functionArgument("randomParam"));
-            // return controllerEventListener(
-            //     63,
-            //     58,
-            //     digitalInput(69),
-            //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-            // )
-        },
-        hardwareID()
-    ));
+    //             // controllerEventListener(
+    //             //     63,
+    //             //     58,
+    //             //     digitalInput(69),
+    //             //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+    //             // )
+    //         ])
+    //         // return consoleLogger(functionArgument("randomParam"));
+    //         // return controllerEventListener(
+    //         //     63,
+    //         //     58,
+    //         //     digitalInput(69),
+    //         //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
+    //         // )
+    //     },
+    //     hardwareID()
+    // ));
 
-    finalStack.push(delay(1000));
+    // finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
+    // finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
 
     // finalStack.push(delay(1000));
     // // finalStack.push(consoleLogger(memoryRead(1025)));
 
     // finalStack.push(callFunction(1025,{randomParam:"some random text"}));
+
+    finalStack.push(memoryWrite(141,'65535'));
+
+    finalStack.push(consoleLogger(ALU(memoryRead(141),'&',255)));
 
 
 
