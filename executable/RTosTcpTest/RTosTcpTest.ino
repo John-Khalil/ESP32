@@ -2659,7 +2659,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long firstOperand=getInt32_t(virtualController(constJson(FIRST_OPERAND,subExecutable)));
 			unsigned long secondOperand=getInt32_t(virtualController(constJson(SECOND_OPERAND,subExecutable)));
 			accumulator=inttostring(ALUOperation[operationIndex](firstOperand,secondOperand));
-			return CACHE_BYTES(accumulator);
+			return CACHE_BYTES(accumulator); 
 		}
 
 
