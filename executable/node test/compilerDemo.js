@@ -17,6 +17,40 @@ const newVariable=()=>{
 
 const port =766;
 
+
+
+// order should always be maintained
+
+var aluOperationIndex=0;
+const virtualControllerALU={};
+
+virtualControllerALU['+']=aluOperationIndex++;
+virtualControllerALU['-']=aluOperationIndex++;
+virtualControllerALU['*']=aluOperationIndex++;
+virtualControllerALU['/']=aluOperationIndex++;
+virtualControllerALU['%']=aluOperationIndex++;
+virtualControllerALU['2s']=aluOperationIndex++;
+virtualControllerALU['^']=aluOperationIndex++;
+virtualControllerALU['|']=aluOperationIndex++;
+virtualControllerALU['&']=aluOperationIndex++;
+virtualControllerALU['~']=aluOperationIndex++;
+virtualControllerALU['>>']=aluOperationIndex++;
+virtualControllerALU['<<']=aluOperationIndex++;
+virtualControllerALU['==']=aluOperationIndex++;
+virtualControllerALU['!=']=aluOperationIndex++;
+virtualControllerALU['&&']=aluOperationIndex++;
+virtualControllerALU['||']=aluOperationIndex++;
+virtualControllerALU['!']=aluOperationIndex++;
+virtualControllerALU['<']=aluOperationIndex++;
+virtualControllerALU['>']=aluOperationIndex++;
+virtualControllerALU['<=']=aluOperationIndex++;
+virtualControllerALU['>=']=aluOperationIndex++;
+
+const operationSelector=(operationIndex)=>{
+    return virtualControllerALU[operationIndex]%aluOperationIndex;
+}
+
+
 var operatorIndex=0;
 
 const digitalOutputOperator=operatorIndex++;
