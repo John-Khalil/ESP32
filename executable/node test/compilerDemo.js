@@ -469,6 +469,7 @@ app.get('/',(req,res)=>{
 
     finalStack.push(memoryWrite(141,'65535'));
 
+    finalStack.push(consoleLogger(ALU(ALU(memoryRead(141),'&',255),'&',127)));
     finalStack.push(consoleLogger(ALU(memoryRead(141),'&',255)));
 
 

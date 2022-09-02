@@ -2652,9 +2652,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 				}
 				// all the basic mathematical operations like Power, logarithmic , exponential , root , trignometric should be added further
 			};
-			static unsigned char *accumulator=NULL;
-			if(accumulator!=NULL)
+			static unsigned char *accumulator=UNDEFINED;
+			if(accumulator!=UNDEFINED)
 				free(accumulator);
+			console.log(" ptr >> ",accumulator);
 			unsigned long operationIndex=getInt32_t(virtualController(constJson(ALU_OPERATION,subExecutable)));
 			unsigned long firstOperand=getInt32_t(virtualController(constJson(FIRST_OPERAND,subExecutable)));
 			unsigned long secondOperand=getInt32_t(virtualController(constJson(SECOND_OPERAND,subExecutable)));
