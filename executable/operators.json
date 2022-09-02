@@ -161,6 +161,15 @@
 }
 
 
+// ALU operator
+{
+    "operator":int,
+    "ALUOperation":executable,
+    "firstOperand":Executable,
+    "secondOperand":Executable,
+}
+
+
 // 
 
 

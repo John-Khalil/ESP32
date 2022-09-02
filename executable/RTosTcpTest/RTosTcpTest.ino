@@ -2367,6 +2367,12 @@ JSON_ATTRIBUTE EXECUTABLE_COUNTER="EC";
 JSON_ATTRIBUTE EXECUTABLE_STACK="ES";
 
 
+// ALU operator
+JSON_ATTRIBUTE ALU_OPERATION="AO";
+JSON_ATTRIBUTE FIRST_OPERAND="FO";
+JSON_ATTRIBUTE SECOND_OPERAND="SO";
+
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
@@ -2580,7 +2586,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											//& TURING COMPLETE
-			const std::function<unsigned long(unsigned long,unsigned long)>turingComplete[]={			// it was called turing complete cause the arthematic and logic operators should be included to make it turing complete
+			const std::function<unsigned long(unsigned long,unsigned long)>ALUOperation[]={			
 				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ ADD 				-ARITHMATIC
 					return firstOperand+secondOperand;
 				},
@@ -2643,8 +2649,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 				},
 				[&](unsigned long firstOperand,unsigned long secondOperand){	//^ GREATER OR EQUAL	-LOGIC
 					return (firstOperand>=secondOperand);
-				},
-			}
+				}
+				// all the basic mathematical operations like Power, logarithmic , exponential , root , trignometric should be added further
+			};
+			static unsigned char *accumulator=NULL:
+			if(accumulator!=NULL)
+				free(accumulator);
+			
+			return CACHE_BYTES(accumulator);
 		}
 
 
