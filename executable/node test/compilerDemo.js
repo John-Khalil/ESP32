@@ -437,8 +437,9 @@ app.get('/',(req,res)=>{
                 // ]),
                 consoleLogger(functionArgument("randomParam")),
                 delay(200),
-                controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback"))
-                
+                controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback")),
+
+                callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}})
                 // controllerEventListener(
                 //     63,
                 //     58,
@@ -460,18 +461,29 @@ app.get('/',(req,res)=>{
     finalStack.push(delay(1000));
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
-    finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
+    // finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
+    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
+    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
+    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
 
     finalStack.push(delay(1000));
     // // finalStack.push(consoleLogger(memoryRead(1025)));
 
     // finalStack.push(callFunction(1025,{randomParam:"some random text"}));
 
-    finalStack.push(memoryWrite(141,'65535'));
+    // finalStack.push(memoryWrite(141,'2'));
 
-    finalStack.push(consoleLogger(ALU(ALU(memoryRead(141),'&',255),'&',127)));
-    finalStack.push(consoleLogger(ALU(memoryRead(141),'&',255)));
+    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
+    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
 
+    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
+    // finalStack.push(consoleLogger(ALU(memoryRead(141),'+',255)));
+
+    finalStack.push(memoryWrite(141,'2'));
+    finalStack.push(executableStack(5,[
+        consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)),
+        delay(200)
+    ]))
 
 
     
