@@ -2380,12 +2380,12 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator
+			
+			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
+
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
-
-			
 			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
 			return CACHE_BYTES(digitalInputPortRaed);
 		},
@@ -2520,13 +2520,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											//&  operator json
-			static unsigned char *operatorJsonReturn=NULL;
-			if(operatorJsonReturn!=NULL)
-				free(operatorJsonReturn);
 			unsigned char *objectKey=virtualController(constJson(OBJECT_KEY,subExecutable));
 			CACHE_BYTES(objectKey);
 			unsigned char *executableJson=virtualController(constJson(EXECUTABLE_JSON,subExecutable));
 			CACHE_BYTES(executableJson);
+			static unsigned char *operatorJsonReturn=NULL;
+			if(operatorJsonReturn!=NULL)
+				free(operatorJsonReturn);
 			operatorJsonReturn=virtualController(constJson(objectKey,executableJson));
 			free(objectKey);
 			free(executableJson);
@@ -2543,10 +2543,6 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											//& call function
-			static unsigned char *functionReturn=NULL;
-			if(functionReturn!=NULL)
-				free(functionReturn);
-
 			unsigned char *parameterObject=constJson(PARAMETER_OBJECT,subExecutable);
 			CACHE_BYTES(parameterObject);
 
@@ -2562,6 +2558,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char *stackExecutable=constJson(STACK_EXECUTABLE,functionObject);
 			virtualController(CACHE_BYTES(stackExecutable));
 			unsigned char *returnExecutable=constJson(RETURN_EXECUTABLE,functionObject);
+
+			static unsigned char *functionReturn=NULL;
+			if(functionReturn!=NULL)
+				free(functionReturn);
 			functionReturn=virtualController(CACHE_BYTES(returnExecutable));
 
 			free(functionObject);
@@ -2652,13 +2652,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 				}
 				// all the basic mathematical operations like Power, logarithmic , exponential , root , trignometric should be added further
 			};
-			static unsigned char *accumulator=UNDEFINED;
-			if(accumulator!=UNDEFINED)
-				free(accumulator);
-			console.log(" ptr >> ",accumulator);
+			// console.log(" ptr >> ",accumulator);
 			unsigned long operationIndex=getInt32_t(virtualController(constJson(ALU_OPERATION,subExecutable)));
 			unsigned long firstOperand=getInt32_t(virtualController(constJson(FIRST_OPERAND,subExecutable)));
 			unsigned long secondOperand=getInt32_t(virtualController(constJson(SECOND_OPERAND,subExecutable)));
+			static unsigned char *accumulator=NULL;
+			if(accumulator!=NULL)
+				free(accumulator);
 			accumulator=inttostring(ALUOperation[operationIndex](firstOperand,secondOperand));
 			return CACHE_BYTES(accumulator); 
 		}
