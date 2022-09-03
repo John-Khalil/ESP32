@@ -2842,7 +2842,7 @@ void serviceExecutable(void*param){
 	ssidSave((unsigned char*)ssid);
 	wifiPasswordSave((unsigned char*)password);
 
-	// linkerSave((unsigned char*)"");		//! host server is disabled to re-enable it just remove or comment this very line
+	linkerSave(UNDEFINED);		//! host server is disabled to re-enable it just remove or comment this very line
 
 	console.log(userSSID());
 	console.log("serial port");
@@ -2864,8 +2864,8 @@ void serviceExecutable(void*param){
 	//socket.connect(REMOTE_HOST,REMOTE_PORT);
 	socket.setTimeout(5000);
 	// linkerSave((unsigned char*)"{\"D\":\"xtensa32plus.ddns.net\",\"P\":50,\"K\":\"0123456789123456\",\"U\":{\"auth\":\"test0\"}}");
-	// unsigned char serverConnected=serverConnect(socket);
-	unsigned char serverConnected=0;
+	unsigned char serverConnected=serverConnect(socket);
+	// unsigned char serverConnected=0;
 	uint64_t lastServerTime=0;
 
 
