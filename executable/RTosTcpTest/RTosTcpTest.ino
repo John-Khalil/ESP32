@@ -2844,7 +2844,7 @@ void realTimeConnection(void *arg){
 	
 	while(!tcpConnection.connect((char*)hostServerAddress.domain,hostServerAddress.port))
 		_delay_ms(realTimeConnectionRetryInterval);
-	console.log("server connected");
+	console.log(" > RT server connected");
 
 
 	tcpConnection.write((char*)makeJsonObject(JSON_KEYS("auth"),JSON_VALUES(realTimeConnectionUserCredentials())));
@@ -2853,8 +2853,11 @@ void realTimeConnection(void *arg){
 		if(tcpConnection.available()){
 			realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
 		}
-		else if(!tcpConnection.connected())
+		else if(!tcpConnection.connected()){
+			console.log("RT server Disconnected");
 			goto hostServerDisconnected;
+		}		
+		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 
 	
@@ -2966,10 +2969,7 @@ void serviceExecutable(void*param){
 
 	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
 		unsigned char realTimeConnectionBuffer[0xFFF]={};
-		console.log(" data from rt conn >> ",tcpConnectionRead);
-		
 		virtualController(_CS(realTimeConnectionBuffer,tcpConnectionRead));
-		realTimeConnectionSend(realTimeConnectionBuffer);
 		return tcpConnectionRead;
 	});
 
