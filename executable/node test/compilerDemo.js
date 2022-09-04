@@ -5,6 +5,80 @@ import cors from 'cors';
 import util from 'util';
 import bodyParser from 'body-parser';
 
+// import axios from "axios";
+// import WebSocket from "ws";
+
+
+
+export default class globalLinker{
+    readCallbackList=[];            //^ read data from realtime connection -- this would later be set by the user
+    writeCallbackList=[];           //^ send the data through real time connection
+    
+    async linkerSet(dataToList){
+        this.readCallbackList.forEach(callBackFunction => {
+            callBackFunction(dataToList);
+        });
+    }
+
+    async linkerSend(dataToList){
+        console.log(" >> ",dataToList)
+        this.writeCallbackList.forEach(callBackFunction => {
+            console.log("inside the list")
+            callBackFunction(dataToList);
+        });
+    }
+
+    async linkerSetAdd(callBack){
+        this.readCallbackList.push(callBack);
+    }
+
+    async linkerSendAdd(callBack){
+        this.writeCallbackList.push(callBack);
+    }
+
+    constructor(hostServerConfigUrl,globalUserCredentials){
+        axios.get(hostServerConfigUrl).then((getResponse)=>{
+            
+            const encode64=(str)=>{
+                return Buffer.from(str).toString('base64');
+            }
+            
+            const decode64=(str)=>{
+                return Buffer.from(str,'base64').toString('ascii');
+            }
+
+            let webSocketSend=()=>{
+                console.log('ffs');
+            };
+
+            let hostServerAddress=getResponse.data.dev;         //~ expected host-address:port
+            const ws=new WebSocket(`ws://${hostServerAddress}`);
+            ws.on('open',()=>{
+                console.log(`server connected @${globalUserCredentials}`)
+                ws.send(JSON.stringify({auth:globalUserCredentials}));
+                webSocketSend=(dataToServer)=>{
+                    console.log(`${dataToServer} -- ${encode64(dataToServer)}`)
+                    ws.send(encode64(dataToServer));
+                }
+                this.linkerSendAdd((dataToServer)=>{
+                    console.log(`${dataToServer} -- ${encode64(dataToServer)}`)
+                    ws.send(encode64(dataToServer));
+                });
+            });
+            ws.on('message',(dataFromServer)=>{
+                this.linkerSet(decode64(dataFromServer));
+            });
+            ws.on('close',()=>{
+                webSocketSend=(dataToServer)=>{
+                    console.log(`cannot send data @${dataToServer} SERVER-DISCONNECTED`);
+                }
+            });
+        }).catch((error)=>{
+            console.error(error);
+        })
+    }
+}
+
 // const WebSocket =require('ws')
 // const axios = require('axios')
 // const express =require('express');
@@ -19,6 +93,13 @@ import bodyParser from 'body-parser';
 
 const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
 const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
+
+const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
+
+
+xtensaLinker.linkerSend("test 101");
+
+
 
 const app =express();
 app.use(cors());
@@ -519,6 +600,6 @@ app.post("/",(req,res)=>{
 
 
 app.listen(port,()=>{
-    console.clear();
+    // console.clear();
     console.log(`-------- server started @ port ${port}`);
 });
