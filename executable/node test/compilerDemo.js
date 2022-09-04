@@ -17,6 +17,9 @@ import bodyParser from 'body-parser';
 
 // test("test to see if it works");
 
+const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
+const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
+
 const app =express();
 app.use(cors());
 
@@ -509,6 +512,7 @@ app.get('/',(req,res)=>{
 });
 
 app.post("/",(req,res)=>{
+
     console.log("post request body >> ",req.body);
     res.send("ack");
 });
