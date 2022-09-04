@@ -2307,7 +2307,7 @@ void realTimeConnectionSet(unsigned char *dataToList){								// setting the dat
 	return;
 }
 
-void realTimeConnectionGet(unsigned char *dataToList){								// setting the data that we just got from the real time connection
+void realTimeConnectionSend(unsigned char *dataToList){								// setting the data that we just got from the real time connection
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 	while(writeCallbackListCount--)
@@ -2315,6 +2315,10 @@ void realTimeConnectionGet(unsigned char *dataToList){								// setting the dat
 	return;
 }
 
+
+
+#define realTimeConnectionSetAdd(SET_CALLBACK_ADD)		READ_CALLBACK_LIST.push_back([&]SET_CALLBACK_ADD)	//^ both vector and functional should be included
+#define realTimeConnectionSendAdd(SEND_CALLBACK_ADD)	WRITE_CALLBACK_LIST.push_back([&]SEND_CALLBACK_ADD)	//^ both vector and functional should be included
 
 unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
@@ -2806,6 +2810,8 @@ void testingFuction(void * uselessParam){
 
 	// console.log(" host server >> ",json("xtensa",fetch("https://192.168.1.100/engkhalil/xtensa32plus/main/dnsSquared.json")));
 
+	// _delay_ms(8000);
+	// realTimeConnectionSend((unsigned char*)"hello from xtensa");
 
 
 	vTaskDelete(NULL);
@@ -2838,7 +2844,8 @@ void realTimeConnection(void *arg){
 	
 	while(!tcpConnection.connect((char*)hostServerAddress.domain,hostServerAddress.port))
 		_delay_ms(realTimeConnectionRetryInterval);
-	console.log("real time connection established");
+	console.log("server connected");
+
 
 	tcpConnection.write((char*)makeJsonObject(JSON_KEYS("auth"),JSON_VALUES(realTimeConnectionUserCredentials())));
 
@@ -2960,7 +2967,9 @@ void serviceExecutable(void*param){
 	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
 		unsigned char realTimeConnectionBuffer[0xFFF]={};
 		console.log(" data from rt conn >> ",tcpConnectionRead);
+		
 		virtualController(_CS(realTimeConnectionBuffer,tcpConnectionRead));
+		realTimeConnectionSend(realTimeConnectionBuffer);
 		return tcpConnectionRead;
 	});
 

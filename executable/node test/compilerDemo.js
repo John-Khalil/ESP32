@@ -21,9 +21,7 @@ export default class globalLinker{
     }
 
     async linkerSend(dataToList){
-        console.log(" >> ",dataToList)
         this.writeCallbackList.forEach(callBackFunction => {
-            console.log("inside the list")
             callBackFunction(dataToList);
         });
     }
@@ -54,7 +52,6 @@ export default class globalLinker{
                 console.log(`server connected @${globalUserCredentials}`)
                 ws.send(JSON.stringify({auth:globalUserCredentials}));
                 this.linkerSendAdd((dataToServer)=>{
-                    console.log(`${dataToServer} -- ${encode64(dataToServer)}`)
                     try {
                         ws.send(encode64(dataToServer));
                     } catch (error) {
@@ -96,7 +93,9 @@ setTimeout(() => {
     xtensaLinker.linkerSend(JSON.stringify(consoleLogger("hello")));    
 }, 500);
 
-
+xtensaLinker.linkerSetAdd((dataFromServer)=>{
+    console.log('dataFromServer  >> ',dataFromServer);
+})
 
 
 
