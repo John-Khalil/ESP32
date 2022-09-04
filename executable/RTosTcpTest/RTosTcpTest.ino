@@ -8,6 +8,7 @@
 #include "EEPROM.h"
 #include "spiConsoleSync.cpp"
 #include <functional>
+#include <vector>
 
 #include "consoleLogger.h"
 
@@ -2295,6 +2296,19 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 
 
 
+std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
+std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
+
+void realTimeConnectionSet(unsigned char *dataToList){								// setting the data that we just got from the real time connection
+	unsigned long readCallbackListCount=READ_CALLBACK_LIST.size();
+	unsigned long readCallbackListCounter=0;
+	while(readCallbackListCount--)
+		READ_CALLBACK_LIST[readCallbackListCounter++](dataToList);					// passing the arg to every call back function in the list
+	return;
+}
+
+
+
 
 unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
@@ -2782,12 +2796,51 @@ void testingFuction(void * uselessParam){
 	// console.log("thisLink : ",json("thisLink",sampleData));
 	// console.log("webHost : ",json("webHost",sampleData));
 
+	// _delay_ms(500);
+
+	// console.log(" host server >> ",json("xtensa",fetch("https://192.168.1.100/engkhalil/xtensa32plus/main/dnsSquared.json")));
+
 
 
 	vTaskDelete(NULL);
 }
 
 
+
+#define realTimeConnectionRetryInterval 100
+#define realTimeConnectionUserCredentials() "\"anNvbiBkaXJlY3RpdmVzIHRlc3Qg\""		// this could be any unique string for each user
+
+void realTimeConnection(void *arg){
+	unsigned char *hostServer=NULL;
+	:hostServerDisconnected
+	while((hostServer=json("xtensa",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")))==UNDEFINED)	// getting the data of host server while checking for connection
+		_delay_ms(realTimeConnectionRetryInterval);
+
+	struct httpLink hostServerAddress=urlBreakDown($("http://",hostServer));			// host:port expected
+
+	
+
+	
+	WiFiClient tcpConnection;
+	while(!tcpConnection.connect((char*)hostServerAddress.domain,hostServerAddress.port))
+		_delay_ms(realTimeConnectionRetryInterval);
+	console.log("real time connection established");
+
+	tcpConnection.write((char*)makeJsonObject(JSON_KEYS("auth"),JSON_VALUES(realTimeConnectionUserCredentials())));
+	unsigned char realTimeConnectionBuffer[0xfff]={};
+	while(1){
+		if(tcpConnection.available()){
+
+		}
+		else if(!tcpConnection.connected())
+			goto hostServerDisconnected;
+	}
+
+	
+
+	vTaskDelete(NULL);
+	return;
+}
 
 
 
@@ -2908,6 +2961,16 @@ void serviceExecutable(void*param){
         2,               // Task priority
         NULL             // Task handle
     );
+
+	xTaskCreate(
+        realTimeConnection,    // Function that should be called
+        "realTimeConnection",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        2,               // Task priority
+        NULL             // Task handle
+    );
+
 
 	// virtualController(fetch("http://192.168.1.15:766"));
 
