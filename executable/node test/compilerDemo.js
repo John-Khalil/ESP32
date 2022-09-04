@@ -92,8 +92,11 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
+setTimeout(() => {
+    xtensaLinker.linkerSend(JSON.stringify(consoleLogger("hello")));    
+}, 500);
 
-xtensaLinker.linkerSend("test 101");
+
 
 
 
