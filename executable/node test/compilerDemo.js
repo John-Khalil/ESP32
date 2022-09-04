@@ -1,7 +1,10 @@
+import WebSocket from 'ws'
+import axios from 'axios'
 const express =require('express');
 const cors=require('cors');
 const util = require('util')
 const bodyParser = require('body-parser');
+
 
 
 const app =express();
@@ -24,27 +27,27 @@ const port =766;
 var aluOperationIndex=0;
 const virtualControllerALU={};
 
-virtualControllerALU['+']=aluOperationIndex++;
-virtualControllerALU['-']=aluOperationIndex++;
-virtualControllerALU['*']=aluOperationIndex++;
-virtualControllerALU['/']=aluOperationIndex++;
-virtualControllerALU['%']=aluOperationIndex++;
-virtualControllerALU['2s']=aluOperationIndex++;
-virtualControllerALU['^']=aluOperationIndex++;
-virtualControllerALU['|']=aluOperationIndex++;
-virtualControllerALU['&']=aluOperationIndex++;
-virtualControllerALU['~']=aluOperationIndex++;
-virtualControllerALU['>>']=aluOperationIndex++;
-virtualControllerALU['<<']=aluOperationIndex++;
-virtualControllerALU['==']=aluOperationIndex++;
-virtualControllerALU['!=']=aluOperationIndex++;
-virtualControllerALU['&&']=aluOperationIndex++;
-virtualControllerALU['||']=aluOperationIndex++;
-virtualControllerALU['!']=aluOperationIndex++;
-virtualControllerALU['<']=aluOperationIndex++;
-virtualControllerALU['>']=aluOperationIndex++;
-virtualControllerALU['<=']=aluOperationIndex++;
-virtualControllerALU['>=']=aluOperationIndex++;
+virtualControllerALU['+']   =   aluOperationIndex++;
+virtualControllerALU['-']   =   aluOperationIndex++;
+virtualControllerALU['*']   =   aluOperationIndex++;
+virtualControllerALU['/']   =   aluOperationIndex++;
+virtualControllerALU['%']   =   aluOperationIndex++;
+virtualControllerALU['2s']  =   aluOperationIndex++;
+virtualControllerALU['^']   =   aluOperationIndex++;
+virtualControllerALU['|']   =   aluOperationIndex++;
+virtualControllerALU['&']   =   aluOperationIndex++;
+virtualControllerALU['~']   =   aluOperationIndex++;
+virtualControllerALU['>>']  =   aluOperationIndex++;
+virtualControllerALU['<<']  =   aluOperationIndex++;
+virtualControllerALU['==']  =   aluOperationIndex++;
+virtualControllerALU['!=']  =   aluOperationIndex++;
+virtualControllerALU['&&']  =   aluOperationIndex++;
+virtualControllerALU['||']  =   aluOperationIndex++;
+virtualControllerALU['!']   =   aluOperationIndex++;
+virtualControllerALU['<']   =   aluOperationIndex++;
+virtualControllerALU['>']   =   aluOperationIndex++;
+virtualControllerALU['<=']  =   aluOperationIndex++;
+virtualControllerALU['>=']  =   aluOperationIndex++;
 
 const operationSelector=(operationIndex)=>{
     return virtualControllerALU[operationIndex]%aluOperationIndex;
