@@ -47,31 +47,27 @@ export default class globalLinker{
                 return Buffer.from(str,'base64').toString('ascii');
             }
 
-            let webSocketSend=()=>{
-                console.log('ffs');
-            };
 
             let hostServerAddress=getResponse.data.dev;         //~ expected host-address:port
             const ws=new WebSocket(`ws://${hostServerAddress}`);
             ws.on('open',()=>{
                 console.log(`server connected @${globalUserCredentials}`)
                 ws.send(JSON.stringify({auth:globalUserCredentials}));
-                webSocketSend=(dataToServer)=>{
-                    console.log(`${dataToServer} -- ${encode64(dataToServer)}`)
-                    ws.send(encode64(dataToServer));
-                }
                 this.linkerSendAdd((dataToServer)=>{
                     console.log(`${dataToServer} -- ${encode64(dataToServer)}`)
-                    ws.send(encode64(dataToServer));
+                    try {
+                        ws.send(encode64(dataToServer));
+                    } catch (error) {
+                        console.error(error);
+                    }
+                    
                 });
             });
             ws.on('message',(dataFromServer)=>{
                 this.linkerSet(decode64(dataFromServer));
             });
             ws.on('close',()=>{
-                webSocketSend=(dataToServer)=>{
-                    console.log(`cannot send data @${dataToServer} SERVER-DISCONNECTED`);
-                }
+              
             });
         }).catch((error)=>{
             console.error(error);
