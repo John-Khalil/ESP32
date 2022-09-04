@@ -2307,7 +2307,13 @@ void realTimeConnectionSet(unsigned char *dataToList){								// setting the dat
 	return;
 }
 
-
+void realTimeConnectionGet(unsigned char *dataToList){								// setting the data that we just got from the real time connection
+	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
+	unsigned long writeCallbackListCounter=0;
+	while(writeCallbackListCount--)
+		WRITE_CALLBACK_LIST[writeCallbackListCounter++](dataToList);					// passing the arg to every call back function in the list
+	return;
+}
 
 
 unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
@@ -2812,25 +2818,33 @@ void testingFuction(void * uselessParam){
 
 void realTimeConnection(void *arg){
 	unsigned char *hostServer=NULL;
-	:hostServerDisconnected
+	hostServerDisconnected:
 	while((hostServer=json("xtensa",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")))==UNDEFINED)	// getting the data of host server while checking for connection
 		_delay_ms(realTimeConnectionRetryInterval);
 
 	struct httpLink hostServerAddress=urlBreakDown($("http://",hostServer));			// host:port expected
 
-	
 
-	
 	WiFiClient tcpConnection;
+	unsigned char realTimeConnectionBuffer[0xfff]={};
+
+	static unsigned char runOnlyOnce;
+	if(runOnlyOnce=1)
+	WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){
+		base64(tcpConnectionSend,CLR(realTimeConnectionBuffer));
+		tcpConnection.write((char*)realTimeConnectionBuffer);
+		return tcpConnectionSend;
+	});
+	
 	while(!tcpConnection.connect((char*)hostServerAddress.domain,hostServerAddress.port))
 		_delay_ms(realTimeConnectionRetryInterval);
 	console.log("real time connection established");
 
 	tcpConnection.write((char*)makeJsonObject(JSON_KEYS("auth"),JSON_VALUES(realTimeConnectionUserCredentials())));
-	unsigned char realTimeConnectionBuffer[0xfff]={};
+
 	while(1){
 		if(tcpConnection.available()){
-
+			realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
 		}
 		else if(!tcpConnection.connected())
 			goto hostServerDisconnected;
@@ -2942,6 +2956,13 @@ void serviceExecutable(void*param){
 	console.log("start the loop");
 	// MDNS.begin("xtensa-lx6");
 	// MDNS.addService("http", "tcp", 80);
+
+	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
+		unsigned char realTimeConnectionBuffer[0xFFF]={};
+		console.log(" data from rt conn >> ",tcpConnectionRead);
+		virtualController(_CS(realTimeConnectionBuffer,tcpConnectionRead));
+		return tcpConnectionRead;
+	});
 
 
 	xTaskCreate(
