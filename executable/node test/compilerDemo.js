@@ -535,6 +535,18 @@ app.get('/',(req,res)=>{
 
 });
 
+var enduranceTest=0;
+
+xtensaLinker.linkerSetAdd((data)=>{
+    if(JSON.parse(data)[PACKAGE_IDENTIFIER]==6542){
+        xtensaLinker.linkerSend(JSON.stringify(serverSend(6542,{res:enduranceTest++})));
+    }
+})
+
+setTimeout(() => {
+    xtensaLinker.linkerSend(JSON.stringify(serverSend(6542,{res:enduranceTest++})));
+}, 3000);
+
 app.post("/",(req,res)=>{
 
     console.log("post request body >> ",req.body);

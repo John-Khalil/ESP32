@@ -3,8 +3,8 @@ const net = require('net');
 const WebSocket = require('ws');
 
 const responseTime=50;
-const xtensaRemotePort = 705;
-const devRemotePort = 703;
+const xtensaRemotePort = 69;
+const devRemotePort = 6969;
 
 
 
