@@ -101,6 +101,7 @@ const callFunctionOperator=operatorIndex++;
 const executableStackOperator=operatorIndex++;
 
 const arithmaticLogicUnitOperator=operatorIndex++;
+const serverSendOperator=operatorIndex++;
 
 
 const JSON_OPERATOR="OP";				// generic operator
@@ -165,6 +166,10 @@ const ALU_OPERATION="AO";
 const FIRST_OPERAND="FO";
 const SECOND_OPERAND="SO";
 
+
+// server send operator
+const PACKAGE_IDENTIFIER="PI";
+const SERVER_DATA="SD";
 
 
 
@@ -332,6 +337,14 @@ const ALU=(firstOperand,operation,secondOperand)=>{
     return returnStack;
 }
 
+const serverSend=(packageIdentifier,serverData)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=serverSendOperator;
+    returnStack[PACKAGE_IDENTIFIER]=packageIdentifier;
+    returnStack[SERVER_DATA]=serverData;
+    return returnStack;
+}
+
 
 ////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
 
@@ -464,7 +477,9 @@ app.get('/',(req,res)=>{
                 delay(200),
                 controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback")),
 
-                callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}})
+                serverSend(functionArgument("randomParam"),functionArgument("callback")),
+
+                // callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}})
                 // controllerEventListener(
                 //     63,
                 //     58,
