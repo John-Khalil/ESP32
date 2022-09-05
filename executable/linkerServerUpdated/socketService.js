@@ -3,8 +3,8 @@ const net = require('net');
 const WebSocket = require('ws');
 
 const responseTime=50;
-const xtensaRemotePort = 69;
-const devRemotePort = 6969;
+const xtensaRemotePort = 705;
+const devRemotePort = 703;
 
 
 
@@ -41,6 +41,22 @@ function validJsonString(jsonStr){
         return 0;
     }
     return 1;
+}
+
+const callBackSet_1=[];
+const callBackSet_2=[];
+
+const callBackServiceRunnerFollower=()=>{
+    callBackSet_2.forEach(callBAckFunction=>{
+        callBAckFunction();
+    })
+}
+
+const callBackServiceRunner=()=>{
+    callBackSet_1.forEach(callBAckFunction=>{
+        callBAckFunction();
+    })
+    callBackServiceRunnerFollower;
 }
 
 
@@ -81,6 +97,7 @@ xtensaListener.on('connection',xtesnaTcpConnection=>{
             xtensaRegister=linkerObject.updateRegister;
         }
         
+        callBackServiceRunner();
         console.log("authLinker >> ",authLinker);
         console.log("final Object >> ",linker);
     });
@@ -94,23 +111,41 @@ xtensaListener.on('connection',xtesnaTcpConnection=>{
         userCredentials=null;
     });
 
-    setInterval(() => {
+    callBackSet_1.push(async()=>{
         if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.devLinker[linkerIndex(userCredentials)]!=undefined)){
             if(updatedRegister!=linker.devLinker[linkerIndex(userCredentials)].updateRegister){
                 updatedRegister=linker.devLinker[linkerIndex(userCredentials)].updateRegister;
                 xtesnaTcpConnection.write(linker.devLinker[linkerIndex(userCredentials)].data);
             }
         }
+    })
 
-        setTimeout(()=>{
-            if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.xtensaLinker[linkerIndex(userCredentials)]!=undefined)){
-                if(xtensaRegister!=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister){
-                    xtensaRegister=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister;
-                    xtesnaTcpConnection.write(linker.xtensaLinker[linkerIndex(userCredentials)].data);
-                }
+    callBackSet_2.push(async()=>{
+        if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.xtensaLinker[linkerIndex(userCredentials)]!=undefined)){
+            if(xtensaRegister!=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister){
+                xtensaRegister=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister;
+                xtesnaTcpConnection.write(linker.xtensaLinker[linkerIndex(userCredentials)].data);
             }
-        },responseTime/2);
-    },responseTime);
+        }
+    })
+
+    // setInterval(() => {
+    //     if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.devLinker[linkerIndex(userCredentials)]!=undefined)){
+    //         if(updatedRegister!=linker.devLinker[linkerIndex(userCredentials)].updateRegister){
+    //             updatedRegister=linker.devLinker[linkerIndex(userCredentials)].updateRegister;
+    //             xtesnaTcpConnection.write(linker.devLinker[linkerIndex(userCredentials)].data);
+    //         }
+    //     }
+
+    //     setTimeout(()=>{
+    //         if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.xtensaLinker[linkerIndex(userCredentials)]!=undefined)){
+    //             if(xtensaRegister!=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister){
+    //                 xtensaRegister=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister;
+    //                 xtesnaTcpConnection.write(linker.xtensaLinker[linkerIndex(userCredentials)].data);
+    //             }
+    //         }
+    //     },responseTime/2);
+    // },responseTime);
 });
 
 
@@ -146,7 +181,8 @@ devListener.on('connection', devWebSocket => {
             linker.devLinker[linkerIndex(userCredentials)]=linkerObject;
             devRegister=linkerObject.updateRegister;
         }
-
+        
+        callBackServiceRunner();
         console.log("authLinker >> ",authLinker);
         console.log("final Object >> ",linker);
     });
@@ -156,21 +192,39 @@ devListener.on('connection', devWebSocket => {
         userCredentials=null;
     });
 
-    setInterval(() => {
+    callBackSet_1.push(async()=>{
         if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.xtensaLinker[linkerIndex(userCredentials)]!=undefined)){
             if(updatedRegister!=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister){
                 updatedRegister=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister;
                 devWebSocket.send(linker.xtensaLinker[linkerIndex(userCredentials)].data);
             }
         }
+    })
 
-        setTimeout(()=>{
-            if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.devLinker[linkerIndex(userCredentials)]!=undefined)){
-                if(devRegister!=linker.devLinker[linkerIndex(userCredentials)].updateRegister){
-                    devRegister=linker.devLinker[linkerIndex(userCredentials)].updateRegister;
-                    devWebSocket.send(linker.devLinker[linkerIndex(userCredentials)].data);
-                }
+    callBackSet_2.push(async()=>{
+        if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.devLinker[linkerIndex(userCredentials)]!=undefined)){
+            if(devRegister!=linker.devLinker[linkerIndex(userCredentials)].updateRegister){
+                devRegister=linker.devLinker[linkerIndex(userCredentials)].updateRegister;
+                devWebSocket.send(linker.devLinker[linkerIndex(userCredentials)].data);
             }
-        },responseTime/2);    
-    },responseTime);
+        }
+    })
+
+    // setInterval(() => {
+    //     if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.xtensaLinker[linkerIndex(userCredentials)]!=undefined)){
+    //         if(updatedRegister!=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister){
+    //             updatedRegister=linker.xtensaLinker[linkerIndex(userCredentials)].updateRegister;
+    //             devWebSocket.send(linker.xtensaLinker[linkerIndex(userCredentials)].data);
+    //         }
+    //     }
+
+    //     setTimeout(()=>{
+    //         if((userCredentials!=null)&&authKeyChecker(userCredentials)&&(linker.devLinker[linkerIndex(userCredentials)]!=undefined)){
+    //             if(devRegister!=linker.devLinker[linkerIndex(userCredentials)].updateRegister){
+    //                 devRegister=linker.devLinker[linkerIndex(userCredentials)].updateRegister;
+    //                 devWebSocket.send(linker.devLinker[linkerIndex(userCredentials)].data);
+    //             }
+    //         }
+    //     },responseTime/2);    
+    // },responseTime);
 });
