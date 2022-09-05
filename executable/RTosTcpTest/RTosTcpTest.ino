@@ -2397,6 +2397,11 @@ JSON_ATTRIBUTE FIRST_OPERAND="FO";
 JSON_ATTRIBUTE SECOND_OPERAND="SO";
 
 
+// server send operator
+JSON_ATTRIBUTE PACKAGE_IDENTIFIER="PI";
+JSON_ATTRIBUTE SERVER_DATA="SD";
+
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
@@ -2685,6 +2690,18 @@ unsigned char* virtualController(unsigned char* executableObject){
 				free(accumulator);
 			accumulator=inttostring(ALUOperation[operationIndex](firstOperand,secondOperand));
 			return CACHE_BYTES(accumulator); 
+		},
+		[&](unsigned char *subExecutable){											//& SERVER SEND
+			unsigned char *packageIndentifier=virtualController(constJson(PACKAGE_IDENTIFIER,subExecutable));
+			CACHE_BYTES(packageIndentifier);
+			unsigned char *serverData=virtualController(constJson(SERVER_DATA,subExecutable));
+			CACHE_BYTES(serverData);
+			unsigned char *dataToServer=makeJsonObject(JSON_KEYS(PACKAGE_IDENTIFIER,SERVER_DATA),JSON_VALUES(packageIndentifier,serverData));
+			free(packageIndentifier);
+			free(serverData);
+			realTimeConnectionSend(CACHE_BYTES(dataToServer));
+			free(dataToServer);
+			return subExecutable;
 		}
 
 

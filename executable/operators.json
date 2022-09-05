@@ -170,6 +170,14 @@
 }
 
 
+// server send operator
+{
+    "operator":int,
+    "packageIdentifier":exxecutable,
+    "serverData":executable
+}
+
+
 // 
 
 
