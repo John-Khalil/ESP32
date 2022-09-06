@@ -474,6 +474,7 @@ app.get('/',(req,res)=>{
                 //     delay(1000)
                 // ]),
                 consoleLogger(functionArgument("randomParam")),
+                functionArgument("randomStack"),
                 delay(200),
                 controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback")),
 
@@ -502,9 +503,9 @@ app.get('/',(req,res)=>{
     // finalStack.push(consoleLogger(memoryRead(1025)));
 
     // finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
-    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
-    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
-    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
+    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889},randomStack:consoleLogger("this test!!")}));
+    // finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
+    // finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
 
     finalStack.push(delay(1000));
     // // finalStack.push(consoleLogger(memoryRead(1025)));
