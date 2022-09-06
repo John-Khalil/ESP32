@@ -35,13 +35,15 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+
+
+const port =766;
+
+
 var variableMemoryBaseAddress=0;
 const newVariable=()=>{
     return variableMemoryBaseAddress++;
 }
-
-const port =766;
-
 
 
 // order should always be maintained
