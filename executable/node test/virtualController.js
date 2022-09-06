@@ -305,29 +305,241 @@ const serverSend=(packageIdentifier,serverData)=>{
     return returnStack;
 }
 
-const virtualController={
-    newVariable,
-    operationSelector,
-    delay,
-    digitalOutput,
-    digitalInput,
-    loop,
-    consoleLogger,
-    hardwareID,
-    memoryWrite,
-    memoryRead,
-    memoryDelete,
-    controllerFetch,
-    controllerEventListener,
-    controllerRemoveEventListener,
-    controllerEventPollingRate,
-    operatorJson,
-    functionArgument,
-    createFunction,
-    callFunction,
-    executableStack,
-    ALU,
-    serverSend
-}
+// const virtualController={
+//     newVariable,
+//     operationSelector,
+//     delay,
+//     digitalOutput,
+//     digitalInput,
+//     loop,
+//     consoleLogger,
+//     hardwareID,
+//     memoryWrite,
+//     memoryRead,
+//     memoryDelete,
+//     controllerFetch,
+//     controllerEventListener,
+//     controllerRemoveEventListener,
+//     controllerEventPollingRate,
+//     operatorJson,
+//     functionArgument,
+//     createFunction,
+//     callFunction,
+//     executableStack,
+//     ALU,
+//     serverSend
+// }
 
-export default virtualController;
+// export default virtualController;
+
+
+
+
+
+export default class  virtualController{
+    stackPush=1;
+    
+    executableStackPush=(executableObject)=>{
+        if(this.stackPush)
+            this.executableStackPushCallBack(executableObject);
+    }
+
+    variableMemoryBaseAddress=0;
+    newVariable=()=>{
+        return this.variableMemoryBaseAddress++;
+    }
+        
+
+    delay=delayValueMS=>{
+        
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=delayOperator;
+        returnStack[DELAY_MILLI_SEC]=delayValueMS;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    digitalOutput=(outputPort,portStream)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=digitalOutputOperator;
+        returnStack[PORT_ADDRESS]=outputPort;
+        returnStack[OUTPUT_STREAM]=portStream;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    digitalInput=(inputPort)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=digitalInputOperator;
+        returnStack[PORT_ADDRESS]=inputPort;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    loop=(_loopCounter,_loopBody)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=loopOperator;
+        returnStack[LOOP_COUNTER]=_loopCounter;
+        returnStack[LOOP_BODY]=_loopBody;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    consoleLogger=(consoleData)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=consoleLoggerOperator;
+        returnStack[CONSOLE_DATA]=consoleData;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    hardwareID=()=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=hardwareIDOperator;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    memoryWrite=(bufferIdentifier,bufferData)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=memoryWriteOperator;
+        returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
+        returnStack[BUFFER_DATA]=bufferData;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    memoryRead=(bufferIdentifier)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=memoryReadOperator;
+        returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    memoryDelete=(bufferIdentifier)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=memoryDeleteOperator;
+        returnStack[BUFFER_IDENTIFIER]=bufferIdentifier;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    controllerFetch=(fetchWebHost,fetchData,fetchParams)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=fetchOperator;
+        returnStack[WEB_HOST]=fetchWebHost;
+        if(fetchData!==undefined)
+            returnStack[POST_BODY]=fetchData;
+        if((fetchParams!=undefined)&&(fetchData!==undefined))
+            returnStack[REQUEST_PARAM]=fetchParams;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    controllerEventListener=(eventAddress,onchangeAddress,eventExecutable,handlerExecutable)=>{
+        var returnStack={};
+        var nestedReturnStack={};
+        nestedReturnStack[EVENT_EXECUTABLE]=eventExecutable;
+        nestedReturnStack[HANDLER_EXECUTABLE]=handlerExecutable;
+        nestedReturnStack[ONCHANGE_ADDRESS]=onchangeAddress;
+        
+        returnStack[JSON_OPERATOR]=addEventOperator;
+        returnStack[EVENT_ADDRESS]=eventAddress;
+        returnStack[EVENT_EXECUTABLE]=nestedReturnStack;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    controllerRemoveEventListener=(eventAddress)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=removeEventOperator;
+        returnStack[EVENT_ADDRESS]=eventAddress;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    controllerEventPollingRate=(pollingRate)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=setEventPollingOperator;
+        returnStack[POLLING_RATE]=pollingRate;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    operatorJson=(objectKey,jsonObject)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=operatorJsonOperator;
+        returnStack[OBJECT_KEY]=objectKey;
+        returnStack[EXECUTABLE_JSON]=jsonObject;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    creatingFunctionParameterAddress=0;
+    functionArgument=(parameter)=>{
+        return this.operatorJson(parameter,memoryRead(this.creatingFunctionParameterAddress));
+    }
+
+
+    createFunction=(functionAddress,parameterAddress,stackExecutable,returnExecutable)=>{
+        creatingFunctionParameterAddress=parameterAddress;
+        stackExecutable=stackExecutable();
+        var returnStack={};
+        var functionObject={};
+        functionObject[PARAMETER_ADDRESS]=parameterAddress;
+        functionObject[STACK_EXECUTABLE]=stackExecutable;
+        functionObject[RETURN_EXECUTABLE]=returnExecutable;
+
+        returnStack[JSON_OPERATOR]=createfunctionOperator;
+        returnStack[FUNCTION_ADDRESS]=functionAddress;
+        returnStack[FUNCTION_OBJECT]=functionObject;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    callFunction=(functionAddress,parameterObject)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=callFunctionOperator;
+        returnStack[FUNCTION_ADDRESS]=functionAddress;
+        returnStack[PARAMETER_OBJECT]=parameterObject;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    executableStack=(executableCounter,executableStackArray)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=executableStackOperator;
+        returnStack[EXECUTABLE_COUNTER]=executableCounter;
+        returnStack[EXECUTABLE_STACK]=executableStackArray;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+
+    ALU=(firstOperand,operation,secondOperand)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=arithmaticLogicUnitOperator;
+        returnStack[FIRST_OPERAND]=firstOperand;
+        returnStack[ALU_OPERATION]=operationSelector(operation);
+        returnStack[SECOND_OPERAND]=secondOperand||0;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+
+    serverSend=(packageIdentifier,serverData)=>{
+        var returnStack={};
+        returnStack[JSON_OPERATOR]=serverSendOperator;
+        returnStack[PACKAGE_IDENTIFIER]=packageIdentifier;
+        returnStack[SERVER_DATA]=serverData;
+        this.executableStackPush(returnStack);
+        return returnStack;
+    }
+};
+// */ */ 

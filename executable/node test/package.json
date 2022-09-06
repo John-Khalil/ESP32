@@ -4,7 +4,7 @@
   "description": "",
   "main": "compilerDemo.js",
   "scripts": {
-    "start": "node compilerDemo.js"
+    "start": "node liveController.js"
   },
   "author": "John",
   "license": "ISC",
