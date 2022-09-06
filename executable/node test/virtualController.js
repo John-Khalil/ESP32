@@ -1,48 +1,3 @@
-import express  from 'express';
-import cors from 'cors';
-import util from 'util';
-import bodyParser from 'body-parser';
-
-import globalLinker from './globalLinker.js';
-import virtualController from './virtualController.js';
-
-
-const MCU= virtualController;
-
-// const WebSocket =require('ws')
-// const axios = require('axios')
-// const express =require('express');
-// const cors=require('cors');
-// const util = require('util')
-// const bodyParser = require('body-parser');
-
-
-const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
-const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
-
-const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
-
-setTimeout(() => {
-    xtensaLinker.linkerSend(JSON.stringify(consoleLogger("hello")));    
-}, 500);
-
-xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log('dataFromServer  >> ',dataFromServer);
-})
-
-
-
-const app =express();
-app.use(cors());
-
-app.use(bodyParser.json());
-
-
-
-
-const port =766;
-
-
 var variableMemoryBaseAddress=0;
 const newVariable=()=>{
     return variableMemoryBaseAddress++;
@@ -350,217 +305,29 @@ const serverSend=(packageIdentifier,serverData)=>{
     return returnStack;
 }
 
+const virtualController={
+    newVariable,
+    operationSelector,
+    delay,
+    digitalOutput,
+    digitalInput,
+    loop,
+    consoleLogger,
+    hardwareID,
+    memoryWrite,
+    memoryRead,
+    memoryDelete,
+    controllerFetch,
+    controllerEventListener,
+    controllerRemoveEventListener,
+    controllerEventPollingRate,
+    operatorJson,
+    functionArgument,
+    createFunction,
+    callFunction,
+    executableStack,
+    ALU,
+    serverSend
+}
 
-////////////////////////////////////////////////        end of json directives      ///////////////////////////////////////////////
-
-var counter=0;
-var staticTesting=0;
-
-app.get('/',(req,res)=>{
-    
-    var finalStack=[];
-
-    // finalStack.push(consoleLogger("just started "));
-
-
-    // finalStack.push(delay(500));
-
-    // finalStack.push(memoryWrite(100,{test:"memory"}));
-    
-    // finalStack.push(memoryWrite(101,memoryRead(100)));
-
-
-    // finalStack.push(consoleLogger(memoryRead(101)));
-
-
-    // finalStack.push(delay(500));
-
-    // finalStack.push(memoryWrite(100,{test:"samer-15"}));
-    // finalStack.push(consoleLogger(memoryRead(100)));
-    // finalStack.push(delay(500));
-    // finalStack.push(memoryWrite(100,{test:"samer-5"}));
-    // finalStack.push(consoleLogger(memoryRead(100)));
-    // finalStack.push(delay(500));
-    // finalStack.push(memoryWrite(100,{test:"samer-96666666"}));
-    // finalStack.push(consoleLogger(memoryRead(100)));
-    // finalStack.push(delay(500));
-    
-    // finalStack.push(memoryWrite(100,memoryRead(100)));
-    // finalStack.push(memoryWrite(100,memoryRead(100)));
-    // finalStack.push(memoryWrite(100,memoryRead(100)));
-
-
-    // finalStack.push(consoleLogger("hello world"));
-
-
-    // finalStack.push(consoleLogger(digitalInput(100)));
-
-
-    // finalStack.push(memoryWrite(100,controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
-    
-
-    
-    
-    // finalStack.push(controllerEventListener(
-    //     63,
-    //     58,
-    //     digitalInput(69),
-    //     controllerFetch("http://192.168.1.15:776",memoryRead(58),{test:1245})
-    // ));
-
-
-    // finalStack.push(delay(10000));
-
-
-    // finalStack.push(controllerRemoveEventListener(63));
-
-    // finalStack.push(consoleLogger(memoryRead(63)));
-    
-    // // // finalStack.push(memoryWrite(101,memoryRead(100)));
-
-
-    // // finalStack.push(consoleLogger(memoryRead(101)));
-
-    // finalStack.push(consoleLogger(memoryRead(500)));
-    // // finalStack.push(consoleLogger(memoryRead(500)));
-
-    // finalStack.push(delay(500));
-
-    // finalStack.push(memoryWrite(100,{test:"samer"}));
-    
-    // finalStack.push(memoryWrite(101,memoryRead(100)));
-
-
-    // finalStack.push(consoleLogger(memoryRead(101)));
-    
-
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(500),{test:6544}));
-     
-    // if((counter++)&1)
-    //     finalStack.push(memoryWrite(100,hardwareID()));
-    // else   
-    //     finalStack.push(memoryDelete(100));
-
-    // finalStack.push(consoleLogger(memoryRead(100)));
-    // finalStack.push(consoleLogger(consoleLogger(delay(20))));
-
-    // finalStack.push(consoleLogger(memoryRead(500)));
-
-    
-
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101),{test:1245}));
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(500),{test:6544}));
-
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",memoryRead(101)));
-
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",digitalOutput(1,[564,98])));
-
-    
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/2")));
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
-    
-    
-    // finalStack.push(delay(100));
-    
-    // finalStack.push(controllerFetch("http://192.168.1.15:776",controllerFetch("https://jsonplaceholder.typicode.com/todos/1")));
-
-    // const laodToMemory=newVariable();
-
-    if(!(staticTesting++))
-    finalStack.push(createFunction(
-        1025,
-        1026,
-        ()=>{
-            return executableStack(1,[
-                // memoryWrite(laodToMemory,functionArgument("randomParam")),
-                // executableStack(3,[
-                //     consoleLogger(memoryRead(laodToMemory)),
-                //     delay(1000)
-                // ]),
-                consoleLogger(functionArgument("randomParam")),
-                functionArgument("randomStack"),
-                delay(200),
-                controllerFetch("http://192.168.1.15:776",functionArgument("randomParam"),functionArgument("callback")),
-
-                serverSend(functionArgument("randomParam"),functionArgument("callback")),
-
-                // callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}})
-                // controllerEventListener(
-                //     63,
-                //     58,
-                //     digitalInput(69),
-                //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-                // )
-            ])
-            // return consoleLogger(functionArgument("randomParam"));
-            // return controllerEventListener(
-            //     63,
-            //     58,
-            //     digitalInput(69),
-            //     controllerFetch("http://192.168.1.15:776",memoryRead(58),functionArgument("randomParam"))
-            // )
-        },
-        hardwareID()
-    ));
-
-    finalStack.push(delay(1000));
-    // finalStack.push(consoleLogger(memoryRead(1025)));
-
-    // finalStack.push(consoleLogger(callFunction(1025,{randomParam:callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}),callback:{object:889}})));
-    finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889},randomStack:consoleLogger("this test!!")}));
-    // finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
-    // finalStack.push(callFunction(1025,{randomParam:digitalInput(69),callback:{object:889}}));
-
-    finalStack.push(delay(1000));
-    // // finalStack.push(consoleLogger(memoryRead(1025)));
-
-    // finalStack.push(callFunction(1025,{randomParam:"some random text"}));
-
-    // finalStack.push(memoryWrite(141,'2'));
-
-    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
-    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
-
-    // finalStack.push(consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)));
-    // finalStack.push(consoleLogger(ALU(memoryRead(141),'+',255)));
-
-    finalStack.push(memoryWrite(141,'2'));
-    finalStack.push(executableStack(5,[
-        consoleLogger(ALU(ALU(ALU(ALU(memoryRead(141),'*',2),'*',2),'*',2),'*',2)),
-        delay(200)
-    ]))
-
-
-    
-   
-    res.send(JSON.stringify(loop(1,finalStack)));
-
-    console.log(JSON.stringify(finalStack));
-    console.log(util.inspect(JSON.parse(JSON.stringify(finalStack)), false, null, true));
-
-});
-
-var enduranceTest=0;
-
-xtensaLinker.linkerSetAdd((data)=>{
-    if(JSON.parse(data)[PACKAGE_IDENTIFIER]==6542){
-        xtensaLinker.linkerSend(JSON.stringify(MCU.serverSend(6542,{res:enduranceTest++})));
-    }
-})
-
-setTimeout(() => {
-    xtensaLinker.linkerSend(JSON.stringify(MCU.serverSend(6542,{res:enduranceTest++})));
-}, 3000);
-
-app.post("/",(req,res)=>{
-
-    console.log("post request body >> ",req.body);
-    res.send("ack");
-});
-
-
-app.listen(port,()=>{
-    // console.clear();
-    console.log(`-------- server started @ port ${port}`);
-});
+export default virtualController;
