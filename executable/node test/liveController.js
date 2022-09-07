@@ -1,7 +1,7 @@
 import express  from 'express';
 import cors from 'cors';
 import util from 'util';
-import bodyParser from 'body-parser';
+import bodyParser, { json } from 'body-parser';
 
 import globalLinker from './globalLinker.js';
 import virtualController from './virtualController.js';
@@ -14,11 +14,11 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log('dataFromServer  >> ',dataFromServer);
+    // console.log('dataFromServer  >> ',dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((data)=>{
-    console.log(`\t\t executable @ - ${data.length}`)
+    // console.log(`\t\t executable @ - ${data.length}`)
 })
 
 const MCU=virtualController;
@@ -47,10 +47,22 @@ setTimeout(() => {
 }, 4000);
 
 
+const serverConsoleCallBackID=MCU.newVariable();
+
+xtensaLinker.linkerSetAdd((data)=>{
+    if(JSON.parse(data)[MCU.PACKAGE_IDENTIFIER]==serverConsoleCallBackID)
+        console.log("MCU log >> ",JSON.parse(data)[MCU.SERVER_DATA]);
+})
+
+const serverConsole=(cosnoleData)=>{
+    load(MCU.serverSend(serverConsoleCallBackID,cosnoleData));
+}
+
+
 let testVariable=7;
 while(testVariable--){
     load(MCU.delay(500));
-    load(MCU.consoleLogger("this is test"));
+    serverConsole({test:'this is test'});
 }
 
 
