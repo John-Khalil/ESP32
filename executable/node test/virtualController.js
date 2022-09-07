@@ -305,38 +305,72 @@ const serverSend=(packageIdentifier,serverData)=>{
     return returnStack;
 }
 
-// const virtualController={
-//     newVariable,
-//     operationSelector,
-//     delay,
-//     digitalOutput,
-//     digitalInput,
-//     loop,
-//     consoleLogger,
-//     hardwareID,
-//     memoryWrite,
-//     memoryRead,
-//     memoryDelete,
-//     controllerFetch,
-//     controllerEventListener,
-//     controllerRemoveEventListener,
-//     controllerEventPollingRate,
-//     operatorJson,
-//     functionArgument,
-//     createFunction,
-//     callFunction,
-//     executableStack,
-//     ALU,
-//     serverSend
-// }
+const virtualController={
+    JSON_OPERATOR,
+    OUTPUT_STREAM,
+    PORT_ADDRESS,
+    PORT_VALUE,
+    DELAY_MICRO_SEC,
+    DELAY_MILLI_SEC,
+    LOOP_COUNTER,
+    LOOP_BODY,
+    BUFFER_IDENTIFIER,
+    BUFFER_DATA,
+    CONSOLE_DATA,
+    WEB_HOST,
+    POST_BODY,
+    REQUEST_PARAM,
+    EVENT_ADDRESS,
+    EVENT_EXECUTABLE,
+    HANDLER_EXECUTABLE,
+    ONCHANGE_ADDRESS,
+    POLLING_RATE,
+    OBJECT_KEY,
+    EXECUTABLE_JSON,
+    FUNCTION_ADDRESS,
+    FUNCTION_OBJECT,
+    PARAMETER_ADDRESS,
+    STACK_EXECUTABLE,
+    RETURN_EXECUTABLE,
+    PARAMETER_OBJECT,
+    EXECUTABLE_COUNTER,
+    EXECUTABLE_STACK,
+    ALU_OPERATION,
+    FIRST_OPERAND,
+    SECOND_OPERAND,
+    PACKAGE_IDENTIFIER,
+    SERVER_DATA,
+    newVariable,
+    operationSelector,
+    delay,
+    digitalOutput,
+    digitalInput,
+    loop,
+    consoleLogger,
+    hardwareID,
+    memoryWrite,
+    memoryRead,
+    memoryDelete,
+    controllerFetch,
+    controllerEventListener,
+    controllerRemoveEventListener,
+    controllerEventPollingRate,
+    operatorJson,
+    functionArgument,
+    createFunction,
+    callFunction,
+    executableStack,
+    ALU,
+    serverSend
+}
 
-// export default virtualController;
+export default virtualController;
 
 
 
 
 
-export default class  virtualController{
+export class  virtualControllerClass{
     stackPush=1;
     
     executableStackPush=(executableObject)=>{
@@ -542,4 +576,3 @@ export default class  virtualController{
         return returnStack;
     }
 };
-// */ */ 

@@ -13,17 +13,44 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
-const liveLoadOperator=(liveOperator)=>{
-    // liveOperator=liveOperator();
-    console.log(liveOperator);
+xtensaLinker.linkerSetAdd((dataFromServer)=>{
+    console.log('dataFromServer  >> ',dataFromServer);
+})
+
+xtensaLinker.linkerSendAdd((data)=>{
+    console.log(`\t\t executable @ - ${data.length}`)
+})
+
+const MCU=virtualController;
+
+const superExecutableCallBackAddress=MCU.newVariable();
+
+const liveLoad=[];
+
+const load=(superExecutable)=>{
+    liveLoad.push(superExecutable);
 }
 
-let MCU=virtualController;
-
-Object.keys(virtualController).forEach((operator)=>{
-    MCU[operator]=()=>{
-        liveLoadOperator(virtualController[operator]());
+let superExecutableCounter=0;
+xtensaLinker.linkerSetAdd((data)=>{
+    if((JSON.parse(data)[MCU.PACKAGE_IDENTIFIER]==superExecutableCallBackAddress)&&superExecutableCounter<liveLoad.length){
+        xtensaLinker.linkerSend(JSON.stringify(MCU.loop(1,[
+            liveLoad[superExecutableCounter++],
+            MCU.serverSend(superExecutableCallBackAddress,{executableCount:superExecutableCounter})
+        ])));
     }
 })
 
-MCU.consoleLogger("this is test");
+setTimeout(() => {
+    xtensaLinker.linkerSet(JSON.stringify({[MCU.PACKAGE_IDENTIFIER]:superExecutableCallBackAddress}));
+    // xtensaLinker.linkerSend(JSON.stringify(MCU.consoleLogger("live load test")));
+}, 3000);
+
+
+let testVariable=7;
+while(testVariable--){
+    load(MCU.delay(500));
+    load(MCU.consoleLogger("this is test"));
+}
+
+
