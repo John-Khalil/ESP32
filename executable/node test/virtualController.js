@@ -6,7 +6,7 @@ const newVariable=()=>{
 
 // order should always be maintained
 
-var aluOperationIndex=0;
+var aluOperationIndex=100;
 const virtualControllerALU={};
 
 virtualControllerALU['+']   =   aluOperationIndex++;
@@ -352,6 +352,7 @@ const virtualController={
     memoryRead,
     memoryDelete,
     controllerFetch,
+    fetch:controllerFetch,
     controllerEventListener,
     controllerRemoveEventListener,
     controllerEventPollingRate,

@@ -34,7 +34,7 @@ const load=(superExecutable)=>{
 let superExecutableCounter=0;
 xtensaLinker.linkerSetAdd((data)=>{
     if((JSON.parse(data)[MCU.PACKAGE_IDENTIFIER]==superExecutableCallBackAddress)&&superExecutableCounter<liveLoad.length){
-        xtensaLinker.linkerSend(JSON.stringify(MCU.loop(1,[
+        xtensaLinker.linkerSend(JSON.stringify(MCU.executableStack(1,[
             liveLoad[superExecutableCounter++],
             MCU.serverSend(superExecutableCallBackAddress,{executableCount:superExecutableCounter})
         ])));
@@ -44,7 +44,7 @@ xtensaLinker.linkerSetAdd((data)=>{
 setTimeout(() => {
     xtensaLinker.linkerSet(JSON.stringify({[MCU.PACKAGE_IDENTIFIER]:superExecutableCallBackAddress}));
     // xtensaLinker.linkerSend(JSON.stringify(MCU.consoleLogger("live load test")));
-}, 3000);
+}, 4000);
 
 
 let testVariable=7;
