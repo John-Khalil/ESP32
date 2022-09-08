@@ -2991,7 +2991,7 @@ void serviceExecutable(void*param){
 		// _delay_ms(500);
 		// console.log(" >> ",tcpConnectionRead);
 		virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
-		// realTimeConnectionSend(tcpConnectionRead);
+		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
 		// virtualController(CACHE_BYTES(tcpConnectionRead));
 		// free(tcpConnectionRead);
 		// virtualController((tcpConnectionRead));

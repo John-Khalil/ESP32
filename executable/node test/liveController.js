@@ -9,6 +9,15 @@ import virtualController from './virtualController.js';
 
 console.clear();
 
+const jsonParse=(jsonObject)=>{
+    try {
+        jsonObject=JSON.parse(jsonObject);
+    } catch (error) {
+        return "error parse json";
+    }
+    return jsonObject;
+}
+
 // const logger=new Console({ stdout: output, stderr: errorOutput,ignoreErrors: true, colorMode: true });
 
 const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
@@ -20,9 +29,7 @@ xtensaLinker.linkerSetAdd((dataFromServer)=>{
     console.log('dataFromServer  >> ',dataFromServer);
 })
 
-xtensaLinker.linkerSendAdd((data)=>{
-    // console.log(`\t\t executable @ - ${data.length}`)
-})
+
 
 const MCU=virtualController;
 
@@ -36,39 +43,43 @@ const load=(superExecutable)=>{
 
 let superExecutableCounter=0;
 xtensaLinker.linkerSetAdd((data)=>{
-    if((JSON.parse(data)[MCU.PACKAGE_IDENTIFIER]==superExecutableCallBackAddress)&&superExecutableCounter<liveLoad.length){
-        // xtensaLinker.linkerSend(JSON.stringify(MCU.executableStack(1,[
+    if((data=="MAIN-THREAD-LOAD")&&superExecutableCounter<liveLoad.length){
+        // xtensaLinker.linkerSend(JSON.stringify(MCU.loop(1,[
         //     liveLoad[superExecutableCounter++],
         //     MCU.serverSend(superExecutableCallBackAddress,{executableCount:superExecutableCounter})
         // ])));
-        xtensaLinker.linkerSend(JSON.stringify(MCU.serverSend(superExecutableCallBackAddress,MCU.ALU(5,'*',6))));
+        xtensaLinker.linkerSend(JSON.stringify(liveLoad[superExecutableCounter++]));
     }
 })
 
 setTimeout(() => {
-    xtensaLinker.linkerSet(JSON.stringify({[MCU.PACKAGE_IDENTIFIER]:superExecutableCallBackAddress}));
+    xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     // xtensaLinker.linkerSend(JSON.stringify(MCU.serverSend(superExecutableCallBackAddress,MCU.ALU(5,'*',6))));
 
 
 }, 4000);
 
 
+
 const serverConsoleCallBackID=MCU.newVariable();
 
 xtensaLinker.linkerSetAdd((data)=>{
-    if(JSON.parse(data)[MCU.PACKAGE_IDENTIFIER]==serverConsoleCallBackID)
-        console.log("MCU log >> ",JSON.parse(data)[MCU.SERVER_DATA]);
+    if(jsonParse(data)[MCU.PACKAGE_IDENTIFIER]==serverConsoleCallBackID)
+        console.log("MCU log >> ",jsonParse(data)[MCU.SERVER_DATA]);
 })
 
 const serverConsole=(cosnoleData)=>{
-    load(MCU.serverSend(serverConsoleCallBackID,cosnoleData));
+    load(MCU.serverSend(serverConsoleCallBackID,(typeof cosnoleData=="string")?`'${cosnoleData}'`:cosnoleData));
 }
 
 
 let testVariable=7;
 while(testVariable--){
-    load(MCU.delay(500));
-    
+    // load(MCU.delay(500));
+    serverConsole(MCU.ALU(5,'*',6))
+    serverConsole('string is string')
 }
+
+
 
 
