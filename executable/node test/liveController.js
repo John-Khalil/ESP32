@@ -26,7 +26,7 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log('dataFromServer  >> ',dataFromServer);
+    // console.log('dataFromServer  >> ',dataFromServer);
 })
 
 
@@ -65,11 +65,11 @@ const serverConsoleCallBackID=MCU.newVariable();
 
 xtensaLinker.linkerSetAdd((data)=>{
     if(jsonParse(data)[MCU.PACKAGE_IDENTIFIER]==serverConsoleCallBackID)
-        console.log("MCU log >> ",jsonParse(data)[MCU.SERVER_DATA]);
+        console.log("MCU log >> ",jsonParse(data)[MCU.SERVER_DATA].consoleData||jsonParse(data)[MCU.SERVER_DATA]);
 })
 
-const serverConsole=(cosnoleData)=>{
-    load(MCU.serverSend(serverConsoleCallBackID,(typeof cosnoleData=="string")?`'${cosnoleData}'`:cosnoleData));
+const serverConsole=(consoleData)=>{
+    load(MCU.serverSend(serverConsoleCallBackID,(typeof consoleData=="string")?{consoleData}:consoleData));
 }
 
 
