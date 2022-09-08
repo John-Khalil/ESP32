@@ -2241,10 +2241,11 @@ unsigned char *highLevelMemory(unsigned long virtualMemoryAddress){
 
 unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POINT_BUFFER){
 	initializeVirtualControllerMemory();
-	static unsigned long registeredAddress[51]={};
+	#define virtualMemorySize 151
+	static unsigned long registeredAddress[virtualMemorySize]={};
 	//we have to init here before we go
 	#define nullValue -1UL
-	during(51*(registeredAddress[50]!=nullValue),(argLoop index){
+	during(virtualMemorySize*(registeredAddress[virtualMemorySize-1]!=nullValue),(argLoop index){
 		registeredAddress[index]=nullValue;
 	});
 		
@@ -2838,6 +2839,7 @@ void testingFuction(void * uselessParam){
 
 #define realTimeConnectionRetryInterval 100
 #define realTimeConnectionUserCredentials() "\"anNvbiBkaXJlY3RpdmVzIHRlc3Qg\""		// this could be any unique string for each user
+// unsigned char *realTimeConnectionBuffer=(unsigned char*)calloc(0x1FFF,sizeof(unsigned char));
 
 void realTimeConnection(void *arg){
 	unsigned char *hostServer=NULL;
@@ -2849,11 +2851,11 @@ void realTimeConnection(void *arg){
 
 
 	WiFiClient tcpConnection;
-	unsigned char realTimeConnectionBuffer[0xfff]={};
+	unsigned char realTimeConnectionBuffer[0x1fff]={};
 
 	static unsigned char runOnlyOnce;
 	if(runOnlyOnce=1)
-	WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){
+	WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function 
 		base64(tcpConnectionSend,CLR(realTimeConnectionBuffer));
 		tcpConnection.write((char*)realTimeConnectionBuffer);
 		return tcpConnectionSend;
@@ -2985,8 +2987,14 @@ void serviceExecutable(void*param){
 	// MDNS.addService("http", "tcp", 80);
 
 	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
-		unsigned char realTimeConnectionBuffer[0xFFF]={};
-		virtualController(_CS(realTimeConnectionBuffer,tcpConnectionRead));
+		unsigned char realTimeConnectionBuffer[0x1FFF]={};
+		// _delay_ms(500);
+		// console.log(" >> ",tcpConnectionRead);
+		virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
+		// realTimeConnectionSend(tcpConnectionRead);
+		// virtualController(CACHE_BYTES(tcpConnectionRead));
+		// free(tcpConnectionRead);
+		// virtualController((tcpConnectionRead));
 		return tcpConnectionRead;
 	});
 

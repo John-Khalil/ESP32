@@ -1,4 +1,4 @@
-var variableMemoryBaseAddress=0;
+var variableMemoryBaseAddress=100;
 const newVariable=()=>{
     return variableMemoryBaseAddress++;
 }
@@ -6,7 +6,7 @@ const newVariable=()=>{
 
 // order should always be maintained
 
-var aluOperationIndex=100;
+var aluOperationIndex=0;
 const virtualControllerALU={};
 
 virtualControllerALU['+']   =   aluOperationIndex++;
