@@ -18,8 +18,6 @@ const jsonParse=(jsonObject)=>{
     return jsonObject;
 }
 
-// const logger=new Console({ stdout: output, stderr: errorOutput,ignoreErrors: true, colorMode: true });
-
 const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
 const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 
@@ -44,19 +42,12 @@ const load=(superExecutable)=>{
 let superExecutableCounter=0;
 xtensaLinker.linkerSetAdd((data)=>{
     if((data=="MAIN-THREAD-LOAD")&&superExecutableCounter<liveLoad.length){
-        // xtensaLinker.linkerSend(JSON.stringify(MCU.loop(1,[
-        //     liveLoad[superExecutableCounter++],
-        //     MCU.serverSend(superExecutableCallBackAddress,{executableCount:superExecutableCounter})
-        // ])));
         xtensaLinker.linkerSend(JSON.stringify(liveLoad[superExecutableCounter++]));
     }
 })
 
 setTimeout(() => {
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
-    // xtensaLinker.linkerSend(JSON.stringify(MCU.serverSend(superExecutableCallBackAddress,MCU.ALU(5,'*',6))));
-
-
 }, 4000);
 
 
@@ -71,6 +62,38 @@ xtensaLinker.linkerSetAdd((data)=>{
 const serverConsole=(consoleData)=>{
     load(MCU.serverSend(serverConsoleCallBackID,(typeof consoleData=="string")?{consoleData}:consoleData));
 }
+
+MCU.logger=(consoleData)=>{
+    return(MCU.serverSend(serverConsoleCallBackID,(typeof consoleData=="string")?{consoleData}:consoleData));
+}
+
+const function1=MCU.newVariable();
+const arguments1=MCU.newVariable();
+
+const function2=MCU.newVariable();
+const arguments2=MCU.newVariable();
+
+load(MCU.createFunction(function1,arguments1,()=>{
+    return MCU.executableStack(1,[
+        MCU.logger(MCU.functionArgument('arg1')),
+        MCU.logger(MCU.functionArgument('arg2')),
+        MCU.memoryWrite(arguments1,MCU.ALU(MCU.functionArgument('arg1'),'*',MCU.functionArgument('arg2')))
+        // MCU.callFunction(function1,{arg1:5,arg2:6})
+        // serverConsole(MCU.functionArgument('arg1')),
+        // serverConsole(MCU.functionArgument('arg1'))
+    ])
+},MCU.memoryRead(arguments1)))
+
+load(MCU.createFunction(function2,arguments2,()=>{
+    return MCU.executableStack(1,[
+        MCU.logger(MCU.functionArgument('arg1')),
+        MCU.logger(MCU.functionArgument('arg2')),
+        MCU.memoryWrite(arguments2,MCU.ALU(MCU.functionArgument('arg1'),'+',MCU.functionArgument('arg2'))),
+        // MCU.callFunction(function1,{arg1:5,arg2:6})
+        // serverConsole(MCU.functionArgument('arg1')),
+        // serverConsole(MCU.functionArgument('arg1'))
+    ])
+},MCU.memoryRead(arguments2)))
 
 
 let testVariable=7;
@@ -90,4 +113,11 @@ while(testVariable--){
     
     serverConsole(MCU.memoryRead(1400))
 }
+
+serverConsole(MCU.callFunction(function2,{arg1:8,arg2:8}))
+// serverConsole(MCU.callFunction(function1,{arg1:8,arg2:8}))
+
+load(MCU.controllerEventListener(1005,1006,MCU.digitalInput(69),MCU.logger(MCU.memoryRead(1006))));
+
+serverConsole("hello world ");
 
