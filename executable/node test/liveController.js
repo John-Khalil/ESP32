@@ -80,6 +80,14 @@ while(testVariable--){
     serverConsole('string is string')
 }
 
+load(MCU.memoryWrite(1400,5));
 
+testVariable=7;
+while(testVariable--){
+    
 
+    load(MCU.memoryWrite(1400,MCU.ALU(MCU.memoryRead(1400),'*',MCU.memoryRead(1400))));
+    
+    serverConsole(MCU.memoryRead(1400))
+}
 
