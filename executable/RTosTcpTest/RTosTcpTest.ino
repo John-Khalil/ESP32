@@ -3013,7 +3013,7 @@ void serviceExecutable(void*param){
         "virtualControllerEventListener",   // Name of the task (for debugging)
         30000,            // Stack size (bytes)
         NULL,            // Parameter to pass
-        2,               // Task priority
+        1,               // Task priority
         NULL             // Task handle
     );
 
@@ -3022,7 +3022,7 @@ void serviceExecutable(void*param){
         "realTimeConnection",   // Name of the task (for debugging)
         30000,            // Stack size (bytes)
         NULL,            // Parameter to pass
-        2,               // Task priority
+        1,               // Task priority
         NULL             // Task handle
     );
 
