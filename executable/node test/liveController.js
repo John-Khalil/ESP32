@@ -78,14 +78,14 @@ const mcu=MCU;
 
 mcu.load(mcu.logger('code just started'))
 
-let x=4;
+let x=20;
 
 var counter=0;
 
 // while(x--)
-// mcu.load(mcu.executableStack(4,[
+// mcu.load(mcu.executableStack(3,[
 
-//     // mcu.delay(500),
+//     mcu.delay(50),
 
 //     mcu.logger(`counter ${counter++}`)
 
@@ -97,58 +97,58 @@ var counter=0;
 
 
 
-const function1=MCU.newVariable();
-const arguments1=MCU.newVariable();
+// const function1=MCU.newVariable();
+// const arguments1=MCU.newVariable();
 
-const function2=MCU.newVariable();
-const arguments2=MCU.newVariable();
+// const function2=MCU.newVariable();
+// const arguments2=MCU.newVariable();
 
-load(MCU.createFunction(function1,arguments1,()=>{
-    return mcu.logger(`counter  >> ${counter++}`);
-    // return MCU.executableStack(1,[
-    //     MCU.logger(MCU.functionArgument('arg1')),
-    //     MCU.logger(MCU.functionArgument('arg2')),
-    //     MCU.memoryWrite(arguments1,MCU.ALU(MCU.functionArgument('arg1'),'*',MCU.functionArgument('arg2')))
-    //     // MCU.callFunction(function1,{arg1:5,arg2:6})
-    //     // serverConsole(MCU.functionArgument('arg1')),
-    //     // serverConsole(MCU.functionArgument('arg1'))
-    // ])
-},MCU.memoryRead(arguments1)))
+// load(MCU.createFunction(function1,arguments1,()=>{
+//     return mcu.logger(`counter  >> ${counter++}`);
+//     // return MCU.executableStack(1,[
+//     //     MCU.logger(MCU.functionArgument('arg1')),
+//     //     MCU.logger(MCU.functionArgument('arg2')),
+//     //     MCU.memoryWrite(arguments1,MCU.ALU(MCU.functionArgument('arg1'),'*',MCU.functionArgument('arg2')))
+//     //     // MCU.callFunction(function1,{arg1:5,arg2:6})
+//     //     // serverConsole(MCU.functionArgument('arg1')),
+//     //     // serverConsole(MCU.functionArgument('arg1'))
+//     // ])
+// },MCU.memoryRead(arguments1)))
 
-// load(MCU.createFunction(function2,arguments2,()=>{
-//     return MCU.executableStack(1,[
-//         MCU.logger(MCU.functionArgument('arg1')),
-//         MCU.logger(MCU.functionArgument('arg2')),
-//         MCU.memoryWrite(arguments2,MCU.ALU(MCU.functionArgument('arg1'),'+',MCU.functionArgument('arg2'))),
-//         // MCU.callFunction(function1,{arg1:5,arg2:6})
-//         // serverConsole(MCU.functionArgument('arg1')),
-//         // serverConsole(MCU.functionArgument('arg1'))
-//     ])
-// },MCU.memoryRead(arguments2)))
+// // load(MCU.createFunction(function2,arguments2,()=>{
+// //     return MCU.executableStack(1,[
+// //         MCU.logger(MCU.functionArgument('arg1')),
+// //         MCU.logger(MCU.functionArgument('arg2')),
+// //         MCU.memoryWrite(arguments2,MCU.ALU(MCU.functionArgument('arg1'),'+',MCU.functionArgument('arg2'))),
+// //         // MCU.callFunction(function1,{arg1:5,arg2:6})
+// //         // serverConsole(MCU.functionArgument('arg1')),
+// //         // serverConsole(MCU.functionArgument('arg1'))
+// //     ])
+// // },MCU.memoryRead(arguments2)))
 
 
-// let testVariable=7;
-// while(testVariable--){
-//     // load(MCU.delay(500));
-//     serverConsole(MCU.ALU(5,'*',6))
-//     serverConsole('string is string')
-// }
+// // let testVariable=7;
+// // while(testVariable--){
+// //     // load(MCU.delay(500));
+// //     serverConsole(MCU.ALU(5,'*',6))
+// //     serverConsole('string is string')
+// // }
 
-// load(MCU.memoryWrite(1400,5));
+// // load(MCU.memoryWrite(1400,5));
 
-// testVariable=7;
-// while(testVariable--){
+// // testVariable=7;
+// // while(testVariable--){
     
 
-//     load(MCU.memoryWrite(1400,MCU.ALU(MCU.memoryRead(1400),'*',MCU.memoryRead(1400))));
+// //     load(MCU.memoryWrite(1400,MCU.ALU(MCU.memoryRead(1400),'*',MCU.memoryRead(1400))));
     
-//     serverConsole(MCU.memoryRead(1400))
-// }
+// //     serverConsole(MCU.memoryRead(1400))
+// // }
 
-// serverConsole(MCU.callFunction(function1,{arg1:8,arg2:8}))
 // // serverConsole(MCU.callFunction(function1,{arg1:8,arg2:8}))
+// // // serverConsole(MCU.callFunction(function1,{arg1:8,arg2:8}))
 
-load(MCU.controllerEventListener(1005,1006,MCU.digitalInput(69),MCU.callFunction(function1,{arg1:8,arg2:8})));
+// load(MCU.controllerEventListener(1005,1006,MCU.digitalInput(69),MCU.callFunction(function1,{arg1:8,arg2:8})));
 
 serverConsole("hello world ");
 

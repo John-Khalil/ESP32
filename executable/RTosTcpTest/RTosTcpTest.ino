@@ -2618,11 +2618,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 			while(executableCounter--){
 				// _delay_ms(200);console.log(" >> ",executableCounter);
 				executableStackCounter=0;
+				// while((executableStackElement=constJson(jsonIndex(executableStackCounter++),subExecutable))!=UNDEFINED){
 				// while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
-				while((executableStackElement=constJson(jsonIndex(executableStackCounter++),subExecutable))!=UNDEFINED){
-					virtualController(CACHE_BYTES(executableStackElement));
-					free(executableStackElement);
-				}
+				// 	virtualController($(executableStackElement));
+				// 	// _delay_ms(200);console.log(" >> ",executableStackElement);
+				// 	// free(executableStackElement);
+				// }
+				while(virtualController(constJson($(EXECUTABLE_STACK,"[",executableStackCounter++,"]"),subExecutable))!=UNDEFINED);
 			}
 			return subExecutable;
 		},
