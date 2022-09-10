@@ -2411,7 +2411,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator
 			
-			unsigned long digitalPortRead=millis()/1500;										// this would later be assigned a value
+			unsigned long digitalPortRead=millis()/15;										// this would later be assigned a value
 
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
@@ -2604,11 +2604,22 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long executableCounter=getInt32_t(virtualController(constJson(EXECUTABLE_COUNTER,subExecutable)));
 			unsigned long executableStackCounter=0;
 			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
+
+			const std::function<unsigned char*(unsigned long)>jsonIndex=[&](unsigned long index){
+				CLR(executableStackArrayElement);
+				_CS(executableStackArrayElement,(unsigned char*)EXECUTABLE_STACK);
+				_CS(executableStackArrayElement,(unsigned char*)"[");
+				_CS(executableStackArrayElement,inttostring(index));
+				_CS(executableStackArrayElement,(unsigned char*)"]");
+				return executableStackArrayElement;
+			};
+
 			unsigned char *executableStackElement=NULL;
 			while(executableCounter--){
 				// _delay_ms(200);console.log(" >> ",executableCounter);
 				executableStackCounter=0;
-				while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
+				// while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
+				while((executableStackElement=constJson(jsonIndex(executableStackCounter++),subExecutable))!=UNDEFINED){
 					virtualController(CACHE_BYTES(executableStackElement));
 					free(executableStackElement);
 				}
