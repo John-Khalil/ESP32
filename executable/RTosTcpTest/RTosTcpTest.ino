@@ -2789,62 +2789,7 @@ void virtualControllerEventListener(void *params){
 void testingFuction(void * uselessParam){
 
 	
-	// unsigned char* testArray[] = { (unsigned char*)"test0",(unsigned char*)"test1",(unsigned char*)"test2",NULL};
-	// unsigned char* testArray2[] = { (unsigned char*)"123",(unsigned char*)"234",(unsigned char*)"345",NULL };
-	// _delay_ms(200);
-	// console.log(" >> ",makeJsonObject(testArray, testArray2));_delay_ms(200);
-	// console.log(" >> ",makeJsonObject(testArray, testArray2));_delay_ms(200);
-
-
-	// _delay_ms(4000);
-
-	// fetch("http://192.168.1.13",$(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")));
-
-	// initializeVirtualControllerMemory();
-
-	// console.log(virtualControllerMemoryIndex);_delay_ms(200);
-
-	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
-
-	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
-
-	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
-	// console.log(" -1->>-->> ",smartPointer(100,POINT_BUFFER));_delay_ms(200);
 	
-
-	// smartPointer(987,DELETE_BUFFER);
-
-
-	// console.log(" >> ",smartPointer(886,POINT_BUFFER));
-
-
-	// unsigned char *sampleData=fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json");
-
-
-	// console.log(sampleData);
-	
-
-	// console.log("xtensa : ",jsonObject0.parse("xtensa",sampleData));
-	// console.log("dev : ",jsonObject0.parse("dev",sampleData));
-
-	// console.log("thisLink : ",jsonObject0.parse("thisLink",sampleData));
-	// console.log("webHost : ",jsonObject0.parse("webHost",sampleData));
-
-	// console.log("xtensa : ",json("xtensa",sampleData));
-	// console.log("dev : ",json("dev",sampleData));
-
-	// console.log("thisLink : ",json("thisLink",sampleData));
-	// console.log("webHost : ",json("webHost",sampleData));
-
-	// _delay_ms(500);
-
-	// console.log(" host server >> ",json("xtensa",fetch("https://192.168.1.100/engkhalil/xtensa32plus/main/dnsSquared.json")));
-
-	// _delay_ms(8000);
-	// realTimeConnectionSend((unsigned char*)"hello from xtensa");
-
-
 	vTaskDelete(NULL);
 }
 
@@ -2875,7 +2820,7 @@ void realTimeConnection(void *arg){
 
 
 	WiFiClient tcpConnection;
-	unsigned char realTimeConnectionBuffer[0x1fff]={};
+	static unsigned char realTimeConnectionBuffer[0x1fff]={};
 
 	static unsigned char runOnlyOnce;
 	if(runOnlyOnce=1)
@@ -2900,7 +2845,7 @@ void realTimeConnection(void *arg){
 			console.log("RT server Disconnected");
 			goto hostServerDisconnected;
 		}		
-		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
+		_delay_ms(5);
 	}
 
 	
@@ -3014,13 +2959,9 @@ void serviceExecutable(void*param){
 
 	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
 		unsigned char realTimeConnectionBuffer[0x1FFF]={};
-		// _delay_ms(500);
-		// console.log(" >> ",tcpConnectionRead);
 		virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
+		// virtualController(tcpConnectionRead);
 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
-		// virtualController(CACHE_BYTES(tcpConnectionRead));
-		// free(tcpConnectionRead);
-		// virtualController((tcpConnectionRead));
 		return tcpConnectionRead;
 	});
 
@@ -3043,17 +2984,7 @@ void serviceExecutable(void*param){
         NULL             // Task handle
     );
 
-	// xTaskCreate(
-    //     realTimeConnection,    // Function that should be called
-    //     "realTimeConnection",   // Name of the task (for debugging)
-    //     30000,            // Stack size (bytes)
-    //     NULL,            // Parameter to pass
-    //     1,               // Task priority
-    //     NULL             // Task handle
-    // );
 
-
-	// virtualController(fetch("http://192.168.1.15:766"));
 
 	while(1){
 		eventListener=0;
