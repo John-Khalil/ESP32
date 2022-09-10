@@ -2411,7 +2411,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator
 			
-			unsigned long digitalPortRead=millis()/15;										// this would later be assigned a value
+			unsigned long digitalPortRead=millis()/150;										// this would later be assigned a value
 
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
@@ -3385,6 +3385,16 @@ void setup(){
         1,               // Task priority
         NULL             // Task handle
     );
+
+
+	// xTaskCreate(
+    //     virtualControllerEventListener,    // Function that should be called
+    //     "virtualControllerEventListener",   // Name of the task (for debugging)
+    //     30000,            // Stack size (bytes)
+    //     NULL,            // Parameter to pass
+    //     1,               // Task priority
+    //     NULL             // Task handle
+    // );
 
     
 	// _delay_ms(2000);
