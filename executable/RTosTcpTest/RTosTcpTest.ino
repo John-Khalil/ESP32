@@ -2850,11 +2850,22 @@ void testingFuction(void * uselessParam){
 
 
 
+unsigned short lastNetworkStat;
+
+
+
 #define realTimeConnectionRetryInterval 100
 #define realTimeConnectionUserCredentials() "\"anNvbiBkaXJlY3RpdmVzIHRlc3Qg\""		// this could be any unique string for each user
 // unsigned char *realTimeConnectionBuffer=(unsigned char*)calloc(0x1FFF,sizeof(unsigned char));
 
+
+
 void realTimeConnection(void *arg){
+	while(lastNetworkStat!=WL_CONNECTED)
+		_delay_ms(realTimeConnectionRetryInterval);
+
+	_delay_ms(500);
+
 	unsigned char *hostServer=NULL;
 	hostServerDisconnected:
 	while((hostServer=json("xtensa",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")))==UNDEFINED)	// getting the data of host server while checking for connection
@@ -2918,6 +2929,8 @@ void realTimeConnection(void *arg){
 unsigned char EXPORTED_DATA[EXPORTED_DATA_MAX_SIZE]="";
 
 
+
+
 void serviceExecutable(void*param){
 
 	
@@ -2928,7 +2941,7 @@ void serviceExecutable(void*param){
 
 	eepromInit();
 	
-	static unsigned short lastNetworkStat;
+	// static unsigned short lastNetworkStat;			//! legacy code modified
 
 	// unsigned char fileSystemMounted=1;
 	// if(!fileSystem.begin()){
@@ -3030,14 +3043,14 @@ void serviceExecutable(void*param){
         NULL             // Task handle
     );
 
-	xTaskCreate(
-        realTimeConnection,    // Function that should be called
-        "realTimeConnection",   // Name of the task (for debugging)
-        30000,            // Stack size (bytes)
-        NULL,            // Parameter to pass
-        1,               // Task priority
-        NULL             // Task handle
-    );
+	// xTaskCreate(
+    //     realTimeConnection,    // Function that should be called
+    //     "realTimeConnection",   // Name of the task (for debugging)
+    //     30000,            // Stack size (bytes)
+    //     NULL,            // Parameter to pass
+    //     1,               // Task priority
+    //     NULL             // Task handle
+    // );
 
 
 	// virtualController(fetch("http://192.168.1.15:766"));
@@ -3361,6 +3374,16 @@ void setup(){
         NULL,          		  			// Parameter to pass
         1,               				// Task priority
         NULL             				// Task handle
+    );
+
+	
+	xTaskCreate(
+        realTimeConnection,    // Function that should be called
+        "realTimeConnection",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
     );
 
     

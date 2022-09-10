@@ -78,20 +78,20 @@ const mcu=MCU;
 
 mcu.load(mcu.logger('code just started'))
 
-let x=20;
+let x=30;
 
 var counter=0;
 
-// while(x--)
-// mcu.load(mcu.executableStack(3,[
+while(x--)
+mcu.load(mcu.executableStack(1,[
 
-//     mcu.delay(50),
+    mcu.delay(50),
 
-//     mcu.logger(`counter ${counter++}`)
+    mcu.logger(`counter ${counter++}`)
 
 
     
-// ]))
+]))
 
 // mcu.load(mcu.logger(`counter ${counter++}`))
 
