@@ -2413,7 +2413,9 @@ JSON_ATTRIBUTE SERVER_DATA="SD";
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
-
+			const std::function<unsigned long(unsigned long)>outputPortList[]={
+				
+			};
 
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
@@ -2426,7 +2428,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned short streamObjectBufferCounter=0;
 			unsigned char *outputIndex=NULL;
 			while((outputIndex=virtualController(constJson(_CS(CLR(streamObjectBuffer),$(OUTPUT_INDEX,streamObjectBufferCounter++)),subExecutable)))!=UNDEFINED)
-				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google 
+				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google vectors should dynamicly deallocate
+
 
 			
 
