@@ -2421,6 +2421,12 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
 
 			#define finalPortValue(userValue) (userValue&((1<<portWidth)-1))<<startBit		//^ getting the final value that would be represented on the output port
+			std::vector<unsigned long>portOutputStream;
+			unsigned char streamObjectBuffer[18]={};
+			unsigned short streamObjectBufferCounter=0;
+			unsigned char *outputIndex=NULL;
+			while((outputIndex=virtualController(constJson(_CS(CLR(streamObjectBuffer),$(OUTPUT_INDEX,streamObjectBufferCounter++)),subExecutable)))!=UNDEFINED)
+				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google 
 
 			
 
