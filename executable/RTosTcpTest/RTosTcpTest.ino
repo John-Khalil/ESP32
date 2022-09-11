@@ -2464,7 +2464,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
 			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
-			unsigned char portWidth=((portAddress>>22)&((1<<6)-1));		//~ bits from 22->27
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1))+1;		//~ bits from 22->27
 
 			console.log(" portAddress >> ",portAddress);
 			console.log(" portSelector >> ",portSelector);
@@ -2505,7 +2505,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
 			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
-			unsigned char portWidth=((portAddress>>22)&((1<<6)-1));		//~ bits from 22->27
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1))+1;		//~ bits from 22->27
 			
 			#define finalPortValueRead(userValue) ((userValue>>startBit)&((1<<portWidth)-1))
 

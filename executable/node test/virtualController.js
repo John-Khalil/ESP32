@@ -145,7 +145,7 @@ const digitalOutput=(portWidth,startBit,outputPort,portStream)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=digitalOutputOperator;
 
-    returnStack[PORT_ADDRESS]=((portWidth&((1<<6)-1))<<22)|((startBit&((1<<6)-1))<<16)|(outputPort&0xFFFF);
+    returnStack[PORT_ADDRESS]=(((portWidth-1)&((1<<6)-1))<<22)|((startBit&((1<<6)-1))<<16)|(outputPort&0xFFFF);
     portStream.forEach((element,index) => {
         returnStack[`${OUTPUT_INDEX}${index}`]=element;    
     });
