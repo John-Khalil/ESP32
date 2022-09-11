@@ -2493,7 +2493,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
 			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
 
-			#define finalPortValueRead(userValue) (userValue&((1<<portWidth)-1))>>startBit
+			#define finalPortValueRead(userValue) ((userValue>>startBit)&((1<<portWidth)-1))
 
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)

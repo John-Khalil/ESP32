@@ -71,6 +71,7 @@ const JSON_OPERATOR="OP";				// generic operator
 const OUTPUT_STREAM="OS";				// digital output stream
 const PORT_ADDRESS="PA";				// digital output port address
 const PORT_VALUE="PV";
+const OUTPUT_INDEX="I";
 
 
 // delay operator
@@ -140,18 +141,22 @@ const delay=delayValueMS=>{
     return returnStack;
 }
 
-const digitalOutput=(outputPort,portStream)=>{
+const digitalOutput=(portWidth,startBit,outputPort,portStream)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=digitalOutputOperator;
-    returnStack[PORT_ADDRESS]=outputPort;
-    returnStack[OUTPUT_STREAM]=portStream;
+
+    returnStack[PORT_ADDRESS]=((portWidth&((1<<6)-1))<<22)|((startBit&((1<<6)-1))<<16)|(outputPort&0xFFFF);
+    portStream.forEach((element,index) => {
+        returnStack[`${OUTPUT_INDEX}${index}`]=element;    
+    });
+    
     return returnStack;
 }
 
-const digitalInput=(inputPort)=>{
+const digitalInput=(portWidth,startBit,inputPort)=>{
     var returnStack={};
     returnStack[JSON_OPERATOR]=digitalInputOperator;
-    returnStack[PORT_ADDRESS]=inputPort;
+    returnStack[PORT_ADDRESS]=((portWidth&((1<<6)-1))<<22)|((startBit&((1<<6)-1))<<16)|(inputPort&0xFFFF);
     return returnStack;
 }
 
@@ -310,6 +315,7 @@ const virtualController={
     OUTPUT_STREAM,
     PORT_ADDRESS,
     PORT_VALUE,
+    OUTPUT_INDEX,
     DELAY_MICRO_SEC,
     DELAY_MILLI_SEC,
     LOOP_COUNTER,
