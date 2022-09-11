@@ -2503,7 +2503,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *subExecutable){											//& delay operator
 			_delay_ms(getInt32_t(constJson(DELAY_MILLI_SEC,subExecutable)));
-			return subExecutable;
+			return subExecutable; 
 		},
 		[&](unsigned char *subExecutable){											//& loop operator
 			unsigned char *loopCounter;
