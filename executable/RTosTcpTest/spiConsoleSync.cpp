@@ -18,6 +18,8 @@ class spiConsole{
     std::function<unsigned char(void)>_clkPinRead;
     std::function<unsigned char(void)>_dataPinRead;
 
+    std::function<void(unsigned char*,unsigned char)>_consoleFeedback;
+
 
     float _clkSpeed=0;
 
@@ -161,6 +163,7 @@ class spiConsole{
         // recursionLimiter=20;
 
         // _dataPinChangeDirection(1);
+        _consoleFeedback(loggedData,autoNLCR);
 
         return loggedData;
     }
@@ -208,6 +211,35 @@ class spiConsole{
             _dataPinRead=dataPinRead;
 
 
+
+            _clkSpeed=(1e6f/clkSpeed)/2;
+        }
+        void setup(
+            const std::function<void(unsigned char)>&clkPin,
+            const std::function<void(unsigned char)>&dataPin,
+            const std::function<unsigned char(void)>&syncPin,
+            const std::function<void(unsigned long)>&delayMicroSec,
+            const std::function<void(unsigned char)>&clkPinChangeDirection,
+            const std::function<void(unsigned char)>&dataPinChangeDirection,
+            const std::function<unsigned char(void)>&clkPinRead,
+            const std::function<unsigned char(void)>&dataPinRead,
+            const std::function<void(unsigned char*,unsigned char)>&consoleFeedback,
+            unsigned long clkSpeed){
+
+
+
+
+            _clkPin=clkPin;
+            _dataPin=dataPin;
+            _Delay_us=delayMicroSec;
+            _syncPin=syncPin;
+
+            _clkPinChangeDirection=clkPinChangeDirection;
+            _dataPinChangeDirection=dataPinChangeDirection;
+            _clkPinRead=clkPinRead;
+            _dataPinRead=dataPinRead;
+
+            _consoleFeedback=consoleFeedback;
 
             _clkSpeed=(1e6f/clkSpeed)/2;
         }

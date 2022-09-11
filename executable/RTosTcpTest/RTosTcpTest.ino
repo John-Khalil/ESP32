@@ -130,6 +130,8 @@ void microSecDelay(unsigned long timeInMicroSec){
 //     return 1;
 // }
 
+std::vector<std::function<void(unsigned char*,unsigned char)>>consoleFeedback;
+
 void consoleSetup(void){
     _PM(consoleClkPin,OUTPUT);
     _PM(consoleDataPin,INPUT_PULLUP);					// this should be defined as OUTPUT but its handeled internally by the class
@@ -168,6 +170,11 @@ void consoleSetup(void){
 		[&](void){
             return ((inputRegisterLow>>consoleDataPin)&0x01);
         },
+		[&](unsigned char*dataFromConsole,unsigned char autoNLCR){
+			during(consoleFeedback.size(),(argLoop callbackIndex){
+				consoleFeedback[callbackIndex](dataFromConsole,autoNLCR);
+			});
+		},
         250000
     );
 }
@@ -2307,7 +2314,7 @@ unsigned long virtualControllerOutputRegisterHigh(unsigned long outputValue){
 }
 
 unsigned long virtualControllerOutput(unsigned long outputValue){
-
+	console.log("shift register >> ",outputValue);
 	return outputValue;
 }
 
@@ -2325,7 +2332,7 @@ unsigned long virtualControllerInputRegisterHigh(void){
 }
 
 unsigned long virtualControllerInput(void){
-	unsigned long inputValue=0;
+	unsigned long inputValue=micros()/1500;
 
 	return inputValue;
 }
@@ -2468,9 +2475,9 @@ unsigned char* virtualController(unsigned char* executableObject){
 				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google vectors should dynamicly deallocate
 
 			streamObjectBufferCounter=0;
-			streamObjectBufferCounter=portOutputStream.size();
-			while(streamObjectBufferCounter--)
+			within(portOutputStream.size(),{
 				outputPortList[portSelector](portOutputStream[streamObjectBufferCounter++]);
+			});
 			
 
 			return subExecutable;
@@ -2888,6 +2895,7 @@ unsigned short lastNetworkStat;
 
 
 void realTimeConnection(void *arg){
+	_delay_ms(2000);
 	while(lastNetworkStat!=WL_CONNECTED)
 		_delay_ms(realTimeConnectionRetryInterval);
 
@@ -3374,7 +3382,14 @@ void setup(){
 	esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
     delayAutoCalibrate();
     consoleSetup();
-    // Serial.begin(9600);
+    Serial.begin(115200);
+	Serial.print("\n\n\n-----------------CODE STARTED-----------------\n\n\n");
+	consoleFeedback.push_back([&](unsigned char*dataFromConsole,unsigned char autoNLCR){
+		if(autoNLCR)
+			Serial.println((char*)dataFromConsole);
+		else	
+			Serial.print((char*)dataFromConsole);
+	});
     _PM(13,OUTPUT);
 
 	
