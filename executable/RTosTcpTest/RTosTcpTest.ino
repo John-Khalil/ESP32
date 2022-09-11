@@ -2312,6 +2312,25 @@ unsigned long virtualControllerOutput(unsigned long outputValue){
 }
 
 
+unsigned long virtualControllerInputRegisterLow(void){
+	unsigned long inputValue=0;
+
+	return inputValue;
+}
+
+unsigned long virtualControllerInputRegisterHigh(void){
+	unsigned long inputValue=0;
+
+	return inputValue;
+}
+
+unsigned long virtualControllerInput(void){
+	unsigned long inputValue=0;
+
+	return inputValue;
+}
+
+
 
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
@@ -2457,13 +2476,29 @@ unsigned char* virtualController(unsigned char* executableObject){
 			return subExecutable;
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator
+			const std::function<unsigned long(void)>inputPortList[]={
+				[&](void){																//^ register 0 input
+					return virtualControllerInputRegisterLow();
+				},
+				[&](void){																//^ register 1 input
+					return virtualControllerInputRegisterHigh();
+				},
+				[&](void){																//^ shift-register input
+					return virtualControllerInput();
+				}
+			};
 			
-			unsigned long digitalPortRead=millis()/150;										// this would later be assigned a value
+			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
+			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
+			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
+
+			#define finalPortValueRead(userValue) (userValue&((1<<portWidth)-1))>>startBit
 
 			static unsigned char *digitalInputPortRaed=NULL;
 			if(digitalInputPortRaed!=NULL)
 				free(digitalInputPortRaed);
-			digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(digitalPortRead)));
+			digitalInputPortRaed=inttostring(finalPortValueRead(inputPortList[portSelector]()));
 			return CACHE_BYTES(digitalInputPortRaed);
 		},
 		[&](unsigned char *subExecutable){											//& delay operator
