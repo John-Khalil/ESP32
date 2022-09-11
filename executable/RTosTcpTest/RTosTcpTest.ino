@@ -2296,6 +2296,16 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
+unsigned long virtualControllerOutputRegisterLow(unsigned long outputValue){
+
+	return outputValue;
+}
+
+unsigned long virtualControllerOutputRegisterHigh(unsigned long outputValue){
+
+	return outputValue;
+}
+
 unsigned long virtualControllerOutput(unsigned long outputValue){
 
 	return outputValue;
@@ -2414,7 +2424,15 @@ unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
 			const std::function<unsigned long(unsigned long)>outputPortList[]={
-				
+				[&](unsigned long portData){											//^ register 0 output
+					return virtualControllerOutputRegisterLow(portData);
+				},
+				[&](unsigned long portData){											//^ register 1 output
+					return virtualControllerOutputRegisterHigh(portData);
+				},
+				[&](unsigned long portData){											//^ shift-register output
+					return virtualControllerOutput(portData);
+				}
 			};
 
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
@@ -2430,7 +2448,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 			while((outputIndex=virtualController(constJson(_CS(CLR(streamObjectBuffer),$(OUTPUT_INDEX,streamObjectBufferCounter++)),subExecutable)))!=UNDEFINED)
 				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google vectors should dynamicly deallocate
 
-
+			streamObjectBufferCounter=0;
+			streamObjectBufferCounter=portOutputStream.size();
+			while(streamObjectBufferCounter--)
+				outputPortList[portSelector](portOutputStream[streamObjectBufferCounter++]);
 			
 
 			return subExecutable;
