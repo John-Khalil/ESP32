@@ -2464,15 +2464,22 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
 			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
-			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1));		//~ bits from 22->27
+
+			console.log(" portAddress >> ",portAddress);
+			console.log(" portSelector >> ",portSelector);
+			console.log(" startBit >> ",startBit);
+			console.log(" portWidth >> ",portWidth);
 
 			#define finalPortValue(userValue) (userValue&((1<<portWidth)-1))<<startBit		//^ getting the final value that would be represented on the output port
 			std::vector<unsigned long>portOutputStream;
 			unsigned char streamObjectBuffer[18]={};
 			unsigned short streamObjectBufferCounter=0;
 			unsigned char *outputIndex=NULL;
-			while((outputIndex=virtualController(constJson(_CS(CLR(streamObjectBuffer),$(OUTPUT_INDEX,streamObjectBufferCounter++)),subExecutable)))!=UNDEFINED)
+			while((outputIndex=virtualController(constJson(_CS(CLR(streamObjectBuffer),$(OUTPUT_INDEX,streamObjectBufferCounter++)),subExecutable)))!=UNDEFINED){
 				portOutputStream.push_back(finalPortValue(getInt32_t(outputIndex)));		// according to google vectors should dynamicly deallocate
+				console.log(">> ",portOutputStream.back());
+			}
 
 			streamObjectBufferCounter=0;
 			within(portOutputStream.size(),{
@@ -2498,8 +2505,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
 			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
-			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
-
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1));		//~ bits from 22->27
+			
 			#define finalPortValueRead(userValue) ((userValue>>startBit)&((1<<portWidth)-1))
 
 			static unsigned char *digitalInputPortRaed=NULL;
@@ -2916,7 +2923,8 @@ void realTimeConnection(void *arg){
 	if(runOnlyOnce=1)
 	WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function 
 		base64(tcpConnectionSend,CLR(realTimeConnectionBuffer));
-		tcpConnection.write((char*)realTimeConnectionBuffer);
+		if(tcpConnection.connected())
+			tcpConnection.write((char*)realTimeConnectionBuffer);
 		return tcpConnectionSend;
 	});
 	
