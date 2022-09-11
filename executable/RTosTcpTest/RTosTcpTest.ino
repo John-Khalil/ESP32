@@ -2296,6 +2296,12 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
+unsigned long virtualControllerOutput(unsigned long outputValue){
+
+	return outputValue;
+}
+
+
 
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
@@ -2336,6 +2342,7 @@ JSON_ATTRIBUTE JSON_OPERATOR="OP";				// generic operator
 JSON_ATTRIBUTE OUTPUT_STREAM="OS";				// digital output stream
 JSON_ATTRIBUTE PORT_ADDRESS="PA";				// digital output port address
 JSON_ATTRIBUTE PORT_VALUE="PV";
+JSON_ATTRIBUTE OUTPUT_INDEX="I";				// output object serialized
 
 // digital input
 // JSON_ATTRIBUTE PORT_ADDRESS="PA";				// digital input port address
@@ -2406,7 +2413,17 @@ JSON_ATTRIBUTE SERVER_DATA="SD";
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
-			console.log("digital output >> ",constJson(OUTPUT_STREAM,subExecutable));
+
+
+			unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
+			unsigned short portSelector=portAddress&0xFFFF;				//~ bits from 0->15
+			unsigned char startBit=(portAddress>>16)&((1<<6)-1);		//~ bits from 16->21
+			unsigned char portWidth=((portAddress>>22)&((1<<6)-1)+1);	//~ bits from 22->27
+
+			#define finalPortValue(userValue) (userValue&((1<<portWidth)-1))<<startBit		//^ getting the final value that would be represented on the output port
+
+			
+
 			return subExecutable;
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator

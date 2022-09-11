@@ -177,6 +177,20 @@
     "serverData":executable
 }
 
+// digital output
+{
+    "operator":4294967295,
+    "portAddress":executable,
+    "outputIndex":executable,
+    "outputStream-object":executable
+}
+
+//digital input
+
+{
+    "operator":4294967295,
+    "portAddress":executable,
+}
 
 // 
 
