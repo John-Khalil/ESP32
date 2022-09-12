@@ -78,7 +78,7 @@ MCU.load=load;
 const mcu=MCU;
 
 
-console.log(" >> >> ",mcu.digitalOutput(5,3,2,[255,459,789]))
+console.log(" >> >> ",mcu.digitalOutput(5,4,2,[255,459,789]))
 
 
 const app =express();
@@ -91,7 +91,7 @@ app.listen(port,()=>{
 
 
 const testRunner=()=>{
-    mcu.load(mcu.digitalOutput(32,3,2,[255,459,789]));
+    mcu.load(mcu.logger(mcu.digitalInput(5,4,2,[255,459,789])));
     mcu.load(mcu.logger('hello world'));
 }
 

@@ -2336,7 +2336,8 @@ unsigned long virtualControllerInputRegisterHigh(void){
 unsigned long virtualControllerInput(void){
 	unsigned long inputValue=micros()/1500;
 
-	return inputValue;
+	// return inputValue;
+	return 0x55555555;
 }
 
 
