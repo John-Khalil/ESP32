@@ -91,7 +91,7 @@ app.listen(port,()=>{
 
 
 const testRunner=()=>{
-    mcu.load(mcu.digitalOutput(5,3,2,[255,459,789]));
+    mcu.load(mcu.digitalOutput(32,3,2,[255,459,789]));
     mcu.load(mcu.logger('hello world'));
 }
 
