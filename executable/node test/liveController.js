@@ -91,13 +91,30 @@ app.listen(port,()=>{
 
 
 const testRunner=()=>{
-    mcu.load(mcu.logger(mcu.digitalInput(5,4,2,[255,459,789])));
+    // mcu.load(mcu.logger(mcu.digitalInput(24,0,2,[255,459,789])));
+
+    const increment=MCU.newVariable();
+    mcu.load(mcu.memoryWrite(increment,0));
+
+    
+    mcu.load(mcu.executableStack(500,[
+        mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+        mcu.logger(mcu.memoryRead(increment)),
+        // mcu.loop(10,[
+        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+        //     mcu.logger(mcu.memoryRead(increment)),
+        //     // mcu.delay(5)
+        // ])
+    ]))
+
     mcu.load(mcu.logger('hello world'));
+
 }
 
 
 app.get('/',(req,res)=>{
     testRunner();
+    xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     res.send('ack');
 })
 

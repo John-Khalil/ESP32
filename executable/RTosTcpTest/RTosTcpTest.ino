@@ -2699,27 +2699,22 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long executableStackCounter=0;
 			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
 
-			const std::function<unsigned char*(unsigned long)>jsonIndex=[&](unsigned long index){
-				CLR(executableStackArrayElement);
-				_CS(executableStackArrayElement,(unsigned char*)EXECUTABLE_STACK);
-				_CS(executableStackArrayElement,(unsigned char*)"[");
-				_CS(executableStackArrayElement,inttostring(index));
-				_CS(executableStackArrayElement,(unsigned char*)"]");
-				return executableStackArrayElement;
-			};
-
+			std::vector<unsigned char*>executableStackElementList;
 			unsigned char *executableStackElement=NULL;
-			while(executableCounter--){
-				// _delay_ms(200);console.log(" >> ",executableCounter);
-				executableStackCounter=0;
-				// while((executableStackElement=constJson(jsonIndex(executableStackCounter++),subExecutable))!=UNDEFINED){
-				// while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
-				// 	virtualController($(executableStackElement));
-				// 	// _delay_ms(200);console.log(" >> ",executableStackElement);
-				// 	// free(executableStackElement);
-				// }
-				while(virtualController(constJson($(EXECUTABLE_STACK,"[",executableStackCounter++,"]"),subExecutable))!=UNDEFINED);
+			while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
+				executableStackElementList.push_back(CACHE_BYTES(executableStackElement));
 			}
+			
+			while(executableCounter--){
+				during(executableStackElementList.size(),(unsigned long index){
+					virtualController(executableStackElementList[index]);
+				});
+			}
+
+			during(executableStackElementList.size(),(unsigned long index){
+				free(executableStackElementList[index]);
+			});
+
 			return subExecutable;
 		},
 		[&](unsigned char *subExecutable){											//& TURING COMPLETE
