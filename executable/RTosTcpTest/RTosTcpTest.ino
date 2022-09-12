@@ -2303,19 +2303,21 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 // }
 
 
-unsigned long virtualControllerOutputRegisterLow(unsigned long outputValue){
+unsigned long virtualControllerOutputRegisterLow(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
 
-	return outputValue;
+	return portData;
 }
 
-unsigned long virtualControllerOutputRegisterHigh(unsigned long outputValue){
+unsigned long virtualControllerOutputRegisterHigh(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
 
-	return outputValue;
+	return portData;
 }
 
-unsigned long virtualControllerOutput(unsigned long outputValue){
-	console.log("shift register >> ",outputValue);
-	return outputValue;
+unsigned long virtualControllerOutput(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
+	console.log("portData >> ",portData);
+	console.log("outputPortWidth >> ",outputPortWidth);
+	console.log("outputStartBit >> ",outputStartBit);
+	return portData;
 }
 
 
@@ -2449,15 +2451,15 @@ JSON_ATTRIBUTE SERVER_DATA="SD";
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
-			const std::function<unsigned long(unsigned long)>outputPortList[]={
-				[&](unsigned long portData){											//^ register 0 output
-					return virtualControllerOutputRegisterLow(portData);
+			const std::function<unsigned long(unsigned long,unsigned long,unsigned char)>outputPortList[]={
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ register 0 output
+					return virtualControllerOutputRegisterLow(portData,outputPortWidth,outputStartBit);
 				},
-				[&](unsigned long portData){											//^ register 1 output
-					return virtualControllerOutputRegisterHigh(portData);
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ register 1 output
+					return virtualControllerOutputRegisterHigh(portData,outputPortWidth,outputStartBit);
 				},
-				[&](unsigned long portData){											//^ shift-register output
-					return virtualControllerOutput(portData);
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ shift-register output
+					return virtualControllerOutput(portData,outputPortWidth,outputStartBit);
 				}
 			};
 
@@ -2477,7 +2479,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 			streamObjectBufferCounter=0;
 			within(portOutputStream.size(),{
-				outputPortList[portSelector](portOutputStream[streamObjectBufferCounter++]);
+				outputPortList[portSelector](portOutputStream[streamObjectBufferCounter++],portWidth,startBit);
 			});
 			
 
