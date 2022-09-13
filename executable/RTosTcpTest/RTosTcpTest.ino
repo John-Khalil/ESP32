@@ -2721,12 +2721,15 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 			executableStackCounter--;	// last element was undefined and it counted
 
+			// console.log("executableStackCounter >> ",executableStackCounter);
+
 			executableStackCounterNested+=executableStackCounter-1;
 
 			
 			while(executableCounter--){
 				during(executableStackCounter,(unsigned long index){
 					index+=executableStackCounterNested-(executableStackCounter-1);
+					console.log("index >> ",index);
 					virtualController(executableStackElementList[index]);
 				});
 			}
