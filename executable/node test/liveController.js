@@ -97,14 +97,14 @@ const testRunner=()=>{
     mcu.load(mcu.memoryWrite(increment,0));
 
     
-    mcu.load(mcu.executableStack(500,[
+    mcu.load(mcu.executableStack(10,[
         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
         mcu.logger(mcu.memoryRead(increment)),
-        // mcu.loop(10,[
-        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        //     mcu.logger(mcu.memoryRead(increment)),
-        //     // mcu.delay(5)
-        // ])
+        mcu.executableStack(10,[
+            mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+            mcu.logger(mcu.memoryRead(increment)),
+            // mcu.delay(5)
+        ])
     ]))
 
     mcu.load(mcu.logger('hello world'));

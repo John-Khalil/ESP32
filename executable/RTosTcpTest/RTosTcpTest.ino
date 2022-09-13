@@ -2449,17 +2449,19 @@ JSON_ATTRIBUTE PACKAGE_IDENTIFIER="PI";
 JSON_ATTRIBUTE SERVER_DATA="SD";
 
 
+std::vector<unsigned char*>executableStackElementList;
+
 unsigned char* virtualController(unsigned char* executableObject){
 	const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 		[&](unsigned char *subExecutable){											//& digtal output operator
 			const std::function<unsigned long(unsigned long,unsigned long,unsigned char)>outputPortList[]={
-				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ register 0 output
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){			//^ register 0 output
 					return virtualControllerOutputRegisterLow(portData,outputPortWidth,outputStartBit);
 				},
-				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ register 1 output
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){			//^ register 1 output
 					return virtualControllerOutputRegisterHigh(portData,outputPortWidth,outputStartBit);
 				},
-				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){											//^ shift-register output
+				[&](unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){			//^ shift-register output
 					return virtualControllerOutput(portData,outputPortWidth,outputStartBit);
 				}
 			};
@@ -2488,13 +2490,13 @@ unsigned char* virtualController(unsigned char* executableObject){
 		},
 		[&](unsigned char *	subExecutable){											//& digtal input operator
 			const std::function<unsigned long(void)>inputPortList[]={
-				[&](void){																//^ register 0 input
+				[&](void){																						//^ register 0 input
 					return virtualControllerInputRegisterLow();
 				},
-				[&](void){																//^ register 1 input
+				[&](void){																						//^ register 1 input
 					return virtualControllerInputRegisterHigh();
 				},
-				[&](void){																//^ shift-register input
+				[&](void){																						//^ shift-register input
 					return virtualControllerInput();
 				}
 			};
@@ -2698,22 +2700,48 @@ unsigned char* virtualController(unsigned char* executableObject){
 			unsigned long executableCounter=getInt32_t(virtualController(constJson(EXECUTABLE_COUNTER,subExecutable)));
 			unsigned long executableStackCounter=0;
 			unsigned char executableStackArrayElement[18]={};	// a super empty array so it would be quicker than dynamic memory allocation
+			static unsigned long executableStackCounterNested;
 
-			std::vector<unsigned char*>executableStackElementList;
+			// const std::function<std::vector<unsigned char*>(void)>executableVector=[&](void){
+			// 	std::vector<unsigned char*>subExecutableVector;
+			// 	unsigned char *executableStackElement=NULL;
+			// 	while((executableStackElement=constJson($(EXECUTABLE_STACK,"[",executableStackCounter++,"]"),subExecutable))!=UNDEFINED){
+			// 		console.log(" inside vector push >> ",executableStackElement);
+			// 		subExecutableVector.push_back(CACHE_BYTES(executableStackElement));
+			// 	}
+			// 	return subExecutableVector;
+			// };
+			// std::vector<unsigned char*>executableStackElementList=executableVector();
+
+			// std::vector<unsigned char*>executableStackElementList;
 			unsigned char *executableStackElement=NULL;
-			while((executableStackElement=constJson(_CS(CLR(executableStackArrayElement),$(EXECUTABLE_STACK,"[",executableStackCounter++,"]")),subExecutable))!=UNDEFINED){
+			while((executableStackElement=constJson($(EXECUTABLE_STACK,"[",executableStackCounter++,"]"),subExecutable))!=UNDEFINED){
 				executableStackElementList.push_back(CACHE_BYTES(executableStackElement));
 			}
+
+			executableStackCounter--;	// last element was undefined and it counted
+
+			executableStackCounterNested+=executableStackCounter-1;
+
 			
 			while(executableCounter--){
-				during(executableStackElementList.size(),(unsigned long index){
+				during(executableStackCounter,(unsigned long index){
+					index+=executableStackCounterNested-(executableStackCounter-1);
 					virtualController(executableStackElementList[index]);
 				});
 			}
 
-			during(executableStackElementList.size(),(unsigned long index){
+			during(executableStackCounter,(unsigned long index){
+				index+=executableStackCounterNested-(executableStackCounter-1);
 				free(executableStackElementList[index]);
+				// executableStackElementList.erase((long)index);
 			});
+
+			within(executableStackCounter,{
+				executableStackElementList.pop_back();
+			});
+
+			executableStackCounterNested-=executableStackCounter-1;
 
 			return subExecutable;
 		},
