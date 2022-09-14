@@ -2723,19 +2723,21 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 			// console.log("executableStackCounter >> ",executableStackCounter);
 
-			executableStackCounterNested+=executableStackCounter-1;
+			unsigned long executableStackCounterNestedPreviousValue=executableStackCounterNested;
+
+			executableStackCounterNested+=executableStackCounter;
 
 			
 			while(executableCounter--){
 				during(executableStackCounter,(unsigned long index){
-					index+=executableStackCounterNested-(executableStackCounter-1);
-					console.log("index >> ",index);
+					index+=executableStackCounterNestedPreviousValue;
+					// console.log("index >> ",index);
 					virtualController(executableStackElementList[index]);
 				});
 			}
 
 			during(executableStackCounter,(unsigned long index){
-				index+=executableStackCounterNested-(executableStackCounter-1);
+				index+=executableStackCounterNestedPreviousValue;
 				free(executableStackElementList[index]);
 				// executableStackElementList.erase((long)index);
 			});
@@ -2744,7 +2746,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				executableStackElementList.pop_back();
 			});
 
-			executableStackCounterNested-=executableStackCounter-1;
+			executableStackCounterNested-=executableStackCounter;
 
 			return subExecutable;
 		},

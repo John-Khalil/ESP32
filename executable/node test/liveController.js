@@ -90,22 +90,33 @@ app.listen(port,()=>{
 });
 
 
+const increment=MCU.newVariable();
+
 const testRunner=()=>{
     // mcu.load(mcu.logger(mcu.digitalInput(24,0,2,[255,459,789])));
 
-    const increment=MCU.newVariable();
+    // const increment=MCU.newVariable();
     mcu.load(mcu.memoryWrite(increment,0));
 
+    mcu.memoryDelete(increment);
+
+    mcu.load(mcu.logger('code started'));
+
     
-    mcu.load(mcu.executableStack(10,[
+    mcu.load(mcu.executableStack(5,[
         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        mcu.logger(mcu.memoryRead(increment)),
-        mcu.executableStack(10,[
+        mcu.executableStack(5,[
             mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-            mcu.logger(mcu.memoryRead(increment)),
-            // mcu.delay(5)
-        ])
+            mcu.executableStack(5,[
+                mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+                // mcu.delay(5)
+            ]),
+            mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        ]),
+        mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
     ]))
+
+    mcu.load(mcu.logger(mcu.memoryRead(increment)));
 
     mcu.load(mcu.logger('hello world'));
 
@@ -119,4 +130,6 @@ app.get('/',(req,res)=>{
 })
 
 testRunner();
+
+
 
