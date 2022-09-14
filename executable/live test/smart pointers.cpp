@@ -51,18 +51,30 @@ std::shared_ptr<unsigned char>smartCache(unsigned char*cachedData){
     return sharedSmartPointer;
 }
 
-#define SMART_CACHE(cachedData) cachedData=smartCache(cachedData).get()
+
+
+#define var_AUTO(z) void* g_iLine##z##var
+// #define decl_AUTO(x) var_AUTO(x)
+#define INLINE_VARIABLE        var_AUTO(__LINE__)
+
+#define SMART_CACHE(cachedData) std::shared_ptr<unsigned char>SMART_CACHE##__LINE__##VAR;cachedData=(SMART_CACHE##__LINE__##VAR=smartCache(cachedData)).get();
+
 
 
 int main(){
     unsigned char sampleText[]="some random test";
     unsigned char *samplePointer=NULL;
     {
-        std::shared_ptr<unsigned char>secondSharedPointer;
         samplePointer=sampleText;
-        secondSharedPointer=smartCache(samplePointer);
-        samplePointer=secondSharedPointer.get();
+        // std::shared_ptr<unsigned char>secondSharedPointer;
+       
+        // secondSharedPointer=smartCache(samplePointer);
+        // samplePointer=secondSharedPointer.get();
+        SMART_CACHE(samplePointer);
         cout<<"samplePointer >> "<<samplePointer<<endl;
+
+        cout<<"address >> "<<(uint64_t)samplePointer<<"\t address >> "<<(uint64_t)sampleText<<endl;
+        
     }
 
     cout<<"samplePointer >> "<<samplePointer<<endl;     // this should print garbage
