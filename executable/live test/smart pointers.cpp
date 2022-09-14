@@ -41,34 +41,58 @@ std::shared_ptr<entity>testFunction(void) {
 }
 
 
-struct free_delete
-{
+struct FREE_DELETE{
 	void operator()(void* x) { free(x); }
 };
 
-int main()
-{
-	//std::shared_ptr<entity>testObject = testFunction();
-	//cout << "check order" << endl;
-	unsigned char *testRawPointer = NULL;
-
-	std::shared_ptr<unsigned char>secondSharedPointer;
-
-	{
-
-		unsigned char txt[200] = "this is test";
-		std::shared_ptr<unsigned char>callocMemory((unsigned char*)calloc(100, sizeof(unsigned char)), free_delete());
-		
-		_CS((testRawPointer=callocMemory.get()), txt);
-		cout << testRawPointer << endl;
-		secondSharedPointer = callocMemory;
-		cout << "first scope @ use_count >> " << callocMemory.use_count() <<"\t"<< secondSharedPointer.use_count() << endl;
-	}
-
-	cout << testRawPointer << endl;
-	cout << "second scope @ use_count >> "  << secondSharedPointer.use_count() << endl;
-
+std::shared_ptr<unsigned char>smartCache(unsigned char*cachedData){
+    std::shared_ptr<unsigned char>sharedSmartPointer((unsigned char*)(calloc(stringCounter(cachedData)+1,sizeof(unsigned char))),FREE_DELETE());
+    _CS(sharedSmartPointer.get(),cachedData);
+    return sharedSmartPointer;
 }
+
+#define SMART_CACHE(cachedData) cachedData=smartCache(cachedData).get()
+
+
+int main(){
+    unsigned char sampleText[]="some random test";
+    unsigned char *samplePointer=NULL;
+    {
+        std::shared_ptr<unsigned char>secondSharedPointer;
+        samplePointer=sampleText;
+        secondSharedPointer=smartCache(samplePointer);
+        samplePointer=secondSharedPointer.get();
+        cout<<"samplePointer >> "<<samplePointer<<endl;
+    }
+
+    cout<<"samplePointer >> "<<samplePointer<<endl;     // this should print garbage
+}
+
+
+
+// int main()
+// {
+// 	//std::shared_ptr<entity>testObject = testFunction();
+// 	//cout << "check order" << endl;
+// 	unsigned char *testRawPointer = NULL;
+
+// 	std::shared_ptr<unsigned char>secondSharedPointer;
+
+// 	{
+
+// 		unsigned char txt[200] = "this is test";
+// 		std::shared_ptr<unsigned char>callocMemory((unsigned char*)calloc(100, sizeof(unsigned char)), FREE_DELETE());
+		
+// 		_CS((testRawPointer=callocMemory.get()), txt);
+// 		cout << testRawPointer << endl;
+// 		secondSharedPointer = callocMemory;
+// 		cout << "first scope @ use_count >> " << callocMemory.use_count() <<"\t"<< secondSharedPointer.use_count() << endl;
+// 	}
+
+// 	cout << testRawPointer << endl;
+// 	cout << "second scope @ use_count >> "  << secondSharedPointer.use_count() << endl;
+
+// }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
