@@ -2353,7 +2353,7 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 unsigned long virtualControllerOutputRegisterLow(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
 	outputEnableRegisterLowSet|=(((1<<outputPortWidth)-1)<<outputStartBit);		// set pins to output
 	unsigned long gpioOutputBuffer=outputRegisterLow;
-	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<outputStartBit);				// clear the bits first
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<((outputStartBit%32)));		// clear the bits first
 	gpioOutputBuffer|=portData;													// set the new value
 	outputRegisterLow=gpioOutputBuffer;											// update the value at once
 	return gpioOutputBuffer;
@@ -2362,7 +2362,7 @@ unsigned long virtualControllerOutputRegisterLow(unsigned long portData,unsigned
 unsigned long virtualControllerOutputRegisterHigh(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
 	outputEnableRegisterHighSet|=(((1<<outputPortWidth)-1)<<outputStartBit);	// set pins to output
 	unsigned long gpioOutputBuffer=outputRegisterLow;
-	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<outputStartBit);				// clear the bits first
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<(outputStartBit%32));			// clear the bits first
 	gpioOutputBuffer|=portData;													// set the new value
 	outputRegisterLow=gpioOutputBuffer;											// update the value at once
 	return gpioOutputBuffer;
@@ -2536,17 +2536,6 @@ unsigned char* virtualController(unsigned char* executableObject){
 				return subExecutable;
 			},
 			[&](unsigned char *	subExecutable){											//& digtal input operator
-				const std::function<unsigned long(void)>inputPortList[]={
-					[&](void){																						//^ register 0 input
-						return virtualControllerInputRegisterLow();
-					},
-					[&](void){																						//^ register 1 input
-						return virtualControllerInputRegisterHigh();
-					},
-					[&](void){																						//^ shift-register input
-						return virtualControllerInput();
-					}
-				};
 				
 				unsigned long portAddress=getInt32_t(virtualController(constJson(PORT_ADDRESS,subExecutable)));
 				unsigned short portSelector=portAddress&0xFFFF;									//~ bits from 0->15
@@ -2555,6 +2544,20 @@ unsigned char* virtualController(unsigned char* executableObject){
 				portWidth=((portWidth==32)?((const unsigned long)-1):((1<<portWidth)-1));		//! this needs to be changed asap
 				
 				#define finalPortValueRead(userValue) ((userValue>>startBit)&portWidth)
+
+				const std::function<unsigned long(void)>inputPortList[]={
+					[&](void){																						//^ register 0 input
+						outputEnableRegisterLowClear|=(((1<<portWidth)-1)<<startBit);	// set pins to input
+						return virtualControllerInputRegisterLow();
+					},
+					[&](void){																						//^ register 1 input
+						outputEnableRegisterHighClear|=(((1<<portWidth)-1)<<startBit);	// set pins to input
+						return virtualControllerInputRegisterHigh();
+					},
+					[&](void){																						//^ shift-register input
+						return virtualControllerInput();
+					}
+				};
 
 				static unsigned char *digitalInputPortRaed=NULL;
 				if(digitalInputPortRaed!=NULL)
