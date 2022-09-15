@@ -2975,13 +2975,13 @@ void realTimeConnection(void *arg){
 			return tcpConnectionSend;
 		});
 
-		READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){			//^ adding call back function 
-			unsigned char *tcpConnectionReadCached=tcpConnectionRead;
-			SMART_CACHE(tcpConnectionReadCached);
-			virtualController(tcpConnectionReadCached);
-			realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
-			return tcpConnectionRead;
-		});
+		// READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){			//^ adding call back function 
+		// 	unsigned char *tcpConnectionReadCached=tcpConnectionRead;
+		// 	SMART_CACHE(tcpConnectionReadCached);
+		// 	virtualController(tcpConnectionReadCached);
+		// 	realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
+		// 	return tcpConnectionRead;
+		// });
 	}
 	
 	
@@ -3112,20 +3112,20 @@ void serviceExecutable(void*param){
 	// MDNS.begin("xtensa-lx6");
 	// MDNS.addService("http", "tcp", 80);
 
-	// READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
-	// 	try
-	// 	{
-	// 		unsigned char realTimeConnectionBuffer[0x1FFF]={};
-	// 		virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
-	// 		// virtualController(tcpConnectionRead);
-	// 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
-	// 	}
-	// 	catch(...)
-	// 	{
-	// 		console.log("--ERROR @ call back--");
-	// 	}		
-	// 	return tcpConnectionRead;
-	// });
+	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
+		try
+		{
+			unsigned char realTimeConnectionBuffer[0x1FFF]={};
+			virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
+			// virtualController(tcpConnectionRead);
+			realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
+		}
+		catch(...)
+		{
+			console.log("--ERROR @ call back--");
+		}		
+		return tcpConnectionRead;
+	});
 
 
 	xTaskCreate(

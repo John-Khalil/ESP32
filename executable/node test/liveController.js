@@ -98,25 +98,27 @@ const testRunner=()=>{
     // const increment=MCU.newVariable();
     mcu.load(mcu.memoryWrite(increment,0));
 
-    mcu.memoryDelete(increment);
+    // mcu.memoryDelete(increment);
 
     mcu.load(mcu.logger('code started'));
 
-    
-    mcu.load(mcu.executableStack(5,[
+    // let counter=100;
+    // while(counter--)
+    mcu.load(mcu.executableStack(1000,[
         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        mcu.executableStack(5,[
-            mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-            mcu.executableStack(5,[
-                mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-                // mcu.delay(5)
-            ]),
-            mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-        ]),
-        mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        mcu.logger(mcu.memoryRead(increment))
+        // mcu.executableStack(5,[
+        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+        //     mcu.executableStack(5,[
+        //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        //         // mcu.delay(5)
+        //     ]),
+        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        // ]),
+        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
     ]))
 
-    mcu.load(mcu.logger(mcu.memoryRead(increment)));
+    // mcu.load(mcu.logger(mcu.memoryRead(increment)));
 
     mcu.load(mcu.logger('hello world'));
 
@@ -124,7 +126,9 @@ const testRunner=()=>{
 
 
 app.get('/',(req,res)=>{
+
     testRunner();
+    
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     res.send('ack');
 })
