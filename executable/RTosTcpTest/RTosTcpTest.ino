@@ -69,13 +69,47 @@ volatile uint32_t *_outputRegisterHighClear=((volatile uint32_t*)0X3FF44018UL);
 
 #define outputRegisterLow (*_outputRegisterLow)
 #define outputRegisterHigh (*_outputRegisterHigh)
+
 #define outputRegisterLowSet (*_outputRegisterLowSet)
 #define outputRegisterHighSet (*_outputRegisterHighSet)
+
 #define outputRegisterLowClear (*_outputRegisterLowClear)
 #define outputRegisterHighClear (*_outputRegisterHighClear)
 
+
 #define inputRegisterLow (*((volatile uint32_t*)0x3FF4403CUL))
 #define inputRegisterHigh (*((volatile uint32_t*)0x3FF44040UL))
+
+
+
+volatile uint32_t *_outputEnableRegisterLow=((volatile uint32_t*)0X3FF44020UL);
+volatile uint32_t *_outputEnableRegisterHigh=((volatile uint32_t*)0X3FF44024UL);
+
+volatile uint32_t *_outputEnableRegisterLowSet=((volatile uint32_t*)0X3FF44028UL);
+volatile uint32_t *_outputEnableRegisterHighSet=((volatile uint32_t*)0X3FF4402CUL);
+
+volatile uint32_t *_outputEnableRegisterLowClear=((volatile uint32_t*)0X3FF44030UL);
+volatile uint32_t *_outputEnableRegisterHighClear=((volatile uint32_t*)0X3FF44034UL);
+
+
+
+
+#define outputEnableRegisterLow (*_outputEnableRegisterLow)
+#define outputEnableRegisterHigh (*_outputEnableRegisterHigh)
+
+#define outputEnableRegisterLowSet (*_outputEnableRegisterLowSet)
+#define outputEnableRegisterHighSet (*_outputEnableRegisterHighSet)
+
+#define outputEnableRegisterLowClear (*_outputEnableRegisterLowClear)
+#define outputEnableRegisterHighClear (*_outputEnableRegisterHighClear)
+
+
+
+
+
+
+
+
 
 #define _DW digitalWrite
 #define _DR digitalRead
@@ -2317,40 +2351,39 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 
 
 unsigned long virtualControllerOutputRegisterLow(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
-
-	return portData;
+	outputEnableRegisterLowSet|=(((1<<outputPortWidth)-1)<<outputStartBit);		// set pins to output
+	unsigned long gpioOutputBuffer=outputRegisterLow;
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<outputStartBit);				// clear the bits first
+	gpioOutputBuffer|=portData;													// set the new value
+	outputRegisterLow=gpioOutputBuffer;											// update the value at once
+	return gpioOutputBuffer;
 }
 
 unsigned long virtualControllerOutputRegisterHigh(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
-
-	return portData;
+	outputEnableRegisterHighSet|=(((1<<outputPortWidth)-1)<<outputStartBit);	// set pins to output
+	unsigned long gpioOutputBuffer=outputRegisterLow;
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<outputStartBit);				// clear the bits first
+	gpioOutputBuffer|=portData;													// set the new value
+	outputRegisterLow=gpioOutputBuffer;											// update the value at once
+	return gpioOutputBuffer;
 }
 
 unsigned long virtualControllerOutput(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
-	console.log("portData >> ",portData);
-	console.log("outputPortWidth >> ",outputPortWidth);
-	console.log("outputStartBit >> ",outputStartBit);
+	
 	return portData;
 }
 
 
 unsigned long virtualControllerInputRegisterLow(void){
-	unsigned long inputValue=0;
-
-	return inputValue;
+	return inputRegisterLow;
 }
 
 unsigned long virtualControllerInputRegisterHigh(void){
-	unsigned long inputValue=0;
-
-	return inputValue;
+	return inputRegisterHigh;
 }
 
 unsigned long virtualControllerInput(void){
-	unsigned long inputValue=micros()/1500;
-
-	// return inputValue;
-	return 0x55555555;
+	return micros()/1500;
 }
 
 
