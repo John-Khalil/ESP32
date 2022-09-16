@@ -81,6 +81,10 @@ mcu.led=ledValue=>{
     return mcu.digitalOutput(1,14,0,[ledValue]);
 }
 
+mcu.inputPin=()=>{
+    return mcu.digitalInput(1,14,0)
+}
+
 
 console.log(" >> >> ",mcu.digitalOutput(5,4,2,[255,459,789]))
 
@@ -96,6 +100,9 @@ app.listen(port,()=>{
 
 const increment=MCU.newVariable();
 
+const newFunction=mcu.newVariable();
+const newFunctionParams=mcu.newVariable();
+
 const testRunner=()=>{
     // mcu.load(mcu.logger(mcu.digitalInput(24,0,2,[255,459,789])));
 
@@ -106,25 +113,46 @@ const testRunner=()=>{
 
     mcu.load(mcu.logger('code started'));
 
-    mcu.load(mcu.led(1))
-    mcu.load(mcu.delay(500));
-    mcu.load(mcu.led(0))
+    // mcu.load(mcu.createFunction(newFunction,newFunctionParams,()=>{
+    //     return mcu.executableStack(1,[
+    //         mcu.delay(500),
+    //         mcu.led(mcu.functionArgument('state_1')),
+    //         mcu.delay(500),
+    //         mcu.led(mcu.functionArgument('state_2'))
+    //     ])
+    // },mcu.memoryRead(newFunctionParams)));
+
+    
+    mcu.load(mcu.delay(500))
+    
+    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.logger('onchange')))
+
+
+    // var x10=10
+    // while(x10--)
+    //     mcu.load(mcu.logger('this is test'))
+
+    
+
+
+    // mcu.load(mcu.callFunction(newFunction,{state_1:1,state_2:0}))
+
 
     // let counter=100;
     // while(counter--)
-    // mcu.load(mcu.executableStack(1000,[
-    //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-    //     mcu.logger(mcu.memoryRead(increment))
-    //     // mcu.executableStack(5,[
-    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-    //     //     mcu.executableStack(5,[
-    //     //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-    //     //         // mcu.delay(5)
-    //     //     ]),
-    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-    //     // ]),
-    //     // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-    // ]))
+    mcu.load(mcu.executableStack(9999,[
+        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+        mcu.logger(mcu.inputPin())
+        // mcu.executableStack(5,[
+        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+        //     mcu.executableStack(5,[
+        //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        //         // mcu.delay(5)
+        //     ]),
+        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+        // ]),
+        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    ]))
 
     // // mcu.load(mcu.logger(mcu.memoryRead(increment)));
 
