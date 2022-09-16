@@ -115,6 +115,22 @@ volatile uint32_t *_outputEnableRegisterHighClear=((volatile uint32_t*)0X3FF4403
 #define _DR digitalRead
 #define _PM pinMode
 
+
+void dataDirectionVirtualRegister(unsigned long virtualRegister,unsigned char pinConfig){
+	static unsigned long virtualRegisterOldValue;
+	static unsigned char pinConfigOldValue;
+	if((virtualRegister==virtualRegisterOldValue)&&(pinConfig==pinConfigOldValue))		// checking if nothing has changed to skip
+		return;
+	during(64,(unsigned long index){
+		if(virtualRegister&(1<<index))
+			_PM(index,pinConfig);
+	});
+	virtualRegister=virtualRegisterOldValue;
+	pinConfig=pinConfigOldValue;
+	return;
+}
+
+
 spiConsole console;
 
 
@@ -2351,20 +2367,20 @@ unsigned long smartPointer(unsigned long userAddress,unsigned char operation=POI
 
 
 unsigned long virtualControllerOutputRegisterLow(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
-	outputEnableRegisterLowSet|=(((1<<outputPortWidth)-1)<<outputStartBit);		// set pins to output
-	unsigned long gpioOutputBuffer=outputRegisterLow;
-	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<((outputStartBit%32)));		// clear the bits first
-	gpioOutputBuffer|=portData;													// set the new value
-	outputRegisterLow=gpioOutputBuffer;											// update the value at once
+	dataDirectionVirtualRegister((((1<<outputPortWidth)-1)<<outputStartBit),OUTPUT);		// set pins to output
+	unsigned long gpioOutputBuffer=inputRegisterLow;
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<((outputStartBit%32)));					// clear the bits first
+	gpioOutputBuffer|=portData;																// set the new value
+	outputRegisterLow=gpioOutputBuffer;														// update the value at once
 	return gpioOutputBuffer;
 }
 
 unsigned long virtualControllerOutputRegisterHigh(unsigned long portData,unsigned long outputPortWidth,unsigned char outputStartBit){
-	outputEnableRegisterHighSet|=(((1<<outputPortWidth)-1)<<outputStartBit);	// set pins to output
-	unsigned long gpioOutputBuffer=outputRegisterLow;
-	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<(outputStartBit%32));			// clear the bits first
-	gpioOutputBuffer|=portData;													// set the new value
-	outputRegisterLow=gpioOutputBuffer;											// update the value at once
+	dataDirectionVirtualRegister((((1<<outputPortWidth)-1)<<outputStartBit)<<32,OUTPUT);	// set pins to output
+	unsigned long gpioOutputBuffer=inputRegisterHigh;
+	gpioOutputBuffer&=~(((1<<outputPortWidth)-1)<<(outputStartBit%32));						// clear the bits first
+	gpioOutputBuffer|=portData;																// set the new value
+	outputRegisterHigh=gpioOutputBuffer;													// update the value at once
 	return gpioOutputBuffer;
 }
 
@@ -2547,11 +2563,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 				const std::function<unsigned long(void)>inputPortList[]={
 					[&](void){																						//^ register 0 input
-						outputEnableRegisterLowClear|=(((1<<portWidth)-1)<<startBit);	// set pins to input
+						dataDirectionVirtualRegister((((1<<portWidth)-1)<<startBit),INPUT_PULLUP);		// set pins to input
 						return virtualControllerInputRegisterLow();
 					},
 					[&](void){																						//^ register 1 input
-						outputEnableRegisterHighClear|=(((1<<portWidth)-1)<<startBit);	// set pins to input
+						dataDirectionVirtualRegister((((1<<portWidth)-1)<<startBit)<<32,INPUT_PULLUP);	// set pins to input
 						return virtualControllerInputRegisterHigh();
 					},
 					[&](void){																						//^ shift-register input
@@ -3500,7 +3516,6 @@ void setup(){
 	});
     _PM(13,OUTPUT);
 
-	
 
     // serviceExecutable();
     xTaskCreate(

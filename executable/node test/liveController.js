@@ -77,6 +77,10 @@ MCU.load=load;
 
 const mcu=MCU;
 
+mcu.led=ledValue=>{
+    return mcu.digitalOutput(1,14,0,[ledValue]);
+}
+
 
 console.log(" >> >> ",mcu.digitalOutput(5,4,2,[255,459,789]))
 
@@ -102,23 +106,27 @@ const testRunner=()=>{
 
     mcu.load(mcu.logger('code started'));
 
+    mcu.load(mcu.led(1))
+    mcu.load(mcu.delay(500));
+    mcu.load(mcu.led(0))
+
     // let counter=100;
     // while(counter--)
-    mcu.load(mcu.executableStack(1000,[
-        mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        mcu.logger(mcu.memoryRead(increment))
-        // mcu.executableStack(5,[
-        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        //     mcu.executableStack(5,[
-        //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-        //         // mcu.delay(5)
-        //     ]),
-        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-        // ]),
-        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-    ]))
+    // mcu.load(mcu.executableStack(1000,[
+    //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+    //     mcu.logger(mcu.memoryRead(increment))
+    //     // mcu.executableStack(5,[
+    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+    //     //     mcu.executableStack(5,[
+    //     //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    //     //         // mcu.delay(5)
+    //     //     ]),
+    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    //     // ]),
+    //     // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    // ]))
 
-    // mcu.load(mcu.logger(mcu.memoryRead(increment)));
+    // // mcu.load(mcu.logger(mcu.memoryRead(increment)));
 
     mcu.load(mcu.logger('hello world'));
 
