@@ -82,7 +82,7 @@ mcu.led=ledValue=>{
 }
 
 mcu.inputPin=()=>{
-    return mcu.digitalInput(1,14,0)
+    return mcu.digitalInput(1,0,0)
 }
 
 
@@ -125,7 +125,7 @@ const testRunner=()=>{
     
     mcu.load(mcu.delay(500))
     
-    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.logger('onchange')))
+    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.logger(mcu.memoryRead(1001))))
 
 
     // var x10=10
@@ -140,7 +140,7 @@ const testRunner=()=>{
 
     // let counter=100;
     // while(counter--)
-    mcu.load(mcu.executableStack(9999,[
+    mcu.load(mcu.executableStack(0,[
         // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
         mcu.logger(mcu.inputPin())
         // mcu.executableStack(5,[

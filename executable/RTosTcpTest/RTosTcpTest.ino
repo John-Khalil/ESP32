@@ -2578,7 +2578,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 				static unsigned char *digitalInputPortRaed=NULL;
 				if(digitalInputPortRaed!=NULL)
 					free(digitalInputPortRaed);
-				digitalInputPortRaed=inttostring(finalPortValueRead(inputPortList[portSelector]()));
+				// digitalInputPortRaed=inttostring(finalPortValueRead(inputPortList[portSelector]()));
+				digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(finalPortValueRead(inputPortList[portSelector]()))));
 				return CACHE_BYTES(digitalInputPortRaed);
 			},
 			[&](unsigned char *subExecutable){											//& delay operator
@@ -2939,8 +2940,7 @@ void virtualControllerEventListener(void *params){
 				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
 				unchangedEventValue=_CS(((unsigned char*)calloc(stringCounter(unchangedEventValue)+1,sizeof(unsigned char))),unchangedEventValue);
 				
-				unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
-				handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+				
 
 				// console.log(" >> ",unchangedEventValue);_delay_ms(200);
 				// console.log(" >> ",eventChecker);_delay_ms(200);
@@ -2948,14 +2948,20 @@ void virtualControllerEventListener(void *params){
 
 				if(!equalStrings(eventChecker,unchangedEventValue)){		// check if the value have changed then update it
 					highLevelMemory(smartPointer(onchangeAddress),eventChecker);		// store the new value
-					virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
+
+					unsigned char *handlerExecutable=constJson(HANDLER_EXECUTABLE,eventExecutable);
+					handlerExecutable=_CS(((unsigned char*)calloc(stringCounter(handlerExecutable)+1,sizeof(unsigned char))),handlerExecutable);
+
+					// virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
 					// console.log("__EVENT_TRIG___");_delay_ms(200);
+					virtualController(handlerExecutable);
+					free(handlerExecutable);
 				}
 
 				
 				free(eventChecker);
 				free(unchangedEventValue);
-				free(handlerExecutable);
+				
 
 			}
 		});
