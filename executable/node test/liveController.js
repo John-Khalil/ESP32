@@ -125,7 +125,12 @@ const testRunner=()=>{
     
     mcu.load(mcu.delay(500))
     
-    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.logger(mcu.memoryRead(1001))))
+    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
+        mcu.logger(mcu.memoryRead(1001)),
+        mcu.led(1),
+        mcu.delay(200),
+        mcu.led(0)
+    ])))
 
 
     // var x10=10
