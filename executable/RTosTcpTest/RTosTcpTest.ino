@@ -2654,6 +2654,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 				unsigned char *finalWebHostUrl=_CS(webHostUrlBuffer,constJson(WEB_HOST,subExecutable));
 				unsigned char *finalPostBody=virtualController(_CS(postBodyBuffer,constJson(POST_BODY,subExecutable)));		// some how i need to cache it in the same place
+				// SMART_CACHE(finalPostBody);
 				// console.log(" ===> ",finalWebHostUrl);
 				constJsonReset();
 				// console.log(" ---> ",finalPostBody);
@@ -3058,7 +3059,7 @@ void realTimeConnection(void *arg){
 			console.log("RT server Disconnected");
 			goto hostServerDisconnected;
 		}		
-		_delay_ms(5);
+		_delay_ms(10);
 	}
 
 	

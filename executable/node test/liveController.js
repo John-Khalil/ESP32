@@ -10,6 +10,16 @@ import virtualController from './virtualController.js';
 
 console.clear();
 
+const deviceIP='192.168.1.15';
+
+const app =express();
+app.use(cors());
+app.use(bodyParser.json());
+const port =766;
+app.listen(port,()=>{
+    console.log(`-------- server started @ port ${port}`);
+});
+
 const jsonParse=(jsonObject)=>{
     try {
         jsonObject=JSON.parse(jsonObject);
@@ -73,6 +83,15 @@ MCU.logger=(consoleData)=>{
     return(MCU.serverSend(serverConsoleCallBackID,(typeof consoleData=="string")?{consoleData}:consoleData));
 }
 
+MCU.postLogger=(consoleData)=>{
+    return MCU.fetch(`http://${deviceIP}:${port}/upload`,(typeof consoleData=="string")?{consoleData}:consoleData,serverConsoleCallBackID);
+}
+
+xtensaLinker.linkerSetAdd((data)=>{
+    if(jsonParse(data)[MCU.REQUEST_PARAM]==serverConsoleCallBackID)
+        console.log("MCU post log >> ",jsonParse(data)[MCU.POST_BODY].consoleData||jsonParse(data)[MCU.POST_BODY]);
+})
+
 MCU.load=load;
 
 const mcu=MCU;
@@ -89,13 +108,7 @@ mcu.inputPin=()=>{
 console.log(" >> >> ",mcu.digitalOutput(5,4,2,[255,459,789]))
 
 
-const app =express();
-app.use(cors());
-app.use(bodyParser.json());
-const port =766;
-app.listen(port,()=>{
-    console.log(`-------- server started @ port ${port}`);
-});
+
 
 
 const increment=MCU.newVariable();
@@ -125,13 +138,16 @@ const testRunner=()=>{
     
     mcu.load(mcu.delay(500))
     
-    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
-        mcu.logger(mcu.memoryRead(1001)),
-        mcu.led(1),
-        mcu.delay(200),
-        mcu.led(0)
-    ])))
+    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
+    //     mcu.postLogger(mcu.memoryRead(1001)),
+    //     mcu.led(1),
+    //     mcu.delay(200),
+    //     mcu.led(0)
+    // ])))
 
+    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
+
+    // mcu.load(mcu.postLogger(mcu.inputPin(1001)))
 
     // var x10=10
     // while(x10--)
@@ -172,6 +188,11 @@ app.get('/',(req,res)=>{
     
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     res.send('ack');
+})
+
+app.post('/upload',(req,res)=>{
+    res.send('ack');
+    xtensaLinker.linkerSet(JSON.stringify(req.body));
 })
 
 testRunner();
