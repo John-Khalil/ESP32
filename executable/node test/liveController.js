@@ -139,10 +139,10 @@ const testRunner=()=>{
     mcu.load(mcu.delay(500))
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
-    //     mcu.postLogger(mcu.memoryRead(1001)),
     //     mcu.led(1),
-    //     mcu.delay(200),
-    //     mcu.led(0)
+    //     mcu.delay(100),
+    //     mcu.led(0),
+    //     mcu.postLogger(mcu.memoryRead(1001))
     // ])))
 
     mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
@@ -154,7 +154,7 @@ const testRunner=()=>{
     //     mcu.load(mcu.logger('this is test'))
 
     
-
+    // mcu.load(mcu.logger(mcu.postLogger('this is test')))
 
     // mcu.load(mcu.callFunction(newFunction,{state_1:1,state_2:0}))
 

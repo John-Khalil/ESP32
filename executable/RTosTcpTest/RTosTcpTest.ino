@@ -3059,7 +3059,7 @@ void realTimeConnection(void *arg){
 			console.log("RT server Disconnected");
 			goto hostServerDisconnected;
 		}		
-		_delay_ms(10);
+		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 
 	
@@ -3196,14 +3196,14 @@ void serviceExecutable(void*param){
         NULL             // Task handle
     );
 
-	xTaskCreate(
-        virtualControllerEventListener,    // Function that should be called
-        "virtualControllerEventListener",   // Name of the task (for debugging)
-        30000,            // Stack size (bytes)
-        NULL,            // Parameter to pass
-        1,               // Task priority
-        NULL             // Task handle
-    );
+	// xTaskCreate(
+    //     virtualControllerEventListener,    // Function that should be called
+    //     "virtualControllerEventListener",   // Name of the task (for debugging)
+    //     30000,            // Stack size (bytes)
+    //     NULL,            // Parameter to pass
+    //     1,               // Task priority
+    //     NULL             // Task handle
+    // );
 
 
 
@@ -3545,14 +3545,14 @@ void setup(){
     );
 
 
-	// xTaskCreate(
-    //     virtualControllerEventListener,    // Function that should be called
-    //     "virtualControllerEventListener",   // Name of the task (for debugging)
-    //     30000,            // Stack size (bytes)
-    //     NULL,            // Parameter to pass
-    //     1,               // Task priority
-    //     NULL             // Task handle
-    // );
+	xTaskCreate(
+        virtualControllerEventListener,    // Function that should be called
+        "virtualControllerEventListener",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
+    );
 
     
 	// _delay_ms(2000);
