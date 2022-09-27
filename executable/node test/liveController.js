@@ -145,7 +145,8 @@ const testRunner=()=>{
     //     mcu.postLogger(mcu.memoryRead(1001))
     // ])))
 
-    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
+    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
+    mcu.load(mcu.controllerEventListener(2000,2001,mcu.inputPin(),mcu.logger(mcu.memoryRead(2001))))
 
     // mcu.load(mcu.postLogger(mcu.inputPin(1001)))
 
@@ -182,9 +183,14 @@ const testRunner=()=>{
 }
 
 
+const simplePing=()=>{
+    mcu.load(mcu.logger('simple ping'))
+}
+
 app.get('/',(req,res)=>{
 
-    testRunner();
+    // testRunner();
+    simplePing();
     
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     res.send('ack');

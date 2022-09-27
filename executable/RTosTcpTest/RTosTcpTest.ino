@@ -3171,39 +3171,24 @@ void serviceExecutable(void*param){
 	// MDNS.begin("xtensa-lx6");
 	// MDNS.addService("http", "tcp", 80);
 
-	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
-		try
-		{
-			unsigned char realTimeConnectionBuffer[0x1FFF]={};
-			virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
-			// virtualController(tcpConnectionRead);
-			realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
-		}
-		catch(...)
-		{
-			console.log("--ERROR @ call back--");
-		}		
-		return tcpConnectionRead;
-	});
+	// READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){		//^ adding call back function 
+	// 	try
+	// 	{
+	// 		unsigned char realTimeConnectionBuffer[0x1FFF]={};
+	// 		virtualController(_CS(CLR(realTimeConnectionBuffer),tcpConnectionRead));
+	// 		// virtualController(tcpConnectionRead);
+	// 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
+	// 	}
+	// 	catch(...)
+	// 	{
+	// 		console.log("--ERROR @ call back--");
+	// 	}		
+	// 	return tcpConnectionRead;
+	// });
 
 
-	xTaskCreate(
-        testingFuction,    // Function that should be called
-        "interuptSimulator",   // Name of the task (for debugging)
-        30000,            // Stack size (bytes)
-        NULL,            // Parameter to pass
-        1,               // Task priority
-        NULL             // Task handle
-    );
+	
 
-	// xTaskCreate(
-    //     virtualControllerEventListener,    // Function that should be called
-    //     "virtualControllerEventListener",   // Name of the task (for debugging)
-    //     30000,            // Stack size (bytes)
-    //     NULL,            // Parameter to pass
-    //     1,               // Task priority
-    //     NULL             // Task handle
-    // );
 
 
 
@@ -3554,6 +3539,22 @@ void setup(){
         NULL             // Task handle
     );
 
+	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){			//^ adding call back function 
+		unsigned char *tcpConnectionReadCached=tcpConnectionRead;
+		SMART_CACHE(tcpConnectionReadCached);
+		virtualController(tcpConnectionReadCached);
+		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
+		return tcpConnectionRead;
+	}); 
+
+	// xTaskCreate(
+    //     testingFuction,    // Function that should be called
+    //     "interuptSimulator",   // Name of the task (for debugging)
+    //     30000,            // Stack size (bytes)
+    //     NULL,            // Parameter to pass
+    //     1,               // Task priority
+    //     NULL             // Task handle
+    // );
     
 	// _delay_ms(2000);
 
