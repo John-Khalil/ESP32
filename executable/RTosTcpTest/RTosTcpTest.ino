@@ -3068,6 +3068,17 @@ void realTimeConnection(void *arg){
 	tcpConnection.write((char*)makeJsonObject(JSON_KEYS("auth"),JSON_VALUES(realTimeConnectionUserCredentials())));
 
 	while(1){
+
+
+
+		// console.log("(!(micros()%500)) >> ",(!(micros()%500)));_delay_ms(200);
+
+		static unsigned long networkPingTimer;
+		if(!((networkPingTimer++)%(5000/VIRTUAL_CONTROLLER_POLLING_RATE))){
+			realTimeConnectionSend((unsigned char*)"CONNECTION-ALIVE-ACK");
+		}
+
+
 		if(tcpConnection.available()){
 			realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
 		}
@@ -3075,6 +3086,8 @@ void realTimeConnection(void *arg){
 			console.log("RT server Disconnected");
 			goto hostServerDisconnected;
 		}		
+
+		
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 

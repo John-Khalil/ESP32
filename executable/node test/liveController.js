@@ -35,7 +35,7 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    // console.log('read feedback  >> ',dataFromServer);
+    console.log('read feedback  >> ',dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((dataFromServer)=>{
