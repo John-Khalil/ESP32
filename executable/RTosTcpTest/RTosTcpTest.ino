@@ -2513,8 +2513,13 @@ JSON_ATTRIBUTE SERVER_DATA="SD";
 
 std::vector<unsigned char*>executableStackElementList;
 
+unsigned short virtualControllerRecursionDepth=0;
+
+#define awaitVirtualController() while(virtualControllerRecursionDepth)_delay_ms((VIRTUAL_CONTROLLER_POLLING_RATE/4)+1)
+
 unsigned char* virtualController(unsigned char* executableObject){
 	try{
+		virtualControllerRecursionDepth++;
 		const std::function<unsigned char*(unsigned char*)>jsonOperator[]={				// functional should be included so we can use lambda expression while passing variabels by ref
 			[&](unsigned char *subExecutable){											//& digtal output operator
 				const std::function<unsigned long(unsigned long,unsigned long,unsigned char)>outputPortList[]={
@@ -2914,14 +2919,24 @@ unsigned char* virtualController(unsigned char* executableObject){
 		const unsigned short operatorsCount=sizeof(jsonOperator)/sizeof(jsonOperator[0]);
 
 		unsigned char *jsonOperatorExist;
-		if(((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject))!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount))		// checking if it was an operator and a valid operator aka predefined
-			return jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
+		if(((jsonOperatorExist=constJson(JSON_OPERATOR,executableObject))!=UNDEFINED)&&(getInt32_t(jsonOperatorExist)<operatorsCount)){		// checking if it was an operator and a valid operator aka predefined
+			unsigned char *virtualControllerReturn=jsonOperator[getInt32_t(constJson(JSON_OPERATOR,executableObject))](executableObject);
+			virtualControllerRecursionDepth--;
+			return virtualControllerReturn;
+		}
+		virtualControllerRecursionDepth--;	
 		return executableObject;
 	}
 	catch(...){
 		console.log("--------ERROR--------\n",executableObject);
+		virtualControllerRecursionDepth--;
 		return UNDEFINED;
 	}
+}
+
+unsigned char *virtualControllerSafeStart(unsigned char *executableObject){
+	awaitVirtualController();
+	return virtualController(executableObject);
 }
 
 void virtualControllerEventListener(void *params){
@@ -2934,8 +2949,8 @@ void virtualControllerEventListener(void *params){
 				unsigned long onchangeAddress=getInt32_t(constJson(ONCHANGE_ADDRESS,eventExecutable));
 
 
-				
-				unsigned char *eventChecker=virtualController(constJson(EVENT_EXECUTABLE,eventExecutable));
+				// awaitVirtualController();
+				unsigned char *eventChecker=virtualControllerSafeStart(constJson(EVENT_EXECUTABLE,eventExecutable));
 				eventChecker=_CS(((unsigned char*)calloc(stringCounter(eventChecker)+1,sizeof(unsigned char))),eventChecker);
 
 				unsigned char *unchangedEventValue=highLevelMemory(smartPointer(onchangeAddress));
@@ -2955,7 +2970,7 @@ void virtualControllerEventListener(void *params){
 
 					// virtualController(constJson(HANDLER_EXECUTABLE,eventExecutable));
 					// console.log("__EVENT_TRIG___");_delay_ms(200);
-					virtualController(handlerExecutable);
+					virtualControllerSafeStart(handlerExecutable);
 					free(handlerExecutable);
 				}
 
@@ -3021,6 +3036,7 @@ void realTimeConnection(void *arg){
 
 
 	WiFiClient tcpConnection;
+	tcpConnection.setTimeout(5000);
 	static unsigned char realTimeConnectionBuffer[0x1fff]={};
 
 	static unsigned char runOnlyOnce;
@@ -3443,7 +3459,8 @@ void serviceExecutable(void*param){
 						client.flush();
 						client.stop();
 						unsigned char *virtualControllerStack=(unsigned char*)calloc(fetchMemoryLimiter+1,sizeof(unsigned char*));
-						virtualController(_CS(virtualControllerStack,fetch("http://192.168.1.15:766")));
+						// awaitVirtualController();
+						virtualControllerSafeStart(_CS(virtualControllerStack,fetch("http://192.168.1.15:766")));
 						constJsonReset();
 						free(virtualControllerStack);
 					}
@@ -3542,7 +3559,8 @@ void setup(){
 	READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){			//^ adding call back function 
 		unsigned char *tcpConnectionReadCached=tcpConnectionRead;
 		SMART_CACHE(tcpConnectionReadCached);
-		virtualController(tcpConnectionReadCached);
+		// awaitVirtualController();
+		virtualControllerSafeStart(tcpConnectionReadCached);
 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
 		return tcpConnectionRead;
 	}); 

@@ -120,9 +120,11 @@ const testRunner=()=>{
     // mcu.load(mcu.logger(mcu.digitalInput(24,0,2,[255,459,789])));
 
     // const increment=MCU.newVariable();
-    mcu.load(mcu.memoryWrite(increment,0));
+    // mcu.load(mcu.memoryWrite(increment,0));
 
     // mcu.memoryDelete(increment);
+
+    mcu.load(mcu.led(1));
 
     mcu.load(mcu.logger('code started'));
 
@@ -136,7 +138,9 @@ const testRunner=()=>{
     // },mcu.memoryRead(newFunctionParams)));
 
     
+    
     mcu.load(mcu.delay(500))
+    mcu.load(mcu.led(0));
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
     //     mcu.led(1),
@@ -145,7 +149,7 @@ const testRunner=()=>{
     //     mcu.postLogger(mcu.memoryRead(1001))
     // ])))
 
-    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
+    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
     mcu.load(mcu.controllerEventListener(2000,2001,mcu.inputPin(),mcu.logger(mcu.memoryRead(2001))))
 
     // mcu.load(mcu.postLogger(mcu.inputPin(1001)))
