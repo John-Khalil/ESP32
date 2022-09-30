@@ -63,6 +63,9 @@ const executableStackOperator=operatorIndex++;
 const arithmaticLogicUnitOperator=operatorIndex++;
 const serverSendOperator=operatorIndex++;
 
+const adcReadOperator=operatorIndex++;
+const timerOperator=operatorIndex++;
+
 
 const JSON_OPERATOR="OP";				// generic operator
 
@@ -132,7 +135,13 @@ const SECOND_OPERAND="SO";
 const PACKAGE_IDENTIFIER="PI";
 const SERVER_DATA="SD";
 
+// adc read operator
+const ADC_CHANNEL="AC";
 
+//timer operator
+const TIMER_SELECTOR="TS";
+const millis=0;
+const micros=1;
 
 const delay=delayValueMS=>{
     var returnStack={};
@@ -310,6 +319,20 @@ const serverSend=(packageIdentifier,serverData)=>{
     return returnStack;
 }
 
+const adcRead=(adcChannel)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=adcReadOperator;
+    returnStack[ADC_CHANNEL]=adcChannel;
+    return returnStack;
+}
+
+const timer=(timerSelector=millis)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=timerOperator;
+    returnStack[TIMER_SELECTOR]=timerSelector;
+    return returnStack;
+}
+
 const virtualController={
     JSON_OPERATOR,
     OUTPUT_STREAM,
@@ -346,6 +369,10 @@ const virtualController={
     SECOND_OPERAND,
     PACKAGE_IDENTIFIER,
     SERVER_DATA,
+    ADC_CHANNEL,
+    TIMER_SELECTOR,
+    millis,
+    micros,    
     newVariable,
     operationSelector,
     delay,
@@ -368,7 +395,9 @@ const virtualController={
     callFunction,
     executableStack,
     ALU,
-    serverSend
+    serverSend,
+    adcRead,
+    timer
 }
 
 export default virtualController;
