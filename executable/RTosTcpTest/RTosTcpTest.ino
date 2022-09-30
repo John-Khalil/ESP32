@@ -2510,6 +2510,11 @@ JSON_ATTRIBUTE SECOND_OPERAND="SO";
 JSON_ATTRIBUTE PACKAGE_IDENTIFIER="PI";
 JSON_ATTRIBUTE SERVER_DATA="SD";
 
+// adc read operator
+JSON_ATTRIBUTE ADC_CHANNEL="AC";
+
+//timer operator
+JSON_ATTRIBUTE TIMER_SELECTOR="TS";
 
 std::vector<unsigned char*>executableStackElementList;
 
@@ -2911,6 +2916,30 @@ unsigned char* virtualController(unsigned char* executableObject){
 				realTimeConnectionSend(CACHE_BYTES(dataToServer));
 				free(dataToServer);
 				return subExecutable;
+			},
+			[&](unsigned char *subExecutable){											//& ADC READ
+				unsigned long adcChannel=getInt32_t(virtualController(constJson(ADC_CHANNEL,subExecutable)));
+				static unsigned char *adcValue=NULL;
+				if(adcValue!=NULL)
+					free(adcValue);
+				adcValue=inttostring(analogRead(adcChannel));
+				return CACHE_BYTES(adcValue);
+			},
+			[&](unsigned char *subExecutable){											//& TIMER OPERATOR
+				const std::function<unsigned long(void)>controllerTimers[]={
+					[&](void){
+						return millis();
+					},
+					[&](void){
+						return micros();
+					}
+				};
+				unsigned long timerSelector=getInt32_t(virtualController(constJson(TIMER_SELECTOR,subExecutable)));
+				static unsigned char *timerValue=NULL;
+				if(timerValue!=NULL)
+					free(timerValue);
+				timerValue=inttostring(controllerTimers[timerSelector]());
+				return CACHE_BYTES(timerValue);
 			}
 
 
@@ -3003,7 +3032,10 @@ void virtualControllerEventListener(void *params){
 
 void testingFuction(void * uselessParam){
 
-	
+	while(1){
+		_delay_ms(1000);
+		console.log("analogRead(0) >> ",analogRead(34));
+	}
 	
 	vTaskDelete(NULL);
 }

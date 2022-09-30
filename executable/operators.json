@@ -173,8 +173,20 @@
 // server send operator
 {
     "operator":int,
-    "packageIdentifier":exxecutable,
+    "packageIdentifier":executable,
     "serverData":executable
+}
+
+// adc read operator
+{
+    "operator":int,
+    "adcChannel":executable
+}
+
+// timer operator
+{
+    "operator":int,
+    "timerSelector":executable
 }
 
 // digital output
