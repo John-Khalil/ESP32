@@ -3,10 +3,12 @@ import cors from 'cors';
 import util from 'util';
 import bodyParser, { json } from 'body-parser';
 import { Console } from 'console';
+import {NodeAudioVolumeMixer } from 'node-audio-volume-mixer';
 
 import globalLinker from './globalLinker.js';
 import virtualController from './virtualController.js';
 
+NodeAudioVolumeMixer.setMasterVolumeLevelScalar(0.6)
 
 console.clear();
 
@@ -37,7 +39,7 @@ const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 let readFeedBackCounter=0;
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
+    // console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((dataFromServer)=>{
@@ -120,7 +122,7 @@ const newFunctionParams=mcu.newVariable();
 
 const testRunner=()=>{
 
-    mcu.load(mcu.led(1));
+    // mcu.load(mcu.led(1));
 
     mcu.load(mcu.logger('code started'));
 
@@ -137,6 +139,8 @@ const testRunner=()=>{
     
     // mcu.load(mcu.delay(500))
     mcu.load(mcu.led(0));
+
+    // mcu.load(mcu.logger(mcu.ALU(mcu.adcRead(34),'/',41)))
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
     //     mcu.postLogger(1),
@@ -145,7 +149,7 @@ const testRunner=()=>{
     //     mcu.delay(20)
     // ])))
 
-    // mcu.load(mcu.controllerEventListener(2000,2001,mcu.inputPin(),mcu.logger(mcu.memoryRead(2001))));
+    // mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
 
 
     // mcu.load(mcu.executableStack(200,[
