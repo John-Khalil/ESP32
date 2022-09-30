@@ -8,7 +8,7 @@ import {NodeAudioVolumeMixer } from 'node-audio-volume-mixer';
 import globalLinker from './globalLinker.js';
 import virtualController from './virtualController.js';
 
-NodeAudioVolumeMixer.setMasterVolumeLevelScalar(0.6)
+// NodeAudioVolumeMixer.setMasterVolumeLevelScalar(0.6)
 
 console.clear();
 
@@ -149,7 +149,7 @@ const testRunner=()=>{
     //     mcu.delay(20)
     // ])))
 
-    // mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
+    mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
 
 
     // mcu.load(mcu.executableStack(200,[

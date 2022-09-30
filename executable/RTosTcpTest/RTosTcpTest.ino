@@ -2919,10 +2919,18 @@ unsigned char* virtualController(unsigned char* executableObject){
 			},
 			[&](unsigned char *subExecutable){											//& ADC READ
 				unsigned long adcChannel=getInt32_t(virtualController(constJson(ADC_CHANNEL,subExecutable)));
+
+				#define ADC_READ_AVG 40
+				unsigned long adcReadAvg=0;
+				within(ADC_READ_AVG,{
+					adcReadAvg+=analogRead(adcChannel);							//~ reduce the noise effect
+				});
+				adcReadAvg/=ADC_READ_AVG;
+
 				static unsigned char *adcValue=NULL;
 				if(adcValue!=NULL)
 					free(adcValue);
-				adcValue=inttostring(analogRead(adcChannel));
+				adcValue=inttostring(adcReadAvg);
 				return CACHE_BYTES(adcValue);
 			},
 			[&](unsigned char *subExecutable){											//& TIMER OPERATOR
