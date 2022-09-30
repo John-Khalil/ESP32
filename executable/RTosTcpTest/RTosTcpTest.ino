@@ -583,7 +583,7 @@ unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPo
 	if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
 		return 0;
 	while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter);
-	return (diffCounter==0);
+	return (stringPointer1[diffCounter]==stringPointer2[diffCounter]);
 }
 
 unsigned char *_CS(unsigned char *bigString,unsigned char *smallString){
@@ -2583,8 +2583,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 				static unsigned char *digitalInputPortRaed=NULL;
 				if(digitalInputPortRaed!=NULL)
 					free(digitalInputPortRaed);
-				// digitalInputPortRaed=inttostring(finalPortValueRead(inputPortList[portSelector]()));
-				digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(finalPortValueRead(inputPortList[portSelector]()))));
+				digitalInputPortRaed=inttostring(finalPortValueRead(inputPortList[portSelector]()));
+				// digitalInputPortRaed=makeJsonObject(JSON_KEYS(PORT_VALUE),JSON_VALUES(inttostring(finalPortValueRead(inputPortList[portSelector]()))));
 				return CACHE_BYTES(digitalInputPortRaed);
 			},
 			[&](unsigned char *subExecutable){											//& delay operator

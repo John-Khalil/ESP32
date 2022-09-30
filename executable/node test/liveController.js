@@ -34,8 +34,10 @@ const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 
 const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
+
+let readFeedBackCounter=0;
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log('read feedback  >> ',dataFromServer);
+    console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((dataFromServer)=>{
@@ -139,18 +141,20 @@ const testRunner=()=>{
 
     
     
-    mcu.load(mcu.delay(500))
+    // mcu.load(mcu.delay(500))
     mcu.load(mcu.led(0));
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(1,[
-    //     mcu.led(1),
-    //     mcu.delay(100),
-    //     mcu.led(0),
-    //     mcu.postLogger(mcu.memoryRead(1001))
+    //     // mcu.postLogger(mcu.operatorJson(mcu.PORT_VALUE,mcu.memoryRead(1001))),
+    //     mcu.postLogger(mcu.memoryRead(1001)),
+    //     // mcu.delay(100),
+    //     // mcu.led(0),
+    //     mcu.logger(mcu.memoryRead(1001))
     // ])))
 
-    mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
+    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.postLogger(mcu.memoryRead(1001))))
     mcu.load(mcu.controllerEventListener(2000,2001,mcu.inputPin(),mcu.logger(mcu.memoryRead(2001))))
+    // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.led(mcu.operatorJson(mcu.PORT_VALUE,mcu.memoryRead(1001)))))
 
     // mcu.load(mcu.postLogger(mcu.inputPin(1001)))
 
@@ -166,19 +170,19 @@ const testRunner=()=>{
 
     // let counter=100;
     // while(counter--)
-    mcu.load(mcu.executableStack(0,[
-        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        mcu.logger(mcu.inputPin())
-        // mcu.executableStack(5,[
-        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
-        //     mcu.executableStack(5,[
-        //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-        //         // mcu.delay(5)
-        //     ]),
-        //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-        // ]),
-        // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
-    ]))
+    // mcu.load(mcu.executableStack(0,[
+    //     // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+    //     mcu.logger(mcu.inputPin())
+    //     // mcu.executableStack(5,[
+    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1)),
+    //     //     mcu.executableStack(5,[
+    //     //         mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    //     //         // mcu.delay(5)
+    //     //     ]),
+    //     //     mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    //     // ]),
+    //     // mcu.memoryWrite(increment,mcu.ALU(mcu.memoryRead(increment),'+',1))
+    // ]))
 
     // // mcu.load(mcu.logger(mcu.memoryRead(increment)));
 
