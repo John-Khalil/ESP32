@@ -194,6 +194,10 @@ const testRunner=()=>{
             toggleVolumeControl=toggleVolumeControl^1;
     })
 
+    mcu.addEventListener(mcu.ALU(mcu.timer(),'/',1500),(data)=>{
+        console.log(` >> @ ${data}`)
+    })
+
 
 
 
