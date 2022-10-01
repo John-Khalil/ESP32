@@ -149,6 +149,7 @@ const newFunctionParams=mcu.newVariable();
 const testRunner=()=>{
 
     // mcu.load(mcu.led(1));
+    mcu.forceStartEnable=false;
 
     mcu.load(mcu.logger('code started'));
 
@@ -177,20 +178,16 @@ const testRunner=()=>{
 
     // mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
 
-    // mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
-    //     console.log(`data from event >> ${data}`)
-    //     NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
-    // })
+    mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
+        console.log(`data from event >> ${data}`)
+        NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+    })
 
     mcu.addEventListener(mcu.inputPin(),(data)=>{
-        // if(data==0)
-        //     console.clear();
-
-        setTimeout(() => {
-            mcu.load(mcu.logger('this is another test'))
-        }, 100);
-        
-        // console.log("this is first event")
+        if(data==0)
+            console.clear();
+        // mcu.load(mcu.logger('this is another test'));
+        // mcu.forceStart();
     })
 
     // mcu.addEventListener(mcu.inputPin(),(data)=>{
@@ -218,6 +215,7 @@ const testRunner=()=>{
 
 
     mcu.load(mcu.logger('last executable'));
+    mcu.forceStartEnable=true;
 
 }
 
