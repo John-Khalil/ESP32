@@ -2693,7 +2693,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 			[&](unsigned char *subExecutable){											//& add event listener operator
 				unsigned long eventListenerAddress=getInt32_t(constJson(EVENT_ADDRESS,subExecutable));
 				unsigned char eventAllocatorCounter=0;
-				while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]);	// this should be initialized with 0s
+				while(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter++]&&(VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter-1]!=eventListenerAddress));	// this should be initialized with 0s
 				VIRTUAL_CONTROLLER_EVENT_ADDRESS[eventAllocatorCounter-1]=eventListenerAddress*(eventAllocatorCounter!=VIRTUAL_CONTROLLER_MAX_EVENTS);
 				// highLevelMemory(
 				// 	smartPointer(eventListenerAddress,POINT_BUFFER),		

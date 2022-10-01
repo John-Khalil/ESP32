@@ -100,11 +100,24 @@ MCU.load=load;
 
 const mcu=MCU;
 
+mcu.forceStartEnable=true;
+mcu.forceStart=()=>{
+    if(mcu.forceStartEnable)
+        xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
+}
+
+const mcuEventsList=[];
+const mcuEventsIdentifierList=[];
 mcu.addEventListener=(mcuEvent,eventCallBack)=>{
-    let eventAddress=mcu.newVariable();
-    let onChangeAddress=mcu.newVariable();
-    let callBackIdentifier=mcu.newVariable();
-    mcu.load(mcu.controllerEventListener(eventAddress,onChangeAddress,mcuEvent,mcu.serverSend(callBackIdentifier,mcu.memoryRead(onChangeAddress))));
+    let callBackIdentifier=mcuEventsIdentifierList[mcuEventsList.indexOf(mcuEvent)];        //^ it will get the value unless it didn't exist then it would be updated
+    if(!mcuEventsList.includes(mcuEvent)){
+        let eventAddress=mcu.newVariable();
+        let onChangeAddress=mcu.newVariable();
+        callBackIdentifier=mcu.newVariable();
+        mcu.load(mcu.controllerEventListener(eventAddress,onChangeAddress,mcuEvent,mcu.serverSend(callBackIdentifier,mcu.memoryRead(onChangeAddress))));
+        mcuEventsList.push(mcuEvent);
+        mcuEventsIdentifierList.push(callBackIdentifier);
+    }
     xtensaLinker.linkerSetAdd((data)=>{
         if(jsonParse(data)[mcu.PACKAGE_IDENTIFIER]==callBackIdentifier)
             eventCallBack(jsonParse(data)[mcu.SERVER_DATA]);
@@ -164,10 +177,33 @@ const testRunner=()=>{
 
     // mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
 
-    mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
-        console.log(`data from event >> ${data}`)
-        NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+    // mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
+    //     console.log(`data from event >> ${data}`)
+    //     NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+    // })
+
+    mcu.addEventListener(mcu.inputPin(),(data)=>{
+        // if(data==0)
+        //     console.clear();
+
+        setTimeout(() => {
+            mcu.load(mcu.logger('this is another test'))
+        }, 100);
+        
+        // console.log("this is first event")
     })
+
+    // mcu.addEventListener(mcu.inputPin(),(data)=>{
+    //     // mcu.load(mcu.led(1));
+    //     // mcu.load(mcu.delay(100));
+    //     // mcu.load(mcu.led(0));
+    //     // mcu.load(mcu.logger('this is test'))
+    //     console.log("this is second event")
+    // })
+
+    // var coun=20;
+    // while(coun--)
+    //     mcu.load(mcu.logger('this is test'))
 
 
     // mcu.load(mcu.executableStack(200,[
