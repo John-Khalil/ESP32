@@ -146,10 +146,11 @@ const increment=MCU.newVariable();
 const newFunction=mcu.newVariable();
 const newFunctionParams=mcu.newVariable();
 
+let toggleVolumeControl=1;
+
 const testRunner=()=>{
 
-    // mcu.load(mcu.led(1));
-    mcu.forceStartEnable=false;
+
 
     mcu.load(mcu.logger('code started'));
 
@@ -164,10 +165,9 @@ const testRunner=()=>{
 
     
     
-    // mcu.load(mcu.delay(500))
     mcu.load(mcu.led(0));
 
-    // mcu.load(mcu.logger(mcu.ALU(mcu.adcRead(34),'/',41)))
+
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
     //     mcu.postLogger(1),
@@ -176,46 +176,31 @@ const testRunner=()=>{
     //     mcu.delay(20)
     // ])))
 
-    // mcu.load(mcu.controllerEventListener(2000,2001,mcu.ALU(mcu.adcRead(34),'/',41),mcu.logger(mcu.memoryRead(2001))));
 
     mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
-        console.log(`data from event >> ${data}`)
-        NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+        if(toggleVolumeControl){
+            console.log(`data from event >> ${data}`)
+            NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+        }
     })
 
     mcu.addEventListener(mcu.inputPin(),(data)=>{
         if(data==0)
             console.clear();
-        // mcu.load(mcu.logger('this is another test'));
-        // mcu.forceStart();
     })
 
-    // mcu.addEventListener(mcu.inputPin(),(data)=>{
-    //     // mcu.load(mcu.led(1));
-    //     // mcu.load(mcu.delay(100));
-    //     // mcu.load(mcu.led(0));
-    //     // mcu.load(mcu.logger('this is test'))
-    //     console.log("this is second event")
-    // })
-
-    // var coun=20;
-    // while(coun--)
-    //     mcu.load(mcu.logger('this is test'))
+    mcu.addEventListener(mcu.inputPin(),(data)=>{
+        if(data==1)
+            toggleVolumeControl=toggleVolumeControl^1;
+    })
 
 
-    // mcu.load(mcu.executableStack(200,[
-    //     mcu.logger(1),
-    //     mcu.delay(500),
-    //     mcu.logger(0),
-    //     mcu.delay(500)
-    // ]));
 
 
 
 
 
     mcu.load(mcu.logger('last executable'));
-    mcu.forceStartEnable=true;
 
 }
 
