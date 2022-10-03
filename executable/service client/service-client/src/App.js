@@ -5,6 +5,7 @@ import Layout from './layouts/Layout';
 import HomePage from './components/HomePage';
 import ConsoleDynamic from './components/ConsoleDynamic';
 import NotFound from './components/NotFound';
+import AppSettings from './components/AppSettings';
 
 
 
@@ -17,6 +18,7 @@ function App() {
 					<Route index element={<HomePage/>}/>
 					<Route path="home" element={<HomePage />} />
 					<Route path="console-dynamic" element={<ConsoleDynamic />} />
+					<Route path="app-settings" element={<AppSettings />} />
 					<Route path="*" element={<NotFound />} />
 				</Route>
 			</Routes>
