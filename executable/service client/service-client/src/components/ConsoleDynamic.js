@@ -3,7 +3,7 @@ import React,{ useState,useEffect,useRef } from "react"
 const DynamicConsole=({userConsole})=>{
 	let defaultTextColor='green';
 	let defaultThemeColor='green';
-	const consoleIdentifier=userConsole.consoleIdentifier||'all-users';
+	const consoleIdentifier=userConsole.consoleIdentifier||'ALL-USERS';
 
 	const consoleInput=userConsole.consoleInput|false;
 	const consoleOutput=userConsole.consoleOutput|true;
@@ -14,17 +14,22 @@ const DynamicConsole=({userConsole})=>{
 				border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 				color:userConsole.textColor||defaultTextColor
 			}}>
-				
 
-				<>
-					{(consoleOutput)?(
-						<div className="w-[calc(100% -24)] h-[320px] m-1 p-1">
-							ffs
-							
-						</div>
-					):(<></>)}
-				</>
-				
+				<div className={`w-[calc(100% -24)] p-1 m-1 overflow-scroll rounded-lg bg-black`} style={{
+					border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
+					color:'white',
+					background:userConsole.themeColor||defaultThemeColor
+				}}>
+					<span className="float-left inline text-white font-bold" style={{}}>{consoleIdentifier}</span>
+					<button className="float-right inline underline font-bold mr-3">CLEAR</button>
+				</div>
+
+				{(consoleOutput)?(
+					<pre className="w-[calc(100% -24)] h-[320px] m-1 p-1">
+						ffs
+					</pre>
+				):(<></>)}
+
 				{(consoleInput)?(
 				
 					<div className={`w-[calc(100% -24)] p-1 m-1 overflow-scroll rounded-lg bg-black`} style={{
@@ -35,7 +40,7 @@ const DynamicConsole=({userConsole})=>{
 						<input type="text" className="w-[calc(75%)] p-1 m-1 rounded-lg bg-white mt-3" style={{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 							color:userConsole.textColor||defaultTextColor
-						}}/>
+						}} placeholder=" > Enter Command"/>
 
 						
 						
@@ -55,7 +60,7 @@ const DynamicConsole=({userConsole})=>{
 						<button className={`m-1 p-1 pl-2 pr-2 inline rounded-lg float-right mt-3`} style={{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 							color:"white",
-							background:userConsole.textColor||defaultTextColor
+							background:userConsole.themeColor||defaultThemeColor
 						}}>Send</button>
 					</div>
 				
@@ -72,6 +77,7 @@ export default function ConsoleDynamic() {
 		<>
 			<DynamicConsole userConsole={{
 				consoleInput:true,
+				// themeColor:'yellow',
 				height:200,
 				// themeColor:'rgb(0,0,0)'
 
