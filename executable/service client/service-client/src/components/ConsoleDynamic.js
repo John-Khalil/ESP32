@@ -1,6 +1,11 @@
-import React,{ useState,useEffect } from "react"
+import React,{ useState,useEffect,useRef } from "react"
 
-const DynamicConsole=()=>{
+const DynamicConsole=({userConsole})=>{
+	const defaultTextColor='yellow';
+	const defaultThemeColor='yellow';
+	const consoleInput=userConsole.consoleInput|false;
+	const consoleOutput=userConsole.consoleOutput|true;
+
 	return(
 		<>
 			
