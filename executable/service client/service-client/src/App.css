@@ -5,6 +5,11 @@
 }
 
 
+.divHeight{
+  /* height: calc( 99% - var(--height)); */
+  height: var(--height);
+}
+
 
 
 .App-logo {
