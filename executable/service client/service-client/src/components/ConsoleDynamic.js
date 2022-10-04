@@ -8,6 +8,23 @@ const DynamicConsole=({userConsole})=>{
 	const consoleInput=userConsole.consoleInput|false;
 	const consoleOutput=userConsole.consoleOutput|true;
 
+	const mainConsoleOutput=useRef();
+
+	const clearMainConsoleOutput=()=>{
+		mainConsoleOutput.current.innerHTML='';
+	}
+
+	useEffect(()=>{
+		if(userConsole.clearConsole===true)
+			clearMainConsoleOutput();
+
+		if(userConsole.consoleData!==undefined){
+			mainConsoleOutput.current.innerHTML+=userConsole.consoleData;
+			mainConsoleOutput.current.scrollTop=mainConsoleOutput.current.scrollHeight;
+		}
+
+	},[userConsole]);
+
 	return(
 		<>
 			<div className={`p-1 m-1 overflow-scroll rounded-lg bg-gray-900`} style={{
@@ -21,11 +38,13 @@ const DynamicConsole=({userConsole})=>{
 					background:userConsole.themeColor||defaultThemeColor
 				}}>
 					<span className="float-left inline text-white font-bold" style={{}}>{consoleIdentifier}</span>
-					<button className="float-right inline underline font-bold mr-3">CLEAR</button>
+					<button className="float-right inline underline font-bold mr-3" onClick={()=>{
+						clearMainConsoleOutput();
+					}}>CLEAR</button>
 				</div>
 
 				{(consoleOutput)?(
-					<pre className="w-[calc(100% -24)] h-[320px] m-1 p-1">
+					<pre className="w-[calc(100% -24)] h-[320px] m-1 p-1 overflow-scroll" ref={mainConsoleOutput}>
 						ffs
 					</pre>
 				):(<></>)}
@@ -73,13 +92,24 @@ const DynamicConsole=({userConsole})=>{
 }
 
 export default function ConsoleDynamic() {
+	const [testLog,testLogger]=useState('this is a sample text');
+	let testCounter=0;
+	useEffect(()=>{
+		setInterval(() => {
+			testLogger(`text @ ${testCounter++}\n`)
+		}, 500);
+	},[]);
 	return (
 		<>
 			<DynamicConsole userConsole={{
 				consoleInput:true,
+				// clearConsole:true,
 				// themeColor:'yellow',
 				height:200,
+				consoleData:testLog
+				// textColor:'yellow'
 				// themeColor:'rgb(0,0,0)'
+
 
 			}}/>
 		</>
