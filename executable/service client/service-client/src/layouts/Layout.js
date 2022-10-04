@@ -18,7 +18,7 @@ export default function Layout() {
 				<Link to="/app-settings"> <div className={navBarStyleElements}>Settings</div> </Link>
 			</nav>
 			<div className='m-1 p-1 text center border border-sky-800'>
-				<div className='w-full divHeight' style={{'--height':`${windowHeight}px`}}>
+				<div className='w-full divHeight overflow-scroll' style={{'--height':`${windowHeight}px`}}>
 					<Outlet/>
 				</div>
 			</div>
