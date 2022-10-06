@@ -45,7 +45,8 @@ const DynamicConsole=({userConsole})=>{
 		<>
 			<div className={`p-1 m-1 overflow-scroll rounded-lg bg-gray-900 float-left lg:w-[45%] w-[calc(100% -16)] min-w-1000`} style={{
 				border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
-				color:userConsole.textColor||defaultTextColor
+				color:userConsole.textColor||defaultTextColor,
+				display:`${userConsole.hide?'none':''}`
 			}}>
 
 				<div className={`w-[calc(100% -24)] p-1 m-1 overflow-scroll rounded-lg bg-black`} style={{
@@ -134,7 +135,8 @@ export default function ConsoleDynamic() {
 				// themeColor:'yellow',
 				height:200,
 				consoleData:consoleLog,
-				send:getConsoleInput
+				send:getConsoleInput,
+				hide:false
 				// textColor:'yellow'
 				// themeColor:'rgb(0,0,0)'
 
