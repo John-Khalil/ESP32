@@ -25,6 +25,11 @@ const DynamicConsole=({userConsole})=>{
 		mainConsoleInput.current.value='';
 	}
 
+	const hitEnter=keyDownEvent=>{
+		if(keyDownEvent.key==='Enter')
+			consoleSend();
+	}
+
 	useEffect(()=>{
 		if(userConsole.clearConsole===true)
 			clearMainConsoleOutput();
@@ -71,7 +76,7 @@ const DynamicConsole=({userConsole})=>{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 							color:userConsole.textColor||defaultTextColor,
 							width:'calc(100% - 123px)'
-						}} placeholder=" > Enter Command"/>
+						}} placeholder=" > Enter Command" onKeyDown={hitEnter}/>
 
 						{/* <div className="w-[calc(100% -150px)]">
 							<input type="text" ref={mainConsoleInput} className="p-1 m-1 rounded-lg bg-white mt-3 font-semibold" style={{
