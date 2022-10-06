@@ -9,9 +9,20 @@ const DynamicConsole=({userConsole})=>{
 	const consoleOutput=userConsole.consoleOutput|true;
 
 	const mainConsoleOutput=useRef();
+	const mainConsoleInput=useRef();
+	const consoleEnableNL=useRef();
+	const consoleEnableCR=useRef();
 
 	const clearMainConsoleOutput=()=>{
 		mainConsoleOutput.current.innerHTML='';
+	}
+
+	const consoleSend=()=>{
+		userConsole.send({
+			consoleIdentifier,
+			consoleData:`${mainConsoleInput.current.value}${consoleEnableCR.current.checked?'\r':''}${consoleEnableCR.current.checked?'\n':''}`
+		});
+		mainConsoleInput.current.value='';
 	}
 
 	useEffect(()=>{
@@ -45,7 +56,7 @@ const DynamicConsole=({userConsole})=>{
 
 				{(consoleOutput)?(
 					<pre className="w-[calc(100% -24)] h-[320px] m-1 p-1 overflow-scroll" ref={mainConsoleOutput}>
-						ffs
+						
 					</pre>
 				):(<></>)}
 
@@ -56,7 +67,7 @@ const DynamicConsole=({userConsole})=>{
 						color:userConsole.textColor||defaultTextColor
 					}}>
 
-						<input type="text" className="w-[calc(75%)] p-1 m-1 rounded-lg bg-white mt-3" style={{
+						<input type="text" ref={mainConsoleInput} className="w-[calc(75%)] p-1 m-1 rounded-lg bg-white mt-3 font-semibold" style={{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 							color:userConsole.textColor||defaultTextColor
 						}} placeholder=" > Enter Command"/>
@@ -66,11 +77,11 @@ const DynamicConsole=({userConsole})=>{
 
 						<div className="float-right p-1 block">
 							<div className="block">
-								<input type="checkbox" className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
+								<input type="checkbox" ref={consoleEnableNL} className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
 								<span className="inline-block float-right mr-1 text-white">NL</span>
 							</div>
 							<div className="block">
-								<input type="checkbox" className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
+								<input type="checkbox" ref={consoleEnableCR} className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
 								<span className="inline-block float-right mr-1 text-white">CR</span>
 							</div>
 							
@@ -80,6 +91,8 @@ const DynamicConsole=({userConsole})=>{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 							color:"white",
 							background:userConsole.themeColor||defaultThemeColor
+						}} onClick={()=>{
+							consoleSend();
 						}}>Send</button>
 					</div>
 				
@@ -92,12 +105,14 @@ const DynamicConsole=({userConsole})=>{
 }
 
 export default function ConsoleDynamic() {
-	const [testLog,testLogger]=useState('this is a sample text');
+	const [consoleLog,consoleLogger]=useState('');
 	let testCounter=0;
+	const getConsoleInput=(consoleInput)=>{
+		console.log(consoleInput.consoleIdentifier);
+		consoleLogger(consoleInput.consoleData);
+	}
 	useEffect(()=>{
-		setInterval(() => {
-			testLogger(`text @ ${testCounter++}\n`)
-		}, 500);
+		
 	},[]);
 	return (
 		<>
@@ -106,7 +121,8 @@ export default function ConsoleDynamic() {
 				// clearConsole:true,
 				// themeColor:'yellow',
 				height:200,
-				consoleData:testLog
+				consoleData:consoleLog,
+				send:getConsoleInput
 				// textColor:'yellow'
 				// themeColor:'rgb(0,0,0)'
 
