@@ -38,7 +38,7 @@ const DynamicConsole=({userConsole})=>{
 
 	return(
 		<>
-			<div className={`p-1 m-1 overflow-scroll rounded-lg bg-gray-900`} style={{
+			<div className={`p-1 m-1 overflow-scroll rounded-lg bg-gray-900 float-left lg:w-[45%] w-[calc(100% -16)] min-w-1000`} style={{
 				border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
 				color:userConsole.textColor||defaultTextColor
 			}}>
@@ -67,12 +67,19 @@ const DynamicConsole=({userConsole})=>{
 						color:userConsole.textColor||defaultTextColor
 					}}>
 
-						<input type="text" ref={mainConsoleInput} className="w-[calc(75%)] p-1 m-1 rounded-lg bg-white mt-3 font-semibold" style={{
+						<input type="text" ref={mainConsoleInput} className="p-1 m-1 rounded-lg bg-white mt-3 font-semibold" style={{
 							border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
-							color:userConsole.textColor||defaultTextColor
+							color:userConsole.textColor||defaultTextColor,
+							width:'calc(100% - 123px)'
 						}} placeholder=" > Enter Command"/>
 
-						
+						{/* <div className="w-[calc(100% -150px)]">
+							<input type="text" ref={mainConsoleInput} className="p-1 m-1 rounded-lg bg-white mt-3 font-semibold" style={{
+								border:`1px solid ${userConsole.themeColor||defaultThemeColor}`,
+								color:userConsole.textColor||defaultTextColor,
+								width:'inherit'
+							}} placeholder=" > Enter Command"/>
+						</div>						 */}
 						
 
 						<div className="float-right p-1 block">
