@@ -204,6 +204,26 @@
     "portAddress":executable,
 }
 
+
+// serial add operator
+{
+    "operator":int,
+    "rxPin":executable,
+    "txPin":executable,
+    "baudRate":executable,
+    "serialIdentifier":executable,
+    "rxAddress":executable,
+    "serialExecutable":executable
+}
+
+// serial send operator
+{
+    "operator":int,
+    "serialIdentifier":executable,
+    "serialData":executable
+}
+
+
 // 
 
 
