@@ -15,6 +15,13 @@
 
 #include "esp_task_wdt.h"
 
+#include <ESP32Servo.h>
+
+#include <SoftwareSerial.h>
+
+Servo servo;
+
+
 // typedef unsigned long loopVar;
 
 // loopVar _LOOP_COUNTER_ = 0;
@@ -2516,6 +2523,18 @@ JSON_ATTRIBUTE ADC_CHANNEL="AC";
 //timer operator
 JSON_ATTRIBUTE TIMER_SELECTOR="TS";
 
+// serial port operator
+JSON_ATTRIBUTE RX_PIN="RX";
+JSON_ATTRIBUTE TX_PIN="TX";
+JSON_ATTRIBUTE BAUD_RATE="BR";
+JSON_ATTRIBUTE SERIAL_IDENTIFIER="SI";
+JSON_ATTRIBUTE RX_ADDRESS="RA";
+JSON_ATTRIBUTE SERIAL_EXECUTABLE="SE";
+JSON_ATTRIBUTE SERIAL_DATA="SD";
+
+std::vector<SoftwareSerial>serialPortList;
+std::vector<unsigned long>serialIdentifier;
+
 std::vector<unsigned char*>executableStackElementList;
 
 unsigned short virtualControllerRecursionDepth=0;
@@ -3457,6 +3476,8 @@ void serviceExecutable(void*param){
 
 				#define VIRTUAL_CONTROLLER 0x00000200UL
 
+				#define SERVO_CONTROL 0x00000400UL
+
 			
 				console.log("\n\nuser data >> ",eventData(EVENT_DATA,tcpText,(unsigned char*)"<@>"));
 				
@@ -3516,6 +3537,24 @@ void serviceExecutable(void*param){
 						virtualControllerSafeStart(_CS(virtualControllerStack,fetch("http://192.168.1.15:766")));
 						constJsonReset();
 						free(virtualControllerStack);
+					}
+
+					if(userInstruction&SERVO_CONTROL){
+						client.write(CORS_HEADERS);
+						client.write(CLIENT_ACK);
+						client.flush();
+						client.stop();
+
+						static unsigned char testSetup;
+						if(!testSetup){
+							testSetup=1;
+							servo.setPeriodHertz(50);
+							servo.attach(25, 500, 2400);
+						}
+
+						unsigned long servoPosition=getInt32_t(json("servoPosition",tcpText));
+						servo.writeMicroseconds(servoPosition);
+						// servo.write(servoPosition);
 					}
 
 				}	
@@ -3617,6 +3656,8 @@ void setup(){
 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
 		return tcpConnectionRead;
 	}); 
+
+
 
 	// xTaskCreate(
     //     testingFuction,    // Function that should be called
