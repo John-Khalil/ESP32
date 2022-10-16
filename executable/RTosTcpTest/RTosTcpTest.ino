@@ -2967,6 +2967,30 @@ unsigned char* virtualController(unsigned char* executableObject){
 					free(timerValue);
 				timerValue=inttostring(controllerTimers[timerSelector]());
 				return CACHE_BYTES(timerValue);
+			},
+			[&](unsigned char *subExecutable){											//& SERIAL ADD OPERATOR
+				unsigned long rxPin=getInt32_t(virtualController(constJson(RX_PIN,subExecutable)));
+				unsigned long txPin=getInt32_t(virtualController(constJson(TX_PIN,subExecutable)));
+				unsigned long baudRate=getInt32_t(virtualController(constJson(BAUD_RATE,subExecutable)));
+				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
+				unsigned char *rxAddress=virtualController(constJson(RX_ADDRESS,subExecutable));
+				CACHE_BYTES(rxAddress);
+
+				// serialPortList.push_back(SoftwareSerial(rxPin,txPin));
+
+				unsigned char *serialExecutable=virtualController(constJson(SERIAL_EXECUTABLE,subExecutable));
+				CACHE_BYTES(serialExecutable);
+				unsigned char *serialMemoryObject=makeJsonObject(JSON_KEYS(),JSON_VALUES());
+				CACHE_BYTES(serialMemoryObject);
+
+				free(rxAddress);
+				free(serialExecutable);
+				free(serialMemoryObject);
+				return subExecutable;
+			},
+			[&](unsigned char *subExecutable){											//& SERIAL SEND OPERATOR
+				
+				return subExecutable;
 			}
 
 
