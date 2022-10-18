@@ -17,7 +17,7 @@
 
 #include <ESP32Servo.h>
 
-#include <SoftwareSerial.h>
+#include "SoftwareSerial.h"
 
 Servo servo;
 
@@ -2532,8 +2532,44 @@ JSON_ATTRIBUTE RX_ADDRESS="RA";
 JSON_ATTRIBUTE SERIAL_EXECUTABLE="SE";
 JSON_ATTRIBUTE SERIAL_DATA="SD";
 
-std::vector<SoftwareSerial>serialPortList;
+
+
+
+class serialPort{
+	public:
+	SoftwareSerial *serialPortInstance;
+
+	void setBaud(unsigned long baudRate){
+		serialPortInstance->begin(baudRate);
+	}
+
+
+
+	serialPort(unsigned char txPin,unsigned char rxPin,unsigned long baudRate=9600){
+		_PM(rxPin,INPUT);
+    	_PM(txPin,OUTPUT);
+		serialPortInstance=new SoftwareSerial(rxPin,txPin);
+
+	}
+
+	~serialPort(){
+		delete serialPortInstance;
+	}
+	
+};
+
+std::vector<serialPort>serialPortList;
 std::vector<unsigned long>serialIdentifier;
+
+
+
+
+
+
+
+
+
+
 
 std::vector<unsigned char*>executableStackElementList;
 
@@ -2976,7 +3012,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 				unsigned char *rxAddress=virtualController(constJson(RX_ADDRESS,subExecutable));
 				CACHE_BYTES(rxAddress);
 
-				// serialPortList.push_back(SoftwareSerial(rxPin,txPin));
+				// SoftwareSerial serialPortInstance=SoftwareSerial(rxPin,txPin);
+				// serialPortList.push_back(serialPortInstance);
+				// testAllocationList.push_back(testAllocation(5));
+
+
 
 				unsigned char *serialExecutable=virtualController(constJson(SERIAL_EXECUTABLE,subExecutable));
 				CACHE_BYTES(serialExecutable);
@@ -3680,8 +3720,6 @@ void setup(){
 		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
 		return tcpConnectionRead;
 	}); 
-
-
 
 	// xTaskCreate(
     //     testingFuction,    // Function that should be called
