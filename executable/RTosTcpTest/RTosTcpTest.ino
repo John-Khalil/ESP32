@@ -2543,13 +2543,26 @@ class serialPort{
 		serialPortInstance->begin(baudRate);
 	}
 
+	unsigned short availabe(void){
+		return serialPortInstance->available();
+	}
+
+	unsigned char read(void){
+		return serialPortInstance->read();
+	}
+
+	unsigned char isListening(void){
+		return serialPortInstance->isListening();
+	}
+
+
 
 
 	serialPort(unsigned char txPin,unsigned char rxPin,unsigned long baudRate=9600){
 		_PM(rxPin,INPUT);
     	_PM(txPin,OUTPUT);
 		serialPortInstance=new SoftwareSerial(rxPin,txPin);
-
+		serialPortInstance->begin(baudRate);
 	}
 
 	~serialPort(){
@@ -3013,7 +3026,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				CACHE_BYTES(rxAddress);
 
 				// SoftwareSerial serialPortInstance=SoftwareSerial(rxPin,txPin);
-				// serialPortList.push_back(serialPortInstance);
+				serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
 				// testAllocationList.push_back(testAllocation(5));
 
 
