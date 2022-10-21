@@ -3176,6 +3176,7 @@ void virtualControllerEventListener(void *params){
 
 			}
 		});
+		softwareSerialGetData();
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 	endTask();

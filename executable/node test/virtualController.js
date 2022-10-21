@@ -66,6 +66,9 @@ const serverSendOperator=operatorIndex++;
 const adcReadOperator=operatorIndex++;
 const timerOperator=operatorIndex++;
 
+const serialAddOperator=operatorIndex++;
+const serialSendOperator=operatorIndex++;
+
 
 const JSON_OPERATOR="OP";				// generic operator
 
@@ -142,6 +145,18 @@ const ADC_CHANNEL="AC";
 const TIMER_SELECTOR="TS";
 const millis=0;
 const micros=1;
+
+
+// serial port operator
+const RX_PIN="RX";
+const TX_PIN="TX";
+const BAUD_RATE="BR";
+const SERIAL_IDENTIFIER="SI";
+const RX_ADDRESS="RA";
+const SERIAL_EXECUTABLE="SE";
+const SERIAL_DATA="SD";
+const SERIAL_INDEX="SI";
+
 
 const delay=delayValueMS=>{
     var returnStack={};
@@ -333,6 +348,18 @@ const timer=(timerSelector=millis)=>{
     return returnStack;
 }
 
+const serialPortAdd=(rxPin,txPin,baudRate,serialIdentifier,rxAddress,serialExecutable)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=serialAddOperator;
+    returnStack[RX_PIN]=rxPin;
+    returnStack[TX_PIN]=txPin;
+    returnStack[BAUD_RATE]=baudRate;
+    returnStack[SERIAL_IDENTIFIER]=serialIdentifier;
+    returnStack[RX_ADDRESS]=rxAddress;
+    returnStack[SERIAL_EXECUTABLE]=serialExecutable;
+    return returnStack;
+}
+
 const virtualController={
     JSON_OPERATOR,
     OUTPUT_STREAM,
@@ -372,7 +399,15 @@ const virtualController={
     ADC_CHANNEL,
     TIMER_SELECTOR,
     millis,
-    micros,    
+    micros,
+    RX_PIN,
+    TX_PIN,
+    BAUD_RATE,
+    SERIAL_IDENTIFIER,
+    RX_ADDRESS,
+    SERIAL_EXECUTABLE,
+    SERIAL_DATA,
+    SERIAL_INDEX,
     newVariable,
     operationSelector,
     delay,
