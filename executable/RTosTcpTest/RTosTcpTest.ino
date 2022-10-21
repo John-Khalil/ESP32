@@ -2539,8 +2539,10 @@ class serialPort{
 	public:
 	SoftwareSerial *serialPortInstance;
 
-	void setBaud(unsigned long baudRate){
+
+	serialPort &setBaud(unsigned long baudRate){
 		serialPortInstance->begin(baudRate);
+		return *this;
 	}
 
 	unsigned short availabe(void){
@@ -2555,8 +2557,26 @@ class serialPort{
 		return serialPortInstance->isListening();
 	}
 
+	std::vector<unsigned char>serialPortReturnString;
 
+	unsigned char *getData(void){
+		if(!this->availabe())
+			return UNDEFINED;
+		while(this->availabe())
+			this->serialPortReturnString.push_back(this->read());
+		return serialPortReturnString.data();
+	}
 
+	unsigned char *sentData;
+	serialPort &send(unsigned char *txData){
+		this->sentData=txData;
+		serialPortInstance->write((char*)txData);
+		return *this;
+	}
+
+	unsigned char *preview(void){
+		return this->sentData;
+	}
 
 	serialPort(unsigned char txPin,unsigned char rxPin,unsigned long baudRate=9600){
 		_PM(rxPin,INPUT);
@@ -3026,7 +3046,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				CACHE_BYTES(rxAddress);
 
 				// SoftwareSerial serialPortInstance=SoftwareSerial(rxPin,txPin);
-				serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
+				// serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
 				// testAllocationList.push_back(testAllocation(5));
 
 
