@@ -167,6 +167,14 @@ const testRunner=()=>{
     
     mcu.load(mcu.led(0));
 
+    const serialPortAddress=mcu.newVariable();
+    const serialPortRXAddress=mcu.newVariable();
+    
+
+    mcu.load(mcu.serialPortAdd(3,1,115200,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
+
+    mcu.load(mcu.serialPortSend(serialPortAddress,"this is test"));
+
 
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
