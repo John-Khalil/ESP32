@@ -2531,6 +2531,7 @@ JSON_ATTRIBUTE SERIAL_IDENTIFIER="SI";
 JSON_ATTRIBUTE RX_ADDRESS="RA";
 JSON_ATTRIBUTE SERIAL_EXECUTABLE="SE";
 JSON_ATTRIBUTE SERIAL_DATA="SD";
+JSON_ATTRIBUTE SERIAL_INDEX="SI";
 
 
 
@@ -2578,6 +2579,19 @@ class serialPort{
 		return this->sentData;
 	}
 
+	serialPort &start(unsigned char txPin,unsigned char rxPin,unsigned long baudRate=9600){
+		_PM(rxPin,INPUT);
+    	_PM(txPin,OUTPUT);
+		serialPortInstance=new SoftwareSerial(rxPin,txPin);
+		serialPortInstance->begin(baudRate);
+		return *this;
+	}
+
+	serialPort &stop(){
+		delete serialPortInstance;
+		return *this;
+	}
+
 	serialPort(unsigned char txPin,unsigned char rxPin,unsigned long baudRate=9600){
 		_PM(rxPin,INPUT);
     	_PM(txPin,OUTPUT);
@@ -2592,7 +2606,7 @@ class serialPort{
 };
 
 std::vector<serialPort>serialPortList;
-std::vector<unsigned long>serialIdentifier;
+std::vector<unsigned long>serialIdentifierList;
 
 
 
@@ -3044,16 +3058,14 @@ unsigned char* virtualController(unsigned char* executableObject){
 				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
 				unsigned char *rxAddress=virtualController(constJson(RX_ADDRESS,subExecutable));
 				CACHE_BYTES(rxAddress);
-
-				// SoftwareSerial serialPortInstance=SoftwareSerial(rxPin,txPin);
-				// serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
-				// testAllocationList.push_back(testAllocation(5));
-
-
-
-				unsigned char *serialExecutable=virtualController(constJson(SERIAL_EXECUTABLE,subExecutable));
+				unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,subExecutable);
 				CACHE_BYTES(serialExecutable);
-				unsigned char *serialMemoryObject=makeJsonObject(JSON_KEYS(),JSON_VALUES());
+				serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
+				serialIdentifierList.push_back(serialIdentifier);
+				unsigned long serialIndex=serialPortList.size();
+
+				
+				unsigned char *serialMemoryObject=makeJsonObject(JSON_KEYS(SERIAL_INDEX,SERIAL_EXECUTABLE,RX_ADDRESS),JSON_VALUES(inttostring(serialIndex),serialExecutable,rxAddress));
 				CACHE_BYTES(serialMemoryObject);
 
 				free(rxAddress);
