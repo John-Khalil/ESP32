@@ -3074,12 +3074,22 @@ unsigned char* virtualController(unsigned char* executableObject){
 				return subExecutable;
 			},
 			[&](unsigned char *subExecutable){											//& SERIAL SEND OPERATOR
-				unsigned long baudRate=getInt32_t(virtualController(constJson(BAUD_RATE,subExecutable)));
+				unsigned char *baudRate=virtualController(constJson(BAUD_RATE,subExecutable));
 				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
 				unsigned char *serialData=virtualController(constJson(SERIAL_DATA,subExecutable));
 				CACHE_BYTES(serialData);
 
+				unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifier));
+				CACHE_BYTES(serialObject);
+				unsigned long serialIndex=getInt32_t(virtualController(constJson(SERIAL_INDEX,serialObject)));
+				
+				if(baudRate!=UNDEFINED)
+					serialPortList[serialIndex].setBaud(getInt32_t(baudRate)).send(serialData);
+				else
+					serialPortList[serialIndex].send(serialData);
+
 				free(serialData);
+				free(serialObject);
 				return subExecutable;
 			}
 
