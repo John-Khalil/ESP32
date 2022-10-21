@@ -3063,10 +3063,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 				serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
 				serialIdentifierList.push_back(serialIdentifier);
 				unsigned long serialIndex=serialPortList.size();
-
-				
+			
 				unsigned char *serialMemoryObject=makeJsonObject(JSON_KEYS(SERIAL_INDEX,SERIAL_EXECUTABLE,RX_ADDRESS),JSON_VALUES(inttostring(serialIndex),serialExecutable,rxAddress));
 				CACHE_BYTES(serialMemoryObject);
+				highLevelMemory(smartPointer(serialIdentifier),serialMemoryObject);		// storing object in memory
 
 				free(rxAddress);
 				free(serialExecutable);
@@ -3074,7 +3074,12 @@ unsigned char* virtualController(unsigned char* executableObject){
 				return subExecutable;
 			},
 			[&](unsigned char *subExecutable){											//& SERIAL SEND OPERATOR
-				
+				unsigned long baudRate=getInt32_t(virtualController(constJson(BAUD_RATE,subExecutable)));
+				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
+				unsigned char *serialData=virtualController(constJson(SERIAL_DATA,subExecutable));
+				CACHE_BYTES(serialData);
+
+				free(serialData);
 				return subExecutable;
 			}
 
