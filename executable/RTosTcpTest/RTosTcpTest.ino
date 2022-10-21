@@ -2563,6 +2563,7 @@ class serialPort{
 	unsigned char *getData(void){
 		if(!this->availabe())
 			return UNDEFINED;
+		serialPortReturnString.clear();
 		while(this->availabe())
 			this->serialPortReturnString.push_back(this->read());
 		return serialPortReturnString.data();
@@ -2607,14 +2608,6 @@ class serialPort{
 
 std::vector<serialPort>serialPortList;
 std::vector<unsigned long>serialIdentifierList;
-
-
-
-
-
-
-
-
 
 
 
@@ -3118,6 +3111,28 @@ unsigned char *virtualControllerSafeStart(unsigned char *executableObject){
 	awaitVirtualController();
 	return virtualController(executableObject);
 }
+
+
+
+void softwareSerialGetData(void){
+	during(serialPortList.size(),(unsigned long index){
+		unsigned char *dataFromSerialPort;
+		if((dataFromSerialPort=serialPortList[index].getData())!=UNDEFINED){
+			unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
+			CACHE_BYTES(serialObject);
+			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
+			highLevelMemory(smartPointer(rxAddress),dataFromSerialPort);
+			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
+			CACHE_BYTES(serialExecutable);
+			
+			virtualControllerSafeStart(serialExecutable);
+
+			free(serialExecutable);
+			free(serialObject);
+		}
+	});
+}
+
 
 void virtualControllerEventListener(void *params){
 	unsigned long eventCheckerCounter=0;
