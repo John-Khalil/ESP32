@@ -3123,7 +3123,7 @@ void softwareSerialGetData(void){
 			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
 			highLevelMemory(smartPointer(rxAddress),dataFromSerialPort);
 			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
-			CACHE_BYTES(serialExecutable);
+			CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
 			virtualControllerSafeStart(serialExecutable);
 
