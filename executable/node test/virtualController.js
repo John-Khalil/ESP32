@@ -360,6 +360,14 @@ const serialPortAdd=(rxPin,txPin,baudRate,serialIdentifier,rxAddress,serialExecu
     return returnStack;
 }
 
+const serialPortSend=(serialIdentifier,serialData)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=serialSendOperator;
+    returnStack[SERIAL_IDENTIFIER]=serialIdentifier;
+    returnStack[SERIAL_DATA]=serialData;
+    return returnStack;
+}
+
 const virtualController={
     JSON_OPERATOR,
     OUTPUT_STREAM,
@@ -432,7 +440,9 @@ const virtualController={
     ALU,
     serverSend,
     adcRead,
-    timer
+    timer,
+    serialPortAdd,
+    serialPortSend
 }
 
 export default virtualController;
