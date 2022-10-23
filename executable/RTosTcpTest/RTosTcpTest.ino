@@ -2546,7 +2546,7 @@ class serialPort{
 		return *this;
 	}
 
-	unsigned short availabe(void){
+	unsigned short available(void){
 		return serialPortInstance->available();
 	}
 
@@ -2558,20 +2558,37 @@ class serialPort{
 		return serialPortInstance->isListening();
 	}
 
-	#define SERIAL_PORT_BUFFER_SIZE 128
-	unsigned char serialPortReturnString[SERIAL_PORT_BUFFER_SIZE]={};//(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
+	// #define SERIAL_PORT_BUFFER_SIZE 128
+	// unsigned char serialPortReturnString[SERIAL_PORT_BUFFER_SIZE]={};//(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
 
 	unsigned char *getData(void){
-		if(!this->availabe())
+		if(!this->available())
 			return UNDEFINED;
-		CLR(serialPortReturnString);
+		// CLR(serialPortReturnString);
+
+		static unsigned char *serialPortReturnString=NULL;
+		if(serialPortReturnString!=NULL)
+			free(serialPortReturnString);
+
+		serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
 		unsigned short stringReadCounter=0;
-		while(this->availabe())
-			if(stringReadCounter<SERIAL_PORT_BUFFER_SIZE)
-				serialPortReturnString[stringReadCounter++]=this->read();
-			else
-				this->read();
+		while(this->available())
+			serialPortReturnString[stringReadCounter++]=this->read();
 		return serialPortReturnString;
+	}
+
+	// unsigned char *getData(unsigned char *serialPortBufferRX){
+	// 	if(!this->available())
+	// 		return UNDEFINED;
+		
+	// 	unsigned short stringReadCounter=0;
+	// 	while(this->available())
+	// 		serialPortBufferRX[stringReadCounter++]=this->read();
+	// 	return serialPortBufferRX;
+	// }
+
+	SoftwareSerial &serialPortInternalInstance(void){
+		return *serialPortInstance;
 	}
 
 	unsigned char *sentData;
@@ -2595,7 +2612,6 @@ class serialPort{
 
 	serialPort &stop(){
 		delete serialPortInstance;
-		free(serialPortReturnString);
 		return *this;
 	}
 
@@ -3126,24 +3142,34 @@ unsigned char *virtualControllerSafeStart(unsigned char *executableObject){
 
 void softwareSerialGetData(void){
 	during(serialPortList.size(),(unsigned long index){
-		unsigned char *dataFromSerialPort;
-		if((dataFromSerialPort=serialPortList[index].getData())!=UNDEFINED){
+		unsigned char *serialPortDataAvailable;
+		if((serialPortDataAvailable=serialPortList[index].getData())!=UNDEFINED){
+			Serial.println((char*)serialPortDataAvailable);
+
 			
-			console.log("dataFromSerialPort >> ",dataFromSerialPort);
-			console.log("serialIdentifierList[index] >> ",serialIdentifierList[index]);
+
+			unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
+			CACHE_BYTES(serialObject);
+			Serial.println((char*)serialObject);
 
 
-			// unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
-			// CACHE_BYTES(serialObject);
-			// unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
-			// highLevelMemory(smartPointer(rxAddress),dataFromSerialPort);
-			// unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
-			// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
+			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
+			highLevelMemory(smartPointer(rxAddress),serialPortDataAvailable);
+
+			Serial.print("highLevelMemory >> ");
+			Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
+
+			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
+			CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
-			// // virtualControllerSafeStart(serialExecutable);
+			
+			Serial.print("serialExecutable >> ");
+			Serial.println((char*)serialExecutable);
 
-			// free(serialExecutable);
-			// free(serialObject);
+			virtualControllerSafeStart(serialExecutable);
+
+			free(serialExecutable);
+			free(serialObject);
 		}
 	});
 }
