@@ -3058,9 +3058,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 				CACHE_BYTES(rxAddress);
 				unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,subExecutable);
 				CACHE_BYTES(serialExecutable);
+				
+				unsigned long serialIndex=serialPortList.size();
 				serialPortList.push_back(serialPort(txPin,rxPin,baudRate));
 				serialIdentifierList.push_back(serialIdentifier);
-				unsigned long serialIndex=serialPortList.size();
 			
 				unsigned char *serialMemoryObject=makeJsonObject(JSON_KEYS(SERIAL_INDEX,SERIAL_EXECUTABLE,RX_ADDRESS),JSON_VALUES(inttostring(serialIndex),serialExecutable,rxAddress));
 				CACHE_BYTES(serialMemoryObject);
@@ -3079,7 +3080,8 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 				unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifier));
 				CACHE_BYTES(serialObject);
-				unsigned long serialIndex=getInt32_t(virtualController(constJson(SERIAL_INDEX,serialObject)));
+				unsigned long serialIndex=getInt32_t(virtualController(constJson(SERIAL_INDEX,serialObject)));				
+				
 				
 				if(baudRate!=UNDEFINED)
 					serialPortList[serialIndex].setBaud(getInt32_t(baudRate)).send(serialData);
