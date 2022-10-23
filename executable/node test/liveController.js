@@ -171,9 +171,9 @@ const testRunner=()=>{
     const serialPortRXAddress=mcu.newVariable();
     
 
-    mcu.load(mcu.serialPortAdd(3,1,115200,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
+    mcu.load(mcu.serialPortAdd(26,27,74880,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
 
-    mcu.load(mcu.serialPortSend(serialPortAddress,"this is test"));
+    // mcu.load(mcu.serialPortSend(serialPortAddress,"this is new test"));
 
 
     

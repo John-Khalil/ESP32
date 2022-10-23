@@ -2558,15 +2558,17 @@ class serialPort{
 		return serialPortInstance->isListening();
 	}
 
-	std::vector<unsigned char>serialPortReturnString;
+	#define SERIAL_PORT_BUFFER_SIZE 128
+	unsigned char *serialPortReturnString=(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
 
 	unsigned char *getData(void){
 		if(!this->availabe())
 			return UNDEFINED;
-		serialPortReturnString.clear();
+		CLR(serialPortReturnString);
+		unsigned short stringReadCounter=0;
 		while(this->availabe())
-			this->serialPortReturnString.push_back(this->read());
-		return serialPortReturnString.data();
+			serialPortReturnString[stringReadCounter++]=this->read()*((stringReadCounter-1)<SERIAL_PORT_BUFFER_SIZE);
+		return serialPortReturnString;
 	}
 
 	unsigned char *sentData;
@@ -2590,6 +2592,7 @@ class serialPort{
 
 	serialPort &stop(){
 		delete serialPortInstance;
+		free(serialPortReturnString);
 		return *this;
 	}
 
@@ -2601,7 +2604,9 @@ class serialPort{
 	}
 
 	~serialPort(){
-		delete serialPortInstance;
+		// delete serialPortInstance;
+		// free(serialPortReturnString);
+		console.log("~serialPort");
 	}
 	
 };
@@ -3176,7 +3181,7 @@ void virtualControllerEventListener(void *params){
 
 			}
 		});
-		softwareSerialGetData();
+		// softwareSerialGetData();
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 	endTask();
@@ -3199,10 +3204,18 @@ void virtualControllerEventListener(void *params){
 
 void testingFuction(void * uselessParam){
 
-	while(1){
-		_delay_ms(1000);
-		console.log("analogRead(0) >> ",analogRead(34));
-	}
+	// serialPortList.push_back(serialPort(27,26,74880));
+	// serialPortList[0].send((unsigned char*)"this is test\n");
+
+	// serialPort testPort(27,26,9600);
+	// testPort.send((unsigned char*)"this is test\n");
+
+	// while(1){
+	// 	unsigned char *testRead;
+	// 	while((testRead=serialPortList[0].getData())==UNDEFINED)_delay_ms(150);
+	// 	console.log("testRead >> ",testRead);
+	// }
+
 	
 	vTaskDelete(NULL);
 }
