@@ -2559,7 +2559,7 @@ class serialPort{
 	}
 
 	#define SERIAL_PORT_BUFFER_SIZE 128
-	unsigned char *serialPortReturnString=(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
+	unsigned char serialPortReturnString[SERIAL_PORT_BUFFER_SIZE]={};//(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
 
 	unsigned char *getData(void){
 		if(!this->availabe())
@@ -2567,7 +2567,10 @@ class serialPort{
 		CLR(serialPortReturnString);
 		unsigned short stringReadCounter=0;
 		while(this->availabe())
-			serialPortReturnString[stringReadCounter++]=this->read()*((stringReadCounter-1)<SERIAL_PORT_BUFFER_SIZE);
+			if(stringReadCounter<SERIAL_PORT_BUFFER_SIZE)
+				serialPortReturnString[stringReadCounter++]=this->read();
+			else
+				this->read();
 		return serialPortReturnString;
 	}
 
@@ -3125,17 +3128,22 @@ void softwareSerialGetData(void){
 	during(serialPortList.size(),(unsigned long index){
 		unsigned char *dataFromSerialPort;
 		if((dataFromSerialPort=serialPortList[index].getData())!=UNDEFINED){
-			unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
-			CACHE_BYTES(serialObject);
-			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
-			highLevelMemory(smartPointer(rxAddress),dataFromSerialPort);
-			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
-			CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
-			virtualControllerSafeStart(serialExecutable);
+			console.log("dataFromSerialPort >> ",dataFromSerialPort);
+			console.log("serialIdentifierList[index] >> ",serialIdentifierList[index]);
 
-			free(serialExecutable);
-			free(serialObject);
+
+			// unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
+			// CACHE_BYTES(serialObject);
+			// unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
+			// highLevelMemory(smartPointer(rxAddress),dataFromSerialPort);
+			// unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
+			// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
+			
+			// // virtualControllerSafeStart(serialExecutable);
+
+			// free(serialExecutable);
+			// free(serialObject);
 		}
 	});
 }
@@ -3183,7 +3191,7 @@ void virtualControllerEventListener(void *params){
 
 			}
 		});
-		// softwareSerialGetData();
+		softwareSerialGetData();
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 	endTask();
