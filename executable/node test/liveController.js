@@ -12,6 +12,14 @@ import virtualController from './virtualController.js';
 
 console.clear();
 
+const encode64=(str)=>{
+    return Buffer.from(str).toString('base64');
+}
+
+const decode64=(str)=>{
+    return Buffer.from(str,'base64').toString('utf-8');
+}
+
 const deviceIP='192.168.1.15';
 
 const app =express();
@@ -172,10 +180,13 @@ const testRunner=()=>{
     
 
     mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
+    // mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,{}));
 
-    mcu.load(mcu.serialPortSend(serialPortAddress,"this is new test\n"));
+    // mcu.load(mcu.serialPortSend(serialPortAddress,"this is new test\n"));
 
-
+    // mcu.addEventListener(mcu.memoryRead(serialPortRXAddress),(data)=>{
+    //     console.log(`data from event >> ${decode64(data)}`)
+    // })
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
     //     mcu.postLogger(1),

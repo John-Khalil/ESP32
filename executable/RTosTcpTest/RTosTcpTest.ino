@@ -3152,31 +3152,30 @@ void softwareSerialGetData(void){
 	during(serialPortList.size(),(unsigned long index){
 		unsigned char *serialPortDataAvailable;
 		if((serialPortDataAvailable=serialPortList[index].getData())!=UNDEFINED){
-			Serial.println((char*)serialPortDataAvailable);
+			
 
 			
 
 			unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
 			CACHE_BYTES(serialObject);
-			Serial.println((char*)serialObject);
+			
 
 
 			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
+			smartPointer(rxAddress,DELETE_BUFFER);
 			highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
 
-			Serial.print("highLevelMemory >> ");
-			Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
+			
 
 			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
-			CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
+			// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
 			
-			Serial.print("serialExecutable >> ");
-			Serial.println((char*)serialExecutable);
+			
 
 			virtualControllerSafeStart(serialExecutable);
 
-			free(serialExecutable);
+			// free(serialExecutable);
 			free(serialObject);
 		}
 	});
