@@ -2568,15 +2568,21 @@ class serialPort{
 			return UNDEFINED;
 		// CLR(serialPortReturnString);
 
-		static unsigned char *serialPortReturnString=NULL;
-		if(serialPortReturnString!=NULL)
-			free(serialPortReturnString);
+		static unsigned char *serialPortReturnStringBase64=NULL;
+		if(serialPortReturnStringBase64!=NULL)
+			free(serialPortReturnStringBase64);
 
-		serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
+		serialPortReturnStringBase64=(unsigned char*)calloc(((this->available()*1.333334)+1),sizeof(unsigned char));
+
+		unsigned char *serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
+
 		unsigned short stringReadCounter=0;
 		while(this->available())
 			serialPortReturnString[stringReadCounter++]=this->read();
-		return serialPortReturnString;
+		
+		base64(serialPortReturnString,serialPortReturnStringBase64);
+		free(serialPortReturnString);
+		return serialPortReturnStringBase64;
 	}
 
 	// unsigned char *getData(unsigned char *serialPortBufferRX){

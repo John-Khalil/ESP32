@@ -39,7 +39,7 @@ const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 let readFeedBackCounter=0;
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
+    // console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((dataFromServer)=>{
