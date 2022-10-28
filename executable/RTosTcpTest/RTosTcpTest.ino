@@ -19,6 +19,8 @@
 
 #include "SoftwareSerial.h"
 
+#include "BasicStepperDriver.h"
+
 Servo servo;
 
 
@@ -3154,7 +3156,7 @@ void softwareSerialGetData(void){
 
 
 			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
-			highLevelMemory(smartPointer(rxAddress),serialPortDataAvailable);
+			highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
 
 			Serial.print("highLevelMemory >> ");
 			Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
@@ -3251,6 +3253,25 @@ void testingFuction(void * uselessParam){
 	// 	while((testRead=serialPortList[0].getData())==UNDEFINED)_delay_ms(150);
 	// 	console.log("testRead >> ",testRead);
 	// }
+
+	#define MOTOR_STEPS 200
+	#define RPM 1000
+
+	#define MICROSTEPS 1
+
+	#define DIR 33
+	#define STEP 32
+
+	BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
+
+	stepper.begin(RPM, MICROSTEPS);
+
+	while(1){
+		stepper.rotate(360);
+		_delay_ms(1000);
+		stepper.move(-MOTOR_STEPS*MICROSTEPS);
+		_delay_ms(1000);
+	}
 
 	
 	vTaskDelete(NULL);
