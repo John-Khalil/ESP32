@@ -3132,14 +3132,20 @@ unsigned char* virtualController(unsigned char* executableObject){
 			},
 			[&](unsigned char *subExecutable){											//& SERIAL READ OPERATOR
 				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
-				unsigned char *returnSerialPortData=UNDEFINED;
-				during(serialPortList.size(),(unsigned long index){
-					if(serialIdentifier==serialIdentifierList[index]){
-						returnSerialPortData=serialPortList[index].getData();
-					}
-				});
-				Serial.println((char*)returnSerialPortData);
-				return returnSerialPortData;
+				// unsigned char *returnSerialPortData=UNDEFINED;
+				// during(serialPortList.size(),(unsigned long index){
+				// 	if(serialIdentifier==serialIdentifierList[index]){
+				// 		returnSerialPortData=serialPortList[index].getData();
+				// 	}
+				// });
+				unsigned short serialPortListIndex=serialIdentifierList.size();
+				while((serialIdentifierList[--serialPortListIndex]!=serialIdentifier)&&serialPortListIndex);
+				if((serialIdentifierList[serialPortListIndex]==serialIdentifier)){
+					Serial.println(serialIdentifierList[serialPortListIndex]);
+					return (unsigned char*)"manga";//serialPortList[serialIdentifier].getData();
+				}
+				// Serial.println((char*)returnSerialPortData);
+				return UNDEFINED;
 			}
 
 
