@@ -225,7 +225,11 @@
 
 
 
-// serial
+// serial read operator
+{
+    "operator":int,
+    "serialIdentifier":executable
+}
 
 // 
 

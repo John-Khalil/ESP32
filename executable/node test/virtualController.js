@@ -68,6 +68,7 @@ const timerOperator=operatorIndex++;
 
 const serialAddOperator=operatorIndex++;
 const serialSendOperator=operatorIndex++;
+const serialReadOperator=operatorIndex++;
 
 
 const JSON_OPERATOR="OP";				// generic operator
@@ -368,6 +369,13 @@ const serialPortSend=(serialIdentifier,serialData)=>{
     return returnStack;
 }
 
+const serialPortRead=(serialIdentifier)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=serialReadOperator;
+    returnStack[SERIAL_IDENTIFIER]=serialIdentifier;
+    return returnStack;
+}
+
 const virtualController={
     JSON_OPERATOR,
     OUTPUT_STREAM,
@@ -442,7 +450,8 @@ const virtualController={
     adcRead,
     timer,
     serialPortAdd,
-    serialPortSend
+    serialPortSend,
+    serialPortRead
 }
 
 export default virtualController;

@@ -2577,10 +2577,10 @@ class serialPort{
 		unsigned short stringReadCounter=0;
 		while(this->available())
 			serialPortReturnString[stringReadCounter++]=this->read();
-		_CS(serialPortReturnStringBase64,(char*)"\"\"");
+		_CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
 		base64(serialPortReturnString,serialPortReturnStringBase64+2);
 		free(serialPortReturnString);
-		_CS(serialPortReturnStringBase64,(char*)"\"\"");
+		_CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
 		return serialPortReturnStringBase64;
 	}
 
@@ -3129,6 +3129,16 @@ unsigned char* virtualController(unsigned char* executableObject){
 				free(serialData);
 				free(serialObject);
 				return subExecutable;
+			},
+			[&](unsigned char *subExecutable){											//& SERIAL READ OPERATOR
+				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
+				unsigned char *returnSerialPortData=UNDEFINED;
+				during(serialPortList.size(),(unsigned long index){
+					if(serialIdentifier==index){
+						returnSerialPortData=serialPortList[index].getData();
+					}
+				}
+				return returnSerialPortData;
 			}
 
 
@@ -3235,7 +3245,7 @@ void virtualControllerEventListener(void *params){
 
 			}
 		});
-		softwareSerialGetData();
+		// softwareSerialGetData();
 		_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 	}
 	endTask();
