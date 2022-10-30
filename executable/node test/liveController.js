@@ -47,7 +47,7 @@ const xtensaLinker=new globalLinker(hostServerConfig,globalUserCredentials);
 
 let readFeedBackCounter=0;
 xtensaLinker.linkerSetAdd((dataFromServer)=>{
-    // console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
+    console.log(`read feedBack @ ${readFeedBackCounter++} >> `,dataFromServer);
 })
 
 xtensaLinker.linkerSendAdd((dataFromServer)=>{
@@ -204,13 +204,14 @@ const testRunner=()=>{
     // }, 1200);
 
     mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
+
     // mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,{}));
 
     // mcu.load(mcu.serialPortSend(serialPortAddress,"this is new test\n"));
 
-    // mcu.addEventListener(mcu.memoryRead(serialPortRXAddress),(data)=>{
-    //     console.log(`data from event >> ${decode64(data)}`)
-    // })
+    mcu.addEventListener(mcu.serialPortRead(serialPortAddress),(data)=>{
+        console.log(`data from event >> ${(data)}`)
+    })
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
     //     mcu.postLogger(1),

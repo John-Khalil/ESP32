@@ -3134,10 +3134,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
 				unsigned char *returnSerialPortData=UNDEFINED;
 				during(serialPortList.size(),(unsigned long index){
-					if(serialIdentifier==index){
+					if(serialIdentifier==serialIdentifierList[index]){
 						returnSerialPortData=serialPortList[index].getData();
 					}
-				}
+				});
+				Serial.println((char*)returnSerialPortData);
 				return returnSerialPortData;
 			}
 
