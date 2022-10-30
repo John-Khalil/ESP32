@@ -3107,7 +3107,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 
 				free(rxAddress);
 				free(serialExecutable);
-				free(serialMemoryObject);
+				free(serialMemoryObject); 
 				return subExecutable;
 			},
 			[&](unsigned char *subExecutable){											//& SERIAL SEND OPERATOR
