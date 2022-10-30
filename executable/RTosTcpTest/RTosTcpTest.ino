@@ -2572,16 +2572,15 @@ class serialPort{
 		if(serialPortReturnStringBase64!=NULL)
 			free(serialPortReturnStringBase64);
 
-		serialPortReturnStringBase64=(unsigned char*)calloc(((this->available()*1.333334)+1),sizeof(unsigned char));
-
+		serialPortReturnStringBase64=(unsigned char*)calloc(((this->available()*1.333334)+6),sizeof(unsigned char));
 		unsigned char *serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
-
 		unsigned short stringReadCounter=0;
 		while(this->available())
 			serialPortReturnString[stringReadCounter++]=this->read();
-		
-		base64(serialPortReturnString,serialPortReturnStringBase64);
+		_CS(serialPortReturnStringBase64,(char*)"\"\"");
+		base64(serialPortReturnString,serialPortReturnStringBase64+2);
 		free(serialPortReturnString);
+		_CS(serialPortReturnStringBase64,(char*)"\"\"");
 		return serialPortReturnStringBase64;
 	}
 
@@ -2594,6 +2593,18 @@ class serialPort{
 	// 		serialPortBufferRX[stringReadCounter++]=this->read();
 	// 	return serialPortBufferRX;
 	// }
+
+
+
+		// _CS(serialPortReturnString,(unsigned char*)"\"\"");
+		// unsigned short stringReadCounter=stringCounter(serialPortReturnString);
+		// while(this->available())
+		// 	serialPortReturnString[stringReadCounter++]=this->read();
+		// _CS(serialPortReturnString,(unsigned char*)"\"\"");
+		// base64(serialPortReturnString,serialPortReturnStringBase64);
+		// free(serialPortReturnString);
+
+
 
 	SoftwareSerial &serialPortInternalInstance(void){
 		return *serialPortInstance;
@@ -3162,15 +3173,15 @@ void softwareSerialGetData(void){
 
 
 			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
-			smartPointer(rxAddress,DELETE_BUFFER);
-			highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
-
+			// smartPointer(rxAddress,DELETE_BUFFER);
+			// highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
+			highLevelMemory(smartPointer(rxAddress),serialPortDataAvailable);
 			
 
 			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
 			// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
-			
+			Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
 			
 
 			virtualControllerSafeStart(serialExecutable);

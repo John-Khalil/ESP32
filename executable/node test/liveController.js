@@ -133,6 +133,23 @@ mcu.addEventListener=(mcuEvent,eventCallBack)=>{
 
 }
 
+mcu.addSerialPort=(rxPin,txPin,baudRate,serialPortCallback)=>{
+    const newSerialPortAddress=mcu.newVariable();
+    const newSerialPortRXAddress=mcu.newVariable();
+    mcu.load(mcu.serialPortAdd(rxPin,txPin,baudRate,newSerialPortAddress,newSerialPortRXAddress,mcu.serverSend(newSerialPortAddress,mcu.memoryRead(newSerialPortRXAddress))));
+    xtensaLinker.linkerSetAdd((data)=>{
+        if(jsonParse(data)[mcu.PACKAGE_IDENTIFIER]==newSerialPortAddress)
+        serialPortCallback((jsonParse(data)[mcu.SERVER_DATA]));
+    })
+    return {
+        serialPortAddress:newSerialPortAddress,
+        serialPortRXAddress:newSerialPortRXAddress,
+        send:(txData)=>{
+            mcu.load(mcu.serialPortSend(newSerialPortAddress,txData));
+        }
+    }
+}
+
 
 mcu.led=ledValue=>{
     return mcu.digitalOutput(1,14,0,[ledValue]);
@@ -178,6 +195,13 @@ const testRunner=()=>{
     const serialPortAddress=mcu.newVariable();
     const serialPortRXAddress=mcu.newVariable();
     
+    // const serial0=mcu.addSerialPort(26,27,38400,(rxData)=>{
+    //     console.log(rxData);
+    // })
+
+    // setTimeout(() => {
+    //     serial0.send("this is test\n");
+    // }, 1200);
 
     mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
     // mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,{}));
