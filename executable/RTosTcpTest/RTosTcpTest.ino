@@ -2559,13 +2559,9 @@ class serialPort{
 		return serialPortInstance->isListening();
 	}
 
-	// #define SERIAL_PORT_BUFFER_SIZE 128
-	// unsigned char serialPortReturnString[SERIAL_PORT_BUFFER_SIZE]={};//(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
-
 	unsigned char *getData(void){
 		if(!this->available())
 			return UNDEFINED;
-		// CLR(serialPortReturnString);
 
 
 		static unsigned char *serialPortReturnStringBase64=NULL;
@@ -2586,27 +2582,6 @@ class serialPort{
 
 		return serialPortReturnStringBase64;
 	}
-
-	// unsigned char *getData(unsigned char *serialPortBufferRX){
-	// 	if(!this->available())
-	// 		return UNDEFINED;
-		
-	// 	unsigned short stringReadCounter=0;
-	// 	while(this->available())
-	// 		serialPortBufferRX[stringReadCounter++]=this->read();
-	// 	return serialPortBufferRX;
-	// }
-
-
-
-		// _CS(serialPortReturnString,(unsigned char*)"\"\"");
-		// unsigned short stringReadCounter=stringCounter(serialPortReturnString);
-		// while(this->available())
-		// 	serialPortReturnString[stringReadCounter++]=this->read();
-		// _CS(serialPortReturnString,(unsigned char*)"\"\"");
-		// base64(serialPortReturnString,serialPortReturnStringBase64);
-		// free(serialPortReturnString);
-
 
 
 	SoftwareSerial &serialPortInternalInstance(void){
@@ -2645,9 +2620,7 @@ class serialPort{
 	}
 
 	~serialPort(){
-		// delete serialPortInstance;
-		// free(serialPortReturnString);
-		Serial.println("~serialPort");
+		console.log("~serialPort");
 	}
 	
 };
@@ -3139,12 +3112,6 @@ unsigned char* virtualController(unsigned char* executableObject){
 			},
 			[&](unsigned char *subExecutable){											//& SERIAL READ OPERATOR
 				unsigned long serialIdentifier=getInt32_t(virtualController(constJson(SERIAL_IDENTIFIER,subExecutable)));
-				// unsigned char *returnSerialPortData=UNDEFINED;
-				// during(serialPortList.size(),(unsigned long index){
-				// 	if(serialIdentifier==serialIdentifierList[index]){
-				// 		returnSerialPortData=serialPortList[index].getData();
-				// 	}
-				// });
 				unsigned short serialPortListIndex=serialIdentifierList.size();
 				while((serialIdentifierList[--serialPortListIndex]!=serialIdentifier)&&serialPortListIndex);
 				if((serialIdentifierList[serialPortListIndex]==serialIdentifier)){
