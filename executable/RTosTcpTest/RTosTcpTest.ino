@@ -3115,7 +3115,7 @@ unsigned char* virtualController(unsigned char* executableObject){
 				unsigned short serialPortListIndex=serialIdentifierList.size();
 				while((serialIdentifierList[--serialPortListIndex]!=serialIdentifier)&&serialPortListIndex);
 				if((serialIdentifierList[serialPortListIndex]==serialIdentifier)){
-					return serialPortList[serialPortListIndex].getData();
+					return inttostring(serialPortList[serialPortListIndex].available());
 				}
 				return UNDEFINED;
 			}
@@ -3149,36 +3149,36 @@ unsigned char *virtualControllerSafeStart(unsigned char *executableObject){
 
 
 void softwareSerialGetData(void){
-	during(serialPortList.size(),(unsigned long index){
-		unsigned char *serialPortDataAvailable;
-		if((serialPortDataAvailable=serialPortList[index].getData())!=UNDEFINED){
+	// during(serialPortList.size(),(unsigned long index){
+	// 	unsigned char *serialPortDataAvailable;
+	// 	if((serialPortDataAvailable=serialPortList[index].getData())!=UNDEFINED){
 			
 
 			
 
-			unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
-			CACHE_BYTES(serialObject);
+	// 		unsigned char *serialObject=highLevelMemory(smartPointer(serialIdentifierList[index]));
+	// 		CACHE_BYTES(serialObject);
 			
 
 
-			unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
-			// smartPointer(rxAddress,DELETE_BUFFER);
-			// highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
-			highLevelMemory(smartPointer(rxAddress),serialPortDataAvailable);
+	// 		unsigned long rxAddress=getInt32_t(constJson(RX_ADDRESS,serialObject));
+	// 		// smartPointer(rxAddress,DELETE_BUFFER);
+	// 		// highLevelMemory(smartPointer(rxAddress),$("\"\"",serialPortDataAvailable,"\"\""));		// this was a very hard to find, and i really dont get it
+	// 		highLevelMemory(smartPointer(rxAddress),serialPortDataAvailable);
 			
 
-			unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
-			// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
+	// 		unsigned char *serialExecutable=constJson(SERIAL_EXECUTABLE,serialObject);
+	// 		// CACHE_BYTES(serialExecutable);		//! this shouldn't be cached, maybe we can save memory
 			
-			Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
+	// 		Serial.println((char*)highLevelMemory(smartPointer(rxAddress)));
 			
 
-			virtualControllerSafeStart(serialExecutable);
+	// 		virtualControllerSafeStart(serialExecutable);
 
-			// free(serialExecutable);
-			free(serialObject);
-		}
-	});
+	// 		// free(serialExecutable);
+	// 		free(serialObject);
+	// 	}
+	// });
 }
 
 
