@@ -205,9 +205,9 @@ const testRunner=()=>{
 
     mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
     
-    mcu.addEventListener(mcu.inputPin(),(data)=>{
-        console.log(`data from event >> ${(data)}`)
-    })
+    // mcu.addEventListener(mcu.inputPin(),(data)=>{
+    //     console.log(`data from event >> ${(data)}`)
+    // })
 
     // mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,{}));
 

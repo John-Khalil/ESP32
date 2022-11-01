@@ -2537,7 +2537,6 @@ JSON_ATTRIBUTE SERIAL_INDEX="SI";
 
 
 
-
 class serialPort{
 	public:
 	SoftwareSerial *serialPortInstance;
@@ -2564,24 +2563,33 @@ class serialPort{
 	// unsigned char serialPortReturnString[SERIAL_PORT_BUFFER_SIZE]={};//(unsigned char*)calloc(SERIAL_PORT_BUFFER_SIZE,sizeof(unsigned char));
 
 	unsigned char *getData(void){
-		if(!this->available())
-			return UNDEFINED;
-		// CLR(serialPortReturnString);
+		return UNDEFINED;
+		// if(!this->available())
+		// 	return UNDEFINED;
+		// // CLR(serialPortReturnString);
+		
+		// Serial.println(this->available());
+		// return (unsigned char*)"manga";
 
-		static unsigned char *serialPortReturnStringBase64=NULL;
-		if(serialPortReturnStringBase64!=NULL)
-			free(serialPortReturnStringBase64);
 
-		serialPortReturnStringBase64=(unsigned char*)calloc(((this->available()*1.333334)+6),sizeof(unsigned char));
-		unsigned char *serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
-		unsigned short stringReadCounter=0;
-		while(this->available())
-			serialPortReturnString[stringReadCounter++]=this->read();
-		_CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
-		base64(serialPortReturnString,serialPortReturnStringBase64+2);
-		free(serialPortReturnString);
-		_CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
-		return serialPortReturnStringBase64;
+		// static unsigned char *serialPortReturnStringBase64=NULL;
+		// if(serialPortReturnStringBase64!=NULL)
+		// 	free(serialPortReturnStringBase64);
+
+		// serialPortReturnStringBase64=(unsigned char*)calloc(((this->available()*1.333334)+6),sizeof(unsigned char));
+		// unsigned char *serialPortReturnString=(unsigned char*)calloc((this->available()+1),sizeof(unsigned char));
+
+		// unsigned short stringReadCounter=0;
+		// while(this->available())
+		// 	serialPortReturnString[stringReadCounter++]=this->read();
+
+		// _CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
+		// base64(serialPortReturnString,serialPortReturnStringBase64+2);
+		// free(serialPortReturnString);
+		// _CS(serialPortReturnStringBase64,(unsigned char*)"\"\"");
+
+		// Serial.println((char*)serialPortReturnStringBase64);
+		// return serialPortReturnStringBase64;
 	}
 
 	// unsigned char *getData(unsigned char *serialPortBufferRX){
@@ -2644,13 +2652,17 @@ class serialPort{
 	~serialPort(){
 		// delete serialPortInstance;
 		// free(serialPortReturnString);
-		console.log("~serialPort");
+		Serial.println("~serialPort");
 	}
 	
 };
 
 std::vector<serialPort>serialPortList;
 std::vector<unsigned long>serialIdentifierList;
+
+unsigned char *testReturn(unsigned long serialIdentifier){
+	return serialPortList[serialIdentifier].getData();
+}
 
 
 
@@ -3141,8 +3153,11 @@ unsigned char* virtualController(unsigned char* executableObject){
 				unsigned short serialPortListIndex=serialIdentifierList.size();
 				while((serialIdentifierList[--serialPortListIndex]!=serialIdentifier)&&serialPortListIndex);
 				if((serialIdentifierList[serialPortListIndex]==serialIdentifier)){
-					Serial.println(serialIdentifierList[serialPortListIndex]);
-					return (unsigned char*)"manga";//serialPortList[serialIdentifier].getData();
+					// Serial.println(serialIdentifierList[serialPortListIndex]);
+					// return serialPortList[serialIdentifier].getData();
+					// console.log((char*)serialPortList[serialIdentifier].getData());
+					// return testReturn(serialIdentifier);
+					return inttostring(serialPortList[serialIdentifier].available());
 				}
 				// Serial.println((char*)returnSerialPortData);
 				return UNDEFINED;
