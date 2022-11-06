@@ -2412,23 +2412,81 @@ unsigned long virtualControllerInput(void){
 }
 
 
+unsigned char *realTimeTransceiverEncode(unsigned char *txData){		//! this does absolutly nothing for now
+	return txData;
+}
+
+unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
+	return rxData;
+}
+
+/*
+	^ WRITE SIDE 
+		* get the data 
+		* wait for the SYNC REGISTER to update to the last sent sequence
+		* wrape it inside the object
+		* encode it
+		* pass it to the threads
+	^ READ SIDE
+		* decode the data
+		* check for packet type
+		? if normal packet 
+			* wrape it inside feedback object
+			* send the feedback object
+			* pass the packet to threads
+		? if feedback packet 
+			* update the SYNC REGISTER
+
+*/
+
+
+#define PACKET_SEQUENCE (uint8_t *)"MS"
+#define PACKET_PAYLOAD 	(uint8_t *)"PP"
+#define FEEDBACK_TYPE 	(uint8_t *)"FT"
+
+unsigned long REAL_TIME_SYNC_REGISTER=0;
+unsigned char DEV_ID=255;
 
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
 
-void realTimeConnectionSet(unsigned char *dataToList){								// setting the data that we just got from the real time connection
-	unsigned long readCallbackListCount=READ_CALLBACK_LIST.size();
-	unsigned long readCallbackListCounter=0;
-	while(readCallbackListCount--)
-		READ_CALLBACK_LIST[readCallbackListCounter++](dataToList);					// passing the arg to every call back function in the list
+
+
+void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=0,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
+	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
+	unsigned long writeCallbackListCounter=0;
+
+	devId=devId<<24;
+	static unsigned long packetSequence;
+	while(REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF)));
+	unsigned char *realTimeSendObject=((!typeFeedback)?realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList))):realTimeSendObject);
+
+
+	while(writeCallbackListCount--)
+		WRITE_CALLBACK_LIST[writeCallbackListCounter++](realTimeSendObject);					// passing the arg to every call back function in the list
 	return;
 }
 
-void realTimeConnectionSend(unsigned char *dataToList){								// setting the data that we just got from the real time connection
-	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
-	unsigned long writeCallbackListCounter=0;
-	while(writeCallbackListCount--)
-		WRITE_CALLBACK_LIST[writeCallbackListCounter++](dataToList);					// passing the arg to every call back function in the list
+
+
+void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
+	unsigned long readCallbackListCount=READ_CALLBACK_LIST.size();
+	unsigned long readCallbackListCounter=0;
+
+	dataToList=realTimeTransceiverDecode(dataToList);
+	unsigned char *feedbackType;
+	if(equalStrings(constJson(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
+		REAL_TIME_SYNC_REGISTER=getInt32_t(constJson(PACKET_SEQUENCE,dataToList));
+		return;
+	}
+	unsigned char *feedBackObject=realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",constJson(PACKET_SEQUENCE,dataToList))));
+	realTimeConnectionSend(feedBackObject,1);
+	unsigned char *realTimeSetObject=constJosn(PACKET_PAYLOAD,dataToList);
+	CACHE_BYTES(realTimeSetObject);
+
+	while(readCallbackListCount--)
+		READ_CALLBACK_LIST[readCallbackListCounter++](realTimeSetObject);					// passing the arg to every call back function in the list
+	free(realTimeSetObject);
 	return;
 }
 
