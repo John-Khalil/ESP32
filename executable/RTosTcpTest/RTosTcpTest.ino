@@ -2450,6 +2450,8 @@ unsigned char DEV_ID=255;
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
 
+std::vector<std::function<void(void)>>realTimeConnectionSetList;
+
 
 
 void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=0,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
@@ -2457,8 +2459,15 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	unsigned long writeCallbackListCounter=0;
 
 	devId=devId<<24;
+	if(!REAL_TIME_SYNC_REGISTER)
+		REAL_TIME_SYNC_REGISTER=devId;
 	static unsigned long packetSequence;
-	while(REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF)));
+	while(REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF))){
+		during(realTimeConnectionSetList.size(),(unsigned long index){
+			realTimeConnectionSetList[index]();
+			_delay_ms(3);		//! this might be adjusted later
+		});
+	}
 	unsigned char *realTimeSendObject=((!typeFeedback)?realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList))):realTimeSendObject);
 
 
@@ -2481,7 +2490,7 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	}
 	unsigned char *feedBackObject=realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",constJson(PACKET_SEQUENCE,dataToList))));
 	realTimeConnectionSend(feedBackObject,1);
-	unsigned char *realTimeSetObject=constJosn(PACKET_PAYLOAD,dataToList);
+	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
 	CACHE_BYTES(realTimeSetObject);
 
 	while(readCallbackListCount--)
@@ -3380,6 +3389,11 @@ void realTimeConnection(void *arg){
 			if(tcpConnection.connected())
 				tcpConnection.write((char*)realTimeConnectionBuffer);
 			return tcpConnectionSend;
+		});
+		realTimeConnectionSetList.push_back([&](void){
+			if(tcpConnection.available()){
+				realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
+			}
 		});
 
 		// READ_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionRead){			//^ adding call back function 
