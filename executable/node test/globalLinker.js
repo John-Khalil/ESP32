@@ -79,7 +79,10 @@ export default class globalLinker{
             REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
         else{
-            
+            linkerSend(this.encode(JSON.stringify({
+                [FEEDBACK_TYPE]:true,
+                [PACKET_SEQUENCE]:devId|((++packetSequence)&0xFFFFFF)
+            })),typeFeedback=1);
             dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
