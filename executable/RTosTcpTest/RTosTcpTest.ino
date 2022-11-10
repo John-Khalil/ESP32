@@ -2468,7 +2468,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 			_delay_ms(3);		//! this might be adjusted later
 		});
 	}
-	unsigned char *realTimeSendObject=((!typeFeedback)?realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList))):realTimeSendObject);
+	unsigned char *realTimeSendObject=((!typeFeedback)?realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList))):dataToList);
 
 
 	while(writeCallbackListCount--)
