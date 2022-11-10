@@ -27,11 +27,16 @@ import WebSocket from "ws";
 
 
 
+const PACKET_SEQUENCE="MS";
+const PACKET_PAYLOAD="PP";
+const FEEDBACK_TYPE="FT";
+
+
 export default class globalLinker{
     readCallbackList=[];            //^ read data from realtime connection -- this would later be set by the user
     writeCallbackList=[];           //^ send the data through real time connection
 
-    syncRegister=0;
+    REAL_TIME_SYNC_REGISTER=0;
     packetSequence=0;
     DEV_ID=255;
 
@@ -43,16 +48,26 @@ export default class globalLinker{
         return rxData;
     }
     
-    async linkerSend(dataToList,devId=this.DEV_ID){
+    async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0){
 
 
-        devId=devId<<24;
-        if(!syncRegister)
-            syncRegister=devId;
-
-        this.writeCallbackList.forEach(callBackFunction => {
-            callBackFunction(dataToList);
-        });
+        if(!recursiveCall){
+            devId=devId<<24;
+            if(!this.REAL_TIME_SYNC_REGISTER)
+                this.REAL_TIME_SYNC_REGISTER=devId;
+        }
+        if(this.REAL_TIME_SYNC_REGISTER==(devId|(packetSequence&0xFFFFFF))){
+            
+            this.writeCallbackList.forEach(callBackFunction => {
+                callBackFunction(dataToList);
+            });
+        }
+        else{
+            setTimeout(() => {
+                this.linkerSend(dataToList,devId,1);
+            }, 0);
+        }        
+        
     }
 
     async linkerSet(dataToList){
