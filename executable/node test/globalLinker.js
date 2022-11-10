@@ -48,7 +48,7 @@ export default class globalLinker{
         return rxData;
     }
     
-    async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0){
+    async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
 
 
         if(!recursiveCall){
@@ -57,7 +57,10 @@ export default class globalLinker{
                 this.REAL_TIME_SYNC_REGISTER=devId;
         }
         if(this.REAL_TIME_SYNC_REGISTER==(devId|(packetSequence&0xFFFFFF))){
-            
+            dataToList=(!typeFeedback)?this.encode(JSON.stringify({
+                [PACKET_SEQUENCE]:devId|((++packetSequence)&0xFFFFFF),
+                [PACKET_PAYLOAD]:dataToList
+            })):dataToList
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
@@ -71,9 +74,19 @@ export default class globalLinker{
     }
 
     async linkerSet(dataToList){
-        this.readCallbackList.forEach(callBackFunction => {
-            callBackFunction(dataToList);
-        });
+        dataToList=JSON.parse(this.decode(dataToList));
+        if(dataToList[FEEDBACK_TYPE]){
+            REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
+        }
+        else{
+            
+            dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
+            this.readCallbackList.forEach(callBackFunction => {
+                callBackFunction(dataToList);
+            });
+        }
+
+        
     }
 
 
