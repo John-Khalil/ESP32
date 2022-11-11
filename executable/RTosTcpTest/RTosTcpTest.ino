@@ -2484,15 +2484,14 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 
 	dataToList=realTimeTransceiverDecode(dataToList);
 	unsigned char *feedbackType;
-	if(equalStrings(constJson(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
-		REAL_TIME_SYNC_REGISTER=getInt32_t(constJson(PACKET_SEQUENCE,dataToList));
+	if(equalStrings(json(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
+		REAL_TIME_SYNC_REGISTER=getInt32_t(json(PACKET_SEQUENCE,dataToList));
 		return;
 	}
-	unsigned char *feedBackObject=realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",constJson(PACKET_SEQUENCE,dataToList))));
+	unsigned char *feedBackObject=realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList))));
 	realTimeConnectionSend(feedBackObject,1);
 	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
 	CACHE_BYTES(realTimeSetObject);
-
 	while(readCallbackListCount--)
 		READ_CALLBACK_LIST[readCallbackListCounter++](realTimeSetObject);					// passing the arg to every call back function in the list
 	free(realTimeSetObject);
