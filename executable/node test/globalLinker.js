@@ -39,12 +39,22 @@ export default class globalLinker{
     packetSequence=0;
     DEV_ID=255;
 
+    
+    encode64=(str)=>{
+        return Buffer.from(str).toString('base64');
+    }
+    
+    decode64=(str)=>{
+        return Buffer.from(str,'base64').toString('utf-8');
+    }
+
     encode(txData){
-        return txData;
+        return this.encode64(txData);
     }
 
     decode(rxData){
-        return rxData;
+        console.log("test for data >> ",this.decode64(rxData));
+        return this.decode64(rxData);
     }
 
     linkerSendQueue=[];     // super empty array
@@ -107,15 +117,6 @@ export default class globalLinker{
 
     constructor(hostServerConfigUrl,globalUserCredentials){
         axios.get(hostServerConfigUrl).then((getResponse)=>{
-            
-            const encode64=(str)=>{
-                return Buffer.from(str).toString('base64');
-            }
-            
-            const decode64=(str)=>{
-                return Buffer.from(str,'base64').toString('utf-8');
-            }
-
             let hostServerAddress=getResponse.data.dev;         //~ expected host-address:port
             const ws=new WebSocket(`ws://${hostServerAddress}`);
             ws.on('open',()=>{
@@ -123,7 +124,7 @@ export default class globalLinker{
                 ws.send(JSON.stringify({auth:globalUserCredentials}));
                 this.linkerSendAdd((dataToServer)=>{
                     try {
-                        ws.send(encode64(dataToServer));
+                        ws.send(dataToServer);
                     } catch (error) {
                         console.error(error);
                     }
@@ -131,7 +132,7 @@ export default class globalLinker{
                 });
             });
             ws.on('message',(dataFromServer)=>{
-                this.linkerSet(decode64(dataFromServer.toString()));
+                this.linkerSet(dataFromServer.toString());
             });
             ws.on('close',()=>{
               

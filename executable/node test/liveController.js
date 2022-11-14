@@ -203,7 +203,7 @@ const testRunner=()=>{
     //     serial0.send("this is test\n");
     // }, 1200);
 
-    mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
+    // mcu.load(mcu.serialPortAdd(26,27,38400,serialPortAddress,serialPortRXAddress,mcu.logger(mcu.memoryRead(serialPortRXAddress))));
     
     // mcu.addEventListener(mcu.inputPin(),(data)=>{
     //     console.log(`data from event >> ${(data)}`)
@@ -213,9 +213,9 @@ const testRunner=()=>{
 
     // mcu.load(mcu.serialPortSend(serialPortAddress,"this is new test\n"));
 
-    mcu.addEventListener(mcu.serialPortRead(serialPortAddress),(data)=>{
-        console.log(`data from event >> ${(data)}`)
-    })
+    // mcu.addEventListener(mcu.serialPortRead(serialPortAddress),(data)=>{
+    //     console.log(`data from event >> ${(data)}`)
+    // })
     
     // mcu.load(mcu.controllerEventListener(1000,1001,mcu.inputPin(),mcu.executableStack(100,[
     //     mcu.postLogger(1),
