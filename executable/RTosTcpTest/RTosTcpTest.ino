@@ -2413,11 +2413,16 @@ unsigned long virtualControllerInput(void){
 
 
 unsigned char *realTimeTransceiverEncode(unsigned char *txData){		//! this does absolutly nothing for now
-	return txData;
+	static unsigned char *txDataBuffer=NULL;
+	if(txDataBuffer!=NULL)
+		free(txDataBuffer);
+	txDataBuffer=(unsigned char*)calloc((stringCounter(txData)*1.333334F)+1,sizeof(unsigned char));
+	base64(txData,txDataBuffer);
+	return txDataBuffer;
 }
 
 unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
-	return rxData;
+	return base64Decode(rxData);
 }
 
 /*
