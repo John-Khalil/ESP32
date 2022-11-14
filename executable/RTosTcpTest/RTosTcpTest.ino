@@ -505,14 +505,10 @@ unsigned char* inttostring64(uint64_t num) {
 	unsigned char finalPointerIndex=20;
 	uint64_t modOperator=1;
 	uint64_t conversionAccumulator=0;
-	// if(!num){
-	// 	GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=0x30;
-	// 	return GLOBAL_64_BIT_INT_TO_STRING+finalPointerIndex;
-	// }
 
 	while((conversionAccumulator=(num%(modOperator*=10)))!=num)
 		GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;
-	GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;
+	GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;		// for the very last digit
 
 	return GLOBAL_64_BIT_INT_TO_STRING+finalPointerIndex;		// lucky of us the c++ support pointer arthematic
 }
