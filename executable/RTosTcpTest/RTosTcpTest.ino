@@ -492,14 +492,14 @@ unsigned char inttostr(unsigned long num, unsigned char *str) {
 
 
 unsigned char globalStringNameThatYouWillNeverUse[11]="";
-unsigned char* inttostring(unsigned long num) {
-	CLR(globalStringNameThatYouWillNeverUse);
-	inttostr(num, globalStringNameThatYouWillNeverUse);
-	return globalStringNameThatYouWillNeverUse;
-}
+// unsigned char* inttostring(unsigned long num) {
+// 	CLR(globalStringNameThatYouWillNeverUse);
+// 	inttostr(num, globalStringNameThatYouWillNeverUse);
+// 	return globalStringNameThatYouWillNeverUse;
+// }
 
 unsigned char GLOBAL_64_BIT_INT_TO_STRING[21]="";
-unsigned char* inttostring64(uint64_t num) {
+unsigned char* inttostring(uint64_t num) {
 	CLR_LENGTH=21;
 	CLR(GLOBAL_64_BIT_INT_TO_STRING);
 	unsigned char finalPointerIndex=20;
