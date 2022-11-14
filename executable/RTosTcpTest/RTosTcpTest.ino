@@ -413,6 +413,20 @@ unsigned char included(unsigned char singleChar,unsigned char *targetStr){
 ////////////////////////////////////    LEGACY-CODE    ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
+unsigned char * CLR(unsigned char *deletedString,unsigned short _CLR_LENGTH=0){
+	CLR_LENGTH=(CLR_LENGTH)?CLR_LENGTH:_CLR_LENGTH;
+	unsigned char *returnedString=deletedString;
+	while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
+		*deletedString=0;
+		deletedString++;	
+	}
+	return returnedString;
+}
+
+
 unsigned char UNDEFINED[10]="undefined";
 
 unsigned long strToUint32(unsigned char *str) {
@@ -489,16 +503,6 @@ unsigned char inttostr(unsigned long num, unsigned char *str) {
 	return ucoun;
 }
 
-unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
-unsigned char * CLR(unsigned char *deletedString){
-	unsigned char *returnedString=deletedString;
-	while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
-		*deletedString=0;
-		deletedString++;	
-	}
-	return returnedString;
-}
-
 
 unsigned char globalStringNameThatYouWillNeverUse[11]="";
 // unsigned char* inttostring(unsigned long num) {
@@ -508,9 +512,8 @@ unsigned char globalStringNameThatYouWillNeverUse[11]="";
 // }
 
 unsigned char GLOBAL_64_BIT_INT_TO_STRING[21]="";
-unsigned char* inttostring(uint64_t num) {
-	CLR_LENGTH=21;
-	CLR(GLOBAL_64_BIT_INT_TO_STRING);
+unsigned char* inttostring(uint64_t num){
+	CLR(GLOBAL_64_BIT_INT_TO_STRING,21);
 	unsigned char finalPointerIndex=20;
 	uint64_t modOperator=1;
 	uint64_t conversionAccumulator=0;
