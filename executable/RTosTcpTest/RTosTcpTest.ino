@@ -3389,14 +3389,13 @@ void realTimeConnection(void *arg){
 		runOnlyOnce=1;
 
 		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function 
-			base64(tcpConnectionSend,CLR(realTimeConnectionBuffer));
 			if(tcpConnection.connected())
-				tcpConnection.write((char*)realTimeConnectionBuffer);
+				tcpConnection.write((char*)tcpConnectionSend);
 			return tcpConnectionSend;
 		});
 		realTimeConnectionSetList.push_back([&](void){
 			if(tcpConnection.available()){
-				realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
+				realTimeConnectionSet(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer)));
 			}
 		});
 
@@ -3430,7 +3429,7 @@ void realTimeConnection(void *arg){
 
 
 		if(tcpConnection.available()){
-			realTimeConnectionSet(base64Decode(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer))));
+			realTimeConnectionSet(tcpGetString(tcpConnection,CLR(realTimeConnectionBuffer)));
 		}
 		else if(!tcpConnection.connected()){
 			console.log("RT server Disconnected");
