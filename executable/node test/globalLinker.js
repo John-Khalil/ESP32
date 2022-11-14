@@ -5,7 +5,6 @@ import WebSocket from "ws";
 
 
 
-
 /*
 	^ WRITE SIDE 
 		* get the data 
@@ -47,6 +46,9 @@ export default class globalLinker{
     decode(rxData){
         return rxData;
     }
+
+    linkerSendQueue=[];     // super empty array
+    queueCounter=0;
     
     async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
 
@@ -55,8 +57,10 @@ export default class globalLinker{
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
                 this.REAL_TIME_SYNC_REGISTER=devId;
+            this.linkerSendQueue.push(dataToList);
         }
-        if(this.REAL_TIME_SYNC_REGISTER==(devId|(packetSequence&0xFFFFFF))){
+        if(this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF))){
+            dataToList=this.linkerSendQueue[this.queueCounter++];
             dataToList=(!typeFeedback)?this.encode(JSON.stringify({
                 [PACKET_SEQUENCE]:devId|((++packetSequence)&0xFFFFFF),
                 [PACKET_PAYLOAD]:dataToList
@@ -67,7 +71,7 @@ export default class globalLinker{
         }
         else{
             setTimeout(() => {
-                this.linkerSend(dataToList,devId,1);
+                this.linkerSend(dataToList,devId,recursiveCall=1);
             }, 0);
         }        
         
@@ -81,7 +85,7 @@ export default class globalLinker{
         else{
             linkerSend(this.encode(JSON.stringify({
                 [FEEDBACK_TYPE]:true,
-                [PACKET_SEQUENCE]:devId|((++packetSequence)&0xFFFFFF)
+                [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF)
             })),typeFeedback=1);
             dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
             this.readCallbackList.forEach(callBackFunction => {
