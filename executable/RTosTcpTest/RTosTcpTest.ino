@@ -489,6 +489,15 @@ unsigned char inttostr(unsigned long num, unsigned char *str) {
 	return ucoun;
 }
 
+unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
+unsigned char * CLR(unsigned char *deletedString){
+	unsigned char *returnedString=deletedString;
+	while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
+		*deletedString=0;
+		deletedString++;	
+	}
+	return returnedString;
+}
 
 
 unsigned char globalStringNameThatYouWillNeverUse[11]="";
@@ -590,16 +599,6 @@ unsigned short stringCounter(unsigned char *counted){
 		counted++;
 	}
 	return counter;
-}
-
-unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
-unsigned char * CLR(unsigned char *deletedString){
-	unsigned char *returnedString=deletedString;
-	while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
-		*deletedString=0;
-		deletedString++;	
-	}
-	return returnedString;
 }
 
 unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPointer2){
