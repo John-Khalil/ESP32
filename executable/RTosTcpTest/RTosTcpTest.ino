@@ -498,6 +498,25 @@ unsigned char* inttostring(unsigned long num) {
 	return globalStringNameThatYouWillNeverUse;
 }
 
+unsigned char GLOBAL_64_BIT_INT_TO_STRING[21]="";
+unsigned char* inttostring64(uint64_t num) {
+	CLR_LENGTH=21;
+	CLR(GLOBAL_64_BIT_INT_TO_STRING);
+	unsigned char finalPointerIndex=20;
+	uint64_t modOperator=1;
+	uint64_t conversionAccumulator=0;
+	// if(!num){
+	// 	GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=0x30;
+	// 	return GLOBAL_64_BIT_INT_TO_STRING+finalPointerIndex;
+	// }
+
+	while((conversionAccumulator=(num%(modOperator*=10)))!=num)
+		GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;
+	GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;
+
+	return GLOBAL_64_BIT_INT_TO_STRING+finalPointerIndex;		// lucky of us the c++ support pointer arthematic
+}
+
 unsigned char *intToHexaDecimal(unsigned long num){
 	unsigned char *makeStr=globalStringNameThatYouWillNeverUse;
 	*makeStr=0x30;
