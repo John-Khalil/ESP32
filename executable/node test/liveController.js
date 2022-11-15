@@ -263,7 +263,7 @@ const simplePing=()=>{
 
 app.get('/',(req,res)=>{
 
-    // testRunner();
+    testRunner();
     simplePing();
     
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");

@@ -57,6 +57,15 @@ export default class globalLinker{
         return this.decode64(rxData);
     }
 
+    jsonParse=(jsonObject)=>{
+    try {
+        jsonObject=JSON.parse(jsonObject);
+    } catch (error) {
+        return {};
+    }
+    return jsonObject;
+}
+
     linkerSendQueue=[];     // super empty array
     queueCounter=0;
     
@@ -90,7 +99,13 @@ export default class globalLinker{
 
     async linkerSet(dataToList,devId=this.DEV_ID){
         devId=devId<<24;
-        dataToList=JSON.parse(this.decode(dataToList));
+        if(this.jsonParse(this.decode(dataToList))[PACKET_SEQUENCE]==undefined){
+            this.readCallbackList.forEach(callBackFunction => {
+                callBackFunction(dataToList);
+            });
+            return;
+        }
+        dataToList=this.jsonParse(this.decode(dataToList))
         if(dataToList[FEEDBACK_TYPE]==true){
             REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
