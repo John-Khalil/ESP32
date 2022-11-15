@@ -81,22 +81,22 @@ export default class globalLinker{
         }
         else{
             setTimeout(() => {
-                this.linkerSend(dataToList,devId,recursiveCall=1);
+                this.linkerSend(dataToList,devId,1);
             }, 0);
         }        
         
     }
 
-    async linkerSet(dataToList){
+    async linkerSet(dataToList,devId=this.DEV_ID){
         dataToList=JSON.parse(this.decode(dataToList));
         if(dataToList[FEEDBACK_TYPE]){
             REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
         else{
-            linkerSend(this.encode(JSON.stringify({
+            this.linkerSend(this.encode(JSON.stringify({
                 [FEEDBACK_TYPE]:true,
                 [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF)
-            })),typeFeedback=1);
+            })),this.DEV_ID,0,1);
             dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);

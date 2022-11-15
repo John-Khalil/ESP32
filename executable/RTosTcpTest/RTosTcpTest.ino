@@ -3441,7 +3441,7 @@ void realTimeConnection(void *arg){
 
 		static unsigned long networkPingTimer;
 		if(!((networkPingTimer++)%(5000/VIRTUAL_CONTROLLER_POLLING_RATE))){
-			realTimeConnectionSend((unsigned char*)"CONNECTION-ALIVE-ACK");
+			realTimeConnectionSend((unsigned char*)"\"CONNECTION-ALIVE-ACK\"");
 		}
 
 
@@ -3960,7 +3960,7 @@ void setup(){
 		SMART_CACHE(tcpConnectionReadCached);
 		// awaitVirtualController();
 		virtualControllerSafeStart(tcpConnectionReadCached);
-		realTimeConnectionSend((unsigned char*)"MAIN-THREAD-LOAD");
+		realTimeConnectionSend((unsigned char*)"\"MAIN-THREAD-LOAD\"");
 		return tcpConnectionRead;
 	}); 
 
