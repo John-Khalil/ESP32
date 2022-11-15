@@ -2467,7 +2467,7 @@ unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
 #define FEEDBACK_TYPE 	(uint8_t *)"FT"
 
 unsigned long REAL_TIME_SYNC_REGISTER=0;
-unsigned char DEV_ID=255;
+unsigned char DEV_ID=127;
 
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
@@ -2477,6 +2477,7 @@ std::vector<std::function<void(void)>>realTimeConnectionSetList;
 
 
 void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=0,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
+	console.log("dataToList >> ",dataToList);
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
@@ -2490,7 +2491,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 			_delay_ms(3);		//! this might be adjusted later
 		});
 	}
-	unsigned char *realTimeSendObject=((!typeFeedback)?realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList))):dataToList);
+	unsigned char *realTimeSendObject=(realTimeTransceiverEncode((!typeFeedback)?makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList)):dataToList));
 
 
 	while(writeCallbackListCount--)
@@ -2505,12 +2506,13 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	unsigned long readCallbackListCounter=0;
 
 	dataToList=realTimeTransceiverDecode(dataToList);
+	console.log("RX >> ",dataToList);
 	unsigned char *feedbackType;
 	if(equalStrings(json(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
 		REAL_TIME_SYNC_REGISTER=getInt32_t(json(PACKET_SEQUENCE,dataToList));
 		return;
 	}
-	unsigned char *feedBackObject=realTimeTransceiverEncode(makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList))));
+	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
 	realTimeConnectionSend(feedBackObject,1);
 	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
 	CACHE_BYTES(realTimeSetObject);

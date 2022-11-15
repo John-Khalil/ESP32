@@ -37,7 +37,7 @@ export default class globalLinker{
 
     REAL_TIME_SYNC_REGISTER=0;
     packetSequence=0;
-    DEV_ID=255;
+    DEV_ID=127;
 
     
     encode64=(str)=>{
@@ -53,7 +53,7 @@ export default class globalLinker{
     }
 
     decode(rxData){
-        console.log("test for data >> ",this.decode64(rxData));
+        console.log("test for data >*> ",this.decode64(rxData));
         return this.decode64(rxData);
     }
 
@@ -71,32 +71,34 @@ export default class globalLinker{
         }
         if(this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF))){
             dataToList=this.linkerSendQueue[this.queueCounter++];
-            dataToList=(!typeFeedback)?this.encode(JSON.stringify({
-                [PACKET_SEQUENCE]:devId|((++packetSequence)&0xFFFFFF),
+            dataToList=this.encode((!typeFeedback)?JSON.stringify({
+                [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF),
                 [PACKET_PAYLOAD]:dataToList
-            })):dataToList
+            }):dataToList)
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
         }
         else{
+            console.log("waiting for data", this.linkerSendQueue);
             setTimeout(() => {
                 this.linkerSend(dataToList,devId,1);
-            }, 0);
+            }, 3);
         }        
         
     }
 
     async linkerSet(dataToList,devId=this.DEV_ID){
+        devId=devId<<24;
         dataToList=JSON.parse(this.decode(dataToList));
-        if(dataToList[FEEDBACK_TYPE]){
+        if(dataToList[FEEDBACK_TYPE]==true){
             REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
         else{
-            this.linkerSend(this.encode(JSON.stringify({
+            this.linkerSend(JSON.stringify({
                 [FEEDBACK_TYPE]:true,
-                [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF)
-            })),this.DEV_ID,0,1);
+                [PACKET_SEQUENCE]:devId|((dataToList[PACKET_SEQUENCE])&0xFFFFFF)
+            }),this.DEV_ID,0,1);
             dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
