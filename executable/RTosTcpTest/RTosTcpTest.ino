@@ -2486,6 +2486,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 		REAL_TIME_SYNC_REGISTER=devId;
 	static unsigned long packetSequence;
 	while(REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF))){
+		// console.log("waiting");
 		during(realTimeConnectionSetList.size(),(unsigned long index){
 			realTimeConnectionSetList[index]();
 			_delay_ms(3);		//! this might be adjusted later
@@ -3349,24 +3350,27 @@ void testingFuction(void * uselessParam){
 	// 	console.log("testRead >> ",testRead);
 	// }
 
-	#define MOTOR_STEPS 200
-	#define RPM 1000
+	// #define MOTOR_STEPS 200
+	// #define RPM 1000
 
-	#define MICROSTEPS 1
+	// #define MICROSTEPS 1
 
-	#define DIR 33
-	#define STEP 32
+	// #define DIR 33
+	// #define STEP 32
 
-	BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
+	// BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
 
-	stepper.begin(RPM, MICROSTEPS);
+	// stepper.begin(RPM, MICROSTEPS);
 
-	while(1){
-		stepper.rotate(360);
-		_delay_ms(1000);
-		stepper.move(-MOTOR_STEPS*MICROSTEPS);
-		_delay_ms(1000);
-	}
+	// while(1){
+	// 	stepper.rotate(360);
+	// 	_delay_ms(1000);
+	// 	stepper.move(-MOTOR_STEPS*MICROSTEPS);
+	// 	_delay_ms(1000);
+	// }
+
+
+	console.log("test for conversion function >> ",getInt(inttostring(-1UL)));
 
 	
 	vTaskDelete(NULL);
@@ -3966,14 +3970,14 @@ void setup(){
 		return tcpConnectionRead;
 	}); 
 
-	// xTaskCreate(
-    //     testingFuction,    // Function that should be called
-    //     "interuptSimulator",   // Name of the task (for debugging)
-    //     30000,            // Stack size (bytes)
-    //     NULL,            // Parameter to pass
-    //     1,               // Task priority
-    //     NULL             // Task handle
-    // );
+	xTaskCreate(
+        testingFuction,    // Function that should be called
+        "interuptSimulator",   // Name of the task (for debugging)
+        30000,            // Stack size (bytes)
+        NULL,            // Parameter to pass
+        1,               // Task priority
+        NULL             // Task handle
+    );
     
 	// _delay_ms(2000);
 
