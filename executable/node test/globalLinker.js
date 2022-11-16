@@ -37,7 +37,7 @@ export default class globalLinker{
 
     REAL_TIME_SYNC_REGISTER=0;
     packetSequence=0;
-    DEV_ID=127;
+    DEV_ID=126;
 
     
     encode64=(str)=>{
@@ -58,20 +58,19 @@ export default class globalLinker{
     }
 
     jsonParse=(jsonObject)=>{
-    try {
-        jsonObject=JSON.parse(jsonObject);
-    } catch (error) {
-        return {};
+        try {
+            jsonObject=JSON.parse(jsonObject);
+        } catch (error) {
+            return {};
+        }
+        return jsonObject;
     }
-    return jsonObject;
-}
 
     linkerSendQueue=[];     // super empty array
     queueCounter=0;
     
     async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
-
-
+        dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
         if(!recursiveCall){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
@@ -89,7 +88,7 @@ export default class globalLinker{
             });
         }
         else{
-            console.log("waiting for data", this.linkerSendQueue);
+            console.log(`waiting for data @ <${queueCounter}>`, this.linkerSendQueue);
             setTimeout(() => {
                 this.linkerSend(dataToList,devId,1);
             }, 3);
@@ -106,6 +105,7 @@ export default class globalLinker{
             return;
         }
         dataToList=this.jsonParse(this.decode(dataToList))
+        console.log(dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
