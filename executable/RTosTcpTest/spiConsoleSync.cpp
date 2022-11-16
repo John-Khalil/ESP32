@@ -27,7 +27,8 @@ class spiConsole{
 
 
     unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
-    unsigned char * CLR(unsigned char *deletedString){
+    unsigned char * CLR(unsigned char *deletedString,unsigned short _CLR_LENGTH=0){
+        CLR_LENGTH=(CLR_LENGTH)?CLR_LENGTH:_CLR_LENGTH;
         unsigned char *returnedString=deletedString;
         while(*deletedString||(CLR_LENGTH-=(CLR_LENGTH!=0))){
             *deletedString=0;
@@ -84,10 +85,24 @@ class spiConsole{
 
 
     unsigned char *_globalStringNameThatYouWillNeverUse=(unsigned char*)calloc(11,sizeof(unsigned char));
-    unsigned char* inttostring(unsigned long num) {
-        CLR(_globalStringNameThatYouWillNeverUse);
-        inttostr(num, _globalStringNameThatYouWillNeverUse);
-        return _globalStringNameThatYouWillNeverUse;
+    // unsigned char* inttostring(unsigned long num) {
+    //     CLR(_globalStringNameThatYouWillNeverUse);
+    //     inttostr(num, _globalStringNameThatYouWillNeverUse);
+    //     return _globalStringNameThatYouWillNeverUse;
+    // }
+
+    unsigned char GLOBAL_64_BIT_INT_TO_STRING[21]={};
+    unsigned char* inttostring(uint64_t num){
+        CLR(GLOBAL_64_BIT_INT_TO_STRING,21);
+        unsigned char finalPointerIndex=20;
+        uint64_t modOperator=1;
+        uint64_t conversionAccumulator=0;
+
+        while((conversionAccumulator=(num%(modOperator*=10)))!=num)
+            GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;
+        GLOBAL_64_BIT_INT_TO_STRING[--finalPointerIndex]=(conversionAccumulator/(modOperator/10))+0x30;		// for the very last digit
+
+        return GLOBAL_64_BIT_INT_TO_STRING+finalPointerIndex;		// lucky of us the c++ support pointer arthematic
     }
 
 
