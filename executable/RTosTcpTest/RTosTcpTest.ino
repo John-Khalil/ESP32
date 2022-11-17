@@ -2477,7 +2477,6 @@ std::vector<std::function<void(void)>>realTimeConnectionSetList;
 
 
 void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=0,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
-	console.log("dataToList >> ",dataToList);
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
@@ -2485,7 +2484,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	if(!REAL_TIME_SYNC_REGISTER)
 		REAL_TIME_SYNC_REGISTER=devId;
 	static unsigned long packetSequence;
-	while(REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF))){
+	while((REAL_TIME_SYNC_REGISTER!=(devId|(packetSequence&0xFFFFFF)))&&(!typeFeedback)){
 		// console.log("waiting");
 		during(realTimeConnectionSetList.size(),(unsigned long index){
 			realTimeConnectionSetList[index]();
@@ -2494,6 +2493,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	}
 	unsigned char *realTimeSendObject=(realTimeTransceiverEncode((!typeFeedback)?makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList)):dataToList));
 
+	console.log("realTimeSendObject >> ",realTimeSendObject);
 
 	while(writeCallbackListCount--)
 		WRITE_CALLBACK_LIST[writeCallbackListCounter++](realTimeSendObject);					// passing the arg to every call back function in the list
@@ -2510,7 +2510,9 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	console.log("RX >> ",dataToList);
 	unsigned char *feedbackType;
 	if(equalStrings(json(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
-		REAL_TIME_SYNC_REGISTER=getInt32_t(json(PACKET_SEQUENCE,dataToList));
+		unsigned long currentPacketSequence=getInt32_t(json(PACKET_SEQUENCE,dataToList));
+		if((currentPacketSequence>>24)==devId)
+			REAL_TIME_SYNC_REGISTER=currentPacketSequence;
 		return;
 	}
 	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));

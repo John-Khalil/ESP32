@@ -71,17 +71,17 @@ export default class globalLinker{
     
     async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
-        if(!recursiveCall){
+        if(!recursiveCall&&(!typeFeedback)){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
                 this.REAL_TIME_SYNC_REGISTER=devId;
             this.linkerSendQueue.push(dataToList);
         }
-        if(this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF))){
-            dataToList=this.linkerSendQueue[this.queueCounter++];
+        if((this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF)))||(typeFeedback)){
+            // dataToList=typeFeedback?dataToList:this.linkerSendQueue[this.queueCounter++];
             dataToList=this.encode((!typeFeedback)?JSON.stringify({
                 [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF),
-                [PACKET_PAYLOAD]:dataToList
+                [PACKET_PAYLOAD]:this.linkerSendQueue[this.queueCounter++]
             }):dataToList)
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
@@ -107,7 +107,8 @@ export default class globalLinker{
         dataToList=this.jsonParse(this.decode(dataToList))
         console.log(dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
-            REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
+            if((dataToList[PACKET_SEQUENCE]>>24)==devId)
+                REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
         else{
             this.linkerSend(JSON.stringify({
