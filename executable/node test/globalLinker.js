@@ -37,7 +37,7 @@ export default class globalLinker{
 
     REAL_TIME_SYNC_REGISTER=0;
     packetSequence=0;
-    DEV_ID=126;
+    DEV_ID=0;
 
     
     encode64=(str)=>{

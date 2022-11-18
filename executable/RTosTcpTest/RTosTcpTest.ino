@@ -2467,7 +2467,7 @@ unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
 #define FEEDBACK_TYPE 	(uint8_t *)"FT"
 
 unsigned long REAL_TIME_SYNC_REGISTER=0;
-unsigned char DEV_ID=127;
+unsigned char DEV_ID=0;
 
 std::vector<std::function<unsigned char*(unsigned char*)>>READ_CALLBACK_LIST;		// read from a real time connection
 std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		// write to a real time connection
