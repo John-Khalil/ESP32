@@ -49,11 +49,11 @@ export default class globalLinker{
     }
 
     encode(txData){
-        console.log("txData -> ",txData);
         return this.encode64(txData);
     }
 
     decode(rxData){
+        console.log("test for data >*> ",this.decode64(rxData));
         return this.decode64(rxData);
     }
 
@@ -71,18 +71,18 @@ export default class globalLinker{
     
     async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
-        if(!recursiveCall&&(!typeFeedback)){
+        if(!recursiveCall){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
                 this.REAL_TIME_SYNC_REGISTER=devId;
             this.linkerSendQueue.push(dataToList);
         }
-        if((this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF)))||(typeFeedback)){
-            // dataToList=typeFeedback?dataToList:this.linkerSendQueue[this.queueCounter++];
+        if(this.REAL_TIME_SYNC_REGISTER==(devId|(this.packetSequence&0xFFFFFF))){
+            dataToList=this.linkerSendQueue[this.queueCounter++];
             dataToList=this.encode((!typeFeedback)?JSON.stringify({
                 [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF),
-                [PACKET_PAYLOAD]:this.linkerSendQueue[this.queueCounter++]
-            }):JSON.stringify(dataToList))
+                [PACKET_PAYLOAD]:dataToList
+            }):dataToList)
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
@@ -105,7 +105,7 @@ export default class globalLinker{
             return;
         }
         dataToList=this.jsonParse(this.decode(dataToList))
-        console.log("---->> ",dataToList)
+        console.log(dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             if((dataToList[PACKET_SEQUENCE]>>24)==devId)
                 REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
