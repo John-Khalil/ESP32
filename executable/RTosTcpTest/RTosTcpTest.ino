@@ -2521,13 +2521,13 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 		return;
 	}
 	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
-	// realTimeConnectionSend(feedBackObject,1);
+	realTimeConnectionSend(feedBackObject,1);
 
-	feedBackObject=realTimeTransceiverEncode(feedBackObject);
-	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
-	unsigned long writeCallbackListCounter=0;
-	while(writeCallbackListCount--)
-		WRITE_CALLBACK_LIST[writeCallbackListCounter++](feedBackObject);
+	// feedBackObject=realTimeTransceiverEncode(feedBackObject);
+	// unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
+	// unsigned long writeCallbackListCounter=0;
+	// while(writeCallbackListCount--)
+	// 	WRITE_CALLBACK_LIST[writeCallbackListCounter++](feedBackObject);
 
 	
 
