@@ -49,11 +49,11 @@ export default class globalLinker{
     }
 
     encode(txData){
+        console.log("txData -> ",txData);
         return this.encode64(txData);
     }
 
     decode(rxData){
-        console.log("test for data >*> ",this.decode64(rxData));
         return this.decode64(rxData);
     }
 
@@ -82,7 +82,7 @@ export default class globalLinker{
             dataToList=this.encode((!typeFeedback)?JSON.stringify({
                 [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF),
                 [PACKET_PAYLOAD]:this.linkerSendQueue[this.queueCounter++]
-            }):dataToList)
+            }):JSON.stringify(dataToList))
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
