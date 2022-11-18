@@ -108,7 +108,7 @@ export default class globalLinker{
         console.log("---->> ",dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             if((dataToList[PACKET_SEQUENCE]>>24)==devId)
-                REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
+                this.REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
         }
         else{
             this.linkerSend(JSON.stringify({

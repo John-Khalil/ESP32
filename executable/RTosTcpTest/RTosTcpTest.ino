@@ -2428,14 +2428,18 @@ unsigned long virtualControllerInput(void){
 	return micros()/1500;
 }
 
-unsigned char *txDataBuffer=NULL;
+// unsigned char *txDataBuffer=NULL;
+unsigned char ____testBuffer[1000]={};
 unsigned char *realTimeTransceiverEncode(unsigned char *txData){		//! this does absolutly nothing for now
 	// static unsigned char *txDataBuffer=NULL;
-	if(txDataBuffer!=NULL)
-		free(txDataBuffer);
-	txDataBuffer=(unsigned char*)calloc((stringCounter(txData)*1.333334F)+1,sizeof(unsigned char));
-	base64(txData,txDataBuffer);
-	return txDataBuffer;
+	// if(txDataBuffer!=NULL)
+	// 	free(txDataBuffer);
+	// txDataBuffer=(unsigned char*)calloc((stringCounter(txData)*1.333334F)+1,sizeof(unsigned char));
+
+	
+
+	base64(txData,CLR(____testBuffer));
+	return ____testBuffer;
 }
 
 unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
@@ -2517,7 +2521,16 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 		return;
 	}
 	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
-	realTimeConnectionSend(feedBackObject,1);
+	// realTimeConnectionSend(feedBackObject,1);
+
+	feedBackObject=realTimeTransceiverEncode(feedBackObject);
+	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
+	unsigned long writeCallbackListCounter=0;
+	while(writeCallbackListCount--)
+		WRITE_CALLBACK_LIST[writeCallbackListCounter++](feedBackObject);
+
+	
+
 	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
 	console.log("realTimeSetObject --> ",realTimeSetObject);
 	CACHE_BYTES(realTimeSetObject);
