@@ -105,7 +105,7 @@ export default class globalLinker{
             return;
         }
         dataToList=this.jsonParse(this.decode(dataToList))
-        console.log(dataToList)
+        console.log("---->> ",dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             if((dataToList[PACKET_SEQUENCE]>>24)==devId)
                 REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];

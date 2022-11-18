@@ -2428,9 +2428,9 @@ unsigned long virtualControllerInput(void){
 	return micros()/1500;
 }
 
-
+unsigned char *txDataBuffer=NULL;
 unsigned char *realTimeTransceiverEncode(unsigned char *txData){		//! this does absolutly nothing for now
-	static unsigned char *txDataBuffer=NULL;
+	// static unsigned char *txDataBuffer=NULL;
 	if(txDataBuffer!=NULL)
 		free(txDataBuffer);
 	txDataBuffer=(unsigned char*)calloc((stringCounter(txData)*1.333334F)+1,sizeof(unsigned char));
@@ -2480,6 +2480,8 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
+	console.log("dataToList >> ",dataToList);
+
 	devId=devId<<24;
 	if(!REAL_TIME_SYNC_REGISTER)
 		REAL_TIME_SYNC_REGISTER=devId;
@@ -2493,10 +2495,9 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	}
 	unsigned char *realTimeSendObject=(realTimeTransceiverEncode((!typeFeedback)?makeJsonObject(JSON_KEYS(PACKET_SEQUENCE,PACKET_PAYLOAD),JSON_VALUES(inttostring(devId|((++packetSequence)&0xFFFFFF)),dataToList)):dataToList));
 
-	console.log("realTimeSendObject >> ",realTimeSendObject);
-
 	while(writeCallbackListCount--)
 		WRITE_CALLBACK_LIST[writeCallbackListCounter++](realTimeSendObject);					// passing the arg to every call back function in the list
+	console.log("------------END----------");
 	return;
 }
 
@@ -2518,9 +2519,11 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
 	realTimeConnectionSend(feedBackObject,1);
 	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
+	console.log("realTimeSetObject --> ",realTimeSetObject);
 	CACHE_BYTES(realTimeSetObject);
 	while(readCallbackListCount--)
 		READ_CALLBACK_LIST[readCallbackListCounter++](realTimeSetObject);					// passing the arg to every call back function in the list
+	console.log("im letting you know that i got here");
 	free(realTimeSetObject);
 	return;
 }
@@ -3413,7 +3416,7 @@ void realTimeConnection(void *arg){
 	if(!runOnlyOnce){
 		runOnlyOnce=1;
 
-		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function 
+		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function
 			if(tcpConnection.connected())
 				tcpConnection.write((char*)tcpConnectionSend);
 			return tcpConnectionSend;
