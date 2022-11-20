@@ -2429,7 +2429,7 @@ unsigned long virtualControllerInput(void){
 }
 
 // unsigned char *txDataBuffer=NULL;
-unsigned char ____testBuffer[1000]={};
+unsigned char ____testBuffer[10000]={};
 unsigned char *realTimeTransceiverEncode(unsigned char *txData){		//! this does absolutly nothing for now
 	// static unsigned char *txDataBuffer=NULL;
 	// if(txDataBuffer!=NULL)
@@ -2466,7 +2466,7 @@ unsigned char *realTimeTransceiverDecode(unsigned char *rxData){
 */
 
 
-#define PACKET_SEQUENCE (uint8_t *)"MS"
+#define PACKET_SEQUENCE (uint8_t *)"MSS"
 #define PACKET_PAYLOAD 	(uint8_t *)"PP"
 #define FEEDBACK_TYPE 	(uint8_t *)"FT"
 
@@ -2484,7 +2484,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
-	console.log("dataToList >> ",dataToList);
+	// console.log("dataToList >> ",dataToList);
 
 	devId=devId<<24;
 	if(!REAL_TIME_SYNC_REGISTER)
@@ -2501,7 +2501,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 
 	while(writeCallbackListCount--)
 		WRITE_CALLBACK_LIST[writeCallbackListCounter++](realTimeSendObject);					// passing the arg to every call back function in the list
-	console.log("------------END----------");
+	// console.log("------------END----------");
 	return;
 }
 
@@ -2512,32 +2512,31 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	unsigned long readCallbackListCounter=0;
 
 	dataToList=realTimeTransceiverDecode(dataToList);
-	console.log("RX >> ",dataToList);
-	unsigned char *feedbackType;
+	// console.log("RX >> ",dataToList);
+
 	if(equalStrings(json(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
 		unsigned long currentPacketSequence=getInt32_t(json(PACKET_SEQUENCE,dataToList));
 		if((currentPacketSequence>>24)==devId)
 			REAL_TIME_SYNC_REGISTER=currentPacketSequence;
 		return;
 	}
-	unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
-	realTimeConnectionSend(feedBackObject,1);
+	if(json(PACKET_SEQUENCE,dataToList)!=UNDEFINED){
+		unsigned char *feedBackObject=makeJsonObject(JSON_KEYS(FEEDBACK_TYPE,PACKET_SEQUENCE),JSON_VALUES((unsigned char*)"true",json(PACKET_SEQUENCE,dataToList)));
+		realTimeConnectionSend(feedBackObject,1);
 
-	// feedBackObject=realTimeTransceiverEncode(feedBackObject);
-	// unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
-	// unsigned long writeCallbackListCounter=0;
-	// while(writeCallbackListCount--)
-	// 	WRITE_CALLBACK_LIST[writeCallbackListCounter++](feedBackObject);
-
-	
-
-	unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
-	console.log("realTimeSetObject --> ",realTimeSetObject);
-	CACHE_BYTES(realTimeSetObject);
-	while(readCallbackListCount--)
-		READ_CALLBACK_LIST[readCallbackListCounter++](realTimeSetObject);					// passing the arg to every call back function in the list
-	console.log("im letting you know that i got here");
-	free(realTimeSetObject);
+		unsigned char *realTimeSetObject=constJson(PACKET_PAYLOAD,dataToList);
+		// console.log("realTimeSetObject --> ",realTimeSetObject);
+		CACHE_BYTES(realTimeSetObject);
+		while(readCallbackListCount--)
+			READ_CALLBACK_LIST[readCallbackListCounter++](realTimeSetObject);					// passing the arg to every call back function in the list
+		// console.log("im letting you know that i got here");
+		free(realTimeSetObject);
+	}
+	else{
+		while(readCallbackListCount--)
+			READ_CALLBACK_LIST[readCallbackListCounter++](dataToList);					// passing the arg to every call back function in the list
+	}
+		
 	return;
 }
 

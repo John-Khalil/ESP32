@@ -26,7 +26,7 @@ import WebSocket from "ws";
 
 
 
-const PACKET_SEQUENCE="MS";
+const PACKET_SEQUENCE="MSS";
 const PACKET_PAYLOAD="PP";
 const FEEDBACK_TYPE="FT";
 
@@ -99,6 +99,7 @@ export default class globalLinker{
     async linkerSet(dataToList,devId=this.DEV_ID){
         devId=devId<<24;
         if(this.jsonParse(this.decode(dataToList))[PACKET_SEQUENCE]==undefined){
+            dataToList=this.decode(dataToList);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });

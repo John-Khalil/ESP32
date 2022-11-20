@@ -225,26 +225,26 @@ const testRunner=()=>{
     // ])))
 
 
-    // mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
-    //     if(toggleVolumeControl){
-    //         console.log(`data from event >> ${data}`)
-    //         NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
-    //     }
-    // })
+    mcu.addEventListener(mcu.ALU(mcu.adcRead(34),'/',41),(data)=>{
+        if(toggleVolumeControl){
+            console.log(`data from event >> ${data}`)
+            NodeAudioVolumeMixer.setMasterVolumeLevelScalar(data/100)
+        }
+    })
 
-    // mcu.addEventListener(mcu.inputPin(),(data)=>{
-    //     if(data==0)
-    //         console.clear();
-    // })
+    mcu.addEventListener(mcu.inputPin(),(data)=>{
+        if(data==0)
+            console.clear();
+    })
 
-    // mcu.addEventListener(mcu.inputPin(),(data)=>{
-    //     if(data==1)
-    //         toggleVolumeControl=toggleVolumeControl^1;
-    // })
+    mcu.addEventListener(mcu.inputPin(),(data)=>{
+        if(data==1)
+            toggleVolumeControl=toggleVolumeControl^1;
+    })
 
-    // mcu.addEventListener(mcu.ALU(mcu.timer(),'/',1500),(data)=>{
-    //     console.log(` >> @ ${data}`)
-    // })
+    mcu.addEventListener(mcu.ALU(mcu.timer(),'/',1500),(data)=>{
+        console.log(` >> @ ${data}`)
+    })
 
 
 
