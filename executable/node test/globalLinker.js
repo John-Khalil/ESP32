@@ -49,7 +49,6 @@ export default class globalLinker{
     }
 
     encode(txData){
-        console.log("txData -> ",txData);
         return this.encode64(txData);
     }
 
@@ -71,6 +70,8 @@ export default class globalLinker{
     
     async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
+        
+        console.log("TX -> ",dataToList);
         if(!recursiveCall&&(!typeFeedback)){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
@@ -99,14 +100,14 @@ export default class globalLinker{
     async linkerSet(dataToList,devId=this.DEV_ID){
         devId=devId<<24;
         if(this.jsonParse(this.decode(dataToList))[PACKET_SEQUENCE]==undefined){
-            dataToList=this.decode(dataToList);
+            // dataToList=this.decode(dataToList);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
             return;
         }
         dataToList=this.jsonParse(this.decode(dataToList))
-        console.log("---->> ",dataToList)
+        console.log("RX -> ",dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             if((dataToList[PACKET_SEQUENCE]>>24)==devId)
                 this.REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];

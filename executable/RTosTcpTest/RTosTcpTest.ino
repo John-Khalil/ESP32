@@ -2484,7 +2484,7 @@ void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
-	// console.log("dataToList >> ",dataToList);
+	console.log("TX >> ",dataToList);
 
 	devId=devId<<24;
 	if(!REAL_TIME_SYNC_REGISTER)
@@ -2512,7 +2512,7 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 	unsigned long readCallbackListCounter=0;
 
 	dataToList=realTimeTransceiverDecode(dataToList);
-	// console.log("RX >> ",dataToList);
+	console.log("RX >> ",dataToList);
 
 	if(equalStrings(json(FEEDBACK_TYPE,dataToList),(unsigned char*)"true")){
 		unsigned long currentPacketSequence=getInt32_t(json(PACKET_SEQUENCE,dataToList));
