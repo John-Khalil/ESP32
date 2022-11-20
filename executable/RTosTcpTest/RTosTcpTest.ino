@@ -3432,6 +3432,7 @@ void realTimeConnection(void *arg){
 		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function
 			if(tcpConnection.connected())
 				tcpConnection.write((char*)tcpConnectionSend);
+			_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 			return tcpConnectionSend;
 		});
 		realTimeConnectionSetList.push_back([&](void){

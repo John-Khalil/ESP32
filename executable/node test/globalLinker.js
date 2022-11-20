@@ -67,11 +67,13 @@ export default class globalLinker{
 
     linkerSendQueue=[];     // super empty array
     queueCounter=0;
+
+    DISABLE_FEEDBACK=1;
     
-    async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=0){     //! this needs to be cached
+    async linkerSend(dataToList,devId=this.DEV_ID,recursiveCall=0,typeFeedback=this.DISABLE_FEEDBACK){     //! this needs to be cached
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
         
-        console.log("TX -> ",dataToList);
+        // console.log("TX -> ",dataToList);
         console.log(`waiting for data @ <${this.queueCounter}>`, this.linkerSendQueue)
         if(!recursiveCall&&(!typeFeedback)){
             devId=devId<<24;
@@ -90,7 +92,6 @@ export default class globalLinker{
             });
         }
         else{
-            console.log(`waiting for data @ <${this.queueCounter}>`, this.linkerSendQueue);
             setTimeout(() => {
                 this.linkerSend(dataToList,devId,1);
             }, 3);
@@ -105,14 +106,14 @@ export default class globalLinker{
                 dataToList=this.decode(dataToList);
 
             dataToList=((dataToList.slice(0,1)=='\"')&&(dataToList.slice(dataToList.length-1,dataToList.length)=='\"'))?dataToList.slice(1,dataToList.length-1):dataToList;
-            console.log('direct no feedback --> ',dataToList);
+            // console.log('direct no feedback --> ',dataToList);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
             return;
         }
         dataToList=this.jsonParse(this.decode(dataToList))
-        console.log("RX -> ",dataToList)
+        // console.log("RX -> ",dataToList)
         if(dataToList[FEEDBACK_TYPE]==true){
             if((dataToList[PACKET_SEQUENCE]>>24)==devId)
                 this.REAL_TIME_SYNC_REGISTER=dataToList[PACKET_SEQUENCE];
@@ -125,13 +126,16 @@ export default class globalLinker{
 
             
             dataToList=(typeof(dataToList[PACKET_PAYLOAD])=='object')?JSON.stringify(dataToList[PACKET_PAYLOAD]):dataToList[PACKET_PAYLOAD];
-            console.log('final form ->> ',dataToList)
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
         }
 
         
+    }
+
+    enableFeedback(forceFeedback){
+        this.DISABLE_FEEDBACK=!forceFeedback;
     }
 
 
