@@ -72,6 +72,7 @@ export default class globalLinker{
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
         
         console.log("TX -> ",dataToList);
+        console.log(`waiting for data @ <${this.queueCounter}>`, this.linkerSendQueue)
         if(!recursiveCall&&(!typeFeedback)){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
@@ -97,10 +98,11 @@ export default class globalLinker{
         
     }
 
-    async linkerSet(dataToList,devId=this.DEV_ID){
+    async linkerSet(dataToList,devId=this.DEV_ID,decodeMessage=0){
         devId=devId<<24;
         if(this.jsonParse(this.decode(dataToList))[PACKET_SEQUENCE]==undefined){
-            // dataToList=this.decode(dataToList);
+            if(decodeMessage)
+                dataToList=this.decode(dataToList);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
@@ -117,7 +119,10 @@ export default class globalLinker{
                 [FEEDBACK_TYPE]:true,
                 [PACKET_SEQUENCE]:devId|((dataToList[PACKET_SEQUENCE])&0xFFFFFF)
             }),this.DEV_ID,0,1);
-            dataToList=JSON.stringify(dataToList[PACKET_PAYLOAD]);
+
+            
+            dataToList=(typeof(dataToList[PACKET_PAYLOAD])=='object')?JSON.stringify(dataToList[PACKET_PAYLOAD]):dataToList[PACKET_PAYLOAD];
+            console.log('final form ->> ',dataToList)
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
@@ -152,7 +157,7 @@ export default class globalLinker{
                 });
             });
             ws.on('message',(dataFromServer)=>{
-                this.linkerSet(dataFromServer.toString());
+                this.linkerSet(dataFromServer.toString(),this.DEV_ID,1);
             });
             ws.on('close',()=>{
               
