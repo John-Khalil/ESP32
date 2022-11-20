@@ -2480,6 +2480,11 @@ std::vector<std::function<void(void)>>realTimeConnectionSetList;
 
 unsigned char DISABLE_FEEDBACK=1;
 
+void realTimeConnectionEnableFeedback(unsigned char forceFeedback){					//! this should be added as an operator to enable remote user control
+	DISABLE_FEEDBACK=!forceFeedback;
+	return;
+}
+
 
 void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=DISABLE_FEEDBACK,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
