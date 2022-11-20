@@ -2478,9 +2478,10 @@ std::vector<std::function<unsigned char*(unsigned char*)>>WRITE_CALLBACK_LIST;		
 
 std::vector<std::function<void(void)>>realTimeConnectionSetList;
 
+unsigned char DISABLE_FEEDBACK=1;
 
 
-void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=0,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
+void realTimeConnectionSend(unsigned char *dataToList,unsigned char typeFeedback=DISABLE_FEEDBACK,unsigned long devId=DEV_ID){								// setting the data that we just got from the real time connection
 	unsigned long writeCallbackListCount=WRITE_CALLBACK_LIST.size();
 	unsigned long writeCallbackListCounter=0;
 
