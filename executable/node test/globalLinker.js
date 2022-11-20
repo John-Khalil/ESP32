@@ -103,6 +103,9 @@ export default class globalLinker{
         if(this.jsonParse(this.decode(dataToList))[PACKET_SEQUENCE]==undefined){
             if(decodeMessage)
                 dataToList=this.decode(dataToList);
+
+            dataToList=((dataToList.slice(0,1)=='\"')&&(dataToList.slice(dataToList.length-1,dataToList.length)=='\"'))?dataToList.slice(1,dataToList.length-1):dataToList;
+            console.log('direct no feedback --> ',dataToList);
             this.readCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
