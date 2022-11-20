@@ -74,7 +74,7 @@ export default class globalLinker{
         dataToList=(Object.keys(this.jsonParse(dataToList)).length)?JSON.parse(dataToList):dataToList;
         
         // console.log("TX -> ",dataToList);
-        console.log(`waiting for data @ <${this.queueCounter}>`, this.linkerSendQueue)
+        // console.log(`waiting for data @ <${this.queueCounter}>`, this.linkerSendQueue)
         if(!recursiveCall&&(!typeFeedback)){
             devId=devId<<24;
             if(!this.REAL_TIME_SYNC_REGISTER)
