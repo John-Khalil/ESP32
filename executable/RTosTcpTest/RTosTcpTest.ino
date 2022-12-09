@@ -2552,6 +2552,7 @@ void realTimeConnectionSet(unsigned char *dataToList,unsigned long devId=DEV_ID)
 #define realTimeConnectionSendAdd(SEND_CALLBACK_ADD)	WRITE_CALLBACK_LIST.push_back([&]SEND_CALLBACK_ADD)	//^ both vector and functional should be included
 
 unsigned long VIRTUAL_CONTROLLER_POLLING_RATE=20;
+unsigned long networkLatency=20;
 #define VIRTUAL_CONTROLLER_MAX_EVENTS 100
 unsigned long VIRTUAL_CONTROLLER_EVENT_ADDRESS[VIRTUAL_CONTROLLER_MAX_EVENTS]={};
 
@@ -2648,6 +2649,9 @@ JSON_ATTRIBUTE RX_ADDRESS="RA";
 JSON_ATTRIBUTE SERIAL_EXECUTABLE="SE";
 JSON_ATTRIBUTE SERIAL_DATA="SD";
 JSON_ATTRIBUTE SERIAL_INDEX="SI";
+
+// network latency operator
+JSON_ATTRIBUTE NETWORK_LATENCY="NL";
 
 
 
@@ -3232,6 +3236,10 @@ unsigned char* virtualController(unsigned char* executableObject){
 					return inttostring(serialPortList[serialPortListIndex].available());
 				}
 				return UNDEFINED;
+			},
+			[&](unsigned char *subExecutable){											//& NETWORK LATENCY OPERATOR
+				networkLatency=getInt32_t(virtualController(constJson(NETWORK_LATENCY,subExecutable)));
+				return subExecutable;
 			}
 
 
@@ -3435,9 +3443,11 @@ void realTimeConnection(void *arg){
 		runOnlyOnce=1;
 
 		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function
+			static uint32_t lastAccessTime;
+			while((lastAccessTime=millis()-lastAccessTime)<networkLatency);			// waiting for the last sent packet
 			if(tcpConnection.connected())
 				tcpConnection.write((char*)tcpConnectionSend);
-			_delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
+			// _delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);
 			return tcpConnectionSend;
 		});
 		realTimeConnectionSetList.push_back([&](void){

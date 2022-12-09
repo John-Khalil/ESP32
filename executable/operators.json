@@ -231,6 +231,12 @@
     "serialIdentifier":executable
 }
 
+// network latency operator
+{
+    "operator":int,
+    "networkLatency":executable
+}
+
 // 
 
 
