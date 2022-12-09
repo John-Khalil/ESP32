@@ -70,6 +70,8 @@ const serialAddOperator=operatorIndex++;
 const serialSendOperator=operatorIndex++;
 const serialReadOperator=operatorIndex++;
 
+const networkLatencyOperator=operatorIndex++;
+
 
 const JSON_OPERATOR="OP";				// generic operator
 
@@ -157,6 +159,10 @@ const RX_ADDRESS="RA";
 const SERIAL_EXECUTABLE="SE";
 const SERIAL_DATA="SD";
 const SERIAL_INDEX="SI";
+
+
+// network latency operator
+const NETWORK_LATENCY="NL";
 
 
 const delay=delayValueMS=>{
@@ -376,6 +382,13 @@ const serialPortRead=(serialIdentifier)=>{
     return returnStack;
 }
 
+const networkLatency=(latency)=>{
+    var returnStack={};
+    returnStack[JSON_OPERATOR]=networkLatencyOperator;
+    returnStack[NETWORK_LATENCY]=latency;
+    return returnStack;
+}
+
 const virtualController={
     JSON_OPERATOR,
     OUTPUT_STREAM,
@@ -424,6 +437,7 @@ const virtualController={
     SERIAL_EXECUTABLE,
     SERIAL_DATA,
     SERIAL_INDEX,
+    NETWORK_LATENCY,
     newVariable,
     operationSelector,
     delay,
@@ -451,7 +465,8 @@ const virtualController={
     timer,
     serialPortAdd,
     serialPortSend,
-    serialPortRead
+    serialPortRead,
+    networkLatency
 }
 
 export default virtualController;
