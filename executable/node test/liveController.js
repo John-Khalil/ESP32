@@ -117,13 +117,13 @@ mcu.forceStart=()=>{
 const mcuEventsList=[];
 const mcuEventsIdentifierList=[];
 mcu.addEventListener=(mcuEvent,eventCallBack)=>{
-    let callBackIdentifier=mcuEventsIdentifierList[mcuEventsList.indexOf(mcuEvent)];        //^ it will get the value unless it didn't exist then it would be updated
-    if(!mcuEventsList.includes(mcuEvent)){
+    let callBackIdentifier=mcuEventsIdentifierList[mcuEventsList.indexOf(JSON.stringify(mcuEvent))];        //^ it will get the value unless it didn't exist then it would be updated
+    if(!mcuEventsList.includes(JSON.stringify(mcuEvent))){
         let eventAddress=mcu.newVariable();
         let onChangeAddress=mcu.newVariable();
         callBackIdentifier=mcu.newVariable();
         mcu.load(mcu.controllerEventListener(eventAddress,onChangeAddress,mcuEvent,mcu.serverSend(callBackIdentifier,mcu.memoryRead(onChangeAddress))));
-        mcuEventsList.push(mcuEvent);
+        mcuEventsList.push(JSON.stringify(mcuEvent));
         mcuEventsIdentifierList.push(callBackIdentifier);
     }
     xtensaLinker.linkerSetAdd((data)=>{
@@ -175,7 +175,7 @@ let toggleVolumeControl=1;
 
 const testRunner=()=>{
 
-    mcu.load(mcu.networkLatency(100));
+    // mcu.load(mcu.networkLatency(100));
 
     mcu.load(mcu.logger('code started'));
 
@@ -242,7 +242,7 @@ const testRunner=()=>{
             toggleVolumeControl=toggleVolumeControl^1;
     })
 
-    mcu.addEventListener(mcu.ALU(mcu.timer(),'/',1500),(data)=>{
+    mcu.addEventListener(mcu.ALU(mcu.timer(),'/',500),(data)=>{
         console.log(` >> @ ${data}`)
     })
 
