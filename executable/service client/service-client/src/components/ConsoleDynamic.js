@@ -91,11 +91,11 @@ const DynamicConsole=({userConsole})=>{
 						<div className="float-right p-1 block">
 							<div className="block">
 								<input type="checkbox" ref={consoleEnableNL} className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
-								<span className="inline-block float-right mr-1 text-white">NL</span>
+								<span className="inline-block float-right mr-1 text-white">CR</span>
 							</div>
 							<div className="block">
 								<input type="checkbox" ref={consoleEnableCR} className="inline-block float-right m-1 mt-1.5 mr-1 p-1"/>
-								<span className="inline-block float-right mr-1 text-white">CR</span>
+								<span className="inline-block float-right mr-1 text-white">NL</span>
 							</div>
 							
 						</div>
