@@ -3403,7 +3403,6 @@ void testingFuction(void * uselessParam){
 
 	// console.log("test for conversion function >> ",getInt32_t(inttostring(-1UL)));
 
-	
 	vTaskDelete(NULL);
 }
 
@@ -3444,7 +3443,8 @@ void realTimeConnection(void *arg){
 
 		WRITE_CALLBACK_LIST.push_back([&](unsigned char *tcpConnectionSend){		//^ adding call back function
 			static uint32_t lastAccessTime;
-			while((lastAccessTime=millis()-lastAccessTime)<networkLatency);			// waiting for the last sent packet
+			while((millis()-lastAccessTime)<networkLatency)_delay_ms(1);			// waiting for the last sent packet
+			lastAccessTime=millis();
 			if(tcpConnection.connected())
 				tcpConnection.write((char*)tcpConnectionSend);
 			// _delay_ms(VIRTUAL_CONTROLLER_POLLING_RATE);

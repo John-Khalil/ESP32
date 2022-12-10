@@ -175,7 +175,7 @@ let toggleVolumeControl=1;
 
 const testRunner=()=>{
 
-
+    mcu.load(mcu.networkLatency(100));
 
     mcu.load(mcu.logger('code started'));
 
