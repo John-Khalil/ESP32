@@ -136,7 +136,7 @@ export default function ConsoleDynamic() {
 				height:200,
 				consoleData:consoleLog,
 				send:getConsoleInput,
-				hide:false
+				hide:false,
 				// textColor:'yellow'
 				// themeColor:'rgb(0,0,0)'
 
