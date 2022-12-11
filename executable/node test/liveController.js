@@ -73,7 +73,8 @@ xtensaLinker.linkerSetAdd((data)=>{
     }
 })
 
-setTimeout(() => {
+
+setInterval(() => {
     xtensaLinker.linkerSet("MAIN-THREAD-LOAD");
     console.log("test")
 }, 4000);
@@ -171,11 +172,11 @@ const increment=MCU.newVariable();
 const newFunction=mcu.newVariable();
 const newFunctionParams=mcu.newVariable();
 
-let toggleVolumeControl=1;
+let toggleVolumeControl=0;
 
 const testRunner=()=>{
 
-    // mcu.load(mcu.networkLatency(100));
+    mcu.load(mcu.networkLatency(1));
 
     mcu.load(mcu.logger('code started'));
 
@@ -240,6 +241,12 @@ const testRunner=()=>{
     mcu.addEventListener(mcu.inputPin(),(data)=>{
         if(data==1)
             toggleVolumeControl=toggleVolumeControl^1;
+    })
+
+    mcu.addEventListener(mcu.ALU(mcu.adcRead(33),'/',41),(data)=>{
+        if(toggleVolumeControl){
+            console.log(`data from event test >> ${data}`)
+        }
     })
 
     mcu.addEventListener(mcu.ALU(mcu.timer(),'/',500),(data)=>{
