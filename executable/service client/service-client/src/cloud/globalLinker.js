@@ -42,12 +42,12 @@ export default class globalLinker{
     
     encode64=(str)=>{
         // return Buffer.from(str).toString('base64');
-        return atob(str);
+        return btoa(str);
     }
     
     decode64=(str)=>{
         // return Buffer.from(str,'base64').toString('utf-8');
-        return btoa(str);
+        return atob(str);
     }
 
     encode(txData){
@@ -88,7 +88,7 @@ export default class globalLinker{
             dataToList=this.encode((!typeFeedback)?JSON.stringify({
                 [PACKET_SEQUENCE]:devId|((++this.packetSequence)&0xFFFFFF),
                 [PACKET_PAYLOAD]:this.linkerSendQueue[this.queueCounter++]
-            }):JSON.stringify(dataToList))
+            }):((typeof dataToList=='object')?JSON.stringify(dataToList):dataToList))
             this.writeCallbackList.forEach(callBackFunction => {
                 callBackFunction(dataToList);
             });
@@ -149,7 +149,7 @@ export default class globalLinker{
         this.writeCallbackList.push(callBack);
     }
 
-    constructor(hostServerConfigUrl,globalUserCredentials){
+    constructor(hostServerConfigUrl,globalUserCredentials,onConnectCallback=()=>{}){
         axios.get(hostServerConfigUrl).then((getResponse)=>{
             let hostServerAddress=getResponse.data.dev;         //~ expected host-address:port
             const ws=new WebSocket(`ws://${hostServerAddress}`);
@@ -164,9 +164,10 @@ export default class globalLinker{
                     }
                     
                 });
+                onConnectCallback();
             };
             ws.onmessage=(dataFromServer)=>{
-                this.linkerSet(dataFromServer.toString(),this.DEV_ID,1);
+                this.linkerSet(dataFromServer.data.toString(),this.DEV_ID,1);
             };
             ws.onclose=()=>{
               
