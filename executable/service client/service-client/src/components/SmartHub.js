@@ -27,7 +27,7 @@ const DeviceList=({deviceList})=>{
         deviceRenderList.push(
             <>
                 <div className="m-1 p-1 overflow-scroll text-left border border-gray-300 bg-black rounded-md">
-                    <span>{`${device.name||'device name'}`}</span><br />
+                    <span>{`${device.name||'Device Name'}`}</span><br />
                     <button onClick={()=>{
                         deviceList.delete(device);
                     }} className="m-1 p-1 bg-[#FF0000] border hover:bg-[#ff00006c] border-[#ff00006c] rounded inline-block float-left">Delete</button>
