@@ -1,4 +1,12 @@
 import React,{ useState,useEffect,useRef } from "react"
+import globalLinker from "../cloud/globalLinker";
+
+const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
+const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
+
+const devLinker=new globalLinker(hostServerConfig,globalUserCredentials);
+
+devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
 
 const AddDevice=({userDevice})=>{
