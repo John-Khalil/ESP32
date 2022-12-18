@@ -23,6 +23,8 @@ const AddDevice=({userDevice})=>{
 const DeviceList=({deviceList})=>{
     const deviceRenderList=[];
     (deviceList.userDevices||[]).forEach((device,index) => {
+        if(device.deleted)
+            return;
         device.index=index;
         deviceRenderList.push(
             <>
@@ -47,7 +49,7 @@ const DeviceList=({deviceList})=>{
 
 export default function SmartHub() {
     const [deviceName,clearNameInput]=useState();
-    const [userDevices,setUserDevices]=useState([{},{},{},{}]);
+    const [userDevices,setUserDevices]=useState([{},{},{deleted:true},{}]);
     return (
         <>
             <AddDevice userDevice={{
