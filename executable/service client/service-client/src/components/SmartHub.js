@@ -20,6 +20,24 @@ const AddDevice=({userDevice})=>{
     );
 }
 
+const DeviceList=({deviceList})=>{
+    const deviceRenderList=[];
+    (deviceList.userDevices||[]).forEach(device => {
+        deviceRenderList.push(
+            <>
+            
+            </>
+        );
+    });
+    return(
+        <>
+            <div className="m-1 p-1 overflow-scroll text-left border border-sky-800 rounded h-96" >
+                {deviceRenderList}
+            </div>
+        </>
+    )
+}
+
 export default function SmartHub() {
     const [deviceName,clearNameInput]=useState();
     return (
@@ -30,6 +48,9 @@ export default function SmartHub() {
                     console.log(userDeviceName);
                     clearNameInput(userDeviceName);
                 }
+            }}/>
+            <DeviceList deviceList={{
+                
             }}/>
         </>
     )
