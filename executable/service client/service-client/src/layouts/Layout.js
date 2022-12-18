@@ -14,7 +14,8 @@ export default function Layout() {
     <>
 			<nav className='m-1 p-1 text-right border border-sky-800 '>
 				<Link to="/home"> <div className={navBarStyleElements}>Home</div> </Link>
-      	<Link to="/console-dynamic"> <div className={navBarStyleElements}>Console</div> </Link>
+				<Link to="/smart-hub"> <div className={navBarStyleElements}>Smart Hub</div> </Link>
+      			<Link to="/console-dynamic"> <div className={navBarStyleElements}>Console</div> </Link>
 				<Link to="/app-settings"> <div className={navBarStyleElements}>Settings</div> </Link>
 			</nav>
 			<div className='m-1 p-1 text center border border-sky-800'>
