@@ -10,11 +10,11 @@ const devLinker=new globalLinker(hostServerConfig,globalUserCredentials,()=>{
 
 devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
-let ADD_REQUEST=0;
+let ADD_REQUEST="";
 
 devLinker.linkerSetAdd(deviceResponse=>{
-    if(ADD_REQUEST){
-        ADD_REQUEST=0;
+    if(ADD_REQUEST!==""){
+        ADD_REQUEST="";
 
     }
 })
@@ -75,8 +75,8 @@ export default function SmartHub() {
                 addDevice:(userDeviceName)=>{
                     console.log(userDeviceName);
                     clearNameInput(userDeviceName);
-                    ADD_REQUEST=1;
-                    
+                    ADD_REQUEST=userDeviceName;
+
                 }
             }}/>
             <DeviceList deviceList={{
