@@ -1,23 +1,17 @@
 import React,{ useState,useEffect,useRef } from "react"
 import globalLinker from "../cloud/globalLinker";
 
-const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
-const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
+if(localStorage.getItem('devList')==null){
+    localStorage.setItem('devList',JSON.stringify([]));
+}
 
-const devLinker=new globalLinker(hostServerConfig,globalUserCredentials,()=>{
-    // devLinker.linkerSend("connected\r\n")
-});
 
-devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
-let ADD_REQUEST="";
+// devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
-devLinker.linkerSetAdd(deviceResponse=>{
-    if(ADD_REQUEST!==""){
-        ADD_REQUEST="";
 
-    }
-})
+
+
 
 const AddDevice=({userDevice})=>{
     const deviceName=useRef();
@@ -67,7 +61,33 @@ const DeviceList=({deviceList})=>{
 
 export default function SmartHub() {
     const [deviceName,clearNameInput]=useState();
-    const [userDevices,setUserDevices]=useState([{},{},{deleted:true},{}]);
+    const [userDevices,setUserDevices]=useState(JSON.parse(localStorage.getItem('devList')));
+
+    const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json';
+    const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
+
+    const devLinker=new globalLinker(hostServerConfig,globalUserCredentials,()=>{
+        // devLinker.linkerSend("connected\r\n")
+    });
+    
+    let ADD_REQUEST="";
+
+
+    devLinker.linkerSetAdd(deviceResponse=>{
+        if((ADD_REQUEST!=="")&&(deviceResponse!=='CONNECTION-ALIVE-ACK')){
+            let userDevList=JSON.parse(localStorage.getItem('devList'));        //^ array is expected
+            userDevList.push({
+                name:ADD_REQUEST,
+                deleted:false,
+                data:deviceResponse
+            })
+            localStorage.setItem('devList',JSON.stringify(userDevList));
+            setUserDevices(JSON.parse(localStorage.getItem('devList')));
+            ADD_REQUEST="";
+        }
+    })
+
+
     return (
         <>
             <AddDevice userDevice={{
@@ -76,7 +96,7 @@ export default function SmartHub() {
                     console.log(userDeviceName);
                     clearNameInput(userDeviceName);
                     ADD_REQUEST=userDeviceName;
-
+                    devLinker.linkerSend('!get-key')
                 }
             }}/>
             <DeviceList deviceList={{
