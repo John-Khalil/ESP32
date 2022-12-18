@@ -22,10 +22,19 @@ const AddDevice=({userDevice})=>{
 
 const DeviceList=({deviceList})=>{
     const deviceRenderList=[];
-    (deviceList.userDevices||[]).forEach(device => {
+    (deviceList.userDevices||[]).forEach((device,index) => {
+        device.index=index;
         deviceRenderList.push(
             <>
-            
+                <div className="m-1 p-1 overflow-scroll text-left border border-gray-300 bg-black rounded-md">
+                    <span>{`${device.name||'device name'}`}</span><br />
+                    <button onClick={()=>{
+
+                    }} className="m-1 p-1 bg-[#FF0000] border hover:bg-[#ff00006c] border-[#ff00006c] rounded inline-block float-left">Delete</button>
+                    <button onClick={()=>{
+                        
+                    }} className="m-1 p-1 bg-[#059862] border hover:bg-[#05986295] border-[#05986295] rounded inline-block float-right">Play Back</button>
+                </div>
             </>
         );
     });
@@ -40,6 +49,7 @@ const DeviceList=({deviceList})=>{
 
 export default function SmartHub() {
     const [deviceName,clearNameInput]=useState();
+    const [userDevices,setUserDevices]=useState([{},{}]);
     return (
         <>
             <AddDevice userDevice={{
@@ -50,7 +60,7 @@ export default function SmartHub() {
                 }
             }}/>
             <DeviceList deviceList={{
-                
+                userDevices
             }}/>
         </>
     )
