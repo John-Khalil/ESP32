@@ -5,13 +5,19 @@ const hostServerConfig='https://raw.githubusercontent.com/engkhalil/xtensa32plus
 const globalUserCredentials='anNvbiBkaXJlY3RpdmVzIHRlc3Qg';
 
 const devLinker=new globalLinker(hostServerConfig,globalUserCredentials,()=>{
-    devLinker.linkerSend("connected\r\n")
+    // devLinker.linkerSend("connected\r\n")
 });
 
 devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
+let ADD_REQUEST=0;
 
+devLinker.linkerSetAdd(deviceResponse=>{
+    if(ADD_REQUEST){
+        ADD_REQUEST=0;
 
+    }
+})
 
 const AddDevice=({userDevice})=>{
     const deviceName=useRef();
@@ -69,6 +75,8 @@ export default function SmartHub() {
                 addDevice:(userDeviceName)=>{
                     console.log(userDeviceName);
                     clearNameInput(userDeviceName);
+                    ADD_REQUEST=1;
+                    
                 }
             }}/>
             <DeviceList deviceList={{
