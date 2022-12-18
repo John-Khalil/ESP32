@@ -102,10 +102,17 @@ export default function SmartHub() {
             <DeviceList deviceList={{
                 userDevices,
                 delete:device=>{
-                    console.log(device);
+                    // console.log(device);
+
+                    let userDevList=JSON.parse(localStorage.getItem('devList'));        //^ array is expected
+                    userDevList[device.index].deleted=true;
+                    localStorage.setItem('devList',JSON.stringify(userDevList));
+                    setUserDevices(JSON.parse(localStorage.getItem('devList')));
+
                 },
                 playBack:device=>{
-                    console.log(device);
+                    // console.log(device);
+                    devLinker.linkerSend(JSON.parse(localStorage.getItem('devList'))[device.index].data);
                 }
             }}/>
         </>
