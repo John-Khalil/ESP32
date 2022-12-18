@@ -12,7 +12,7 @@ export default function Layout() {
 	},[])
   return (
     <>
-			<nav className='m-1 p-1 text-right border border-sky-800 '>
+			<nav className='m-1 p-1 text-left border border-sky-800 '>
 				<Link to="/home"> <div className={navBarStyleElements}>Home</div> </Link>
 				<Link to="/smart-hub"> <div className={navBarStyleElements}>Smart Hub</div> </Link>
       			<Link to="/console-dynamic"> <div className={navBarStyleElements}>Console</div> </Link>
