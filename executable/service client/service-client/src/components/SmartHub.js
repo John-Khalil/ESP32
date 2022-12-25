@@ -27,15 +27,17 @@ function arrayToString(inputArray){
 }
 
 const base64ToArray16=(base64Data)=>{
-    let array8=stringToArray(atob(base64Data));
     let array16=[];
-    let loopCounter=(array8.length/2)+1;
-    let array8Counter=0;
-    // let array16Counter=0;
-    while(loopCounter--){
-        array16.push((array8[array8Counter++]||0)|((array8[array8Counter++]||0)<<8));
+    try{
+        let array8=stringToArray(atob(base64Data));
+        let loopCounter=(array8.length/2)+1;
+        let array8Counter=0;
+        while(loopCounter--){
+            array16.push((array8[array8Counter++]||0)|((array8[array8Counter++]||0)<<8));
+        }
+    }catch{
+        return array16;
     }
-    console.log(" -- >> ",array16);
     return array16;
 }
 
@@ -53,7 +55,7 @@ const Graph=({plot})=>{
 
         let lastPoint=null;
         (plot.data||[]).forEach(point=>{ 
-            if(lastPoint!=null){console.log('manga')
+            if(lastPoint!=null){
                 ctx.beginPath();
                 ctx.lineWidth = plot.width||2;
                 ctx.strokeStyle = plot.color||'red';                
@@ -63,11 +65,11 @@ const Graph=({plot})=>{
             }
             lastPoint=point;
         });
-    },[plot.data])
+    },[plot])
 
     return(
         <>
-            <div className='m-1 p-1 text overflow-scroll center border border-sky-800'>
+            <div className='m-1 text overflow-scroll center border border-sky-800'>
                 <canvas ref={htmlCanvas} height={canvasHight} width={canvasWidth}></canvas>
             </div>
         </>
@@ -103,7 +105,7 @@ const DeviceList=({deviceList})=>{
             return;
         device.index=index;
 
-        // base64ToArray16(device.data);
+        base64ToArray16(device.data);
         // console.log(" ----> ",stringToArray(atob(device.data)));
 
 
