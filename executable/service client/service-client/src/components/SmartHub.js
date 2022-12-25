@@ -127,7 +127,7 @@ const DeviceList=({deviceList})=>{
             return;
         device.index=index;
 
-        console.log(plotBase64Array(device.data));
+        // console.log(plotBase64Array(device.data));
         // console.log(" ----> ",stringToArray(atob(device.data)));
 
 
@@ -141,6 +141,10 @@ const DeviceList=({deviceList})=>{
                     <button onClick={()=>{
                         deviceList.playBack(device);
                     }} className="m-1 p-1 bg-[#059862] border hover:bg-[#05986295] border-[#05986295] rounded inline-block float-right">Play Back</button>
+                    <br />
+                    <Graph plot={{
+                        data:plotBase64Array(device.data)
+                    }}/>
                 </div>
             </>
         );
