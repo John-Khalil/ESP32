@@ -9,6 +9,36 @@ if(localStorage.getItem('devList')==null){
 
 // devLinker.linkerSetAdd(data=>console.log("devLinker >> ",data));
 
+function stringToArray(inputString){
+    var inputStringLength=inputString.length;
+    var arrayIndexCounter=0;
+    var finalArray=[];
+    while(inputStringLength--)
+        finalArray[arrayIndexCounter]=inputString.charCodeAt(arrayIndexCounter++);
+    return finalArray;
+}
+function arrayToString(inputArray){
+    var inputArrayLength=inputArray.length;
+    var stringIndexCounter=0;
+    var finalString="";
+    while(inputArrayLength--)
+        finalString+=String.fromCharCode(inputArray[stringIndexCounter++]);
+    return finalString;
+}
+
+const base64ToArray16=(base64Data)=>{
+    let array8=stringToArray(atob(base64Data));
+    let array16=[];
+    let loopCounter=(array8.length/2)+1;
+    let array8Counter=0;
+    // let array16Counter=0;
+    while(loopCounter--){
+        array16.push((array8[array8Counter++]||0)|((array8[array8Counter++]||0)<<8));
+    }
+    console.log(" -- >> ",array16);
+    return array16;
+}
+
 
 
 
@@ -38,6 +68,11 @@ const DeviceList=({deviceList})=>{
         if(device.deleted)
             return;
         device.index=index;
+
+        base64ToArray16(device.data);
+        // console.log(" ----> ",stringToArray(atob(device.data)));
+
+
         deviceRenderList.push(
             <>
                 <div className="m-1 p-1 overflow-scroll text-left border border-gray-300 bg-black rounded-md">
