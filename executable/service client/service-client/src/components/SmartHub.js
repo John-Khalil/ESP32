@@ -50,17 +50,19 @@ const Graph=({plot})=>{
         ctx.fillStyle='black';
         ctx.fillRect(0, 0,canvasWidth,canvasHight);
 
+
         let lastPoint=null;
-        (plot.data||[]).forEach(point=>{
-            if(lastPoint!=null){
-                ctx.lineWidth = plot.width||1;
-                ctx.strokeStyle = plot.color||'#202a34';
+        (plot.data||[]).forEach(point=>{ 
+            if(lastPoint!=null){console.log('manga')
+                ctx.beginPath();
+                ctx.lineWidth = plot.width||2;
+                ctx.strokeStyle = plot.color||'red';                
                 ctx.moveTo(lastPoint.x, lastPoint.y);
                 ctx.lineTo(point.x, point.y);
                 ctx.stroke();
             }
             lastPoint=point;
-        })
+        });
     },[plot.data])
 
     return(
@@ -158,7 +160,7 @@ export default function SmartHub() {
     return (
         <>
             <Graph plot={{
-                data:[{x:100,y:200},{x:200,y:300}]
+                data:[{x:10,y:20},{x:20,y:30},{x:100,y:10}]
             }}/>
 
             <AddDevice userDevice={{
