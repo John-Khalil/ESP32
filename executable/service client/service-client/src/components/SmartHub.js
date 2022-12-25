@@ -49,6 +49,18 @@ const Graph=({plot})=>{
         const ctx=htmlCanvas.current.getContext('2d');
         ctx.fillStyle='black';
         ctx.fillRect(0, 0,canvasWidth,canvasHight);
+
+        let lastPoint=null;
+        (plot.data||[]).forEach(point=>{
+            if(lastPoint!=null){
+                ctx.lineWidth = plot.width||1;
+                ctx.strokeStyle = plot.color||'#202a34';
+                ctx.moveTo(lastPoint.x, lastPoint.y);
+                ctx.lineTo(point.x, point.y);
+                ctx.stroke();
+            }
+            lastPoint=point;
+        })
     },[plot.data])
 
     return(
@@ -146,7 +158,7 @@ export default function SmartHub() {
     return (
         <>
             <Graph plot={{
-
+                data:[{x:100,y:200},{x:200,y:300}]
             }}/>
 
             <AddDevice userDevice={{
