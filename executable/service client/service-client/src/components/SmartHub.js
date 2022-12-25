@@ -40,6 +40,26 @@ const base64ToArray16=(base64Data)=>{
 }
 
 
+const Graph=({plot})=>{
+
+    const htmlCanvas=useRef();
+    const canvasHight=plot.canvasHight||150;
+    const canvasWidth=plot.canvasWidth||65535;    
+    useEffect(()=>{
+        const ctx=htmlCanvas.current.getContext('2d');
+        ctx.fillStyle='black';
+        ctx.fillRect(0, 0,canvasWidth,canvasHight);
+    },[plot.data])
+
+    return(
+        <>
+            <div className='m-1 p-1 text overflow-scroll center border border-sky-800'>
+                <canvas ref={htmlCanvas} height={canvasHight} width={canvasWidth}></canvas>
+            </div>
+        </>
+    );
+}
+
 
 
 
@@ -69,7 +89,7 @@ const DeviceList=({deviceList})=>{
             return;
         device.index=index;
 
-        base64ToArray16(device.data);
+        // base64ToArray16(device.data);
         // console.log(" ----> ",stringToArray(atob(device.data)));
 
 
@@ -125,6 +145,10 @@ export default function SmartHub() {
 
     return (
         <>
+            <Graph plot={{
+
+            }}/>
+
             <AddDevice userDevice={{
                 deviceName,
                 addDevice:(userDeviceName)=>{
