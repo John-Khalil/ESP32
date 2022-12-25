@@ -41,6 +41,28 @@ const base64ToArray16=(base64Data)=>{
     return array16;
 }
 
+const plotBase64Array=(base64Array,height=150)=>{
+    let sampleList=base64ToArray16(base64Array);
+    const highValue=0.15*height;
+    const lowValue=0.85*height;
+
+    let logicState=(sampleList[0]!=0);
+    const graphPlot=[];
+    let delta=0;
+    sampleList.slice(1).forEach(sample=>{
+        graphPlot.push({
+            y:logicState?highValue:lowValue,
+            x:delta
+        });
+        graphPlot.push({
+            y:logicState?highValue:lowValue,
+            x:(delta+=sample)
+        });
+        logicState^=1;
+    })
+    return graphPlot;
+}
+
 
 const Graph=({plot})=>{
 
@@ -105,7 +127,7 @@ const DeviceList=({deviceList})=>{
             return;
         device.index=index;
 
-        base64ToArray16(device.data);
+        console.log(plotBase64Array(device.data));
         // console.log(" ----> ",stringToArray(atob(device.data)));
 
 
