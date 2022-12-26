@@ -36,12 +36,13 @@ const base64ToArray16=(base64Data)=>{
             array16.push((array8[array8Counter++]||0)|((array8[array8Counter++]||0)<<8));
         }
     }catch{
+        console.log('error')
         return array16;
     }
     return array16;
 }
 
-const plotBase64Array=(base64Array,height=150)=>{
+const plotBase64Array=({base64Array,height=150,scale=1.0})=>{
     let sampleList=base64ToArray16(base64Array);
     const highValue=0.15*height;
     const lowValue=0.85*height;
@@ -56,7 +57,7 @@ const plotBase64Array=(base64Array,height=150)=>{
         });
         graphPlot.push({
             y:logicState?highValue:lowValue,
-            x:(delta+=sample)
+            x:(delta+=(sample*scale))
         });
         logicState^=1;
     })
@@ -142,8 +143,10 @@ const DeviceList=({deviceList})=>{
                         deviceList.playBack(device);
                     }} className="m-1 p-1 bg-[#059862] border hover:bg-[#05986295] border-[#05986295] rounded inline-block float-right">Play Back</button>
                     <br />
+
+
                     <Graph plot={{
-                        data:plotBase64Array(device.data)
+                        data:plotBase64Array({base64Array:device.data,scale:(device.graphScale||0.5)})
                     }}/>
                 </div>
             </>
