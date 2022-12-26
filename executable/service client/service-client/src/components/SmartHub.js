@@ -48,7 +48,7 @@ const plotBase64Array=({base64Array,height=150,scale=1.0})=>{
     const highValue=0.15*height;
     const lowValue=0.85*height;
 
-    let logicState=(sampleList[0]!=0);
+    let logicState=(sampleList[0]==0);
     const graphPlot=[];
     let delta=0;
     sampleList.slice(1).forEach(sample=>{
