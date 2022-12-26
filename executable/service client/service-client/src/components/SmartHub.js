@@ -29,14 +29,15 @@ function arrayToString(inputArray){
 const base64ToArray16=(base64Data)=>{
     let array16=[];
     try{
-        let array8=stringToArray(atob(base64Data));
+        // console.log(base64Data.slice(0,base64Data.length-(base64Data.length%4)))
+        let array8=stringToArray(atob(base64Data.slice(0,base64Data.length-(base64Data.length%4))));
         let loopCounter=(array8.length/2)+1;
         let array8Counter=0;
         while(loopCounter--){
             array16.push((array8[array8Counter++]||0)|((array8[array8Counter++]||0)<<8));
         }
-    }catch{
-        console.log('error')
+    }catch(err){
+        console.log('error >> ',err)
         return array16;
     }
     return array16;
@@ -147,7 +148,7 @@ const DeviceList=({deviceList})=>{
 
 
                     <Graph plot={{
-                        data:plotBase64Array({base64Array:device.data,scale:(device.graphScale||0.5)})
+                        data:plotBase64Array({base64Array:device.data,scale:(device.graphScale||0.1)})
                     }}/>
                 </div>
             </>
