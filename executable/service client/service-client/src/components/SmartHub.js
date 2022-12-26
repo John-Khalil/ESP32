@@ -124,6 +124,15 @@ const AddDevice=({userDevice})=>{
 
 const DeviceList=({deviceList})=>{
     const deviceRenderList=[];
+    
+    
+    // const scaleFactorList=[];
+
+    // let scaleFactorListCounter=(deviceList.userDevices||[]).length;
+    // while(scaleFactorListCounter--)
+    //     scaleFactorList.push(useRef());
+    
+    // const scaleFactor=useRef();
     (deviceList.userDevices||[]).forEach((device,index) => {
         if(device.deleted)
             return;
@@ -149,6 +158,9 @@ const DeviceList=({deviceList})=>{
 
                     <Graph plot={{
                         data:plotBase64Array({base64Array:device.data,scale:(device.graphScale||0.1)})
+                    }}/>
+                    <input className="float-right m-1" type="range" min={0} max={100}  onChange={()=>{
+                        console.log(this)
                     }}/>
                 </div>
             </>
