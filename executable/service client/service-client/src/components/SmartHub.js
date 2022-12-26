@@ -40,6 +40,7 @@ const base64ToArray16=(base64Data)=>{
         console.log('error >> ',err)
         return array16;
     }
+    console.log(array16)
     return array16;
 }
 
@@ -159,9 +160,9 @@ const DeviceList=({deviceList})=>{
                     <Graph plot={{
                         data:plotBase64Array({base64Array:device.data,scale:(device.graphScale||0.1)})
                     }}/>
-                    <input className="float-right m-1" type="range" min={0} max={100}  onChange={()=>{
+                    {/* <input className="float-right m-1" type="range" min={0} max={100}  onChange={()=>{
                         console.log(this)
-                    }}/>
+                    }}/> */}
                 </div>
             </>
         );
