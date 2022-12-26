@@ -143,6 +143,7 @@ const DeviceList=({deviceList})=>{
                         deviceList.playBack(device);
                     }} className="m-1 p-1 bg-[#059862] border hover:bg-[#05986295] border-[#05986295] rounded inline-block float-right">Play Back</button>
                     <br />
+                    <br />
 
 
                     <Graph plot={{
@@ -190,10 +191,6 @@ export default function SmartHub() {
 
     return (
         <>
-            <Graph plot={{
-                data:[{x:10,y:20},{x:20,y:30},{x:100,y:10}]
-            }}/>
-
             <AddDevice userDevice={{
                 deviceName,
                 addDevice:(userDeviceName)=>{
