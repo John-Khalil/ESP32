@@ -38,9 +38,9 @@ const base64ToArray16=(base64Data)=>{
         }
     }catch(err){
         console.log('error >> ',err)
-        return array16;
+        return [];
     }
-    console.log(array16)
+    // console.log(array16)
     return array16;
 }
 
