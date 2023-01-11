@@ -1386,6 +1386,49 @@ unsigned short base64(unsigned char *rawData, unsigned char *base64Text) {
 	return base64Counter;
 }
 
+
+unsigned char *base64Encode(unsigned char *rawData, unsigned char *base64Text=NULL,unsigned short rawDataLength=0) {
+	rawDataLength = rawDataLength?rawDataLength:stringCounter(rawData);
+
+  static unsigned char *base64TextBuffer=NULL;
+  if(base64TextBuffer!=NULL){
+    free(base64TextBuffer);
+    base64TextBuffer=NULL;
+  }
+
+  base64Text=base64Text?base64Text:(base64TextBuffer=(unsigned char*)calloc((rawDataLength*1.3334f)+8,sizeof(unsigned char)));
+
+	unsigned char paddingCount = rawDataLength % 3;
+	rawDataLength -= paddingCount;
+	rawDataLength *= 1.3334f;
+	unsigned short base64Counter = 0;
+	unsigned char *rawData1 = rawData + 1;
+	unsigned char *rawData2 = rawData + 2;
+	while (base64Counter < rawDataLength) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table((((*rawData1) & 0x0F) << 2) | (((*rawData2) & 192) >> 6));
+		base64Text[base64Counter++] = base64Table((*rawData2) & 0x3F);
+		rawData += 3;
+		rawData1 += 3; 
+		rawData2 += 3;
+	}
+	if (paddingCount == 2) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table((((*rawData) & 0x03) << 4) | ((*rawData1) >> 4));
+		base64Text[base64Counter++] = base64Table(((*rawData1) & 0x0F) << 2);
+		base64Text[base64Counter++] = 0x3D;
+	}
+	else if (paddingCount == 1) {
+		base64Text[base64Counter++] = base64Table((*rawData) >> 2);
+		base64Text[base64Counter++] = base64Table(((*rawData) & 0x03) << 4);
+		base64Text[base64Counter++] = 0x3D;
+		base64Text[base64Counter++] = 0x3D;
+	}
+	return base64Text;
+}
+
+
 unsigned short base64WebSocket(unsigned char *rawData, unsigned char *base64Text,unsigned short rawDataLength ) {
 	unsigned char *clearText=base64Text;
 	while(*clearText){
