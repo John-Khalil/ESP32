@@ -21,6 +21,8 @@
 
 #include "BasicStepperDriver.h"
 
+#include "custom\highLevelMemory.cpp"
+
 Servo servo;
 
 
