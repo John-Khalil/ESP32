@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <string>
 // #include "stringFunctions.cpp"
 
 class highLevelMemory
@@ -10,7 +11,8 @@ class highLevelMemory
 private:
     uint8_t *MAIN_MEMORY=nullptr;
     struct highLevelMemoryElement{
-        
+        std::string variable="";
+        uint32_t address=-1;
     };
     
 public:
