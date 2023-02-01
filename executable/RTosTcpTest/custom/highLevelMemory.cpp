@@ -21,6 +21,7 @@ private:
         uint8_t *physicalAddress=nullptr;
         uint32_t bind;
     };
+    std::vector<highLevelMemoryElement>allocationTable;
     
 public:
     const uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
