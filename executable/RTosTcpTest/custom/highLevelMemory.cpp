@@ -13,6 +13,9 @@ private:
     struct highLevelMemoryElement{
         std::string variable="";
         uint32_t address=-1;
+        uint32_t size=0;
+        uint32_t length=0;
+        uint8_t *physicalAddress=nullptr;
     };
     
 public:
