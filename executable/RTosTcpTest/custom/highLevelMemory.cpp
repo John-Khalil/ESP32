@@ -16,6 +16,7 @@ private:
         uint32_t size=0;
         uint32_t length=0;
         uint8_t *physicalAddress=nullptr;
+        uint32_t bind;
     };
     
 public:
