@@ -12,7 +12,10 @@ private:
     uint8_t *MAIN_MEMORY=nullptr;
     struct highLevelMemoryElement{
         std::string variable="";
-        uint32_t address=-1;
+        union{
+            uint32_t virtualAddress=-1;
+            uint16_t userDefinedAddress;
+        }address;
         uint32_t size=0;
         uint32_t length=0;
         uint8_t *physicalAddress=nullptr;
