@@ -102,8 +102,9 @@ public:
             newElement.length=stringCounter(data);
             newElement.address.virtualAddress=(allocationTable.size()<<16);
             newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
-
             allocationTable.push_back(newElement);
+            CLR(newElement.physicalAddress,newElement.length+1);
+            _CS(newElement.physicalAddress,data);
         }
         
         return (*this);
