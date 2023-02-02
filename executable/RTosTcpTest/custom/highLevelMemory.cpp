@@ -84,15 +84,20 @@ public:
 
     uint32_t lastAvailabeAddress(void){
         uint32_t lastAddress=0;
-        for(const auto &memoryelement : allocationTable)
-            lastAddress+=memoryelement.length+1;    // +1 for the end string NULL
+        for(const auto &memoryElement : allocationTable)
+            lastAddress+=memoryElement.length+1;    // +1 for the end string NULL
         return lastAddress;
     }
 
     highLevelMemory &write(uint8_t* key,uint8_t* data){
-        for(const auto &memoryelement : allocationTable)
-            if(memoryelement.variableName==std::string((char*)key)){
-
+        for(const auto &memoryElement : allocationTable)
+            if(memoryElement.variableName==std::string((char*)key)){
+                if(stringCounter(data)==memoryElement.length){
+                    _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
+                }
+                else{
+                    
+                }
                 return *this;                
             }
         
@@ -103,8 +108,7 @@ public:
             newElement.address.virtualAddress=(allocationTable.size()<<16);
             newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
             allocationTable.push_back(newElement);
-            CLR(newElement.physicalAddress,newElement.length+1);
-            _CS(newElement.physicalAddress,data);
+            _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
         }
         
         return (*this);
