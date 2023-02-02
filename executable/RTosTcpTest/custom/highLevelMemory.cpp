@@ -96,6 +96,7 @@ public:
                     _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
                 }
                 else{
+                    allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
                     
                 }
                 return *this;                
