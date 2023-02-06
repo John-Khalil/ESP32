@@ -109,14 +109,14 @@ public:
     }
 
     highLevelMemory &write(uint8_t* key,uint8_t* data){
-        for(const auto &memoryElement : allocationTable)
+        for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
                 if(stringCounter(data)==memoryElement.length){
                     _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
                 }
                 else{
-                    allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
-
+                    shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
+                    break;      // adding it as a new element
                 }
                 return *this;                
             }
