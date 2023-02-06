@@ -150,6 +150,8 @@ public:
     uint8_t *read(uint8_t* key){
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
+                memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+
                 lastActiveElement=memoryElement;
 
                 static uint8_t validToken;
