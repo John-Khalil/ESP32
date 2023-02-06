@@ -111,6 +111,26 @@ public:
 
     highLevelMemoryElement lastActiveElement;
 
+    highLevelMemory &get(uint8_t* key){
+        for(auto &memoryElement : allocationTable)
+            if(memoryElement.variableName==std::string((char*)key)){
+                lastActiveElement=memoryElement;              
+            }
+        lastActiveElement={};
+        return (*this);
+    }
+
+    highLevelMemory &get(uint32_t key){
+        for(auto &memoryElement : allocationTable){
+            memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     // switch context for the full virtual address
+            if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         // fully validate for the given address
+                lastActiveElement=memoryElement;              
+            }
+         }   
+        lastActiveElement={};
+        return (*this);
+    }
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
