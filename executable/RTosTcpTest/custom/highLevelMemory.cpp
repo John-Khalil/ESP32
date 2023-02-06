@@ -126,8 +126,46 @@ public:
             if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         // fully validate for the given address
                 lastActiveElement=memoryElement;              
             }
-         }   
+        }   
         lastActiveElement={};
+        return (*this);
+    }
+
+    highLevelMemory &onChange(const std::function<void(unsigned char *)>onchangeEventListener){
+        allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners.push_back(onchangeEventListener);
+        return (*this);
+    }
+
+    highLevelMemory &onRead(const std::function<void(void)>readEventListener){
+        allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners.push_back(readEventListener);
+        return (*this);
+    }
+
+    highLevelMemory &bind(uint8_t* key){
+        for(auto &memoryElement : allocationTable)
+            if(memoryElement.variableName==std::string((char*)key)){
+                lastActiveElement.bind=memoryElement.address.virtualAddress;              
+            }
+        return (*this);
+    }
+
+    highLevelMemory &bind(uint32_t key){
+        for(auto &memoryElement : allocationTable){
+            memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     
+            if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         
+                lastActiveElement.bind=memoryElement.address.virtualAddress;              
+            }
+        }
+        return (*this);
+    }
+
+    highLevelMemory &bind(void){
+        lastActiveElement.bind=-1;
+        return (*this);
+    }
+
+    highLevelMemory &unBind(void){
+        lastActiveElement.bind=-1;
         return (*this);
     }
 
