@@ -113,8 +113,12 @@ public:
 
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         highLevelMemoryElement newElement;
+        uint16_t bindIndex=-1;
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
+                bindIndex=(memoryElement.bind!=-1)?(memoryElement.address.virtualAddress>>16):bindIndex;             // keep index
+                memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+
                 newElement=memoryElement;
                 if(stringCounter(data)==memoryElement.length){
                     _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
@@ -137,7 +141,7 @@ public:
 
         functionReturn:
         lastActiveElement=newElement;
-        for(auto &onchangeCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners)
+        for(auto &onchangeCallback:allocationTable[(bindIndex==-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
             onchangeCallback(lastActiveElement.physicalAddress);
 
         return (*this);
