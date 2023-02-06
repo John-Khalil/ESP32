@@ -59,8 +59,8 @@ private:
     std::vector<highLevelMemoryElement>allocationTable;
     
 public:
-    const uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
-    const uint8_t* UNDEFINED=(uint8_t*)"undefined";
+    uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
+    uint8_t* UNDEFINED=(uint8_t*)"undefined";
 
     uint32_t getVectorAddress(uint8_t *variableName){
         uint32_t loopCounter=allocationTable.size();
@@ -132,6 +132,15 @@ public:
         }
         
         return (*this);
+    }
+
+    uint8_t *read(uint8_t* key){
+        for(auto &memoryElement : allocationTable)
+            if(memoryElement.variableName==std::string((char*)key)){
+                return memoryElement.physicalAddress;                
+            }
+    
+        return UNDEFINED;
     }
 
     highLevelMemory(uint32_t memorySize){
