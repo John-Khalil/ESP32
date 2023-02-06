@@ -55,6 +55,7 @@ private:
         uint8_t *physicalAddress=nullptr;
         uint32_t bind=-1;
         std::vector<std::function<void(unsigned char*)>>onchangeEventListeners;
+        std::vector<std::function<void(void)>>readEventListeners;
     };
     std::vector<highLevelMemoryElement>allocationTable;
     
@@ -108,9 +109,13 @@ public:
         return *this;
     }
 
+    highLevelMemoryElement lastActiveElement;
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
+        highLevelMemoryElement newElement;
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
+                newElement=memoryElement;
                 if(stringCounter(data)==memoryElement.length){
                     _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
                 }
@@ -118,11 +123,10 @@ public:
                     shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
                     break;      // adding it as a new element
                 }
-                return *this;                
+                goto functionReturn; //dry code                
             }
         
         if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
-            highLevelMemoryElement newElement;
             newElement.variableName=std::string((char*)key);
             newElement.length=stringCounter(data);
             newElement.address.virtualAddress=(allocationTable.size()<<16);
@@ -130,7 +134,12 @@ public:
             allocationTable.push_back(newElement);
             _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
         }
-        
+
+        functionReturn:
+        lastActiveElement=newElement;
+        for(auto &onchangeCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners)
+            onchangeCallback(lastActiveElement.physicalAddress);
+
         return (*this);
     }
 
