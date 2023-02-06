@@ -89,6 +89,15 @@ public:
         return lastAddress;
     }
 
+
+    highLevelMemory &shiftAddress(highLevelMemoryElement &memoryElement){
+        uint32_t addressCounter=0;
+        uint32_t loopCounter=(MAIN_MEMORY+lastAvailabeAddress())-(memoryElement.physicalAddress+memoryElement.length+1);
+        while(loopCounter--)
+            memoryElement.physicalAddress[addressCounter]=memoryElement.physicalAddress[(memoryElement.length+1)+(addressCounter++)];
+        return *this;
+    }
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         for(const auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
@@ -97,7 +106,7 @@ public:
                 }
                 else{
                     allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
-                    
+
                 }
                 return *this;                
             }

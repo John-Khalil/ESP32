@@ -3932,10 +3932,20 @@ void serviceExecutable(void*param){
 					}
 
 					if(userInstruction&SERVO_CONTROL){
-						client.write(CORS_HEADERS);
-						client.write(CLIENT_ACK);
-						client.flush();
-						client.stop();
+						// client.write(CORS_HEADERS);
+						// client.write(CLIENT_ACK);
+						// client.flush();
+						// client.stop();
+
+						if(socketConnection){
+							client.write((char*)webSocketDataFrame((unsigned char*)CLIENT_ACK,FRAME_ENCODE));
+						}
+						else{
+							client.write(CORS_HEADERS);
+							client.write(CLIENT_ACK);
+							client.flush();
+							client.stop();
+						}
 
 						static unsigned char testSetup;
 						if(!testSetup){
