@@ -146,6 +146,16 @@ public:
     uint8_t *read(uint8_t* key){
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
+                lastActiveElement=memoryElement;
+
+                static uint8_t validToken;
+                if(!validToken){
+                    validToken=1;
+                    for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
+                        readCallback();
+                    validToken=0;
+                }
+
                 return memoryElement.physicalAddress;                
             }
     
