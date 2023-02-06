@@ -98,6 +98,16 @@ public:
         return *this;
     }
 
+    highLevelMemory &shiftAllocationTable(highLevelMemoryElement &memoryElement){
+        uint32_t addressCounter=(memoryElement.address.virtualAddress>>16);
+        // uint32_t loopCounter=allocationTable.size()-addressCounter;
+        while((++addressCounter)<allocationTable.size()){
+            allocationTable[addressCounter].address.virtualAddress-=65536;  // instaed of (((x>>16)-1)<<16)|(x&65535)
+            allocationTable[addressCounter].physicalAddress-=memoryElement.length+1;
+        }
+        return *this;
+    }
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         for(const auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
