@@ -116,7 +116,8 @@ public:
     highLevelMemory &get(uint8_t* key){
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
-                lastActiveElement=memoryElement;              
+                lastActiveElement=memoryElement;             
+                return (*this); 
             }
         lastActiveElement=nullElement;
         return (*this);
@@ -126,7 +127,8 @@ public:
         for(auto &memoryElement : allocationTable){
             memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     // switch context for the full virtual address
             if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         // fully validate for the given address
-                lastActiveElement=memoryElement;              
+                lastActiveElement=memoryElement; 
+                return (*this);             
             }
         }   
         lastActiveElement=nullElement;
