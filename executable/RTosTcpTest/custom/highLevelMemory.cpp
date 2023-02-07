@@ -169,6 +169,8 @@ public:
         return (*this);
     }
 
+    uint8_t validToken=0;
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
@@ -199,6 +201,7 @@ public:
 
         functionReturn:
         lastActiveElement=newElement;
+        if(!validToken)
         for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
             onchangeCallback(lastActiveElement.physicalAddress);
 
@@ -212,7 +215,7 @@ public:
 
                 lastActiveElement=memoryElement;
 
-                static uint8_t validToken;
+                // static uint8_t validToken;
                 if(!validToken){
                     validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
