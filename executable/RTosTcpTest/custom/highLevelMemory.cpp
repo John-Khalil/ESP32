@@ -111,12 +111,14 @@ public:
 
     highLevelMemoryElement lastActiveElement;
 
+    highLevelMemoryElement nullElement;
+
     highLevelMemory &get(uint8_t* key){
         for(auto &memoryElement : allocationTable)
             if(memoryElement.variableName==std::string((char*)key)){
                 lastActiveElement=memoryElement;              
             }
-        lastActiveElement={};
+        lastActiveElement=nullElement;
         return (*this);
     }
 
@@ -127,40 +129,45 @@ public:
                 lastActiveElement=memoryElement;              
             }
         }   
-        lastActiveElement={};
+        lastActiveElement=nullElement;
         return (*this);
     }
 
     highLevelMemory &onChange(const std::function<void(unsigned char *)>onchangeEventListener){
-        allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners.push_back(onchangeEventListener);
+        if(lastActiveElement.physicalAddress!=nullptr)
+            allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners.push_back(onchangeEventListener);
         return (*this);
     }
 
     highLevelMemory &onRead(const std::function<void(void)>readEventListener){
-        allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners.push_back(readEventListener);
+        if(lastActiveElement.physicalAddress!=nullptr)
+            allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners.push_back(readEventListener);
         return (*this);
     }
 
     highLevelMemory &bind(uint8_t* key){
-        for(auto &memoryElement : allocationTable)
-            if(memoryElement.variableName==std::string((char*)key)){
-                lastActiveElement.bind=memoryElement.address.virtualAddress;              
-            }
+        if(lastActiveElement.physicalAddress!=nullptr)
+            for(auto &memoryElement : allocationTable)
+                if(memoryElement.variableName==std::string((char*)key)){
+                    lastActiveElement.bind=memoryElement.address.virtualAddress;              
+                }
         return (*this);
     }
 
     highLevelMemory &bind(uint32_t key){
-        for(auto &memoryElement : allocationTable){
-            memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     
-            if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         
-                lastActiveElement.bind=memoryElement.address.virtualAddress;              
+        if(lastActiveElement.physicalAddress!=nullptr)
+            for(auto &memoryElement : allocationTable){
+                memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     
+                if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         
+                    lastActiveElement.bind=memoryElement.address.virtualAddress;              
+                }
             }
-        }
         return (*this);
     }
 
     highLevelMemory &bind(void){
-        lastActiveElement.bind=-1;
+        if(lastActiveElement.physicalAddress!=nullptr)
+            lastActiveElement.bind=-1;
         return (*this);
     }
 
@@ -220,7 +227,7 @@ public:
                     validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
                         readCallback();
-                    uint8_t *updatedAddress = read(key); // the element may change if the read callback triggered a write for the same element
+                    uint8_t *updatedAddress=read(key); // the element may change if the read callback triggered a write for the same element
                     validToken=0;
                     return updatedAddress;
                 }
