@@ -220,7 +220,9 @@ public:
                     validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
                         readCallback();
+                    uint8_t *updatedAddress = read(key); // the element may change if the read callback triggered a write for the same element
                     validToken=0;
+                    return updatedAddress;
                 }
 
                 return memoryElement.physicalAddress;                
