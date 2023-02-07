@@ -199,7 +199,7 @@ public:
 
         functionReturn:
         lastActiveElement=newElement;
-        for(auto &onchangeCallback:allocationTable[(bindIndex==-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
+        for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
             onchangeCallback(lastActiveElement.physicalAddress);
 
         return (*this);
