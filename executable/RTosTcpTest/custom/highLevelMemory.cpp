@@ -54,6 +54,7 @@ private:
         uint32_t length=0;
         uint8_t *physicalAddress=nullptr;
         uint32_t bind=-1;
+        uint8_t validToken=0;
         std::vector<std::function<void(unsigned char*)>>onchangeEventListeners;
         std::vector<std::function<void(void)>>readEventListeners;
     };
@@ -178,7 +179,7 @@ public:
         return (*this);
     }
 
-    uint8_t validToken=0;
+    // uint8_t validToken=0;
 
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         highLevelMemoryElement newElement;
@@ -210,7 +211,7 @@ public:
 
         functionReturn:
         lastActiveElement=newElement;
-        if(!validToken)
+        if(!newElement.validToken)
         for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
             onchangeCallback(lastActiveElement.physicalAddress);
 
@@ -225,12 +226,12 @@ public:
                 lastActiveElement=memoryElement;
 
                 // static uint8_t validToken;
-                if(!validToken){
-                    validToken=1;
+                if(!memoryElement.validToken){
+                    memoryElement.validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
                         readCallback();
                     uint8_t *updatedAddress=read(key); // the element may change if the read callback triggered a write for the same element
-                    validToken=0;
+                    memoryElement.validToken=0;
                     return updatedAddress;
                 }
 
