@@ -152,7 +152,7 @@ public:
         if(lastActiveElement.physicalAddress!=nullptr)
             for(auto &memoryElement : allocationTable)
                 if(memoryElement.variableName==std::string((char*)key)){
-                    lastActiveElement.bind=memoryElement.address.virtualAddress;              
+                    allocationTable[lastActiveElement.address.virtualAddress>>16].bind=memoryElement.address.virtualAddress;              
                 }
         return (*this);
     }
@@ -162,7 +162,7 @@ public:
             for(auto &memoryElement : allocationTable){
                 memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     
                 if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         
-                    lastActiveElement.bind=memoryElement.address.virtualAddress;              
+                    allocationTable[lastActiveElement.address.virtualAddress>>16].bind=memoryElement.address.virtualAddress;              
                 }
             }
         return (*this);
@@ -170,12 +170,12 @@ public:
 
     highLevelMemory &bind(void){
         if(lastActiveElement.physicalAddress!=nullptr)
-            lastActiveElement.bind=-1;
+            allocationTable[lastActiveElement.address.virtualAddress>>16].bind=-1;
         return (*this);
     }
 
     highLevelMemory &unBind(void){
-        lastActiveElement.bind=-1;
+        allocationTable[lastActiveElement.address.virtualAddress>>16].bind=-1;
         return (*this);
     }
 
