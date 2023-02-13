@@ -125,13 +125,11 @@ public:
     }
 
     highLevelMemory &get(uint32_t key){
-        for(auto &memoryElement : allocationTable){
-            memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     // switch context for the full virtual address
-            if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         // fully validate for the given address
-                lastActiveElement=memoryElement; 
+        for(auto memoryElementNonRef : allocationTable)
+            if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){    // switch context for the full virtual address
+                lastActiveElement=memoryElementNonRef; 
                 return (*this);             
-            }
-        }   
+            }   
         lastActiveElement=nullElement;
         return (*this);
     }
@@ -159,12 +157,10 @@ public:
 
     highLevelMemory &bind(uint32_t key){
         if(lastActiveElement.physicalAddress!=nullptr)
-            for(auto &memoryElement : allocationTable){
-                memoryElement=(key>>16)?allocationTable[key>>16]:memoryElement;     
-                if(memoryElement.address.userDefinedAddress==(key&0xFFFF)){         
-                    allocationTable[lastActiveElement.address.virtualAddress>>16].bind=memoryElement.address.virtualAddress;              
-                }
-            }
+            for(auto memoryElementNonRef : allocationTable)
+                if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){    // switch context for the full virtual address
+                    allocationTable[lastActiveElement.address.virtualAddress>>16].bind=memoryElementNonRef.address.virtualAddress;                     
+                } 
         return (*this);
     }
 
@@ -207,9 +203,8 @@ public:
             }
         
         if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
-            newElement.variableName=std::string((char*)key);
             newElement.length=stringCounter(data);
-            newElement.address.virtualAddress=(allocationTable.size()<<16);
+            newElement.address.virtualAddress=(allocationTable.size()<<16)|(key&0xFFFF);
             newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
             allocationTable.push_back(newElement);
             _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
