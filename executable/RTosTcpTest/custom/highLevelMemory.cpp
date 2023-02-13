@@ -219,7 +219,7 @@ public:
         return (*this);
     }
 
-    uint8_t *read(uint32_t key){
+    uint8_t *read(uint32_t key,uint8_t nonValidToken=0){
             for(auto memoryElementNonRef : allocationTable)
                 if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){
 
@@ -234,11 +234,14 @@ public:
                     memoryElement.validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
                         readCallback();
-                    uint8_t *updatedAddress=read((key&0xffff)); //* the element may change if the read callback triggered a write for the same element, 
+                    uint8_t *updatedAddress=read((key&0xffff),1); //* the element may change if the read callback triggered a write for the same element, 
                     //* the key have been masked to insure we're not loking for and elemnt that doesnot exist anymore
-                    memoryElement.validToken=0;
+                    // memoryElement.validToken=0;
                     return updatedAddress;
                 }
+
+                if(nonValidToken)
+                    memoryElement.validToken=0;     //* this is to fix the recursive mess we have just created!!
 
                 return memoryElement.physicalAddress;                
             }
