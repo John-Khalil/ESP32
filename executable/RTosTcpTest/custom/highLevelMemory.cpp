@@ -181,6 +181,72 @@ public:
 
     // uint8_t validToken=0;
 
+    highLevelMemory &write(uint32_t key,uint8_t* data){
+        highLevelMemoryElement newElement;
+        uint16_t bindIndex=-1;
+        for(auto memoryElementNonRef : allocationTable)
+            if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){
+
+                bindIndex=(memoryElementNonRef.bind!=-1)?(memoryElementNonRef.address.virtualAddress>>16):bindIndex;                            // keep index
+                memoryElementNonRef=(memoryElementNonRef.bind!=-1)?allocationTable[memoryElementNonRef.bind>>16]:memoryElementNonRef;           // switch context for memory binding
+
+                auto &memoryElement=allocationTable[memoryElementNonRef.address.virtualAddress>>16];                                            //* get back to the org ref
+
+
+                
+
+                newElement=memoryElement;
+                if(stringCounter(data)==memoryElement.length){
+                    _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
+                }
+                else{
+                    shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
+                    break;      // adding it as a new element
+                }
+                goto functionReturn; //dry code                
+            }
+        
+        if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
+            newElement.variableName=std::string((char*)key);
+            newElement.length=stringCounter(data);
+            newElement.address.virtualAddress=(allocationTable.size()<<16);
+            newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
+            allocationTable.push_back(newElement);
+            _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
+        }
+
+        functionReturn:
+        lastActiveElement=newElement;
+        if(!newElement.validToken)
+        for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
+            onchangeCallback(lastActiveElement.physicalAddress);
+
+        return (*this);
+    }
+
+    uint8_t *read(uint32_t key){
+        for(auto &memoryElement : allocationTable)
+            if(memoryElement.variableName==std::string((char*)key)){
+                memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+
+                lastActiveElement=memoryElement;
+
+                // static uint8_t validToken;
+                if(!memoryElement.validToken){
+                    memoryElement.validToken=1;
+                    for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
+                        readCallback();
+                    uint8_t *updatedAddress=read(key); // the element may change if the read callback triggered a write for the same element
+                    memoryElement.validToken=0;
+                    return updatedAddress;
+                }
+
+                return memoryElement.physicalAddress;                
+            }
+    
+        return UNDEFINED;
+    }
+
     highLevelMemory &write(uint8_t* key,uint8_t* data){
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
