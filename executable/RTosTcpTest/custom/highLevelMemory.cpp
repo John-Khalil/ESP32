@@ -199,10 +199,11 @@ public:
         for(auto memoryElementNonRef : allocationTable)
             if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){
 
-                // bindIndex=(memoryElementNonRef.bind!=-1)?(memoryElementNonRef.address.virtualAddress>>16):bindIndex;                            // keep index
+                // bindIndex=(memoryElementNonRef.bind!=-1)?(memoryElementNonRef.address.virtualAddress>>16):bindIndex;                                     // keep index
+                key=(memoryElementNonRef.bind!=-1)?(allocationTable[getAddress(memoryElementNonRef.bind)>>16].address.virtualAddress):key;                  //! THIS HAS TO COME FIRST -- it will be written back with the old address
                 memoryElementNonRef=(memoryElementNonRef.bind!=-1)?allocationTable[getAddress(memoryElementNonRef.bind)>>16]:memoryElementNonRef;           // switch context for memory binding
 
-                auto &memoryElement=allocationTable[memoryElementNonRef.address.virtualAddress>>16];                                            //* get back to the org ref
+                auto &memoryElement=allocationTable[memoryElementNonRef.address.virtualAddress>>16];                                                        //* get back to the org ref
 
 
                 
@@ -245,7 +246,7 @@ public:
                 key=(memoryElementNonRef.bind!=-1)?(allocationTable[getAddress(memoryElementNonRef.bind)>>16].address.virtualAddress):key;                  //! THIS HAS TO COME FIRST -- changing the key for the next recursive call
                 memoryElementNonRef=(memoryElementNonRef.bind!=-1)?allocationTable[getAddress(memoryElementNonRef.bind)>>16]:memoryElementNonRef;           // switch context for memory binding
 
-                auto &memoryElement=allocationTable[memoryElementNonRef.address.virtualAddress>>16];                                            //* get back to the org ref
+                auto &memoryElement=allocationTable[memoryElementNonRef.address.virtualAddress>>16];                                                        //* get back to the org ref
 
                 lastActiveElement=memoryElement;
 
