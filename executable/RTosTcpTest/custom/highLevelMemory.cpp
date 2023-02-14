@@ -63,7 +63,7 @@ private:
 public:
     uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
     uint8_t* UNDEFINED=(uint8_t*)"undefined";
-    std::string UNDEFINED_STRING="undefined";
+    const std::string UNDEFINED_STRING="undefined";
 
     uint32_t getVectorAddress(uint8_t *variableName){
         uint32_t loopCounter=allocationTable.size();
@@ -192,7 +192,7 @@ public:
 
     // uint8_t validToken=0;
 
-    highLevelMemory &WRITE(uint32_t key,uint8_t* data){
+    highLevelMemory &WRITE(uint32_t key,uint8_t* data,uint8_t *keyString=nullptr){
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
         for(auto memoryElementNonRef : allocationTable)
@@ -218,6 +218,8 @@ public:
             }
         
         if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
+            if(keyString!=nullptr)
+                newElement.variableName=std::string((char*)keyString);
             newElement.length=stringCounter(data);
             newElement.address.virtualAddress=(allocationTable.size()<<16)|(key&0xFFFF);        
             //! for the user defiend address if it was an int it will be represented from bit 14>0 if it was string it will be represented from bit 15>0 along with a counter stored in bits 14>0 (couter|0x8000)
@@ -268,11 +270,21 @@ public:
 
     //^ follower overLoaded functions
     uint8_t *read(uint32_t key){
-        return READ(key&0x7fff);
+        return READ(key&=~0x8000);
     }
 
     highLevelMemory & write(uint32_t key,uint8_t* data){
-        return WRITE(key&0x7fff,data);
+        return WRITE((key&=~0x8000),data);
+    }
+
+    uint8_t *read(uint8_t *key){
+        return READ(getAddress(key));
+    }
+
+    highLevelMemory & write(uint8_t *key,uint8_t* data){
+        static uint32_t keyCounter;
+        uint32_t keyAddress=getAddress(key);
+        return WRITE(((keyAddress==(-1))?(++keyCounter|0x8000):keyAddress),data);
     }
 
 
