@@ -192,7 +192,8 @@ public:
 
     // uint8_t validToken=0;
 
-    highLevelMemory &WRITE(uint32_t key,uint8_t* data,uint8_t *keyString=nullptr){
+    highLevelMemory &WRITE(uint32_t key,uint8_t* data,uint8_t *keyString=nullptr,uint32_t dataLength=NULL){
+        dataLength=((dataLength)?dataLength:stringCounter(data));
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
         for(auto memoryElementNonRef : allocationTable)
@@ -207,7 +208,7 @@ public:
                 
 
                 newElement=memoryElement;
-                if(stringCounter(data)==memoryElement.length){
+                if(dataLength==memoryElement.length){
                     _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
                 }
                 else{
@@ -217,10 +218,10 @@ public:
                 goto functionReturn; //dry code                
             }
         
-        if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
+        if((dataLength+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
             if(keyString!=nullptr)
                 newElement.variableName=std::string((char*)keyString);
-            newElement.length=stringCounter(data);
+            newElement.length=dataLength;
             newElement.address.virtualAddress=(allocationTable.size()<<16)|(key&0xFFFF);        
             //! for the user defiend address if it was an int it will be represented from bit 14>0 if it was string it will be represented from bit 15>0 along with a counter stored in bits 14>0 (couter|0x8000)
             newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
@@ -273,8 +274,8 @@ public:
         return READ(key&=~0x8000);
     }
 
-    highLevelMemory & write(uint32_t key,uint8_t* data){
-        return WRITE((key&=~0x8000),data);
+    highLevelMemory & write(uint32_t key,uint8_t* data,uint32_t dataLength=NULL){
+        return WRITE((key&=~0x8000),data,nullptr,dataLength);
     }
 
     uint8_t *read(uint8_t *key){
@@ -282,10 +283,10 @@ public:
         return ((keyAddress==(uint32_t)-1)?UNDEFINED:READ(keyAddress));
     }
 
-    highLevelMemory & write(uint8_t *key,uint8_t* data){
+    highLevelMemory & write(uint8_t *key,uint8_t* data,uint32_t dataLength=NULL){
         static uint32_t keyCounter;
         uint32_t keyAddress=getAddress(key);
-        return WRITE(((keyAddress==(uint32_t)-1)?(++keyCounter|0x8000):keyAddress),data,key);       // auto assign user defined address for a new added key , it should stay
+        return WRITE(((keyAddress==(uint32_t)-1)?(++keyCounter|0x8000):keyAddress),data,key,dataLength);       // auto assign user defined address for a new added key , it should stay
     }
 
 
