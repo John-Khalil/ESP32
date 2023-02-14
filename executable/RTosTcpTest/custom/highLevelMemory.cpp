@@ -63,6 +63,7 @@ private:
 public:
     uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
     uint8_t* UNDEFINED=(uint8_t*)"undefined";
+    std::string UNDEFINED_STRING="undefined";
 
     uint32_t getVectorAddress(uint8_t *variableName){
         uint32_t loopCounter=allocationTable.size();
@@ -191,7 +192,7 @@ public:
 
     // uint8_t validToken=0;
 
-    highLevelMemory &write(uint32_t key,uint8_t* data){
+    highLevelMemory &WRITE(uint32_t key,uint8_t* data){
         highLevelMemoryElement newElement;
         uint16_t bindIndex=-1;
         for(auto memoryElementNonRef : allocationTable)
@@ -234,7 +235,7 @@ public:
         return (*this);
     }
 
-    uint8_t *read(uint32_t key,uint8_t nonValidToken=0){
+    uint8_t *READ(uint32_t key,uint8_t nonValidToken=0){
             for(auto memoryElementNonRef : allocationTable)
                 if((memoryElementNonRef=(key>>16)?allocationTable[key>>16]:memoryElementNonRef).address.userDefinedAddress==(key&0xFFFF)){
 
@@ -250,7 +251,7 @@ public:
                     memoryElement.validToken=1;
                     for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
                         readCallback();
-                    uint8_t *updatedAddress=read((key&0xffff),1); //* the element may change if the read callback triggered a write for the same element, 
+                    uint8_t *updatedAddress=READ((key&0xffff),1); //* the element may change if the read callback triggered a write for the same element, 
                     //* the key have been masked to insure we're not loking for and elemnt that doesnot exist anymore
                     // memoryElement.validToken=0;
                     return updatedAddress;
@@ -265,65 +266,75 @@ public:
         return UNDEFINED;
     }
 
-    highLevelMemory &write(uint8_t* key,uint8_t* data){
-        highLevelMemoryElement newElement;
-        uint16_t bindIndex=-1;
-        for(auto &memoryElement : allocationTable)
-            if(memoryElement.variableName==std::string((char*)key)){
-                bindIndex=(memoryElement.bind!=-1)?(memoryElement.address.virtualAddress>>16):bindIndex;             // keep index
-                memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+    //^ follower overLoaded functions
+    uint8_t *read(uint32_t key){
+        return READ(key&0x7fff);
+    }
 
-                newElement=memoryElement;
-                if(stringCounter(data)==memoryElement.length){
-                    _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
-                }
-                else{
-                    shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
-                    break;      // adding it as a new element
-                }
-                goto functionReturn; //dry code                
-            }
+    highLevelMemory & write(uint32_t key,uint8_t* data){
+        return WRITE(key&0x7fff,data);
+    }
+
+
+    // highLevelMemory &write(uint8_t* key,uint8_t* data){
+    //     highLevelMemoryElement newElement;
+    //     uint16_t bindIndex=-1;
+    //     for(auto &memoryElement : allocationTable)
+    //         if(memoryElement.variableName==std::string((char*)key)){
+    //             bindIndex=(memoryElement.bind!=-1)?(memoryElement.address.virtualAddress>>16):bindIndex;             // keep index
+    //             memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+
+    //             newElement=memoryElement;
+    //             if(stringCounter(data)==memoryElement.length){
+    //                 _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
+    //             }
+    //             else{
+    //                 shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
+    //                 break;      // adding it as a new element
+    //             }
+    //             goto functionReturn; //dry code                
+    //         }
         
-        if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
-            newElement.variableName=std::string((char*)key);
-            newElement.length=stringCounter(data);
-            newElement.address.virtualAddress=(allocationTable.size()<<16);
-            newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
-            allocationTable.push_back(newElement);
-            _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
-        }
+    //     if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
+    //         newElement.variableName=std::string((char*)key);
+    //         newElement.length=stringCounter(data);
+    //         newElement.address.virtualAddress=(allocationTable.size()<<16);
+    //         newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
+    //         allocationTable.push_back(newElement);
+    //         _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
+    //     }
 
-        functionReturn:
-        lastActiveElement=newElement;
-        if(!newElement.validToken)
-        for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
-            onchangeCallback(lastActiveElement.physicalAddress);
+    //     functionReturn:
+    //     lastActiveElement=newElement;
+    //     if(!newElement.validToken)
+    //     for(auto &onchangeCallback:allocationTable[(bindIndex==(uint16_t)-1)?(lastActiveElement.address.virtualAddress>>16):bindIndex].onchangeEventListeners)
+    //         onchangeCallback(lastActiveElement.physicalAddress);
 
-        return (*this);
-    }
+    //     return (*this);
+    // }
 
-    uint8_t *read(uint8_t* key){
-        for(auto &memoryElement : allocationTable)
-            if(memoryElement.variableName==std::string((char*)key)){
-                memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
+    // uint8_t *read(uint8_t* key){
+    //     for(auto &memoryElement : allocationTable)
+    //         if(memoryElement.variableName==std::string((char*)key)){
+    //             memoryElement=(memoryElement.bind!=-1)?allocationTable[memoryElement.bind>>16]:memoryElement;        // switch context for memory binding
 
-                lastActiveElement=memoryElement;
+    //             lastActiveElement=memoryElement;
 
-                // static uint8_t validToken;
-                if(!memoryElement.validToken){
-                    memoryElement.validToken=1;
-                    for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
-                        readCallback();
-                    uint8_t *updatedAddress=read(key); // the element may change if the read callback triggered a write for the same element
-                    memoryElement.validToken=0;
-                    return updatedAddress;
-                }
+    //             // static uint8_t validToken;
+    //             if(!memoryElement.validToken){
+    //                 memoryElement.validToken=1;
+    //                 for(auto &readCallback:allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners)
+    //                     readCallback();
+    //                 uint8_t *updatedAddress=read(key); // the element may change if the read callback triggered a write for the same element
+    //                 memoryElement.validToken=0;
+    //                 return updatedAddress;
+    //             }
 
-                return memoryElement.physicalAddress;                
-            }
+    //             return memoryElement.physicalAddress;                
+    //         }
     
-        return UNDEFINED;
-    }
+    //     return UNDEFINED;
+    // }
 
     highLevelMemory(uint32_t memorySize){
         MAIN_MEMORY_SIZE=memorySize;
