@@ -284,7 +284,7 @@ public:
     highLevelMemory & write(uint8_t *key,uint8_t* data){
         static uint32_t keyCounter;
         uint32_t keyAddress=getAddress(key);
-        return WRITE(((keyAddress==(-1))?(++keyCounter|0x8000):keyAddress),data);
+        return WRITE(((keyAddress==(-1))?(++keyCounter|0x8000):keyAddress),data);       // auto assign user defined address for a new added key , it should stay
     }
 
 
