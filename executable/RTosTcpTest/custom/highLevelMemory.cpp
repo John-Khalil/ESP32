@@ -278,13 +278,14 @@ public:
     }
 
     uint8_t *read(uint8_t *key){
-        return READ(getAddress(key));
+        uint32_t keyAddress=getAddress(key);
+        return ((keyAddress==(uint32_t)-1)?UNDEFINED:READ(keyAddress));
     }
 
     highLevelMemory & write(uint8_t *key,uint8_t* data){
         static uint32_t keyCounter;
         uint32_t keyAddress=getAddress(key);
-        return WRITE(((keyAddress==(-1))?(++keyCounter|0x8000):keyAddress),data);       // auto assign user defined address for a new added key , it should stay
+        return WRITE(((keyAddress==(uint32_t)-1)?(++keyCounter|0x8000):keyAddress),data,key);       // auto assign user defined address for a new added key , it should stay
     }
 
 
