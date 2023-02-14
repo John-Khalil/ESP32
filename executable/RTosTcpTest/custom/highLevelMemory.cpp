@@ -204,7 +204,8 @@ public:
         
         if((stringCounter(data)+lastAvailabeAddress())<(MAIN_MEMORY_SIZE+1)){
             newElement.length=stringCounter(data);
-            newElement.address.virtualAddress=(allocationTable.size()<<16)|(key&0xFFFF);
+            newElement.address.virtualAddress=(allocationTable.size()<<16)|(key&0x7FFF);        
+            //! for the user defiend address if it was an int it will be represented from bit 14>0 if it was string it will be represented from bit 15>0 along with a counter stored in bits 14>0 (couter|0x8000)
             newElement.physicalAddress=MAIN_MEMORY+lastAvailabeAddress();
             allocationTable.push_back(newElement);
             _CS(CLR(newElement.physicalAddress,newElement.length+1),data);
