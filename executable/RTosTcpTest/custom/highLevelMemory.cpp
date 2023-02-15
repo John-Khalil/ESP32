@@ -306,19 +306,31 @@ public:
     
 
     operator uint8_t*() {
-		return read();
+        highLevelMemoryElement lastActiveElementBuffer=lastActiveElement;
+        uint8_t *readBuffer=read();
+        lastActiveElement=lastActiveElementBuffer;
+		return readBuffer;
 	}
 
     operator int8_t*() {
-		return (int8_t*)read();
+        highLevelMemoryElement lastActiveElementBuffer=lastActiveElement;
+        uint8_t *readBuffer=read();
+        lastActiveElement=lastActiveElementBuffer;
+		return (int8_t*)readBuffer;
 	}
 
     operator char*() {
-		return (char*)read();
+        highLevelMemoryElement lastActiveElementBuffer=lastActiveElement;
+        uint8_t *readBuffer=read();
+        lastActiveElement=lastActiveElementBuffer;
+		return (char*)readBuffer;
 	}
 
     operator std::string(){
-        return std::string((char*)read());
+        highLevelMemoryElement lastActiveElementBuffer=lastActiveElement;
+        uint8_t *readBuffer=read();
+        lastActiveElement=lastActiveElementBuffer;
+        return std::string((char*)readBuffer);
     }
 
     
