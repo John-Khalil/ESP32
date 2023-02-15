@@ -341,19 +341,40 @@ public:
 
 
 
-    highLevelMemory &operator [](uint8_t *key){
-        return get(key);
-    }
+    highLevelMemoryElement sameClassObject=lastActiveElement;
 
-    highLevelMemory &operator [](uint32_t key){
+    highLevelMemory &operator [](uint8_t *key){
+        sameClassObject=lastActiveElement;
         return get(key);
     }
 
     highLevelMemory &operator [](int8_t *key){
+        sameClassObject=lastActiveElement;
         return get((uint8_t *)key);
     }
 
+    highLevelMemory &operator [](char *key){
+        sameClassObject=lastActiveElement;
+        return get((uint8_t *)key);
+    }
+
+    highLevelMemory &operator [](const char *key){
+        sameClassObject=lastActiveElement;
+        return get((uint8_t *)key);
+    }
+
+    highLevelMemory &operator [](std::string key){
+        sameClassObject=lastActiveElement;
+        return get((uint8_t *)key.c_str());
+    }
+
+    highLevelMemory &operator [](uint32_t key){
+        sameClassObject=lastActiveElement;
+        return get(key);
+    }
+
     highLevelMemory &operator [](int32_t key){
+        sameClassObject=lastActiveElement;
         return get((uint32_t)key);
     }
 
@@ -375,8 +396,12 @@ public:
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
+    highLevelMemory &operator=(std::string data){
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data.c_str());
+    }
+
     highLevelMemory &operator=(highLevelMemory &data){
-        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+        return write(sameClassObject.address.virtualAddress,(uint8_t *)data);
     }
 
 
@@ -413,10 +438,10 @@ public:
         return (*this);
     }
 
-    // highLevelMemory &operator==(highLevelMemory &data){
-    //     GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
-    //     return (*this);
-    // }
+    highLevelMemory &operator==(highLevelMemory &data){
+        GLOBAL_INT_RETURN=(std::string((char*)sameClassObject.physicalAddress)==std::string((char*)data));
+        return (*this);
+    }
 
     
 
