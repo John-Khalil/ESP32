@@ -59,6 +59,10 @@ private:
         std::vector<std::function<void(void)>>readEventListeners;
     };
     std::vector<highLevelMemoryElement>allocationTable;
+
+
+
+    uint32_t GLOBAL_INT_RETURN=-1;
     
 public:
     uint8_t* NO_DATA=(uint8_t*)"NO_DATA";
@@ -299,12 +303,14 @@ public:
 
     //^ overloaded operators
 
+    
+
     operator uint8_t*() {
 		return read();
 	}
 
     operator int(){
-        return (lastActiveElement.length!=0);
+        return (int)GLOBAL_INT_RETURN;
     }
 
     highLevelMemory &operator [](uint8_t *key){
@@ -329,6 +335,19 @@ public:
 
     highLevelMemory &operator=(int8_t *data){
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator=(char *data){
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator=(const char *data){
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator!(){
+        GLOBAL_INT_RETURN=(lastActiveElement.length==0);
+        return (*this);
     }
 
     
