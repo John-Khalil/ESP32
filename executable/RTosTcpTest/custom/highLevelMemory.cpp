@@ -413,10 +413,10 @@ public:
         return (*this);
     }
 
-    highLevelMemory &operator==(highLevelMemory &data){
-        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
-        return (*this);
-    }
+    // highLevelMemory &operator==(highLevelMemory &data){
+    //     GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
+    //     return (*this);
+    // }
 
     
 
