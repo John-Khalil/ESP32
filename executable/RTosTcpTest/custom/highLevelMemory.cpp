@@ -381,28 +381,33 @@ public:
 
 
     highLevelMemory &operator=(uint8_t *data){
+        sameClassObject=lastActiveElement;
         return write(lastActiveElement.address.virtualAddress,data);
     }
 
     highLevelMemory &operator=(int8_t *data){
+        sameClassObject=lastActiveElement;
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
     highLevelMemory &operator=(char *data){
+        sameClassObject=lastActiveElement;
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
     highLevelMemory &operator=(const char *data){
+        sameClassObject=lastActiveElement;
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
     highLevelMemory &operator=(std::string data){
+        sameClassObject=lastActiveElement;
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data.c_str());
     }
 
-    highLevelMemory &operator=(highLevelMemory &data){
-        return write(sameClassObject.address.virtualAddress,(uint8_t *)data);
-    }
+    // highLevelMemory &operator=(highLevelMemory &data){
+    //     return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    // }
 
 
 
