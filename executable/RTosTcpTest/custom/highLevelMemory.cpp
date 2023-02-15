@@ -375,6 +375,10 @@ public:
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
+    highLevelMemory &operator=(highLevelMemory &data){
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
 
 
     highLevelMemory &operator!(){
@@ -406,6 +410,11 @@ public:
 
     highLevelMemory &operator==(std::string data){
         GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==data);
+        return (*this);
+    }
+
+    highLevelMemory &operator==(highLevelMemory &data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
         return (*this);
     }
 
