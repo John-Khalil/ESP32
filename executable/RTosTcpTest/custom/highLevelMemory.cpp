@@ -291,6 +291,49 @@ public:
     }
 
 
+    uint8_t *read(void){
+        return READ(lastActiveElement.address.virtualAddress);
+    }
+
+
+
+    //^ overloaded operators
+
+    operator uint8_t*() {
+		return read();
+	}
+
+    operator int(){
+        return (lastActiveElement.length!=0);
+    }
+
+    highLevelMemory &operator [](uint8_t *key){
+        return get(key);
+    }
+
+    highLevelMemory &operator [](uint32_t key){
+        return get(key);
+    }
+
+    highLevelMemory &operator [](int8_t *key){
+        return get((uint8_t *)key);
+    }
+
+    highLevelMemory &operator [](int32_t key){
+        return get((uint32_t)key);
+    }
+
+    highLevelMemory &operator=(uint8_t *data){
+        return write(lastActiveElement.address.virtualAddress,data);
+    }
+
+    highLevelMemory &operator=(int8_t *data){
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    
+
+
     // highLevelMemory &write(uint8_t* key,uint8_t* data){
     //     highLevelMemoryElement newElement;
     //     uint16_t bindIndex=-1;
