@@ -309,9 +309,25 @@ public:
 		return read();
 	}
 
+    operator int8_t*() {
+		return (int8_t*)read();
+	}
+
+    operator char*() {
+		return (char*)read();
+	}
+
+    operator std::string(){
+        return std::string((char*)read());
+    }
+
+    
+
     operator int(){
         return (int)GLOBAL_INT_RETURN;
     }
+
+
 
     highLevelMemory &operator [](uint8_t *key){
         return get(key);
@@ -329,6 +345,8 @@ public:
         return get((uint32_t)key);
     }
 
+
+
     highLevelMemory &operator=(uint8_t *data){
         return write(lastActiveElement.address.virtualAddress,data);
     }
@@ -345,8 +363,37 @@ public:
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
+
+
     highLevelMemory &operator!(){
         GLOBAL_INT_RETURN=(lastActiveElement.length==0);
+        return (*this);
+    }
+
+
+
+    highLevelMemory &operator==(uint8_t *data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
+        return (*this);
+    }
+
+    highLevelMemory &operator==(int8_t *data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
+        return (*this);
+    }
+
+    highLevelMemory &operator==(char *data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
+        return (*this);
+    }
+
+    highLevelMemory &operator==(const char *data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
+        return (*this);
+    }
+
+    highLevelMemory &operator==(std::string data){
+        GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==data);
         return (*this);
     }
 
