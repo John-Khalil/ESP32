@@ -423,9 +423,9 @@ public:
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data.c_str());
     }
 
-    // highLevelMemory &operator=(highLevelMemory &data){
-    //     return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
-    // }
+    highLevelMemory &operator=(highLevelMemory &data){
+        return write(LAST_ACTIVE_ELEMENTS[0],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])).c_str());
+    }
 
 
 
