@@ -303,7 +303,18 @@ public:
 
     //^ overloaded operators
 
-    
+    #define ARRAY_N_ELEMENTS 10
+
+    uint32_t LAST_ACTIVE_ELEMENTS[ARRAY_N_ELEMENTS]={};
+    void pushElement(uint32_t newMemoryElement){
+        uint8_t elementsCounter=ARRAY_N_ELEMENTS;
+        while(--elementsCounter)
+            LAST_ACTIVE_ELEMENTS[elementsCounter]=LAST_ACTIVE_ELEMENTS[elementsCounter-1];
+        LAST_ACTIVE_ELEMENTS[0]=newMemoryElement;
+        return;
+    }
+
+    highLevelMemoryElement sameClassObject=lastActiveElement;
 
     operator uint8_t*() {
         highLevelMemoryElement lastActiveElementBuffer=lastActiveElement;
@@ -341,39 +352,46 @@ public:
 
 
 
-    highLevelMemoryElement sameClassObject=lastActiveElement;
+    
 
     highLevelMemory &operator [](uint8_t *key){
+        pushElement(getAddress(key)&0xffff);
         sameClassObject=lastActiveElement;
         return get(key);
     }
 
     highLevelMemory &operator [](int8_t *key){
+        pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](char *key){
+        pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](const char *key){
+        pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](std::string key){
+        pushElement(getAddress((uint8_t*)key.c_str())&0xffff);
         sameClassObject=lastActiveElement;
         return get((uint8_t *)key.c_str());
     }
 
     highLevelMemory &operator [](uint32_t key){
+        pushElement(getAddress(key)&0xffff);
         sameClassObject=lastActiveElement;
         return get(key);
     }
 
     highLevelMemory &operator [](int32_t key){
+        pushElement(getAddress((uint32_t)key)&0xffff);
         sameClassObject=lastActiveElement;
         return get((uint32_t)key);
     }
