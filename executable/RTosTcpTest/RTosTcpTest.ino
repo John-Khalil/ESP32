@@ -3448,6 +3448,29 @@ void testingFuction(void * uselessParam){
 
 	// console.log("test for conversion function >> ",getInt32_t(inttostring(-1UL)));
 
+	smart::highLevelMemory test(2000);// = highLevelMemory(2000);
+
+	smart::highLevelMemory test2(2000);//= highLevelMemory(2000);
+
+	test.write(101, (uint8_t*)"test 101");
+	test.write(202, (uint8_t*)"test 202");
+
+	test.get(101).onChange([&](unsigned char* newData) {
+		console.log("101 >> ",newData);
+	});
+
+	test.get(202).onChange([&](unsigned char* newData) {
+		console.log("202 >> ",newData);
+	});
+
+	test.get(101).onRead([&]() {
+		test.write(101, (uint8_t*)"this is extreme test!!!!!!!!!!!");
+	});
+
+	test[101]="test";
+	test[202]=test[101];
+	test[101]=test[202];
+
 	vTaskDelete(NULL);
 }
 

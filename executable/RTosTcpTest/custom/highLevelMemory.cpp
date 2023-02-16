@@ -7,6 +7,7 @@
 #include <type_traits>
 // #include "stringFunctions.cpp"
 
+namespace smart{
 class highLevelMemory
 {
 private:
@@ -578,3 +579,4 @@ public:
     }
 };
 
+}
