@@ -423,8 +423,11 @@ public:
         return write(lastActiveElement.address.virtualAddress,(uint8_t *)data.c_str());
     }
 
-    highLevelMemory &operator=(highLevelMemory &data){
-        return write(LAST_ACTIVE_ELEMENTS[0],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])).c_str());
+    highLevelMemory &operator=(highLevelMemory &data){        
+        if(&data==this)
+            return write(LAST_ACTIVE_ELEMENTS[0],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])).c_str());
+        else
+            return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
     }
 
 
@@ -462,7 +465,10 @@ public:
     }
 
     highLevelMemory &operator==(highLevelMemory &data){
-        GLOBAL_INT_RETURN=(std::string((char*)sameClassObject.physicalAddress)==std::string((char*)data));
+        if(&data==this)
+            GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[1]))==std::string((char*)data));
+        else
+            GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)==std::string((char*)data));
         return (*this);
     }
 
