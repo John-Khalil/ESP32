@@ -34,6 +34,11 @@ void setup(){
 		test.write(101, (uint8_t*)"this is extreme test!!!!!!!!!!!");
 	});
 
+
+	(test[101]="test");
+	(test[202]=test[101]);
+	test[101]=test[202];
+
     test2.write(101, (uint8_t*)"same text");
     test2.write(102, (uint8_t*)"same text");
 	test2.write(202, (uint8_t*)"not same text");
@@ -41,9 +46,7 @@ void setup(){
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[202]));
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[102]));
 
-	(test[101]="test")="manga";
-	(test[202]=test[101])=test2[101];
-	test[101]=test2[202];
+
 }
 
 void loop(){

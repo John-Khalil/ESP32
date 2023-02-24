@@ -427,8 +427,10 @@ public:
 
     highLevelMemory &operator=(highLevelMemory &data){        
         if(&data==this){
-            console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
-            return write(LAST_ACTIVE_ELEMENTS[1],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[0])).c_str());
+            // console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
+            uint32_t LAST_ACTIVE_ELEMENTS_A=LAST_ACTIVE_ELEMENTS[1];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[1]:LAST_ACTIVE_ELEMENTS[0];
+            uint32_t LAST_ACTIVE_ELEMENTS_B=LAST_ACTIVE_ELEMENTS[0];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[0]:LAST_ACTIVE_ELEMENTS[1];
+            return write(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS_B)).c_str());
         }
             // return write(LAST_ACTIVE_ELEMENTS[0],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])).c_str());
         else
@@ -471,7 +473,7 @@ public:
 
     highLevelMemory &operator==(highLevelMemory &data){
         if(&data==this){
-            console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
+            // console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
             GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[0]))==std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])));
         }
             // GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[1]))==std::string((char*)data));
