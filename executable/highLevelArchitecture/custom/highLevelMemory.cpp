@@ -359,42 +359,56 @@ public:
     highLevelMemory &operator [](uint8_t *key){
         pushElement(getAddress(key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint8_t*)key)==uint32_t(-1))
+            return write((uint8_t*)key,(uint8_t*)"");
         return get(key);
     }
 
     highLevelMemory &operator [](int8_t *key){
         pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint8_t*)key)==uint32_t(-1))
+            return write((uint8_t*)key,(uint8_t*)"");
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](char *key){
         pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint8_t*)key)==uint32_t(-1))
+            return write((uint8_t*)key,(uint8_t*)"");
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](const char *key){
         pushElement(getAddress((uint8_t*)key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint8_t*)key)==uint32_t(-1))
+            return write((uint8_t*)key,(uint8_t*)"");
         return get((uint8_t *)key);
     }
 
     highLevelMemory &operator [](std::string key){
         pushElement(getAddress((uint8_t*)key.c_str())&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint8_t*)key.c_str())==uint32_t(-1))
+            return write((uint8_t*)key.c_str(),(uint8_t*)"");
         return get((uint8_t *)key.c_str());
     }
 
     highLevelMemory &operator [](uint32_t key){
         pushElement(getAddress(key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress(key)==uint32_t(-1))
+            return write(key,(uint8_t*)"");
         return get(key);
     }
 
     highLevelMemory &operator [](int32_t key){
         pushElement(getAddress((uint32_t)key)&0xffff);
         sameClassObject=lastActiveElement;
+        if(getAddress((uint32_t)key)==uint32_t(-1))
+            return write(key,(uint8_t*)"");
         return get((uint32_t)key);
     }
 
@@ -516,7 +530,76 @@ public:
             GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)!=std::string((char*)data));
         return (*this);
     }
+
+
+
+    highLevelMemory &operator|=(uint8_t *data){
+        if(lastActiveElement.length)
+            return get(lastActiveElement.address.virtualAddress);
+        sameClassObject=lastActiveElement;
+        return write(lastActiveElement.address.virtualAddress,data);
+    }
+
+    highLevelMemory &operator|=(int8_t *data){
+        if(lastActiveElement.length)
+            return get(lastActiveElement.address.virtualAddress);
+        sameClassObject=lastActiveElement;
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator|=(char *data){
+        if(lastActiveElement.length)
+            return get(lastActiveElement.address.virtualAddress);
+        sameClassObject=lastActiveElement;
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator|=(const char *data){
+        console.log("lastActiveElement.length >> ",(uint16_t)lastActiveElement.length);
+        if(lastActiveElement.length)
+            return get(lastActiveElement.address.virtualAddress);
+        // console.log("lastActiveElement >> ",(uint16_t)lastActiveElement.length);
+        sameClassObject=lastActiveElement;
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+    highLevelMemory &operator|=(std::string data){
+        if(lastActiveElement.length)
+            return get(lastActiveElement.address.virtualAddress);
+        sameClassObject=lastActiveElement;
+        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data.c_str());
+    }
+
+    highLevelMemory &operator|=(highLevelMemory &data){        
+        uint32_t elementAllocationTableAddress=getAddress(LAST_ACTIVE_ELEMENTS[1]);
+        if(elementAllocationTableAddress!=(uint32_t)-1);
+        if(allocationTable[elementAllocationTableAddress>>16].length)
+            return get(elementAllocationTableAddress);
+
+        if(&data==this){
+
+            uint32_t LAST_ACTIVE_ELEMENTS_A=LAST_ACTIVE_ELEMENTS[1];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[1]:LAST_ACTIVE_ELEMENTS[0];
+            uint32_t LAST_ACTIVE_ELEMENTS_B=LAST_ACTIVE_ELEMENTS[0];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[0]:LAST_ACTIVE_ELEMENTS[1];
+            return write(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS_B)).c_str());
+        }
+        else
+            return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+    }
+
+
     
+
+    highLevelMemory &operator >>(const std::function<void(unsigned char *)>onchangeEventListener){
+        if(lastActiveElement.physicalAddress!=nullptr)
+            allocationTable[lastActiveElement.address.virtualAddress>>16].onchangeEventListeners.push_back(onchangeEventListener);
+        return (*this);
+    }
+
+    highLevelMemory &operator <<(const std::function<void(void)>readEventListener){
+        if(lastActiveElement.physicalAddress!=nullptr)
+            allocationTable[lastActiveElement.address.virtualAddress>>16].readEventListeners.push_back(readEventListener);
+        return (*this);
+    }
 
 
     // highLevelMemory &write(uint8_t* key,uint8_t* data){

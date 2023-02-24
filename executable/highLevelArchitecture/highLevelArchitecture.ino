@@ -22,17 +22,18 @@ void setup(){
 	test.write(101, (uint8_t*)"test 101");
 	test.write(202, (uint8_t*)"test 202");
 
-	test.get(101).onChange([&](unsigned char* newData) {
+	test[101]>>([&](unsigned char* newData) {
 		console.log("101 >> ",newData);
 	});
 
-	test.get(202).onChange([&](unsigned char* newData) {
+	test[202]>>([&](unsigned char* newData) {
 		console.log("202 >> ",newData);
 	});
 
-	test.get(101).onRead([&]() {
+	test[101]<<([&]() {
 		test.write(101, (uint8_t*)"this is extreme test!!!!!!!!!!!");
 	});
+	
 
 
 	(test[101]="test");
@@ -46,6 +47,11 @@ void setup(){
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[202]));
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[102]));
 
+	console.log("interesting test >> ",(char*)(test["this is a memory key"]="super cool test"));
+
+	// (test["i didn't see that key before"])|="this is some super random default text";
+
+	// console.log("super interesting test >> ",(char*)test["i didn't see that key before"]);
 
 }
 
