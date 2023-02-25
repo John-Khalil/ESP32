@@ -47,11 +47,14 @@ void setup(){
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[202]));
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[102]));
 
-	console.log("interesting test >> ",(char*)(test["this is a memory key"]="super cool test"));
+	console.log("interesting test >> ",(char*)(test["898"]="super cool test"));
 
-	test["i didn't see that key before"]|="this is some super random default text";
+	console.log("super interesting test >> ",(char*)test["898"]);
 
-	console.log("super interesting test >> ",(char*)test["i didn't see that key before"]);
+	test["525"]|="this shit ain't random";
+	test["525"]|="this is some super random default text";
+
+	console.log("super interesting test >> ",(char*)test["525"]);
 
 }
 
