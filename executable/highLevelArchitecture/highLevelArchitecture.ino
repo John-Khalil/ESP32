@@ -22,9 +22,9 @@ void setup(){
 	test.write(101, (uint8_t*)"test 101");
 	test.write(202, (uint8_t*)"test 202");
 
-	test[101]>>([&](unsigned char* newData) {
+	(test[101]>>([&](unsigned char* newData) {
 		console.log("101 >> ",newData);
-	});
+	}))="super random test";
 
 	test[202]>>([&](unsigned char* newData) {
 		console.log("202 >> ",newData);
@@ -49,9 +49,9 @@ void setup(){
 
 	console.log("interesting test >> ",(char*)(test["this is a memory key"]="super cool test"));
 
-	// (test["i didn't see that key before"])|="this is some super random default text";
+	test["i didn't see that key before"]|="this is some super random default text";
 
-	// console.log("super interesting test >> ",(char*)test["i didn't see that key before"]);
+	console.log("super interesting test >> ",(char*)test["i didn't see that key before"]);
 
 }
 

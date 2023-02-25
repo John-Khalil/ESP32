@@ -555,12 +555,15 @@ public:
     }
 
     highLevelMemory &operator|=(const char *data){
-        console.log("lastActiveElement.length >> ",(uint16_t)lastActiveElement.length);
-        if(lastActiveElement.length)
+        console.log("lastActiveElement.length >> ", data,"  --  ",(uint16_t)lastActiveElement.length);
+        if(lastActiveElement.length){
+            console.log("this should not appear");
             return get(lastActiveElement.address.virtualAddress);
+         }   
+        (*this)=data;
         // console.log("lastActiveElement >> ",(uint16_t)lastActiveElement.length);
-        sameClassObject=lastActiveElement;
-        return write(lastActiveElement.address.virtualAddress,(uint8_t *)data);
+        // sameClassObject=lastActiveElement;
+        return (*this);
     }
 
     highLevelMemory &operator|=(std::string data){
