@@ -62,7 +62,9 @@ void setup(){
 
 	console.log("super interesting test >> ",(char*)test["898"]);
 
-	test["525"]|=test[101];
+	test["indicator"]="123";
+
+	test["525"]|=test["indicator"];
 	test["525"]|="this is some super random default text";
 
 	console.log("super interesting test >> ",(char*)test["525"]);
