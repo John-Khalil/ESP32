@@ -216,7 +216,7 @@ public:
 
                 newElement=memoryElement;
                 if(dataLength==memoryElement.length){
-                    _CS(CLR(memoryElement.physicalAddress,memoryElement.length+1),data);
+                    _CS(CLR(memoryElement.physicalAddress),data);
                 }
                 else{
                     shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
@@ -305,6 +305,12 @@ public:
         return WRITE(lastActiveElement.address.virtualAddress,data,nullptr,dataLength);
     }
 
+
+    //^ debug utils
+    void printAllocationTable(void){
+        for(auto memoryElementNonRef : allocationTable)
+            console.log("\t\t\t--\t\t\t >> ",memoryElementNonRef.address.userDefinedAddress,"\t\t\t--\t\t\t",memoryElementNonRef.variableName.c_str(),"\t\t\t--\t\t\t",memoryElementNonRef.physicalAddress);
+    }
 
 
     //^ overloaded operators
@@ -448,7 +454,9 @@ public:
             // console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
             uint32_t LAST_ACTIVE_ELEMENTS_A=LAST_ACTIVE_ELEMENTS[1];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[1]:LAST_ACTIVE_ELEMENTS[0];
             uint32_t LAST_ACTIVE_ELEMENTS_B=LAST_ACTIVE_ELEMENTS[0];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[0]:LAST_ACTIVE_ELEMENTS[1];
-            return write(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS_B)).c_str());
+            // console.log((uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS_B)).c_str());
+
+            return WRITE(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)READ(LAST_ACTIVE_ELEMENTS_B)).c_str());
         }
             // return write(LAST_ACTIVE_ELEMENTS[0],(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])).c_str());
         else
@@ -492,7 +500,7 @@ public:
     highLevelMemory &operator==(highLevelMemory &data){
         if(&data==this){
             // console.log(" >> ",(uint16_t)lastActiveElement.address.userDefinedAddress," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[0]," - ",(uint16_t)LAST_ACTIVE_ELEMENTS[1]);
-            GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[0]))==std::string((char*)read(LAST_ACTIVE_ELEMENTS[1])));
+            GLOBAL_INT_RETURN=(std::string((char*)READ(LAST_ACTIVE_ELEMENTS[0]))==std::string((char*)READ(LAST_ACTIVE_ELEMENTS[1])));
         }
             // GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[1]))==std::string((char*)data));
         else
@@ -529,7 +537,7 @@ public:
 
     highLevelMemory &operator!=(highLevelMemory &data){
         if(&data==this)
-            GLOBAL_INT_RETURN=(std::string((char*)read(LAST_ACTIVE_ELEMENTS[1]))!=std::string((char*)data));
+            GLOBAL_INT_RETURN=(std::string((char*)READ(LAST_ACTIVE_ELEMENTS[1]))!=std::string((char*)data));
         else
             GLOBAL_INT_RETURN=(std::string((char*)lastActiveElement.physicalAddress)!=std::string((char*)data));
         return (*this);
@@ -582,7 +590,7 @@ public:
 
             uint32_t LAST_ACTIVE_ELEMENTS_A=LAST_ACTIVE_ELEMENTS[1];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[1]:LAST_ACTIVE_ELEMENTS[0];
             uint32_t LAST_ACTIVE_ELEMENTS_B=LAST_ACTIVE_ELEMENTS[0];//(LAST_ACTIVE_ELEMENTS[0]==lastActiveElement.address.userDefinedAddress)?LAST_ACTIVE_ELEMENTS[0]:LAST_ACTIVE_ELEMENTS[1];
-            return write(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)read(LAST_ACTIVE_ELEMENTS_B)).c_str());
+            return WRITE(LAST_ACTIVE_ELEMENTS_A,(uint8_t *)std::string((char*)READ(LAST_ACTIVE_ELEMENTS_B)).c_str());
         }
         else
             return write((uint8_t *)data);

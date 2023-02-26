@@ -30,15 +30,26 @@ void setup(){
 		console.log("202 >> ",newData);
 	});
 
-	test[101]<<([&]() {
-		test.write(101, (uint8_t*)"this is extreme test!!!!!!!!!!!");
+	test["indicator"]>>([&](unsigned char* newData) {
+		console.log("indicator >> ",newData);
 	});
+
+	// test[101]<<([&]() {
+	// 	test.write(101, (uint8_t*)"this is extreme test!!!!!!!!!!!");
+	// });
 	
 
 
-	(test[101]="test");
-	(test[202]=test[101]);
+	test[101]="test this 101";
+
+	test["indicator"]="random bs";
+
+	test[202]=test[101];
+	test["indicator"]=test[202];
 	test[101]=test[202];
+	// test[202]="this text should appear !!";
+
+	console.log(" ----------->> ",test.read(202));
 
     test2.write(101, (uint8_t*)"same text");
     test2.write(102, (uint8_t*)"same text");
@@ -47,11 +58,11 @@ void setup(){
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[202]));
     console.log("test for op == >> ",(uint16_t)(test2[101]==test2[102]));
 
-	console.log("interesting test >> ",(char*)(test["898"]="super cool test"));
+	console.log("interesting test >> ",(char*)(test["898"]=test[101]));
 
 	console.log("super interesting test >> ",(char*)test["898"]);
 
-	test["525"]|="this shit ain't random";
+	test["525"]|=test[101];
 	test["525"]|="this is some super random default text";
 
 	console.log("super interesting test >> ",(char*)test["525"]);
