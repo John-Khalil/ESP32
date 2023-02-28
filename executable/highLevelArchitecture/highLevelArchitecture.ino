@@ -27,15 +27,29 @@ void setup(){
 
     console.log("code just started");
 
-	MEMORY[WIFI_CONFIG]>>[&](unsigned char* eventData){
+	MEMORY[WIFI_SETTINGS]>>[&](unsigned char* eventData){
+		if(json("NETWORK_SSID",eventData)==UNDEFINED){
+			console.log("WiFi Disconnect");
+
+			return;
+		}
+
+
 		MEMORY[NETWORK_SSID]=constJson(NETWORK_SSID,eventData);
 		MEMORY[NETWORK_PASSWORD]=constJson(NETWORK_PASSWORD,eventData);
 
-		console.log("	- connecting to -> ",(char*)MEMORY[NETWORK_SSID]," @ ",(char*)MEMORY[NETWORK_PASSWORD]);
+		EEPROM_UTILS::ssidSave(MEMORY[NETWORK_SSID]);
+		EEPROM_UTILS::wifiPasswordSave(MEMORY[NETWORK_PASSWORD]);
+
+		console.log(" - connecting to -> ",(char*)MEMORY[NETWORK_SSID]," @ ",(char*)MEMORY[NETWORK_PASSWORD]);
+
 
 	};
 
-	MEMORY[WIFI_CONFIG]="{\"NETWORK_SSID\":256,\"NETWORK_PASSWORD\":987}";
+	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
+	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
+
+	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
 }
 

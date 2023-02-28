@@ -966,6 +966,7 @@ unsigned char **jsonObjectValues(T value,Types... values){
 
 #define JSON_KEYS jsonObjectKeys
 #define JSON_VALUES jsonObjectValues
+#define JSON_OBJECT makeJsonObject
 
 
 
