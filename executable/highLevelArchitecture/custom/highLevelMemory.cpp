@@ -8,7 +8,7 @@
 // #include "stringFunctions.cpp"
 #include "consoleLogger.h"
 
-namespace smart{
+namespace utils{
 class highLevelMemory
 {
 private:
