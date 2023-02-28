@@ -1,6 +1,7 @@
 #include "custom/consoleLogger.h"
 #include "custom/consoleLogger.cpp"
 #include "custom/highLevelMemory.cpp"
+#include "custom/pointerTool.h"
 
 void setup(){
     Serial.begin(115200);
