@@ -7,6 +7,8 @@
 #include "custom/networkUtils.h"
 #include "custom/platform.h"
 
+#include"custom/fetch.h"
+
 #include <iostream>
 
 using namespace std;
