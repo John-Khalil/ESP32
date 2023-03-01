@@ -4,6 +4,8 @@
 #include "custom/pointerTool.h"
 #include "custom/constDefinitions.h"
 #include "custom/eepromBasicConfig.h"
+#include "custom/networkUtils.h"
+#include "custom/platform.h"
 
 #include <iostream>
 
