@@ -6,6 +6,7 @@
 #include "custom/eepromBasicConfig.h"
 #include "custom/networkUtils.h"
 #include "custom/platform.h"
+#include "custom/http.h"
 
 #include"custom/fetch.h"
 
@@ -52,7 +53,8 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	console.log(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+	// console.log(HTTP::fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+	// console.log(HTTP::fetch("http://192.168.1.7"));
 
 }
 
