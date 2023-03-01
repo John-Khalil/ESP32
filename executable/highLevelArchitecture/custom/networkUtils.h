@@ -78,6 +78,14 @@ namespace WIFI_UTILS{
         return exitStatus;
     }
 
+    unsigned char connected(void){
+        return (WiFi.status()==WL_CONNECTED);
+    }
+
+    unsigned char *currentIP(void){
+        return ipAddressString((WiFi.status()==WL_CONNECTED)?WiFi.localIP():WiFi.softAPIP());
+    }
+
 }
 
 

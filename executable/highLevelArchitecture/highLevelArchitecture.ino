@@ -30,9 +30,9 @@ void setup(){
     console.log("code just started");
 
 	MEMORY[WIFI_SETTINGS]>>[&](unsigned char* eventData){
-		if(json("NETWORK_SSID",eventData)==UNDEFINED){
+		if(json(NETWORK_SSID,eventData)==UNDEFINED){
 			console.log("WiFi Disconnect");
-
+			WIFI_UTILS::accessPoint();
 			return;
 		}
 
@@ -43,7 +43,11 @@ void setup(){
 		EEPROM_UTILS::ssidSave(MEMORY[NETWORK_SSID]);
 		EEPROM_UTILS::wifiPasswordSave(MEMORY[NETWORK_PASSWORD]);
 
-		console.log(" - connecting to -> ",(char*)MEMORY[NETWORK_SSID]," @ ",(char*)MEMORY[NETWORK_PASSWORD]);
+		console.log("connecting to -> ",(char*)MEMORY[NETWORK_SSID]," <",(char*)MEMORY[NETWORK_PASSWORD],"> ...");
+
+		WIFI_UTILS::networkConnect();
+		WIFI_UTILS::connected()?console.log("CONNECTED @ <",WIFI_UTILS::currentIP(),">"):console.log("FAILED TO CONNECT -> ACCESS POINT ACTIVE <",WIFI_UTILS::currentIP(),"> same password");
+		WIFI_UTILS::accessPoint();
 
 
 	};
