@@ -35,27 +35,22 @@ void setup(){
 			WIFI_UTILS::accessPoint();
 			return;
 		}
-
-
 		MEMORY[NETWORK_SSID]=constJson(NETWORK_SSID,eventData);
 		MEMORY[NETWORK_PASSWORD]=constJson(NETWORK_PASSWORD,eventData);
-
 		EEPROM_UTILS::ssidSave(MEMORY[NETWORK_SSID]);
 		EEPROM_UTILS::wifiPasswordSave(MEMORY[NETWORK_PASSWORD]);
-
 		console.log("connecting to -> ",(char*)MEMORY[NETWORK_SSID]," <",(char*)MEMORY[NETWORK_PASSWORD],"> ...");
-
 		WIFI_UTILS::networkConnect();
 		WIFI_UTILS::connected()?console.log("CONNECTED @ <",WIFI_UTILS::currentIP(),">"):console.log("FAILED TO CONNECT -> ACCESS POINT ACTIVE <",WIFI_UTILS::currentIP(),"> same password");
 		WIFI_UTILS::accessPoint();
-
-
 	};
 
 	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
+
+	console.log(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 
 }
 

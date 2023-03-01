@@ -1,6 +1,7 @@
 #ifndef NETWORK_UTILS_H
 #define NETWORK_UTILS_H
 
+#include <functional>
 #include "pointerTool.h"
 #include "eepromBasicConfig.h"
 #include "platform.h"
@@ -19,6 +20,8 @@
 namespace WIFI_UTILS{
 
     using namespace EEPROM_UTILS;
+
+    std::function<void(void)> eventHandler=[](){};
 
 
     unsigned char GLOBAL_IPADDRESS_VARIABLE_NAME[16]="";
@@ -84,6 +87,15 @@ namespace WIFI_UTILS{
 
     unsigned char *currentIP(void){
         return ipAddressString((WiFi.status()==WL_CONNECTED)?WiFi.localIP():WiFi.softAPIP());
+    }
+
+    void wifi_event_handler(WiFiEvent_t event){
+        eventHandler();
+    }
+
+    void onEvent(const std::function<void(void)>userEventHandler){
+        eventHandler=userEventHandler;
+        WiFi.onEvent(wifi_event_handler);
     }
 
 }
