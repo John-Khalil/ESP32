@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#include <functional>
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
@@ -84,11 +86,31 @@
 
     #define endTask() vTaskDelete(NULL)
 
+    
+    #define async(asyncThread)  xTaskCreate((void (*)(void*))[&](void *arg){asyncThread;vTaskDelete(NULL);},"async-task",30000,NULL,0,NULL);
+
+
 
 #endif
-
 #ifdef ESP8266
+    #include "osapi.h"
+
     #define _delay_ms delay
+
+    void esp8266StartTaskHandler(void){
+        static uint8_t firstRun;
+        if(!firstRun){
+            firstRun=1;
+            // system_os_start();
+        }
+        return;
+    }
+
+    typedef void (*func)(void*);
+
+
+    #define async(asyncThread)  system_os_task((func)([&](void *arg){asyncThread;esp8266StartTaskHandler();}),0,NULL);
+
 #endif
 
 #endif

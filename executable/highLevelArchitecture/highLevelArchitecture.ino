@@ -12,10 +12,19 @@
 
 #include <iostream>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 using namespace std;
 
 utils::highLevelMemory MEMORY(20000);
 
+void simpleTask(ETSEventTag *arg){
+	within(1000,{
+		console.log("test task - 1");
+		_delay_ms(500);
+	});
+}
 
 
 void setup(){
@@ -53,8 +62,33 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	// console.log(HTTP::fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+	// (void (*)(void*))[&](void *arg)
+
+	// system_os_task((void (*)(void*))[&](void *arg){
+	// 	within(1000,{
+	// 		console.log("test task - 1");
+	// 		_delay_ms(500);
+	// 	});
+	// }, 1, NULL);
+
+	// async({
+	// 	within(1000,{
+	// 		console.log("test task - 1");
+	// 		_delay_ms(500);
+	// 	});
+	// });
+
+
+
+  	// system_os_start();
+
+	// system_os_task(simpleTask,0,NULL,NULL);
+
+
+	console.log(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 	// console.log(HTTP::fetch("http://192.168.1.7"));
+
+	
 
 }
 
