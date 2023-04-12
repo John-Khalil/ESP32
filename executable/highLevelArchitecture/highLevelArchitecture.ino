@@ -12,19 +12,43 @@
 
 #include <iostream>
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+// #include "freertos/FreeRTOS.h"
+// #include "freertos/task.h"
+#include <ESPAsyncWebServer.h>
+// #include <AsyncWebSocket.h>
+// #include <ESPAsyncTCP.h>
+// #include <AsyncWebSocket.h>
 
-using namespace std;
+AsyncWebServer server(80); // HTTP server instance
+AsyncWebSocket ws("/"); 
+
+
+
+void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  if (type == WS_EVT_CONNECT) {
+    // WebSocket client connected
+    Serial.println("WebSocket client connected");
+  } else if (type == WS_EVT_DISCONNECT) {
+    // WebSocket client disconnected
+    Serial.println("WebSocket client disconnected");
+  } else if (type == WS_EVT_DATA) {
+    // WebSocket data received
+    // Handle the data received from the WebSocket client
+    Serial.printf("WebSocket data received: %.*s\n", len, (char*)data);
+  }
+}
+
+
+// using namespace std;
 
 utils::highLevelMemory MEMORY(20000);
 
-void simpleTask(ETSEventTag *arg){
-	within(1000,{
-		console.log("test task - 1");
-		_delay_ms(500);
-	});
-}
+// void simpleTask(ETSEventTag *arg){
+// 	within(1000,{
+// 		console.log("test task - 1");
+// 		_delay_ms(500);
+// 	});
+// }
 
 
 void setup(){
@@ -62,38 +86,42 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	// (void (*)(void*))[&](void *arg)
+	
+	
+	
+	
+	
+	
 
-	// system_os_task((void (*)(void*))[&](void *arg){
-	// 	within(1000,{
-	// 		console.log("test task - 1");
-	// 		_delay_ms(500);
-	// 	});
-	// }, 1, NULL);
+	
+	
+	ws.onEvent(onWebSocketEvent);
+	server.addHandler(&ws);
+  
+	// Handle HTTP GET request for root path ("/")
+	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+		// Send a response back to the client
+		request->send(200, "text/plain", "Hello from ESP8266/ESP32!");
+	});
 
-	// async({
-	// 	within(1000,{
-	// 		console.log("test task - 1");
-	// 		_delay_ms(500);
-	// 	});
-	// });
-
-
-
-  	// system_os_start();
-
-	// system_os_task(simpleTask,0,NULL,NULL);
+	// Start the HTTP server
+	server.begin();
+	// Start the WebSocket server
+	// ws.begin();
 
 
-	console.log(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+
+	// console.log(fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
 	// console.log(HTTP::fetch("http://192.168.1.7"));
 
+	// for(;;)
+	// 	_delay_ms(0);
 	
 
 }
 
 void loop(){
-
+	// ws.cleanupClients();
 }
 
 
