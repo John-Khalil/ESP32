@@ -7,7 +7,7 @@
 #include "custom/networkUtils.h"
 #include "custom/platform.h"
 #include "custom/http.h"
-
+#include "custom/webService.h"
 #include"custom/fetch.h"
 
 #include <iostream>
