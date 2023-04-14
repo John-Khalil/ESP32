@@ -17,7 +17,7 @@ class service{
     public:
 
         std::vector<std::function<void(uint8_t*)>>readCallbackList;    
-        
+
         AsyncWebServer *server;
         AsyncWebSocket *ws; 
 
@@ -77,11 +77,19 @@ class service{
             });
             server->addHandler(ws);
 
-            server->on((char*)path, HTTP_GET, [&](AsyncWebServerRequest *request){
+            server->on((char*)path, (HTTP_GET|HTTP_POST), [&](AsyncWebServerRequest *request){
                 // Send a response back to the client
+                String queryParam = request->arg("param");
+
+                Serial.print("queryParam : ");
+
+                Serial.println(queryParam);
+
+
                 request->send(200, "text/plain",httpResponse.c_str());
                 httpResponse=HTTP_ACK;
             });
+            
 
             server->begin();
 
@@ -89,15 +97,15 @@ class service{
         }
 
         service(uint16_t port,uint8_t* path=(uint8_t*)"/"){
-            
+            setup(port,path);
         }
 
         service(uint16_t port,char* path="/"){
-            
+            setup(port,(uint8_t*)path);
         }
 
         service(uint16_t port,std::string path="/"){
-            
+            setup(port,(uint8_t*)path.c_str());
         }
 
         ~service(){

@@ -19,29 +19,31 @@
 // #include <ESPAsyncTCP.h>
 // #include <AsyncWebSocket.h>
 
-AsyncWebServer server(80); // HTTP server instance
-AsyncWebSocket ws("/"); 
+// AsyncWebServer server(80); // HTTP server instance
+// AsyncWebSocket ws("/"); 
 
 
 
-void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
-  if (type == WS_EVT_CONNECT) {
-    // WebSocket client connected
-    Serial.println("WebSocket client connected");
-  } else if (type == WS_EVT_DISCONNECT) {
-    // WebSocket client disconnected
-    Serial.println("WebSocket client disconnected");
-  } else if (type == WS_EVT_DATA) {
-    // WebSocket data received
-    // Handle the data received from the WebSocket client
-    Serial.printf("WebSocket data received: %.*s\n", len, (char*)data);
-  }
-}
+// void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+//   if (type == WS_EVT_CONNECT) {
+//     // WebSocket client connected
+//     Serial.println("WebSocket client connected");
+//   } else if (type == WS_EVT_DISCONNECT) {
+//     // WebSocket client disconnected
+//     Serial.println("WebSocket client disconnected");
+//   } else if (type == WS_EVT_DATA) {
+//     // WebSocket data received
+//     // Handle the data received from the WebSocket client
+//     Serial.printf("WebSocket data received: %.*s\n", len, (char*)data);
+//   }
+// }
 
 
 // using namespace std;
 
 utils::highLevelMemory MEMORY(20000);
+
+web::service test(80,"/");
 
 // void simpleTask(ETSEventTag *arg){
 // 	within(1000,{
@@ -95,17 +97,21 @@ void setup(){
 
 	
 	
-	ws.onEvent(onWebSocketEvent);
-	server.addHandler(&ws);
+	// ws.onEvent(onWebSocketEvent);
+	// server.addHandler(&ws);
   
-	// Handle HTTP GET request for root path ("/")
-	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-		// Send a response back to the client
-		request->send(200, "text/plain", "Hello from ESP8266/ESP32!");
-	});
+	// // Handle HTTP GET request for root path ("/")
+	// server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+	// 	// Send a response back to the client
 
-	// Start the HTTP server
-	server.begin();
+	// 	 String queryParam = request->arg("plain");
+	// 	request->send(200, "text/plain", queryParam);
+	// });
+
+	// // Start the HTTP server
+	// server.begin();
+
+
 	// Start the WebSocket server
 	// ws.begin();
 
