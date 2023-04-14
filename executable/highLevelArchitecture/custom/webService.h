@@ -14,19 +14,10 @@ namespace web{
 
 class service{
 
-    std::vector<std::function<void(uint8_t*)>>readCallbackList;
-    
-    void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
-        if (type == WS_EVT_CONNECT) {
-
-        } else if (type == WS_EVT_DISCONNECT) {
-
-        } else if (type == WS_EVT_DATA) {
-            
-        }
-    }
-        
     public:
+
+        std::vector<std::function<void(uint8_t*)>>readCallbackList;    
+        
         AsyncWebServer *server;
         AsyncWebSocket *ws; 
 
@@ -75,12 +66,20 @@ class service{
             server=new AsyncWebServer(port);
             ws=new AsyncWebSocket((char*)path);
 
-            ws->onEvent(onWebSocketEvent);
+            ws->onEvent([&](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+                if (type == WS_EVT_CONNECT) {
+
+                } else if (type == WS_EVT_DISCONNECT) {
+
+                } else if (type == WS_EVT_DATA) {
+                    
+                }
+            });
             server->addHandler(ws);
 
-            server->on((char*)path, HTTP_GET, [](AsyncWebServerRequest *request){
+            server->on((char*)path, HTTP_GET, [&](AsyncWebServerRequest *request){
                 // Send a response back to the client
-                request->send(200, "text/plain", httpResponse.c_str());
+                request->send(200, "text/plain",httpResponse.c_str());
                 httpResponse=HTTP_ACK;
             });
 
