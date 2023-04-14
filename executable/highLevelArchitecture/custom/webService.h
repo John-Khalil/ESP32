@@ -77,18 +77,45 @@ class service{
             });
             server->addHandler(ws);
 
-            server->on((char*)path, (HTTP_GET|HTTP_POST), [&](AsyncWebServerRequest *request){
-                // Send a response back to the client
-                String queryParam = request->arg("param");
-
-                Serial.print("queryParam : ");
-
-                Serial.println(queryParam);
-
-
+            server->on((char*)path, (HTTP_GET), [&](AsyncWebServerRequest *request){
                 request->send(200, "text/plain",httpResponse.c_str());
                 httpResponse=HTTP_ACK;
             });
+
+            server->onRequestBody([&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+                // Handle the incoming data chunk by chunk
+                // 'data' is a pointer to the incoming data buffer
+                // 'len' is the length of the data buffer
+                // 'index' is the starting index of the data in the buffer
+                // 'total' is the total length of the request body
+                
+                // Convert the incoming data to a String
+                String body = "";
+                for (size_t i = 0; i < len; i++) {
+                    body += (char)data[i];
+                }
+
+                // Check if all data has been received
+                if (index + len == total) { // indicates the end of data transmition 
+                    
+                    
+                    
+                    request->send(200, "text/plain",httpResponse.c_str());
+                    httpResponse=HTTP_ACK;
+                }
+            });
+
+
+
+            // server->on((char*)path, (HTTP_GET|HTTP_POST), [&](AsyncWebServerRequest *request){
+            //     request->onData([&](uint8_t *data, size_t len){
+            //         Serial.print("queryParam : ");
+
+            //         Serial.println(data);
+            //     });
+            //     request->send(200, "text/plain",httpResponse.c_str());
+            //     httpResponse=HTTP_ACK;
+            // });
             
 
             server->begin();
