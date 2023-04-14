@@ -25,7 +25,7 @@ class service{
         #define HTTP_ACK "ACK"
         std::string httpResponse=HTTP_ACK;
 
-        service &onRead(const std::function<void(uint8_t*)>onReadCallback){
+        service &onData(const std::function<void(uint8_t*)>onReadCallback){
             readCallbackList.push_back(onReadCallback);
             return (*this);
         }
@@ -98,7 +98,8 @@ class service{
                 // Check if all data has been received
                 if (index + len == total) { // indicates the end of data transmition 
                     
-                    
+                    for(auto readCallback:readCallbackList)
+                        readCallback((uint8_t*)body.c_str());
                     
                     request->send(200, "text/plain",httpResponse.c_str());
                     httpResponse=HTTP_ACK;

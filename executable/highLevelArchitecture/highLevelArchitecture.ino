@@ -43,7 +43,7 @@
 
 utils::highLevelMemory MEMORY(20000);
 
-web::service test(80,"/");
+web::service webServer(80,"/");
 
 // void simpleTask(ETSEventTag *arg){
 // 	within(1000,{
