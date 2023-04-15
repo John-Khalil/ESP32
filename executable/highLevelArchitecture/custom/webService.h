@@ -17,9 +17,9 @@ class service{
     public:
 
         std::vector<std::function<void(uint8_t*)>>readCallbackList;    
-        std::vector<std::function<void(uint8_t*)>>webSocketClientList;
+        std::vector<AsyncWebSocketClient *>webSocketClientList;
 
-        AsyncWebSocketClient *webSocketClient;
+        // AsyncWebSocketClient *webSocketClient;
 
 
         AsyncWebServer *server;
@@ -52,23 +52,26 @@ class service{
         }
 
         service &send(uint8_t* data){
-            // for(auto webSocketClient:webSocketClientList)
-            //     webSocketClient(data);
-            webSocketClient->text(std::string((char*)data).c_str()); 
+            for(auto webSocketClient:webSocketClientList){
+                if(webSocketClient->status() == AwsClientStatus::WS_CONNECTED)
+                    webSocketClient->text(std::string((char*)data).c_str()); 
+            }
             return (*this);
         }
 
         service &send(char* data){
-            // for(auto webSocketClient:webSocketClientList)
-            //     webSocketClient((uint8_t*)data);
-            webSocketClient->text(std::string(data).c_str()); 
+            for(auto webSocketClient:webSocketClientList){
+                if(webSocketClient->status() == AwsClientStatus::WS_CONNECTED)
+                    webSocketClient->text(std::string(data).c_str()); 
+            }
             return (*this);
         }
 
         service &send(std::string data){
-            // for(auto webSocketClient:webSocketClientList)
-            //     webSocketClient((uint8_t*)data.c_str());
-            webSocketClient->text(data.c_str()); 
+            for(auto webSocketClient:webSocketClientList){
+                if(webSocketClient->status() == AwsClientStatus::WS_CONNECTED)
+                    webSocketClient->text(data.c_str());
+            }
             return (*this);
         }
 
@@ -81,7 +84,8 @@ class service{
             ws->onEvent([&](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
 
                 if (type == WS_EVT_CONNECT) {
-                    webSocketClient=client;
+                    // webSocketClient=client;
+                    webSocketClientList.push_back(client);
                     // webSocketClientList.push_back([&](uint8_t *data){
                     //     // if(client->status() != AwsClientStatus::WS_CONNECTED)
 
