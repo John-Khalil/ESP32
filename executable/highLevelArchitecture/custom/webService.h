@@ -17,6 +17,7 @@ class service{
     public:
 
         std::vector<std::function<void(uint8_t*)>>readCallbackList;    
+        std::vector<std::function<void(uint8_t*)>>webSocketClientList;
 
         AsyncWebServer *server;
         AsyncWebSocket *ws; 
@@ -24,6 +25,8 @@ class service{
 
         #define HTTP_ACK "ACK"
         std::string httpResponse=HTTP_ACK;
+
+
 
         service &onData(const std::function<void(uint8_t*)>onReadCallback){
             readCallbackList.push_back(onReadCallback);
@@ -45,18 +48,21 @@ class service{
             return (*this);
         }
 
-        service &write(uint8_t* data){
-
+        service &send(uint8_t* data){
+            for(auto webSocketClient:webSocketClientList)
+                webSocketClient(data);
             return (*this);
         }
 
-        service &write(char* data){
-
+        service &send(char* data){
+            for(auto webSocketClient:webSocketClientList)
+                webSocketClient((uint8_t*)data);
             return (*this);
         }
 
-        service &write(std::string data){
-
+        service &send(std::string data){
+            for(auto webSocketClient:webSocketClientList)
+                webSocketClient((uint8_t*)data.c_str());
             return (*this);
         }
 
@@ -67,11 +73,28 @@ class service{
             ws=new AsyncWebSocket((char*)path);
 
             ws->onEvent([&](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+
                 if (type == WS_EVT_CONNECT) {
+                    webSocketClientList.push_back([&](uint8_t *data){
+                        // if(client->status() != AwsClientStatus::WS_CONNECTED)
+
+                        static AsyncWebSocketClient *staticClient=NULL;
+                        if(staticClient==NULL)
+                            staticClient=client;
+
+                        staticClient->text(std::string((char*)data).c_str());      //making sure its buffred
+                    });
+                    client->text("client->text works");
 
                 } else if (type == WS_EVT_DISCONNECT) {
 
                 } else if (type == WS_EVT_DATA) {
+                    String body = "";
+                    for (size_t i = 0; i < len; i++) {
+                        body += (char)data[i];
+                    }
+                    for(auto readCallback:readCallbackList)
+                        readCallback((uint8_t*)body.c_str());
                     
                 }
             });

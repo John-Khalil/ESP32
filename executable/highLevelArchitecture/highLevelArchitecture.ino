@@ -57,6 +57,7 @@ void setup(){
 
 	webServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
+		webServer.send(data);
 		webServer.httpSetResponse(data);
 	});
 	
