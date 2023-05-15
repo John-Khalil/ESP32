@@ -10,6 +10,8 @@
 #include "custom/webService.h"
 #include"custom/fetch.h"
 
+#include "custom/ledMatrix.h"
+
 #include <iostream>
 
 
@@ -18,7 +20,7 @@
 
 utils::highLevelMemory MEMORY(20000);
 
-web::service webServer(80,"/");
+// web::service webServer(80,"/");
 
 void setup(){
     Serial.begin(115200);
@@ -55,16 +57,32 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	webServer.onData([&](uint8_t *data){
-		console.log("data >> ",data);
-		webServer.send(data);
-		webServer.httpSetResponse(data);
-	});
+	// webServer.onData([&](uint8_t *data){
+	// 	console.log("data >> ",data);
+	// 	webServer.send(data);
+	// 	webServer.httpSetResponse(data);
+	// });
+
+	_PM(12,OUTPUT);
+	_PM(27,OUTPUT);
+	_PM(14,OUTPUT);
+
+
+	// async({
+	// 	_PM(12,OUTPUT);
+	// 	_PM(27,OUTPUT);
+	// 	_PM(14,OUTPUT);
+	// 	while(1){
+	// 		renderText((uint8_t*)"TEST",1);
+	// 		_delay_ms(1);
+	// 	}
+	// });
 	
 
 }
 
 void loop(){
+	renderText((uint8_t*)" STILL WORKS ",30);
 	// ws.cleanupClients();
 }
 

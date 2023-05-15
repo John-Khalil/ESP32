@@ -1,5 +1,7 @@
 #include <stdint.h>
-#include "matrixChars.c"
+#include "matrixChars.h"
+#include "platform.h"
+#include "consoleLogger.h"
 
 unsigned char nullText[5]="null";
 unsigned char *displayText=nullText;
@@ -14,7 +16,7 @@ unsigned char sourceMappper(unsigned short address){
 }
 
 
-#define microSec(_timeInUs)
+// #define microSec(_timeInUs) //_delay_us(_timeInUs)
 
 #define MARAWAN_ALGORITHM(BIT_INDEX,LENGTH) (((((BIT_INDEX%8)+(LENGTH%8)>8)))||(((BIT_INDEX%8)!=0)&&(!(LENGTH%8))))
 
@@ -37,9 +39,9 @@ uint64_t outOfMemory(unsigned long bitIndex,unsigned char returnLength){        
 }
 
 
-#define SpiClk(_ClkPin)
-#define SpiData(_DataPin)
-#define SpiLatch(_LatchPin)
+#define SpiClk(_ClkPin)     _DW(12,(_ClkPin!=0))
+#define SpiData(_DataPin)   _DW(27,(_DataPin!=0))
+#define SpiLatch(_LatchPin) _DW(14,(_LatchPin!=0))
 
 const float SpiClkSpeed=(1e6f/1000000)/2;
 
@@ -129,6 +131,7 @@ unsigned char *renderText(unsigned char *textToDisplay,unsigned short frameTime)
     while(textToDisplay[displayTextLength++]);
     --displayTextLength;
 
+
     unsigned short textLengthBits=displayTextLength*8;
     unsigned short colomCounter=0;
     while(textLengthBits--){
@@ -142,8 +145,6 @@ unsigned char *renderText(unsigned char *textToDisplay,unsigned short frameTime)
 
         colomCounter++;
     }
-
-    
 
     return textToDisplay;
 }
