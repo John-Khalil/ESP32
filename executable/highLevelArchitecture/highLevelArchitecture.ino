@@ -13,6 +13,7 @@
 #include "custom/ledMatrix.h"
 
 #include <iostream>
+#include <HCSR04.h>
 
 
 
@@ -20,9 +21,15 @@
 
 utils::highLevelMemory MEMORY(20000);
 
-// web::service webServer(80,"/");
+UltraSonicDistanceSensor distanceSensor(26, 25); 
+
+std::string displayMessage="";
+
+web::service webServer;
 
 void setup(){
+	// esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
+    delayAutoCalibrate();
     Serial.begin(115200);
 	EEPROM_UTILS::eepromInit();
     console.addConsole([&](unsigned char *cosnoleData,unsigned char autoNLCR){
@@ -57,15 +64,19 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	// webServer.onData([&](uint8_t *data){
-	// 	console.log("data >> ",data);
-	// 	webServer.send(data);
-	// 	webServer.httpSetResponse(data);
-	// });
+	webServer.onData([&](uint8_t *data){
+		console.log("data >> ",data);
+		displayMessage=(char*)constJson((uint8_t*)"msg",data);
+		// webServer.send(data);
+		// webServer.httpSetResponse(data);
+	});
 
 	_PM(12,OUTPUT);
 	_PM(27,OUTPUT);
 	_PM(14,OUTPUT);
+
+	_PM(25,INPUT);
+	_PM(26,OUTPUT);
 
 
 	// async({
@@ -77,12 +88,33 @@ void setup(){
 	// 		_delay_ms(1);
 	// 	}
 	// });
+
+	// async({
+	// 	while(1){
+	// 		Serial.println(distanceSensor.measureDistanceCm());
+	// 		_delay_ms(1000);
+	// 	}
+	// });
+
+	async({
+		_delay_ms(10000);
+		console.log("starting service");
+		webServer.setup(80,"/");
+
+	});
 	
 
 }
 
 void loop(){
-	renderText((uint8_t*)" STILL WORKS ",30);
+	webServer.httpSetResponse(JSON_OBJECT(JSON_KEYS("distance"),JSON_VALUES(inttostring(distanceSensor.measureDistanceCm()))));
+	webServer.send(JSON_OBJECT(JSON_KEYS("distance"),JSON_VALUES(inttostring(distanceSensor.measureDistanceCm()))));
+	if(distanceSensor.measureDistanceCm()<50)
+		renderText($(" ",displayMessage.c_str()," "),30);
+	else
+		_delay_ms(5000);
+	// Serial.println(distanceSensor.measureDistanceCm());
+	// 		_delay_ms(100);
 	// ws.cleanupClients();
 }
 

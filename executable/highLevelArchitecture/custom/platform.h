@@ -4,6 +4,7 @@
 #define PLATFORM_H
 
 #ifdef ESP32
+    #include "esp_task_wdt.h"
     
     volatile uint32_t *_outputRegisterLow=((volatile uint32_t*)0X3FF44004UL);
     volatile uint32_t *_outputRegisterHigh=((volatile uint32_t*)0X3FF44010UL);
