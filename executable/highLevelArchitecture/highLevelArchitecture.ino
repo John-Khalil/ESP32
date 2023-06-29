@@ -59,7 +59,7 @@ void setup(){
 		WIFI_UTILS::accessPoint();
 	};
 
-	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
+	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V-2");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
@@ -70,31 +70,6 @@ void setup(){
 		// webServer.send(data);
 		// webServer.httpSetResponse(data);
 	});
-
-	_PM(12,OUTPUT);
-	_PM(27,OUTPUT);
-	_PM(14,OUTPUT);
-
-	_PM(25,INPUT);
-	_PM(26,OUTPUT);
-
-
-	// async({
-	// 	_PM(12,OUTPUT);
-	// 	_PM(27,OUTPUT);
-	// 	_PM(14,OUTPUT);
-	// 	while(1){
-	// 		renderText((uint8_t*)"TEST",1);
-	// 		_delay_ms(1);
-	// 	}
-	// });
-
-	// async({
-	// 	while(1){
-	// 		Serial.println(distanceSensor.measureDistanceCm());
-	// 		_delay_ms(1000);
-	// 	}
-	// });
 
 	async({
 		_delay_ms(10000);
@@ -107,14 +82,6 @@ void setup(){
 }
 
 void loop(){
-	webServer.httpSetResponse(JSON_OBJECT(JSON_KEYS("distance"),JSON_VALUES(inttostring(distanceSensor.measureDistanceCm()))));
-	webServer.send(JSON_OBJECT(JSON_KEYS("distance"),JSON_VALUES(inttostring(distanceSensor.measureDistanceCm()))));
-	if(distanceSensor.measureDistanceCm()<50)
-		renderText($(" ",displayMessage.c_str()," "),30);
-	else
-		_delay_ms(5000);
-	// Serial.println(distanceSensor.measureDistanceCm());
-	// 		_delay_ms(100);
 	// ws.cleanupClients();
 }
 

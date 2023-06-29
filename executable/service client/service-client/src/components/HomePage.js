@@ -5,7 +5,7 @@ export default function HomePage() {
 
   const displayTextRef=useRef(null);
 
-  const socket = new WebSocket(`ws://192.168.1.11:80/`);
+  const socket = new WebSocket(`ws://192.168.1.12:80/`);
 
   socket.addEventListener('open',()=>{
     console.log("CONNECTED");
