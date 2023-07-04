@@ -615,7 +615,7 @@ unsigned char JSON(unsigned char *requestedJSON,unsigned char *jsonString,unsign
 
 
 
-#define JSON_OBJECT_SIZE 101
+#define JSON_OBJECT_SIZE 1024
 // unsigned char UNDEFINED[10]="undefined";
 unsigned char JSON_OBJECT_FOUND[JSON_OBJECT_SIZE]="";
 
