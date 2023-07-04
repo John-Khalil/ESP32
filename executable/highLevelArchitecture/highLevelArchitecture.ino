@@ -10,6 +10,8 @@
 #include "custom/webService.h"
 #include"custom/fetch.h"
 
+#include "custom/operaotors.h"
+
 #include "custom/ledMatrix.h"
 
 #include <iostream>
@@ -20,9 +22,7 @@
 
 utils::highLevelMemory MEMORY(20000);
 
-UltraSonicDistanceSensor distanceSensor(26, 25); 
 
-std::string displayMessage="";
 
 web::service webServer;
 
@@ -58,14 +58,13 @@ void setup(){
 		WIFI_UTILS::accessPoint();
 	};
 
-	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V-2");					//^ for testing only
+	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
 	webServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
-		displayMessage=(char*)constJson((uint8_t*)"msg",data);
 		// webServer.send(data);
 		// webServer.httpSetResponse(data);
 	});
@@ -77,6 +76,7 @@ void setup(){
 
 	});
 	
+	threadRunner((uint8_t*)"this is a test");
 
 }
 
