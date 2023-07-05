@@ -20,7 +20,7 @@
 
 // using namespace std;
 
-utils::highLevelMemory MEMORY(20000);
+utils::highLevelMemory MEMORY(5000);
 
 
 
@@ -75,8 +75,10 @@ void setup(){
 		webServer.setup(80,"/");
 
 	});
+
+	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));
 	
-	threadRunner((uint8_t*)"this is a test");
+	threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"])));
 
 }
 

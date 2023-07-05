@@ -22,7 +22,7 @@
 
 
 static utils::highLevelMemory operatorsMemory(20000);
-static utils::highLevelMemory BUFFER(1000);
+static utils::highLevelMemory BUFFER(5000);
 
 const char *OPERATOR="OPERATOR";
 const char *DATA="DATA";
@@ -43,24 +43,38 @@ const char *STORAGE_WRITE=      "STORAGE_WRITE";
 const char *STORAGE_READ=       "STORAGE_READ";
 
 void operatorsSetup(void){
-    
+
+    operatorsMemory["readTest"]<<[&](void){
+        operatorsMemory["readTest"]="the current value";
+
+        console.log("operatorsMemory[\"readTest\"]",(uint8_t*)operatorsMemory["readTest"]);
+
+        return;
+    };
+
+    operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
+        console.log(operatorData);
+
+        return;
+    };
     return;
 }
 
 uint8_t *threadRunner(uint8_t *operatorObject){
+    console.log("threadRunner >> ",operatorObject);
+
+    static uint32_t recursionDepth;
     static uint8_t firstRun;
     if(!firstRun){
         operatorsSetup();
         firstRun=1;
     }
     
-    if(json(OPERATOR,operatorObject)==UNDEFINED){
-        console.log("test threadRunner >> ",operatorObject);
+    if(json(OPERATOR,operatorObject)==UNDEFINED)
         return operatorObject;
-    }
 
-    // std::string operatorData=(char*)json(DATA,operatorObject);
-    operatorsMemory[json(OPERATOR,operatorObject)]=threadRunner(json(DATA,operatorObject));
+    BUFFER["operatorData"]=json(DATA,operatorObject);
+    operatorsMemory[json(OPERATOR,operatorObject)]=threadRunner(BUFFER["operatorData"]);
 
 
     return operatorsMemory[json(OPERATOR,operatorObject)];
