@@ -45,15 +45,12 @@ const char *STORAGE_READ=       "STORAGE_READ";
 void operatorsSetup(void){
 
     operatorsMemory["readTest"]<<[&](void){
-        operatorsMemory["readTest"]="the current value";
-
-        console.log("operatorsMemory[\"readTest\"]",(uint8_t*)operatorsMemory["readTest"]);
-
+        operatorsMemory["readTest"]="readTest !!!";
         return;
     };
 
     operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
-        console.log(operatorData);
+        console.log("->",operatorData);
 
         return;
     };
@@ -61,22 +58,29 @@ void operatorsSetup(void){
 }
 
 uint8_t *threadRunner(uint8_t *operatorObject){
-    console.log("threadRunner >> ",operatorObject);
+    // console.log("threadRunner >> ",operatorObject);
 
-    static uint32_t recursionDepth;
+    static uint8_t recursionDepth;
     static uint8_t firstRun;
     if(!firstRun){
         operatorsSetup();
         firstRun=1;
     }
-    
+
     if(json(OPERATOR,operatorObject)==UNDEFINED)
         return operatorObject;
+    recursionDepth++;
 
-    BUFFER["operatorData"]=json(DATA,operatorObject);
-    operatorsMemory[json(OPERATOR,operatorObject)]=threadRunner(BUFFER["operatorData"]);
+    BUFFER[recursionDepth]=json(DATA,operatorObject);
+
+    uint8_t *bufferPtr=threadRunner(BUFFER[recursionDepth]);
+    BUFFER[recursionDepth]=bufferPtr;
+
+    // BUFFER[recursionDepth]=threadRunner(BUFFER[recursionDepth]);
+    operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
 
 
+    recursionDepth--;
     return operatorsMemory[json(OPERATOR,operatorObject)];
 }
 
