@@ -23,6 +23,7 @@
 
 // static utils::highLevelMemory operatorsMemory(20000);
 static utils::highLevelMemory BUFFER(5000);
+static utils::highLevelMemory RETURN_BUFFER(5000);
 
 const char *OPERATOR="OPERATOR";
 const char *DATA="DATA";
@@ -57,7 +58,7 @@ const char *STORAGE_READ=       "STORAGE_READ";
 //     return;
 // }
 
-uint8_t *threadRunner(uint8_t *operatorObject){
+uint8_t* threadRunner(uint8_t *operatorObject){
     // console.log("threadRunner >> ",operatorObject);
 
     utils::highLevelMemory operatorsMemory(5000);
@@ -96,12 +97,13 @@ uint8_t *threadRunner(uint8_t *operatorObject){
 
     // BUFFER[recursionDepth]=threadRunner(BUFFER[recursionDepth]);
     operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
+    RETURN_BUFFER[recursionDepth]=operatorsMemory[json(OPERATOR,operatorObject)];
 
+    console.log("threadRunner >> ",(uint8_t*)RETURN_BUFFER[recursionDepth]);
 
-    bufferPtr=operatorsMemory[json(OPERATOR,operatorObject)];
-    BUFFER[recursionDepth]=bufferPtr;
-
-    return BUFFER[recursionDepth--];
+    // recursionDepth--;
+    // return operatorsMemory[json(OPERATOR,operatorObject)];
+    return RETURN_BUFFER[recursionDepth--];
 }
 
 
