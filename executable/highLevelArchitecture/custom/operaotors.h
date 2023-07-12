@@ -21,7 +21,7 @@
 #include <type_traits>
 
 
-static utils::highLevelMemory operatorsMemory(20000);
+// static utils::highLevelMemory operatorsMemory(20000);
 static utils::highLevelMemory BUFFER(5000);
 
 const char *OPERATOR="OPERATOR";
@@ -42,30 +42,48 @@ const char *CLOCK_OUTPUT=       "CLOCK_OUTPUT";
 const char *STORAGE_WRITE=      "STORAGE_WRITE";
 const char *STORAGE_READ=       "STORAGE_READ";
 
-void operatorsSetup(void){
+// void operatorsSetup(void){
 
-    operatorsMemory["readTest"]<<[&](void){
-        operatorsMemory["readTest"]="readTest !!!";
-        return;
-    };
+//     operatorsMemory["readTest"]<<[&](void){
+//         operatorsMemory["readTest"]="readTest !!!";
+//         return;
+//     };
 
-    operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
-        console.log("->",operatorData);
+//     operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
+//         console.log("->",operatorData);
 
-        return;
-    };
-    return;
-}
+//         return;
+//     };
+//     return;
+// }
 
 uint8_t *threadRunner(uint8_t *operatorObject){
     // console.log("threadRunner >> ",operatorObject);
 
+    utils::highLevelMemory operatorsMemory(5000);
+
+    ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+        
+        operatorsMemoryCallbacks["readTest"]<<[&](void){
+            operatorsMemoryCallbacks["readTest"]="readTest !!!";
+            return;
+        };
+
+        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
+            console.log("->",operatorData);
+
+            return;
+        };
+
+        return;
+    })(operatorsMemory);
+
     static uint8_t recursionDepth;
-    static uint8_t firstRun;
-    if(!firstRun){
-        operatorsSetup();
-        firstRun=1;
-    }
+    // static uint8_t firstRun;
+    // if(!firstRun){
+    //     operatorsSetup();
+    //     firstRun=1;
+    // }
 
     if(json(OPERATOR,operatorObject)==UNDEFINED)
         return operatorObject;
@@ -80,8 +98,10 @@ uint8_t *threadRunner(uint8_t *operatorObject){
     operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
 
 
-    recursionDepth--;
-    return operatorsMemory[json(OPERATOR,operatorObject)];
+    bufferPtr=operatorsMemory[json(OPERATOR,operatorObject)];
+    BUFFER[recursionDepth]=bufferPtr;
+
+    return BUFFER[recursionDepth--];
 }
 
 
