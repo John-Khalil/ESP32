@@ -99,7 +99,7 @@ uint8_t* threadRunner(uint8_t *operatorObject){
     operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
     RETURN_BUFFER[recursionDepth]=operatorsMemory[json(OPERATOR,operatorObject)];
 
-    console.log("threadRunner >> ",(uint8_t*)RETURN_BUFFER[recursionDepth]);
+    // console.log("threadRunner >> ",(uint8_t*)RETURN_BUFFER[recursionDepth]);
 
     // recursionDepth--;
     // return operatorsMemory[json(OPERATOR,operatorObject)];
