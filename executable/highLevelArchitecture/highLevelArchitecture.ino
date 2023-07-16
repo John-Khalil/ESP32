@@ -78,7 +78,15 @@ void setup(){
 
 	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));
 	
-	threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"])));
+	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
+	MEMORY["BUFFER"]=testPtr;
+
+	std::string testInstruction=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)MEMORY["BUFFER"])+std::string("]}");
+
+	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
+
+	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
+	threadRunner(testPtr);
 
 }
 

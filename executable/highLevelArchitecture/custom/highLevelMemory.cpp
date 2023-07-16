@@ -24,6 +24,14 @@ private:
         }
         return counter;
     }
+
+    unsigned char equalStrings(unsigned char *stringPointer1,unsigned char *stringPointer2){
+        unsigned short diffCounter;
+        if((diffCounter=stringCounter(stringPointer1))!=stringCounter(stringPointer2))
+            return 0;
+        while((stringPointer1[--diffCounter]==stringPointer2[diffCounter])&&diffCounter);
+        return (stringPointer1[diffCounter]==stringPointer2[diffCounter]);
+    }
     
     unsigned short CLR_LENGTH=0;									//this value will be reseted to zero after clearing the string/uint_8 pointer
     unsigned char * CLR(unsigned char *deletedString,unsigned short _CLR_LENGTH=0){
@@ -219,7 +227,8 @@ public:
 
                 newElement=memoryElement;
                 if(dataLength==memoryElement.length){
-                    _CS(CLR(memoryElement.physicalAddress),data);
+                    if(!equalStrings(memoryElement.physicalAddress,data))
+                        _CS(CLR(memoryElement.physicalAddress),data);
                 }
                 else{
                     shiftAddress(memoryElement).shiftAllocationTable(memoryElement).allocationTable.erase(allocationTable.begin() + (memoryElement.address.virtualAddress>>16));
