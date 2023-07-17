@@ -62,7 +62,7 @@ const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 // }
 
 uint8_t* threadRunner(uint8_t *operatorObject){
-    console.log("threadRunner >> ",operatorObject);
+    // console.log("threadRunner >> ",operatorObject);
 
     utils::highLevelMemory operatorsMemory(5000);
 
@@ -82,14 +82,15 @@ uint8_t* threadRunner(uint8_t *operatorObject){
         operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
             utils::highLevelMemory loopMemory(600);
 
-            console.log("operatorData --->> ",operatorData);
+            // console.log("LOOP --->> ",operatorData);
 
-            // loopMemory[LOOP_COUNTER]=json(LOOP_COUNTER,operatorData);
-            // uint32_t loopLimit=getInt32_t(threadRunner(loopMemory[LOOP_COUNTER]));
-            // uint16_t loopCounter=0;
-            // while(loopLimit--){
-            //     threadRunner(json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData));
-            // }
+            loopMemory[LOOP_COUNTER]=json(LOOP_COUNTER,operatorData);
+            uint32_t loopLimit=getInt32_t(threadRunner(loopMemory[LOOP_COUNTER]));
+            while(loopLimit--){
+                uint16_t loopCounter=0;
+                while((loopMemory[LOOP_ELEMENENTS]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
+                    threadRunner(loopMemory[LOOP_ELEMENENTS]);
+            }
 
             return;
         };
@@ -104,21 +105,18 @@ uint8_t* threadRunner(uint8_t *operatorObject){
     //     firstRun=1;
     // }
 
-    if(json(OPERATOR,operatorObject)==UNDEFINED){
-        console.log("manga found !! >> ",operatorObject);
+    if(json(OPERATOR,operatorObject)==UNDEFINED)
         return operatorObject;
-    }    
+
     recursionDepth++;
 
     BUFFER[recursionDepth]=json(DATA,operatorObject);
 
     uint8_t *bufferPtr=threadRunner(BUFFER[recursionDepth]);
-    console.log("+++++++manga +++++++++++ >> ",(char*)bufferPtr);
     // if(BUFFER[recursionDepth]!=bufferPtr)
         BUFFER[recursionDepth]=bufferPtr;
 
     // BUFFER[recursionDepth]=threadRunner(BUFFER[recursionDepth]);
-    console.log("-----------manga ---------- >> ",(char*)bufferPtr);
     operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
     RETURN_BUFFER[recursionDepth]=operatorsMemory[json(OPERATOR,operatorObject)];
 
