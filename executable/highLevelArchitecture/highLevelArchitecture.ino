@@ -82,7 +82,8 @@ void setup(){
 	MEMORY["BUFFER"]=testPtr;
 
 	std::string testInstruction=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)MEMORY["BUFFER"])+std::string("]}");
-	std::string testInstruction2=(char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str()));
+	// (char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str()))
+	std::string testInstruction2=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())))+std::string("]}");;
 
 	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 
