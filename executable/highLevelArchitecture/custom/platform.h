@@ -5,6 +5,10 @@
 
 #ifdef ESP32
     #include "esp_task_wdt.h"
+
+    #include <LITTLEFS.h>
+    
+    #define fileSystem LITTLEFS
     
     volatile uint32_t *_outputRegisterLow=((volatile uint32_t*)0X3FF44004UL);
     volatile uint32_t *_outputRegisterHigh=((volatile uint32_t*)0X3FF44010UL);
@@ -92,11 +96,20 @@
 
 
 
+
+
 #endif
 #ifdef ESP8266
-    #include "osapi.h"
+    // #include "osapi.h"
+    #include <osapi.h>
+
+    #include <LittleFS.h>
+
+    #define fileSystem LittleFS 
 
     #define _delay_ms delay
+
+    #define delayAutoCalibrate()
 
     void esp8266StartTaskHandler(void){
         static uint8_t firstRun;
@@ -110,7 +123,8 @@
     typedef void (*func)(void*);
 
 
-    #define async(asyncThread)  system_os_task((func)([&](void *arg){asyncThread;esp8266StartTaskHandler();}),0,NULL);
+    // #define async(asyncThread)  system_os_task((func)([&](void *arg){asyncThread;esp8266StartTaskHandler();}),0,NULL);
+    #define async(asyncThread)  
 
 #endif
 

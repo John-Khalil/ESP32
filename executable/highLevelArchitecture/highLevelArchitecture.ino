@@ -10,11 +10,15 @@
 #include "custom/webService.h"
 #include"custom/fetch.h"
 
+#include "custom/jsonParser.h"
+
 #include "custom/operaotors.h"
 
-#include "custom/ledMatrix.h"
+// #include "custom/ledMatrix.h"
 
 #include <iostream>
+
+
 
 
 
@@ -27,6 +31,7 @@ utils::highLevelMemory MEMORY(5000);
 web::service webServer;
 
 void setup(){
+	uint8_t* testPTR=$json("{}")["manag"];
 	// esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
     delayAutoCalibrate();
     Serial.begin(115200);

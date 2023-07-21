@@ -487,7 +487,7 @@ unsigned char *skipObjectJSON(unsigned char *jsonString){
 }
 
 unsigned char *JSON_OBJECT_FOUND_LOCATION=UNDEFINED;
-unsigned char JSON(unsigned char *requestedJSON,unsigned char *jsonString,unsigned char *objectString){
+static unsigned char JSON(unsigned char *requestedJSON,unsigned char *jsonString,unsigned char *objectString){
 	#define OBJECT_STRING_MAX_LENGTH 35
 	unsigned char objectBuffer[OBJECT_STRING_MAX_LENGTH]="";
 	unsigned short jsonArrayIndex=-1;
@@ -611,6 +611,10 @@ unsigned char JSON(unsigned char *requestedJSON,unsigned char *jsonString,unsign
 		objectString++;
 	}
 	return 1;
+}
+
+extern unsigned char EXTERNJSONFUNCTIONCALL(unsigned char *requestedJSON,unsigned char *jsonString,unsigned char *objectString){
+	return JSON(requestedJSON,jsonString,objectString);
 }
 
 
