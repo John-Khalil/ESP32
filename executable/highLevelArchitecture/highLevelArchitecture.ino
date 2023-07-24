@@ -99,13 +99,20 @@ void setup(){
 
 
 	// std::make_shared<$json>(testInstruction2);
-	auto test0=jsonParser(testInstruction2)["LOOP_COUNTER"];
-	auto test2=jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"];
-	auto test1=jsonParser(testInstruction2)["LOOP_ELEMENENTS"];
+	// auto test0=jsonParser(testInstruction2)["LOOP_COUNTER"];
+	// auto test2=jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"];
+	// auto test1=jsonParser(testInstruction2)["LOOP_ELEMENENTS"];
+
+	auto testCall=[&](uint8_t *param1,uint8_t *param2,uint8_t *param3){
+		console.log("test0 >> ",param1);
+		console.log("test0 >> ",param2);
+		console.log("test0 >> ",param3);
+		return;
+	};
 	
-	console.log("test0 >> ",(uint8_t*)test0);
-	console.log("test1 >> ",(uint8_t*)test1);
-	console.log("test2 >> ",(uint8_t*)test2);
+
+	testCall(jsonParser(testInstruction2)["LOOP_COUNTER"],jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"],jsonParser(testInstruction2)["LOOP_ELEMENENTS"]);
+	
 
 	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 
