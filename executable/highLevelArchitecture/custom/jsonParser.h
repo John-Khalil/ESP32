@@ -22,9 +22,9 @@
 
 
 
-class $json{
+class jsonParser{
     private:
-        uint8_t objectBuffer[1024]={};
+        uint8_t objectBuffer[300]={};
         uint8_t *mainJsonObject=nullptr;
         uint8_t objectNotFound=1;
 
@@ -71,20 +71,20 @@ class $json{
             return objectBuffer;
         }
 
-        $json &operator[](uint8_t* jsonKey){
+        jsonParser &operator[](uint8_t* jsonKey){
             if(mainJsonObject!=nullptr)
                 jsonParse(jsonKey,mainJsonObject);
             return (*this);
         }
 
 
-        $json &operator[](char* jsonKey){
+        jsonParser &operator[](char* jsonKey){
             if(mainJsonObject!=nullptr)
                 jsonParse((uint8_t*)jsonKey,mainJsonObject);
             return (*this);
         }
 
-        $json &operator[](std::string jsonKey){
+        jsonParser &operator[](std::string jsonKey){
             if(mainJsonObject!=nullptr)
                 jsonParse((uint8_t*)jsonKey.c_str(),mainJsonObject);
             return (*this);
@@ -96,15 +96,15 @@ class $json{
 
         
 
-        $json(uint8_t *jsonObject){
+        jsonParser(uint8_t *jsonObject){
             mainJsonObject=jsonObject;
         }
 
-        $json(char *jsonObject){
+        jsonParser(char *jsonObject){
             mainJsonObject=(uint8_t *)jsonObject;
         }
 
-        $json(std::string jsonObject){
+        jsonParser(std::string jsonObject){
             mainJsonObject=(uint8_t *)jsonObject.c_str();
         }
 };
