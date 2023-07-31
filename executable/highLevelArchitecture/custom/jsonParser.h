@@ -67,9 +67,40 @@ class jsonParser{
             return UNDEFINED;
         }
 
+
+
+
         operator uint8_t*(){
             return objectBuffer;
         }
+
+        operator uint8_t (){
+            return getInt32_t(objectBuffer);
+        }
+
+        operator int8_t (){
+            return getInt32_t(objectBuffer);
+        }
+        
+        operator uint16_t (){
+            return getInt32_t(objectBuffer);
+        }
+
+        operator int16_t (){
+            return getInt32_t(objectBuffer);
+        }
+
+        operator uint32_t (){
+            return getInt32_t(objectBuffer);
+        }
+
+        operator int32_t (){
+            return getInt32_t(objectBuffer);
+        }
+
+
+
+
 
         jsonParser &operator[](uint8_t* jsonKey){
             if(mainJsonObject!=nullptr)
