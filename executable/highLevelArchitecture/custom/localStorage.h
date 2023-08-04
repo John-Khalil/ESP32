@@ -21,6 +21,9 @@
 #include <type_traits>
 #include <map>
 
+#define FILE_PATH "/localStorage.txt"
+#define LOCAL_STORAGE_BUFFER 5000
+
 class localStorage{
 
     static void localStorageInit(void){
@@ -34,13 +37,10 @@ class localStorage{
 
     template <typename Key, typename Value>
     static std::size_t getMapMemoryFootprint(const std::map<Key, Value>& myMap) {
-        std::size_t size = sizeof(myMap); // Size of the map object itself
-
-        // Add the size of the elements (keys and values) stored in the map
+        std::size_t size = sizeof(myMap);
         for (const auto& pair : myMap) {
             size += sizeof(pair.first) + sizeof(pair.second);
         }
-
         return size;
     }
 
@@ -49,12 +49,29 @@ class localStorage{
         std::map<std::string,std::string>localStorageTable;
     }localStorageMap;
 
-
-
     static void set(std::string key,std::string value){
         localStorage::localStorageInit();
+        auto localStorageFile=fileSystem.open(FILE_PATH,"w");
+        uint8_t localStorageBuffer[LOCAL_STORAGE_BUFFER]={};
+        localStorage::localStorageMap.mapFootprint=(!localStorageFile)?localStorage::localStorageMap.mapFootprint:([&](void){
+            for(auto &localStorageElement:localStorageBuffer){
+                if(!localStorageFile.available())
+                    break;
+                localStorageElement=localStorageFile.read();
+            }
+            return localStorageBuffer;
+        })();
+
         localStorage::localStorageMap.localStorageTable[key]=value;
+
+        size_t localStorageTableSize=localStorage::getMapMemoryFootprint(localStorage::localStorageMap.localStorageTable);
+        uint32_t footPrintCounter=0;
+        while(localStorageTableSize--){
+            localStorageFile.write(localStorage::localStorageMap.mapFootprint[footPrintCounter++]);
+        }
         
+        localStorageFile.close();
+        return;
     }
 
 };
