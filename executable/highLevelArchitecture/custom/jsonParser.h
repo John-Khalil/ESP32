@@ -91,7 +91,7 @@ class jsonParser{
         // }
 
         // operator uint32_t (){
-        //     return getInt32_t(objectBuffer);
+        //     return getInt32_t(objectBuffer);-
         // }
 
         // operator int32_t (){
