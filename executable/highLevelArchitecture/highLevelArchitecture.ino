@@ -91,6 +91,10 @@ void setup(){
 	});
 
 	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));
+
+	// console.log((char*)MEMORY["BUFFER"]);
+	// MEMORY["BUFFER"]=editJson((char*)MEMORY["BUFFER"],"OPERATOR","\"test\"");
+	// console.log((char*)MEMORY["BUFFER"]);
 	
 	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
 	MEMORY["BUFFER"]=testPtr;

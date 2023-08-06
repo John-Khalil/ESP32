@@ -1003,7 +1003,7 @@ std::string editJson(std::string editObject,std::string keyString,std::string ne
 	uint8_t *userJsonObject=(uint8_t*)editObject.c_str();
 	uint8_t *previousValue=constJson_orgStr(keyString.c_str(),userJsonObject);
 	if(previousValue!=UNDEFINED){
-		uint8_t *userJsonObjectSlice=previousValue+stringCounter(previousValue)+1;
+		uint8_t *userJsonObjectSlice=previousValue+stringCounter(previousValue);
 		CLR(previousValue);
 		constJsonReset();
 		return(std::string((char*)userJsonObject)+newValue+std::string((char*)userJsonObjectSlice));
