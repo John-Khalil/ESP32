@@ -1009,7 +1009,7 @@ std::string editJson(std::string editObject,std::string keyString,std::string ne
 		return(std::string((char*)userJsonObject)+newValue+std::string((char*)userJsonObjectSlice));
 	}
 
-	return std::string((char*)addToObject(userObjectStr,newKey,newValue));
+	return std::string((char*)addToObject(userJsonObject,keyString,newValue));
 
 
 
