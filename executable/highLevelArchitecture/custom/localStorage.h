@@ -62,6 +62,9 @@ class LOCAL_STORAGE{
         union{
             uint8_t *mapFootprint;
             std::map<std::string,std::string>localStorageTable;
+            (){
+
+            }
         }localStorageMap;
 
         void set(std::string key,std::string value){
@@ -108,6 +111,8 @@ class LOCAL_STORAGE{
 
             return localStorageMap.localStorageTable[key];
         }
+
+        
 
         LOCAL_STORAGE(){
 

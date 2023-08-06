@@ -7,6 +7,7 @@
 #include <functional>
 #include <vector>
 #include <memory>
+#include <string>
 
 
 
@@ -811,12 +812,30 @@ unsigned char *_constJson(unsigned char *requestedJSON,unsigned char *jsonString
 	return JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND;
 }
 
+unsigned char *_constJson_orgStr(unsigned char *requestedJSON,unsigned char *jsonString){
+	// static unsigned char lastByteRemoved;
+	LAST_CONST_JSON_OBJECT=jsonString;
+	if(lastByteRemoved&&(JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR!=NULL)&&(!(*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR)))
+		*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved;		//lucky for us cpp support pointer arthematic
+	unsigned char objectDefined=JSON_LOW_MEMORY_USAGE(requestedJSON,jsonString);
+	while(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x20)JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND++;		//when you make a simple algorithm it really pays off
+	// JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR-=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x22);			//when you make a simple algorithm it really pays off
+	// JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND+=(*JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND==0x22);			//when you make a simple algorithm it really pays off
+	lastByteRemoved=*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR;
+	*JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=0;
+	if(!objectDefined)
+		return UNDEFINED;
+	return JSON_LOW_MEMORY_USAGE_JSON_OBJECT_FOUND;
+}
+
 #define clearConstJsonBuffer() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=1; CLR(LAST_CONST_JSON_OBJECT);
 
 #define constJsonReset() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=lastByteRemoved
 #define constJsonResetUndo() *JSON_LOW_MEMORY_USAGE_DEAD_END_OF_STR=0
 
 #define constJson(REQUESTED_JSON,JSON_STRING) _constJson((unsigned char*)REQUESTED_JSON,JSON_STRING)
+
+#define constJson_orgStr(REQUESTED_JSON,JSON_STRING) _constJson_orgStr((unsigned char*)REQUESTED_JSON,JSON_STRING)
 
 unsigned char *constJsonValidate(unsigned char *jsonString){
 	constJsonReset();
@@ -971,6 +990,35 @@ unsigned char **jsonObjectValues(T value,Types... values){
 #define JSON_KEYS jsonObjectKeys
 #define JSON_VALUES jsonObjectValues
 #define JSON_OBJECT makeJsonObject
+
+
+
+uint8_t *addToObject(uint8_t* userObjectStr,std::string newKey,std::string newValue){
+  std::string userObject=(char*)userObjectStr;
+  userObject[userObject.length()-1]=',';    // replace '}' with ',' 0x2c
+  return (uint8_t*)(userObject+="\""+newKey+"\""+":"+"\""+newValue+"\"}").c_str();
+}
+
+std::string editJson(std::string editObject,std::string keyString,std::string newValue){
+	uint8_t *userJsonObject=(uint8_t*)editObject.c_str();
+	uint8_t *previousValue=constJson_orgStr(keyString.c_str(),userJsonObject);
+	if(previousValue!=UNDEFINED){
+		uint8_t *userJsonObjectSlice=previousValue+stringCounter(previousValue)+1;
+		CLR(previousValue);
+		constJsonReset();
+		return(std::string((char*)userJsonObject)+newValue+std::string((char*)userJsonObjectSlice));
+	}
+
+	return std::string((char*)addToObject(userObjectStr,newKey,newValue));
+
+
+
+}
+
+
+
+
+
 
 
 

@@ -72,11 +72,6 @@ void setup(){
 	};
 
 	
-	console.log("test localStorage >> ",localStorage.get("test").c_str());
-	// localStorage::set("test","123");
-	console.log("test localStorage >> ",localStorage.get("test").c_str());
-
-
 	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
