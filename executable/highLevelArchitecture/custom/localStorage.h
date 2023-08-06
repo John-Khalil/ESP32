@@ -59,60 +59,60 @@ class LOCAL_STORAGE{
         // LOCAL_STORAGE::localStorageMap_t localStorageMap;
 
         
-        union{
-            uint8_t *mapFootprint;
-            std::map<std::string,std::string>localStorageTable;
-            (){
+        // union{
+        //     uint8_t *mapFootprint;
+        //     std::map<std::string,std::string>localStorageTable;
+        //     (){
 
-            }
-        }localStorageMap;
+        //     }
+        // }localStorageMap;
 
-        void set(std::string key,std::string value){
+        // void set(std::string key,std::string value){
 
-            LOCAL_STORAGE::localStorageInit();
-            auto localStorageFile=fileSystem.open(FILE_PATH,"w");
-            uint8_t localStorageBuffer[LOCAL_STORAGE_BUFFER]={};
+        //     LOCAL_STORAGE::localStorageInit();
+        //     auto localStorageFile=fileSystem.open(FILE_PATH,"w");
+        //     uint8_t localStorageBuffer[LOCAL_STORAGE_BUFFER]={};
 
-            localStorageMap.mapFootprint=(!localStorageFile)?localStorageMap.mapFootprint:([&](void){
-                for(auto &localStorageElement:localStorageBuffer){
-                    if(!localStorageFile.available())
-                        break;
-                    localStorageElement=localStorageFile.read();
-                }
-                return localStorageBuffer;
-            })();
+        //     localStorageMap.mapFootprint=(!localStorageFile)?localStorageMap.mapFootprint:([&](void){
+        //         for(auto &localStorageElement:localStorageBuffer){
+        //             if(!localStorageFile.available())
+        //                 break;
+        //             localStorageElement=localStorageFile.read();
+        //         }
+        //         return localStorageBuffer;
+        //     })();
 
-            localStorageMap.localStorageTable[key]=value;
+        //     localStorageMap.localStorageTable[key]=value;
 
-            size_t localStorageTableSize=getMapMemoryFootprint(localStorageMap.localStorageTable);
-            uint32_t footPrintCounter=0;
-            while(localStorageTableSize--){
-                localStorageFile.write(localStorageMap.mapFootprint[footPrintCounter++]);
-            }
+        //     size_t localStorageTableSize=getMapMemoryFootprint(localStorageMap.localStorageTable);
+        //     uint32_t footPrintCounter=0;
+        //     while(localStorageTableSize--){
+        //         localStorageFile.write(localStorageMap.mapFootprint[footPrintCounter++]);
+        //     }
             
-            localStorageFile.close();
-            return;
-        }
+        //     localStorageFile.close();
+        //     return;
+        // }
 
-        std::string get(std::string key){
+        // std::string get(std::string key){
 
-            localStorageInit();
-            auto localStorageFile=fileSystem.open(FILE_PATH,"w");
-            uint8_t localStorageBuffer[LOCAL_STORAGE_BUFFER]={};
+        //     localStorageInit();
+        //     auto localStorageFile=fileSystem.open(FILE_PATH,"w");
+        //     uint8_t localStorageBuffer[LOCAL_STORAGE_BUFFER]={};
             
-            // localStorageMap.mapFootprint=(!localStorageFile)?localStorageMap.mapFootprint:([&](void){
-            //     for(auto &localStorageElement:localStorageBuffer){
-            //         if(!localStorageFile.available())
-            //             break;
-            //         localStorageElement=localStorageFile.read();
-            //     }
-            //     return localStorageBuffer;
-            // })();
+        //     // localStorageMap.mapFootprint=(!localStorageFile)?localStorageMap.mapFootprint:([&](void){
+        //     //     for(auto &localStorageElement:localStorageBuffer){
+        //     //         if(!localStorageFile.available())
+        //     //             break;
+        //     //         localStorageElement=localStorageFile.read();
+        //     //     }
+        //     //     return localStorageBuffer;
+        //     // })();
 
-            return localStorageMap.localStorageTable[key];
-        }
+        //     return localStorageMap.localStorageTable[key];
+        // }
 
-        
+
 
         LOCAL_STORAGE(){
 
