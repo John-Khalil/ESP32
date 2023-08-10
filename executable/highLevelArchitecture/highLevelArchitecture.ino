@@ -75,6 +75,7 @@ void setup(){
 	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
+
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
 	webServer.onData([&](uint8_t *data){
@@ -90,12 +91,7 @@ void setup(){
 
 	});
 
-	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));
-
-	// console.log((char*)MEMORY["BUFFER"]);
-	// MEMORY["BUFFER"]=editJson((char*)MEMORY["BUFFER"],"OPERATOR","\"test\"");
-	// console.log((char*)MEMORY["BUFFER"]);
-	
+	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));	
 	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
 	MEMORY["BUFFER"]=testPtr;
 

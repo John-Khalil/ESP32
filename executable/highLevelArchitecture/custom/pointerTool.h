@@ -996,13 +996,15 @@ unsigned char **jsonObjectValues(T value,Types... values){
 uint8_t *addToObject(uint8_t* userObjectStr,std::string newKey,std::string newValue){
   std::string userObject=(char*)userObjectStr;
   userObject[userObject.length()-1]=',';    // replace '}' with ',' 0x2c
+  userObject=(equalStrings(userObjectStr,(uint8_t*)"{}"))?"{":userObject;
   return (uint8_t*)(userObject+="\""+newKey+"\""+":"+"\""+newValue+"\"}").c_str();
 }
 
 std::string editJson(std::string editObject,std::string keyString,std::string newValue){
 	uint8_t *userJsonObject=(uint8_t*)editObject.c_str();
-	uint8_t *previousValue=constJson_orgStr(keyString.c_str(),userJsonObject);
+	uint8_t *previousValue=json(keyString.c_str(),userJsonObject);
 	if(previousValue!=UNDEFINED){
+		previousValue=constJson_orgStr(keyString.c_str(),userJsonObject);
 		uint8_t *userJsonObjectSlice=previousValue+stringCounter(previousValue);
 		CLR(previousValue);
 		constJsonReset();
@@ -1010,9 +1012,6 @@ std::string editJson(std::string editObject,std::string keyString,std::string ne
 	}
 
 	return std::string((char*)addToObject(userJsonObject,keyString,newValue));
-
-
-
 }
 
 

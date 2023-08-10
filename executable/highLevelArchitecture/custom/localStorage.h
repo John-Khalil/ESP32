@@ -1,8 +1,8 @@
 #pragma once
 
 
-#ifndef LOCALSTORAGE_H
-#define LOCALSTORAGE_H
+// #ifndef LOCALSTORAGE_H
+// #define LOCALSTORAGE_H
 
 #include "consoleLogger.h"
 #include "consoleLogger.cpp"
@@ -31,25 +31,55 @@
 
 
 class LOCAL_STORAGE{
-    public:
+    private:
+        char *instanceIdentifier="LOCAL_STORAGE";
 
         static void localStorageInit(void){
             static uint8_t firstRun;
             if(!firstRun){
                 firstRun=1;
-                fileSystem.begin();
+                while(!fileSystem.begin(true));
             }
             return;
         }
 
-        template <typename Key, typename Value>
-        static std::size_t getMapMemoryFootprint(const std::map<Key, Value>& myMap) {
-            std::size_t size = sizeof(myMap);
-            for (const auto& pair : myMap) {
-                size += sizeof(pair.first) + sizeof(pair.second);
-            }
-            return size;
+        std::string getInstanceData(void){
+            LOCAL_STORAGE::localStorageInit();
+            // auto file=fileSystem.open((std::string("/")+typeid(*this).name()).c_str(),"r"); //! -fno-rtti flag is used to disable Run-Time Type Information 
+            auto file=fileSystem.open((std::string("/")+instanceIdentifier+".json").c_str(),"r");
+            return((!file)?"{}":file.readString().c_str());
         }
+
+        void setInstanceData(std::string instanceData){
+            LOCAL_STORAGE::localStorageInit();
+            auto file=fileSystem.open((std::string("/")+instanceIdentifier+".json").c_str(),"w");
+            file.print(instanceData.c_str());
+            file.close();
+            return;
+        }
+
+
+
+
+    public:
+
+        // static void localStorageInit(void){
+        //     static uint8_t firstRun;
+        //     if(!firstRun){
+        //         firstRun=1;
+        //         fileSystem.begin();
+        //     }
+        //     return;
+        // }
+
+        // template <typename Key, typename Value>
+        // static std::size_t getMapMemoryFootprint(const std::map<Key, Value>& myMap) {
+        //     std::size_t size = sizeof(myMap);
+        //     for (const auto& pair : myMap) {
+        //         size += sizeof(pair.first) + sizeof(pair.second);
+        //     }
+        //     return size;
+        // }
 
         // union localStorageMap_t{
         //     uint8_t *mapFootprint;
@@ -113,12 +143,22 @@ class LOCAL_STORAGE{
         // }
 
 
+        std::string getItem(std::string key){
+            auto returnData=jsonParser(getInstanceData())[key];
+            return (char*)((uint8_t*)returnData);
+        }
 
-        LOCAL_STORAGE(){
+        std::string setItem(std::string key,std::string value){
+            setInstanceData(editJson(getInstanceData().c_str(),key,value).c_str());
+            return getItem(key);
+        }
 
+
+        LOCAL_STORAGE(char *_instanceIdentifier="LOCAL_STORAGE"){
+            instanceIdentifier=_instanceIdentifier;
         }
 };
 
-extern LOCAL_STORAGE localStorage();
+LOCAL_STORAGE localStorage;
 
-#endif
+// #endif

@@ -25,6 +25,7 @@
 class jsonParser{
     private:
         uint8_t objectBuffer[300]={};
+        uint8_t *objectBufferReturn=objectBuffer;
         uint8_t *mainJsonObject=nullptr;
         uint8_t objectNotFound=1;
 
@@ -71,7 +72,7 @@ class jsonParser{
 
 
         operator uint8_t*(){
-            return objectBuffer;
+            return objectBufferReturn;
         }
 
         // operator uint8_t (){
@@ -104,20 +105,20 @@ class jsonParser{
 
         jsonParser &operator[](uint8_t* jsonKey){
             if(mainJsonObject!=nullptr)
-                jsonParse(jsonKey,mainJsonObject);
+                objectBufferReturn=jsonParse(jsonKey,mainJsonObject);
             return (*this);
         }
 
 
         jsonParser &operator[](char* jsonKey){
             if(mainJsonObject!=nullptr)
-                jsonParse((uint8_t*)jsonKey,mainJsonObject);
+                objectBufferReturn=jsonParse((uint8_t*)jsonKey,mainJsonObject);
             return (*this);
         }
 
         jsonParser &operator[](std::string jsonKey){
             if(mainJsonObject!=nullptr)
-                jsonParse((uint8_t*)jsonKey.c_str(),mainJsonObject);
+                objectBufferReturn=jsonParse((uint8_t*)jsonKey.c_str(),mainJsonObject);
             return (*this);
         }
 
