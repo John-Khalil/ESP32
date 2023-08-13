@@ -95,9 +95,9 @@ void setup(){
 	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
 	MEMORY["BUFFER"]=testPtr;
 
-	std::string testInstruction=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)MEMORY["BUFFER"])+std::string("]}");
-	// (char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str()))
-	std::string testInstruction2=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())))+std::string("]}");;
+	// std::string testInstruction=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)MEMORY["BUFFER"])+std::string("]}");
+	// // (char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str()))
+	// std::string testInstruction2=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())))+std::string("]}");;
 
 
 
@@ -114,13 +114,14 @@ void setup(){
 	};
 	
 
-	testCall(jsonParser(testInstruction2)["LOOP_COUNTER"],jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"],jsonParser(testInstruction2)["LOOP_ELEMENENTS"]);
+	// testCall(jsonParser(testInstruction2)["LOOP_COUNTER"],jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"],jsonParser(testInstruction2)["LOOP_ELEMENENTS"]);
 	
 
 	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 
-	threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
-	// threadRunner(testPtr);
+	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
+	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
+	threadRunner(testPtr);
 
 }
 

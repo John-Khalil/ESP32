@@ -12,6 +12,10 @@
 #include "webService.h"
 #include"fetch.h"
 
+#include "jsonParser.h"
+#include "localStorage.h"
+
+
 #include <stdint.h>
 #include <functional>
 #include <vector>
@@ -46,86 +50,116 @@ const char *STORAGE_READ=       "STORAGE_READ";
 const char *LOOP_COUNTER=       "LOOP_COUNTER";
 const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
-// void operatorsSetup(void){
 
-//     operatorsMemory["readTest"]<<[&](void){
-//         operatorsMemory["readTest"]="readTest !!!";
-//         return;
-//     };
+utils::highLevelMemory operatorsMemory(5000);
 
-//     operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
-//         console.log("->",operatorData);
+void operatorsSetup(void){
+    operatorsMemory["readTest"]<<[&](void){
+        operatorsMemory["readTest"]="readTest !!!";
+        return;
+    };
 
-//         return;
-//     };
-//     return;
-// }
-
-uint8_t* threadRunner(uint8_t *operatorObject){
-    // console.log("threadRunner >> ",operatorObject);
-
-    utils::highLevelMemory operatorsMemory(5000);
-
-    ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
-        
-        operatorsMemoryCallbacks["readTest"]<<[&](void){
-            operatorsMemoryCallbacks["readTest"]="readTest !!!";
-            return;
-        };
-
-        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
-            console.log("-> ",operatorData);
-
-            return;
-        };
-
-        operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
-            utils::highLevelMemory loopMemory(600);
-
-            // console.log("LOOP --->> ",operatorData);
-
-            loopMemory[LOOP_COUNTER]=json(LOOP_COUNTER,operatorData);
-            uint32_t loopLimit=getInt32_t(threadRunner(loopMemory[LOOP_COUNTER]));
-            while(loopLimit--){
-                uint16_t loopCounter=0;
-                while((loopMemory[LOOP_ELEMENENTS]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
-                    threadRunner(loopMemory[LOOP_ELEMENENTS]);
-            }
-
-            return;
-        };
+    operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
+        console.log("->",operatorData);
 
         return;
-    })(operatorsMemory);
+    };
+    return;
+}
 
-    static uint8_t recursionDepth;
-    // static uint8_t firstRun;
-    // if(!firstRun){
-    //     operatorsSetup();
-    //     firstRun=1;
-    // }
 
-    if(json(OPERATOR,operatorObject)==UNDEFINED)
+
+uint8_t *threadRunner(uint8_t * operatorObject){
+    static uint32_t firstRun;
+    if(!firstRun--)
+        operatorsSetup();
+
+    auto operatorIdentifier=jsonParser(operatorObject)[DATA];
+    if(((uint8_t*)operatorIdentifier)==UNDEFINED)
         return operatorObject;
 
-    recursionDepth++;
+    auto data=jsonParser(operatorObject)[OPERATOR];
 
-    BUFFER[recursionDepth]=json(DATA,operatorObject);
+    console.log((uint8_t*)operatorIdentifier);
+    console.log((uint8_t*)data);
 
-    uint8_t *bufferPtr=threadRunner(BUFFER[recursionDepth]);
-    // if(BUFFER[recursionDepth]!=bufferPtr)
-        BUFFER[recursionDepth]=bufferPtr;
+    operatorsMemory[operatorIdentifier]=threadRunner(data);
 
-    // BUFFER[recursionDepth]=threadRunner(BUFFER[recursionDepth]);
-    operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
-    RETURN_BUFFER[recursionDepth]=operatorsMemory[json(OPERATOR,operatorObject)];
+    
 
-    // console.log("threadRunner >> ",(uint8_t*)RETURN_BUFFER[recursionDepth]);
+    return operatorsMemory[operatorIdentifier];
 
-    // recursionDepth--;
-    // return operatorsMemory[json(OPERATOR,operatorObject)];
-
-    return RETURN_BUFFER[recursionDepth--];
 }
+
+
+
+
+
+// uint8_t* threadRunner(uint8_t *operatorObject){
+//     // console.log("threadRunner >> ",operatorObject);
+
+//     utils::highLevelMemory operatorsMemory(5000);
+
+//     ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+        
+//         operatorsMemoryCallbacks["readTest"]<<[&](void){
+//             operatorsMemoryCallbacks["readTest"]="readTest !!!";
+//             return;
+//         };
+
+//         operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
+//             console.log("-> ",operatorData);
+
+//             return;
+//         };
+
+//         operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
+//             utils::highLevelMemory loopMemory(600);
+
+//             // console.log("LOOP --->> ",operatorData);
+
+//             loopMemory[LOOP_COUNTER]=json(LOOP_COUNTER,operatorData);
+//             uint32_t loopLimit=getInt32_t(threadRunner(loopMemory[LOOP_COUNTER]));
+//             while(loopLimit--){
+//                 uint16_t loopCounter=0;
+//                 while((loopMemory[LOOP_ELEMENENTS]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
+//                     threadRunner(loopMemory[LOOP_ELEMENENTS]);
+//             }
+
+//             return;
+//         };
+
+//         return;
+//     })(operatorsMemory);
+
+//     static uint8_t recursionDepth;
+//     // static uint8_t firstRun;
+//     // if(!firstRun){
+//     //     operatorsSetup();
+//     //     firstRun=1;
+//     // }
+
+//     if(json(OPERATOR,operatorObject)==UNDEFINED)
+//         return operatorObject;
+
+//     recursionDepth++;
+
+//     BUFFER[recursionDepth]=json(DATA,operatorObject);
+
+//     uint8_t *bufferPtr=threadRunner(BUFFER[recursionDepth]);
+//     // if(BUFFER[recursionDepth]!=bufferPtr)
+//         BUFFER[recursionDepth]=bufferPtr;
+
+//     // BUFFER[recursionDepth]=threadRunner(BUFFER[recursionDepth]);
+//     operatorsMemory[json(OPERATOR,operatorObject)]=BUFFER[recursionDepth];
+//     RETURN_BUFFER[recursionDepth]=operatorsMemory[json(OPERATOR,operatorObject)];
+
+//     // console.log("threadRunner >> ",(uint8_t*)RETURN_BUFFER[recursionDepth]);
+
+//     // recursionDepth--;
+//     // return operatorsMemory[json(OPERATOR,operatorObject)];
+
+//     return RETURN_BUFFER[recursionDepth--];
+// }
 
 
