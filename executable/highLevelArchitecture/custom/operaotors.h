@@ -90,11 +90,17 @@ uint8_t *threadRunner(uint8_t * operatorObject){
                 std::string operatorObject=(char*)operatorData;
                 jsonParser operatorJsonObject(operatorObject);
 
-                uint32_t loopCounter=getInt(threadRunner(operatorJsonObject[LOOP_COUNTER]));
+                operatorJsonObject[LOOP_COUNTER];
+                uint32_t loopCounter=getInt32_t(threadRunner(operatorJsonObject));
+
                 while(loopCounter--){
                     uint16_t loopIterator=0;
-                    while(operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")]!=UNDEFINED)
-                        threadRunner(operatorJsonObject);
+                    operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")];
+                    console.log(operatorJsonObject);
+                    // while(operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")]!=UNDEFINED){
+                    //     console.log(operatorJsonObject);
+                    //     // threadRunner(operatorJsonObject);
+                    // }
                         // console.log(operatorJsonObject);
                 }
 
