@@ -24,14 +24,14 @@
 
 class jsonParser{
     private:
-        uint8_t objectBuffer[300]={};
-        uint8_t *objectBufferReturn=objectBuffer;
-        uint8_t *mainJsonObject=nullptr;
-        uint8_t objectNotFound=1;
 
        
 
     public:
+        uint8_t objectBuffer[1000]={};
+        uint8_t *objectBufferReturn=objectBuffer;
+        uint8_t *mainJsonObject=nullptr;
+        uint8_t objectNotFound=1;
 
         unsigned char *jsonParse(unsigned char *userObject,unsigned char *jsonObject){
             if(EXTERNJSONFUNCTIONCALL(userObject,jsonObject,objectBuffer)){

@@ -53,40 +53,64 @@ const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
 utils::highLevelMemory operatorsMemory(5000);
 
-void operatorsSetup(void){
-    operatorsMemory["readTest"]<<[&](void){
-        operatorsMemory["readTest"]="readTest !!!";
-        return;
-    };
+// void operatorsSetup(void){
+//     operatorsMemory["readTest"]<<[&](void){
+//         operatorsMemory["readTest"]="readTest !!!";
+//         return;
+//     };
 
-    operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
-        console.log("->",operatorData);
+//     operatorsMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                            //& CONSOLE_LOGGER
+//         console.log("->",operatorData);
 
-        return;
-    };
-    return;
-}
+//         return;
+//     };
+
+//     return;
+// }
 
 
 
 uint8_t *threadRunner(uint8_t * operatorObject){
     static uint32_t firstRun;
     if(!firstRun--)
-        operatorsSetup();
+        ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+            
+            operatorsMemoryCallbacks["readTest"]<<[&](void){
+                operatorsMemoryCallbacks["readTest"]="readTest !!!";
+                return;
+            };
 
-    auto operatorIdentifier=jsonParser(operatorObject)[DATA];
-    if(((uint8_t*)operatorIdentifier)==UNDEFINED)
-        return operatorObject;
+            operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
+                console.log("-> ",operatorData);
 
-    auto data=jsonParser(operatorObject)[OPERATOR];
+                return;
+            };
 
-    console.log((uint8_t*)operatorIdentifier);
-    console.log((uint8_t*)data);
+            operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
+         
 
-    operatorsMemory[operatorIdentifier]=threadRunner(data);
+                return;
+            };
+
+            return;
+        })(operatorsMemory);
+
 
     
 
+    // auto operatorIdentifier=jsonParser(operatorObject)[OPERATOR];
+    jsonParser operatorIdentifier(operatorObject);
+    operatorIdentifier[OPERATOR];
+
+    if(((uint8_t*)operatorIdentifier)==UNDEFINED)
+        return operatorObject;
+
+    // auto data=jsonParser(operatorObject)[DATA];
+    jsonParser data(operatorObject);
+    data[DATA];
+    std::string operatorReturn=(char*)threadRunner(data);
+    operatorsMemory[operatorIdentifier]=operatorReturn;
+    // operatorsMemory[operatorIdentifier]=threadRunner(data);      // this doesnt work
     return operatorsMemory[operatorIdentifier];
 
 }
