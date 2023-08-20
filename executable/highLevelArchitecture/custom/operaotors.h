@@ -132,7 +132,7 @@ utils::highLevelMemory operatorsMemory(5000);
 
 utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
-    console.log("start >> ",(uint8_t*)operatorObject[OPERATOR]);
+    // console.log("start >> ",(uint8_t*)operatorObject[OPERATOR]);
 
     if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
         return operatorObject[OPERATOR];
@@ -158,12 +158,12 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             // console.log("LOOP --->> ",operatorData);
 
-            loopMemory[LOOP_COUNTER]=json(LOOP_COUNTER,operatorData);
-            uint32_t loopLimit=getInt32_t(threadRunner(loopMemory[LOOP_COUNTER]));
+            loopMemory[OPERATOR]=json(LOOP_COUNTER,operatorData);
+            uint32_t loopLimit=getInt32_t(instruction(loopMemory[OPERATOR]));
             while(loopLimit--){
                 uint16_t loopCounter=0;
-                while((loopMemory[LOOP_ELEMENENTS]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
-                    threadRunner(loopMemory[LOOP_ELEMENENTS]);
+                while((loopMemory[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
+                    instruction(loopMemory[OPERATOR]);
             }
 
             return;
@@ -195,6 +195,7 @@ void threadRunner(uint8_t *operatorObject){
     utils::highLevelMemory operatorObjectMemory(5000);
     operatorObjectMemory[OPERATOR]=operatorObject;
     instruction(operatorObjectMemory[OPERATOR]);
+    return;
 }
 
 
