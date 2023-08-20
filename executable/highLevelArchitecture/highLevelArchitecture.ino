@@ -119,9 +119,14 @@ void setup(){
 
 	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 
-	threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
+	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
 	// threadRunner(testPtr);
+
+	MEMORY["testPtr"]=testPtr;
+	instruction(MEMORY["testPtr"]);
+
+
 
 }
 

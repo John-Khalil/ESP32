@@ -95,12 +95,10 @@ uint8_t *threadRunner(uint8_t * operatorObject){
 
                 while(loopCounter--){
                     uint16_t loopIterator=0;
-                    operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")];
-                    console.log(operatorJsonObject);
-                    // while(operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")]!=UNDEFINED){
-                    //     console.log(operatorJsonObject);
-                    //     // threadRunner(operatorJsonObject);
-                    // }
+                    while(operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")]!=UNDEFINED){
+                        console.log((uint8_t*)operatorJsonObject);
+                        // threadRunner(operatorJsonObject);
+                    }
                         // console.log(operatorJsonObject);
                 }
 
@@ -132,6 +130,71 @@ uint8_t *threadRunner(uint8_t * operatorObject){
 }
 
 
+utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
+
+    console.log("start >> ",(uint8_t*)operatorObject);
+
+    if(json(OPERATOR,operatorObject)==UNDEFINED)
+        return operatorObject;
+
+    utils::highLevelMemory operatorObjectMemory(5000);
+
+
+    ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+            
+        operatorsMemoryCallbacks["readTest"]<<[&](void){
+            operatorsMemoryCallbacks["readTest"]="readTest !!!";
+            return;
+        };
+
+        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
+            console.log("-> ",operatorData);
+
+            return;
+        };
+
+        operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
+            // std::string operatorObject=(char*)operatorData;
+            // jsonParser operatorJsonObject(operatorObject);
+
+            // operatorJsonObject[LOOP_COUNTER];
+            // uint32_t loopCounter=getInt32_t(threadRunner(operatorJsonObject));
+
+            // while(loopCounter--){
+            //     uint16_t loopIterator=0;
+            //     while(operatorJsonObject[$(LOOP_ELEMENENTS,"[",loopIterator++,"]")]!=UNDEFINED){
+            //         console.log((uint8_t*)operatorJsonObject);
+            //         // threadRunner(operatorJsonObject);
+            //     }
+            //         // console.log(operatorJsonObject);
+            // }
+
+
+            return;
+        };
+
+        return;
+    })(operatorObjectMemory);
+
+    operatorObjectMemory[OPERATOR]=json(DATA,operatorObject);
+
+    instruction(operatorObjectMemory[OPERATOR]);
+
+    // uint8_t* operatorData=operatorObjectMemory[OPERATOR];
+
+    operatorObjectMemory[json(OPERATOR,operatorObject)]=operatorObjectMemory[OPERATOR];
+
+    // uint8_t* returnData=operatorObjectMemory[json(OPERATOR,operatorObject)];
+
+    operatorObject[OPERATOR]=operatorObjectMemory[json(OPERATOR,operatorObject)];
+
+    return operatorObject[OPERATOR];
+}
+
+void thraedRunner(uint8_t *operatorObject){
+    utils::highLevelMemory operatorObjectMemory(5000);
+    operatorObjectMemory[]
+}
 
 
 
