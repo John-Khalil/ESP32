@@ -27,6 +27,7 @@
 
 #define FILE_PATH "/localStorage.txt"
 #define LOCAL_STORAGE_BUFFER 5000
+#define FILE_EXTENTION  ".localStorage"
 
 
 
@@ -153,6 +154,19 @@ class LOCAL_STORAGE{
             return getItem(key);
         }
 
+        std::string getItem(uint32_t key){
+            LOCAL_STORAGE::localStorageInit();
+            auto file=fileSystem.open((char*)$("/",(unsigned long)key,FILE_EXTENTION),"r");
+            return((!file)?((char*)UNDEFINED):file.readString().c_str());
+        }
+
+        std::string setItem(uint32_t key,uint8_t *value){
+            LOCAL_STORAGE::localStorageInit();
+            auto file=fileSystem.open((char*)$("/",(unsigned long)key,FILE_EXTENTION),"w");
+            file.print((char*)value);
+            file.close();
+            return getItem(key);
+        }
 
         LOCAL_STORAGE(char *_instanceIdentifier="LOCAL_STORAGE"){
             instanceIdentifier=_instanceIdentifier;
