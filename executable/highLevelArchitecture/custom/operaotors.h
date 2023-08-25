@@ -105,7 +105,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
         operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){
             utils::highLevelMemory localBuffer(1024);
-            
+
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
             instruction(localBuffer[OPERATOR]);
             localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
@@ -116,6 +116,16 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_VALUE];
             operatorsMemoryCallbacks[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
+            return;
+        };
+
+        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){
+            utils::highLevelMemory localBuffer(1024);
+            
+            localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
+            instruction(localBuffer[OPERATOR]);
+
+            operatorsMemoryCallbacks[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
             return;
         };
 
