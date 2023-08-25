@@ -91,7 +91,7 @@ void setup(){
 
 	});
 
-	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)"readTest",(uint8_t*)"CONSOLE_LOGGER"));	
+	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)MEMORY_WRITE,(uint8_t*)"{\"MEMORY_ADDRESS\":\"manga\",\"MEMORY_VALUE\":\"this is a test\"}"));	
 	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
 
 		// thraedRunner(testPtr);
