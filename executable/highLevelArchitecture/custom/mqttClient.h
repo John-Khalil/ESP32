@@ -88,8 +88,12 @@ class mqttClient{
       return (*this);
     }
 
-    mqttClient(){
-      
+    // mqttClient(uint8_t *userName,uint8_t *password,uint8_t *topic,uint8_t *serverAddress,uint16_t serverPort=1883){
+    //   setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
+    // }
+    
+    mqttClient(void *userName,void *password,void *topic,void *serverAddress,uint16_t serverPort=1883){
+      setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
     }
 
     ~mqttClient(){
