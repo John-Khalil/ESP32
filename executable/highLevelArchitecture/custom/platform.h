@@ -8,6 +8,8 @@
 
     #include <LITTLEFS.h>
     #include <SPIFFS.h>
+
+    #include <WiFi.h>
     
     #define fileSystem LITTLEFS
     // #define fileSystem SPIFFS
@@ -106,6 +108,8 @@
     #include <osapi.h>
 
     #include <LittleFS.h>
+
+    #include <ESP8266WiFi.h>
 
     #define fileSystem LittleFS 
 

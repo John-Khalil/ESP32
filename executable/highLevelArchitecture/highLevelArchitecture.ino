@@ -16,6 +16,8 @@
 
 #include "custom/operaotors.h"
 
+#include "custom/mqttClient.h"
+
 // #include "custom/ledMatrix.h"
 
 #include <iostream>
