@@ -62,6 +62,11 @@ class mqttClient{
       return (*this);
     }
 
+    mqttClient &loop(void){
+      mqttServer->loop();
+      return (*this);
+    }
+
 
 
     mqttClient &setup(uint8_t *userName,uint8_t *password,uint8_t *topic,uint8_t *serverAddress,uint16_t serverPort=1883){
@@ -79,7 +84,9 @@ class mqttClient{
         return;
       });
 
-      mqttServer->connect("tcpClient",(char*)userName,(char*)password);
+      while(!mqttServer->connect("tcpClient",(char*)userName,(char*)password)){
+        console.log("connecting");
+      }  
       mqttServer->subscribe((char*)topic);
 
 
@@ -88,13 +95,22 @@ class mqttClient{
       return (*this);
     }
 
+    mqttClient &setup(char *userName,char *password,char *topic,char *serverAddress,uint16_t serverPort=1883){
+      return setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
+    }
+
     // mqttClient(uint8_t *userName,uint8_t *password,uint8_t *topic,uint8_t *serverAddress,uint16_t serverPort=1883){
     //   setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
     // }
-    
-    mqttClient(void *userName,void *password,void *topic,void *serverAddress,uint16_t serverPort=1883){
-      setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
+
+    mqttClient(){
+
     }
+
+    
+    // mqttClient(void *userName,void *password,void *topic,void *serverAddress,uint16_t serverPort=1883){
+    //   setup((uint8_t *)userName,(uint8_t *)password,(uint8_t *)topic,(uint8_t *)serverAddress,serverPort);
+    // }
 
     ~mqttClient(){
         delete mqttServer;

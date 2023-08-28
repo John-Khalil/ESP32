@@ -38,7 +38,7 @@
 utils::highLevelMemory MEMORY(5000);
 
 
-
+mqttClient mqttServer;
 web::service webServer;
 
 void setup(){
@@ -79,6 +79,11 @@ void setup(){
 
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
+
+	mqttServer.setup("infinity-fabric","infinity-fabric","/main","e73d78deb9114b8b851a9d4a3231f568.s2.eu.hivemq.cloud");
+	mqttServer.onData([&](uint8_t *data){
+		console.log("data >> ",data);
+	});
 
 	webServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
@@ -139,5 +144,11 @@ void setup(){
 
 void loop(){
 	// ws.cleanupClients();
+	static uint32_t loopCounter;
+	mqttServer.loop();
+
+	if(!(loopCounter++%999999))
+		mqttServer.send("this is test");
+
 }
 
