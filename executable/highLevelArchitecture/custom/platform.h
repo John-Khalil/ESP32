@@ -98,6 +98,9 @@
     
     #define async(asyncThread)  xTaskCreate((void (*)(void*))[&](void *arg){asyncThread;vTaskDelete(NULL);},"async-task",30000,NULL,0,NULL);
 
+ 
+    // #define SYSTEM_UNIQUE_IDENTIFIER (std::string("\"")+WiFi.macAddress().+std::string("\"")).c_str()
+    #define SYSTEM_UNIQUE_IDENTIFIER WiFi.macAddress().c_str()
 
 
 
@@ -131,6 +134,11 @@
 
     // #define async(asyncThread)  system_os_task((func)([&](void *arg){asyncThread;esp8266StartTaskHandler();}),0,NULL);
     #define async(asyncThread)  
+
+
+
+    #define SYSTEM_UNIQUE_IDENTIFIER WiFi.macAddress().c_str()
+    // #define SYSTEM_UNIQUE_IDENTIFIER (std::string("\"")+WiFi.macAddress()+std::string("\"")).c_str()
 
 #endif
 

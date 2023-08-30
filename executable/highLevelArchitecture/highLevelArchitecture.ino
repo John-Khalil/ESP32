@@ -80,7 +80,7 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	mqttServer.setup("infinity-fabric","infinity-fabric","/main","e73d78deb9114b8b851a9d4a3231f568.s2.eu.hivemq.cloud");
+	mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l","/main","mqtt-dashboard.com");
 	mqttServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
 	});
@@ -147,7 +147,7 @@ void loop(){
 	static uint32_t loopCounter;
 	mqttServer.loop();
 
-	if(!(loopCounter++%999999))
+	if(!(loopCounter++%99999))
 		mqttServer.send("this is test");
 
 }

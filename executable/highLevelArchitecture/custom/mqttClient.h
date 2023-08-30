@@ -26,6 +26,8 @@
 
 #include <PubSubClient.h>
 
+const char *MQTT_TOPIC="elhLTFZibGtqYnZ2Z2l5WlhWbmMgWFpDVktIZmc=";
+
 class mqttClient{
   public:
 
@@ -48,12 +50,12 @@ class mqttClient{
     }
 
     mqttClient &send(uint8_t *message){
-      mqttServer->publish(userTopic.c_str(),(char*)message);
+      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),$("\"",message,"\""))));
       return (*this);
     }
 
     mqttClient &send(char *message){
-      mqttServer->publish(userTopic.c_str(),message);
+      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),$("\"",message,"\""))));
       return (*this);
     }
 
@@ -78,13 +80,20 @@ class mqttClient{
 
       mqttServer->setServer((char*)serverAddress, serverPort);
       mqttServer->setCallback([&](char* topic,uint8_t* payload,uint32_t length){
-        std::string clientPayload=(char*)payload;
+        utils::highLevelMemory mqttBuffer(5000);
+
+        mqttBuffer["id"]=json("id",payload);
+        if(mqttBuffer["id"]==SYSTEM_UNIQUE_IDENTIFIER)
+          return;
+
+        mqttBuffer["data"]=json("data",payload);
         for(auto &readCallback:readCallbackList)
-          readCallback((uint8_t*)clientPayload.c_str());
+          readCallback(mqttBuffer["data"]);
         return;
       });
 
-      while(!mqttServer->connect("tcpClient",(char*)userName,(char*)password)){
+
+      while(!mqttServer->connect(SYSTEM_UNIQUE_IDENTIFIER,(char*)userName,(char*)password)){
         console.log("connecting");
       }  
       mqttServer->subscribe((char*)topic);
