@@ -80,7 +80,7 @@ void setup(){
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l","/main","mqtt-dashboard.com");
+	mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
 	mqttServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
 	});
