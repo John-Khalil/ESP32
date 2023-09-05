@@ -32,7 +32,7 @@ app.post('/upload',(req,res)=>{
     res.send('ack');
     remoteClient.send("test node server");
 
-    console.log(JSON.stringify(req.body))
+    console.log(JSON.stringify(req.body));
 });
 
 

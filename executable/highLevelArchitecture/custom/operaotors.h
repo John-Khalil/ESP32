@@ -99,8 +99,6 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             return;
 
-
-            return;
         };
 
         operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){
