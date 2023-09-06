@@ -29,16 +29,24 @@ export default class pipeline{
     
     instructionsList=[];
 
+    consoleLogger=consoleData=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.CONSOLE_LOGGER,
+            [pipeline.DATA]:(typeof(consoleData)==='object')?consoleData.get()[0]:consoleData
+        })
+        return this;
+    }
     
     loop=(loopCounter,loopBody)=>{
         this.instructionsList.push({
             [pipeline.OPERATOR]:pipeline.LOOP,
-            [pipeline.LOOP_COUNTER]:(typeof(loopCounter)==='object')?loopCounter.get()[0]:loopCounter,
-            [pipeline.LOOP_ELEMENENTS]:(typeof(loopBody)==='object')?loopBody.get():[]
+            [pipeline.DATA]:{
+                [pipeline.LOOP_COUNTER]:(typeof(loopCounter)==='object')?loopCounter.get()[0]:loopCounter,
+                [pipeline.LOOP_ELEMENENTS]:(typeof(loopBody)==='object')?loopBody.get():[]
+            }
         })
         return this;
     }
-
 
     get=()=>{
 
@@ -50,8 +58,10 @@ export default class pipeline{
         this.callbackFunctionList.forEach(callbackFunction => {
             callbackFunction(JSON.stringify({
                 [pipeline.OPERATOR]:pipeline.LOOP,
-                [pipeline.LOOP_COUNTER]:1,
-                [pipeline.LOOP_ELEMENENTS]:this.instructionsList
+                [pipeline.DATA]:{
+                    [pipeline.LOOP_COUNTER]:1,
+                    [pipeline.LOOP_ELEMENENTS]:this.instructionsList
+                }
             }));
         });
 
