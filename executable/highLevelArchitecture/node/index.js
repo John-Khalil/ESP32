@@ -4,14 +4,25 @@ import util from 'util';
 import bodyParser from 'body-parser';
 
 import mqttClient from "./mqttClient.js";
+import pipeline from './pipeline.js';
 
 console.clear();
 
 const remoteClient=new mqttClient({serverAddress:'mqtt-dashboard.com',topic:mqttClient.MQTT_TOPIC,startup:()=>{
     // remoteClient.send("test node server");
+
+    pipeline.onStart(data=>{
+
+        console.log(data)
+
+        remoteClient.send(data);
+    })
+
     remoteClient.onData(data=>{
         console.log(data);
     });
+
+
 }});
 
 const app =express();
@@ -24,8 +35,10 @@ app.listen(port,()=>{
 
 app.get('/',(req,res)=>{
 
-    remoteClient.send("test node server");
+    
     res.send('ack');
+
+    new pipeline().consoleLogger("test data").consoleLogger("test data").run();
 })
 
 app.post('/upload',(req,res)=>{

@@ -25,7 +25,7 @@ export default class pipeline{
     static LOOP_COUNTER=       "LOOP_COUNTER";
     static LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
-    callbackFunctionList=[];
+    static callbackFunctionList=[];
     
     instructionsList=[];
 
@@ -55,22 +55,22 @@ export default class pipeline{
 
     run=()=>{
 
-        this.callbackFunctionList.forEach(callbackFunction => {
-            callbackFunction(JSON.stringify({
+        pipeline.callbackFunctionList.forEach(callbackFunction => {
+            callbackFunction((this.instructionsList.length==1)?this.instructionsList[0]:{
                 [pipeline.OPERATOR]:pipeline.LOOP,
                 [pipeline.DATA]:{
                     [pipeline.LOOP_COUNTER]:1,
                     [pipeline.LOOP_ELEMENENTS]:this.instructionsList
                 }
-            }));
+            });
         });
 
         return this;
     }
 
-    onStart=callbackFunction=>{
+    static onStart=callbackFunction=>{
 
-        this.callbackFunctionList.push(callbackFunction);
+        pipeline.callbackFunctionList.push(callbackFunction);
 
         return this;
     }
