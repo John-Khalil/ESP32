@@ -620,7 +620,7 @@ extern unsigned char EXTERNJSONFUNCTIONCALL(unsigned char *requestedJSON,unsigne
 
 
 
-#define JSON_OBJECT_SIZE 1024
+#define JSON_OBJECT_SIZE 5000
 // unsigned char UNDEFINED[10]="undefined";
 unsigned char JSON_OBJECT_FOUND[JSON_OBJECT_SIZE]="";
 

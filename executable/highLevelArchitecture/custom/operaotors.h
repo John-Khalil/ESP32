@@ -85,7 +85,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
         };
 
         operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
-            utils::highLevelMemory loopMemory(600);
+            utils::highLevelMemory loopMemory(1024);
 
             // console.log("LOOP --->> ",operatorData);
 

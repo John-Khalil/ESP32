@@ -13,7 +13,7 @@ const remoteClient=new mqttClient({serverAddress:'mqtt-dashboard.com',topic:mqtt
 
     pipeline.onStart(data=>{
 
-        console.log(data)
+        console.log(JSON.stringify(data).length)
 
         remoteClient.send(data);
     })
@@ -38,7 +38,7 @@ app.get('/',(req,res)=>{
     
     res.send('ack');
 
-    new pipeline().loop(5,new pipeline().loop(5,new pipeline().consoleLogger("this is test"))).run();
+    new pipeline().loop(4,new pipeline().loop(4,new pipeline().loop(4,new pipeline().loop(4,new pipeline().consoleLogger("this is test this is test this is test this is test this is test"))))).run();
 })
 
 app.post('/upload',(req,res)=>{
