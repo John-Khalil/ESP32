@@ -83,6 +83,7 @@ void setup(){
 	mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
 	mqttServer.onData([&](uint8_t *data){
 		console.log("data >> ",data);
+		threadRunner(data);
 	});
 
 	webServer.onData([&](uint8_t *data){
@@ -130,7 +131,7 @@ void setup(){
 	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
 
 	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
-	threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
+	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
 	// threadRunner(testPtr);
 
 
