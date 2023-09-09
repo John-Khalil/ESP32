@@ -38,7 +38,7 @@ app.get('/',(req,res)=>{
     
     res.send('ack');
 
-    new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test this is test"))))).run();
+    new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))))).run();
 })
 
 app.post('/upload',(req,res)=>{
