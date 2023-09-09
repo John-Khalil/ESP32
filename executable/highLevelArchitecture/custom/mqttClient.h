@@ -79,9 +79,9 @@ class mqttClient{
       userTopic=(char*)topic;
 
       mqttServer->setServer((char*)serverAddress, serverPort);
-      mqttServer->setBufferSize(5000);
+      mqttServer->setBufferSize(BUFFER_SIZE_1);
       mqttServer->setCallback([&](char* topic,uint8_t* payload,uint32_t length){
-        utils::highLevelMemory mqttBuffer(5000);
+        utils::highLevelMemory mqttBuffer(BUFFER_SIZE_1);
 
         mqttBuffer["id"]=json("id",payload);
         if(mqttBuffer["id"]==SYSTEM_UNIQUE_IDENTIFIER)

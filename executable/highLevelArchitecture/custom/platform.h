@@ -3,6 +3,12 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+#define BUFFER_SIZE_1 1024
+#define BUFFER_SIZE_2 1024
+#define BUFFER_SIZE_3 1024
+#define BUFFER_SIZE_4 1024
+#define BUFFER_SIZE_5 20000
+
 #ifdef ESP32
     #include "esp_task_wdt.h"
 

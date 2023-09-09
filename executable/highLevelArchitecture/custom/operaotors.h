@@ -25,7 +25,10 @@
 #include <type_traits>
 
 
-static utils::highLevelMemory operatorsMemory(20000);
+
+
+
+static utils::highLevelMemory operatorsMemory(BUFFER_SIZE_5);
 // static utils::highLevelMemory BUFFER(5000);
 // static utils::highLevelMemory RETURN_BUFFER(5000);
 
@@ -68,7 +71,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
     if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
         return operatorObject[OPERATOR];
 
-    utils::highLevelMemory operatorObjectMemory(5000);
+    utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
 
 
     ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
@@ -79,13 +82,15 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
         };
 
         operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
-            console.log("-> ",operatorData);
+            static uint16_t logCounter;
+
+            console.log("[",++logCounter,"]-> ",operatorData);
 
             return;
         };
 
         operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
-            utils::highLevelMemory loopMemory(1024);
+            utils::highLevelMemory loopMemory(BUFFER_SIZE_1);
 
             // console.log("LOOP --->> ",operatorData);
 
@@ -101,8 +106,8 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
         };
 
-        operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){
-            utils::highLevelMemory localBuffer(1024);
+        operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //& MEMORY_WRITE
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
             instruction(localBuffer[OPERATOR]);
@@ -117,8 +122,8 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){
-            utils::highLevelMemory localBuffer(1024);
+        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                              //& MEMORY_READ
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
             instruction(localBuffer[OPERATOR]);
@@ -147,7 +152,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
 void threadRunner(uint8_t *operatorObject){
     // console.log("operatorObject >> ",operatorObject);
-    utils::highLevelMemory operatorObjectMemory(5000);
+    utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
     operatorObjectMemory[OPERATOR]=operatorObject;
     instruction(operatorObjectMemory[OPERATOR]);
     return;
