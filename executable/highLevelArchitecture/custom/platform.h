@@ -3,13 +3,19 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#define BUFFER_SIZE_1 1024
-#define BUFFER_SIZE_2 1024
-#define BUFFER_SIZE_3 1024
-#define BUFFER_SIZE_4 1024
-#define BUFFER_SIZE_5 20000
+
 
 #ifdef ESP32
+
+
+    #define BUFFER_SIZE_1 1024
+    #define BUFFER_SIZE_2 1024
+    #define BUFFER_SIZE_3 1024
+    #define BUFFER_SIZE_4 1024
+    #define BUFFER_SIZE_5 20000
+
+
+
     #include "esp_task_wdt.h"
 
     #include <LITTLEFS.h>
@@ -19,6 +25,8 @@
     
     #define fileSystem LITTLEFS
     // #define fileSystem SPIFFS
+
+    #define fileSystemBegin() fileSystem.begin(true)
     
     volatile uint32_t *_outputRegisterLow=((volatile uint32_t*)0X3FF44004UL);
     volatile uint32_t *_outputRegisterHigh=((volatile uint32_t*)0X3FF44010UL);
@@ -113,6 +121,15 @@
 
 #endif
 #ifdef ESP8266
+
+
+    #define BUFFER_SIZE_1 1024
+    #define BUFFER_SIZE_2 1024
+    #define BUFFER_SIZE_3 1024
+    #define BUFFER_SIZE_4 1024
+    #define BUFFER_SIZE_5 4096
+
+
     // #include "osapi.h"
     #include <osapi.h>
 
@@ -121,6 +138,8 @@
     #include <ESP8266WiFi.h>
 
     #define fileSystem LittleFS 
+
+    #define fileSystemBegin() fileSystem.begin()
 
     #define _delay_ms delay
 

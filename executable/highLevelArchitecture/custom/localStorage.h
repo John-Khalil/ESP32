@@ -39,7 +39,7 @@ class LOCAL_STORAGE{
             static uint8_t firstRun;
             if(!firstRun){
                 firstRun=1;
-                while(!fileSystem.begin(true));
+                while(!fileSystemBegin());
             }
             return;
         }

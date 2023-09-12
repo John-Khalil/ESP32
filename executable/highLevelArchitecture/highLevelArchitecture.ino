@@ -8,7 +8,7 @@
 #include "custom/platform.h"
 #include "custom/http.h"
 #include "custom/webService.h"
-#include"custom/fetch.h"
+#include "custom/fetch.h"
 
 #include "custom/jsonParser.h"
 
@@ -76,7 +76,6 @@ void setup(){
 	
 	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
-
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
