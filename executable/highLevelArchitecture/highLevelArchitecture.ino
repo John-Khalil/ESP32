@@ -42,7 +42,7 @@ mqttClient mqttServer;
 web::service webServer;
 
 void setup(){
-	// esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
+	disableAutoReset();
     delayAutoCalibrate();
     Serial.begin(115200);
 	EEPROM_UTILS::eepromInit();

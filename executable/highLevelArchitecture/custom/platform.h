@@ -118,6 +118,8 @@
 
 
 
+    #define disableAutoReset() esp_task_wdt_init(-1,false);		//this is the most important line of this entire code esp_task_wdt_init(uint32_t timeInSec,bool panic);
+
 
 #endif
 #ifdef ESP8266
@@ -127,7 +129,7 @@
     #define BUFFER_SIZE_2 1024
     #define BUFFER_SIZE_3 1024
     #define BUFFER_SIZE_4 1024
-    #define BUFFER_SIZE_5 4096
+    #define BUFFER_SIZE_5 3072
 
 
     // #include "osapi.h"
@@ -164,6 +166,26 @@
 
     #define SYSTEM_UNIQUE_IDENTIFIER WiFi.macAddress().c_str()
     // #define SYSTEM_UNIQUE_IDENTIFIER (std::string("\"")+WiFi.macAddress()+std::string("\"")).c_str()
+
+
+
+    
+    #define _TIMERINTERRUPT_LOGLEVEL_     1
+    #define USING_TIM_DIV1                false           // for shortest and most accurate timer
+    #define USING_TIM_DIV16               false           // for medium time and medium accurate timer
+    #define USING_TIM_DIV256              true            // for longest timer but least accurate. Default
+    #include "ESP8266TimerInterrupt.h"
+    #define TIMER_INTERVAL_MS       2700
+
+    ESP8266Timer ITimer;
+
+
+    void  TimerHandler(){
+        ESP.wdtFeed();
+    }
+    #define disableAutoReset() ITimer.attachInterruptInterval(TIMER_INTERVAL_MS * 1000, TimerHandler)
+    #define enableInt() //interruptEnable=1
+    #define disableInt() //interruptEnable=0
 
 #endif
 
