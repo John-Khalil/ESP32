@@ -46,7 +46,7 @@ const char *SEND=               "SEND";
 const char *MEMORY_WRITE=       "MEMORY_WRITE";
 const char *MEMORY_READ=        "MEMORY_READ";
 const char *MEMORY_ADDRESS=     "MEMORY_ADDRESS";
-const char *MEMORY_VALUE=       "MEMORY_VALUE";
+const char *MEMORY_DATA=       "MEMORY_DATA";
 const char *TIMER=              "TIMER";
 const char *CLOCK_OUTPUT=       "CLOCK_OUTPUT";
 const char *STORAGE_WRITE=      "STORAGE_WRITE";
@@ -113,11 +113,11 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
             localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
 
-            localBuffer[OPERATOR]=json(MEMORY_VALUE,operatorsMemoryCallbacks[MEMORY_WRITE]);
+            localBuffer[OPERATOR]=json(MEMORY_DATA,operatorsMemoryCallbacks[MEMORY_WRITE]);
             instruction(localBuffer[OPERATOR]);
-            localBuffer[MEMORY_VALUE]=localBuffer[OPERATOR];
+            localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
 
-            operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_VALUE];
+            operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
             operatorsMemoryCallbacks[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
             return;
         };

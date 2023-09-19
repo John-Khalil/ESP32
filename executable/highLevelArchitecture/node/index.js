@@ -42,7 +42,7 @@ app.get('/',(req,res)=>{
     // new pipeline().loop(500,new pipeline().consoleLogger("this is test this is test this is test this is test")).run();
 
     
-    new pipeline().loop(10,new pipeline().loop(100,new pipeline().consoleLogger("this is test this is test this is test this is test"))).run();
+    new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))).run();
 
     // new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))))).run();
 })

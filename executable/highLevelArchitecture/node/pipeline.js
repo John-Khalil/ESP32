@@ -16,7 +16,7 @@ export default class pipeline{
     static MEMORY_WRITE=       "MEMORY_WRITE";
     static MEMORY_READ=        "MEMORY_READ";
     static MEMORY_ADDRESS=     "MEMORY_ADDRESS";
-    static MEMORY_VALUE=       "MEMORY_VALUE";
+    static MEMORY_DATA=        "MEMORY_DATA";
     static TIMER=              "TIMER";
     static CLOCK_OUTPUT=       "CLOCK_OUTPUT";
     static STORAGE_WRITE=      "STORAGE_WRITE";
@@ -26,13 +26,22 @@ export default class pipeline{
     static LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
     static callbackFunctionList=[];
+    fingerPrint='pipeline';
     
     instructionsList=[];
+
+    get=(pipelineObject)=>{
+        return (pipelineObject?.fingerPrint==this.fingerPrint)?pipelineObject.instructionsList[0]:pipelineObject;
+    }
+
+    getList=(pipelineObject)=>{
+        return (pipelineObject?.fingerPrint==this.fingerPrint)?pipelineObject.instructionsList:[pipelineObject];
+    }
 
     consoleLogger=consoleData=>{
         this.instructionsList.push({
             [pipeline.OPERATOR]:pipeline.CONSOLE_LOGGER,
-            [pipeline.DATA]:(typeof(consoleData)==='object')?consoleData.get()[0]:consoleData
+            [pipeline.DATA]:this.get(consoleData)
         })
         return this;
     }
@@ -41,17 +50,34 @@ export default class pipeline{
         this.instructionsList.push({
             [pipeline.OPERATOR]:pipeline.LOOP,
             [pipeline.DATA]:{
-                [pipeline.LOOP_COUNTER]:(typeof(loopCounter)==='object')?loopCounter.get()[0]:loopCounter,
-                [pipeline.LOOP_ELEMENENTS]:(typeof(loopBody)==='object')?loopBody.get():[]
+                [pipeline.LOOP_COUNTER]:this.get(loopCounter),
+                [pipeline.LOOP_ELEMENENTS]:this.getList(loopBody)
             }
         })
         return this;
     }
 
-    get=()=>{
-
-        return this.instructionsList;
+    memoryWrite=(memoryAddress,memoryData)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.MEMORY_WRITE,
+            [pipeline.DATA]:{
+                [pipeline.MEMORY_ADDRESS]:this.get(memoryAddress),
+                [pipeline.MEMORY_DATA]:pipeline.get(memoryData)
+            }
+        })
+        return this;
     }
+
+    memoryRead=(memoryAddress)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.MEMORY_READ,
+            [pipeline.DATA]:{
+                [pipeline.MEMORY_ADDRESS]:this.get(memoryAddress)
+            }
+        })
+        return this;
+    }
+
 
     run=()=>{
 
