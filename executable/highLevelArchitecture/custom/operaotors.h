@@ -117,6 +117,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
             localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
 
+
             operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
             operatorsMemoryCallbacks[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
             return;
@@ -327,5 +328,3 @@ void threadRunner(uint8_t *operatorObject){
 
 //     return RETURN_BUFFER[recursionDepth--];
 // }
-
-

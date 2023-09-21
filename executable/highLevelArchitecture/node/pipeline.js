@@ -62,7 +62,7 @@ export default class pipeline{
             [pipeline.OPERATOR]:pipeline.MEMORY_WRITE,
             [pipeline.DATA]:{
                 [pipeline.MEMORY_ADDRESS]:this.get(memoryAddress),
-                [pipeline.MEMORY_DATA]:pipeline.get(memoryData)
+                [pipeline.MEMORY_DATA]:this.get(memoryData)
             }
         })
         return this;
@@ -90,6 +90,8 @@ export default class pipeline{
                 }
             });
         });
+
+        this.instructionsList=[]
 
         return this;
     }
