@@ -46,11 +46,13 @@ const char *SEND=               "SEND";
 const char *MEMORY_WRITE=       "MEMORY_WRITE";
 const char *MEMORY_READ=        "MEMORY_READ";
 const char *MEMORY_ADDRESS=     "MEMORY_ADDRESS";
-const char *MEMORY_DATA=       "MEMORY_DATA";
+const char *MEMORY_DATA=        "MEMORY_DATA";
 const char *TIMER=              "TIMER";
 const char *CLOCK_OUTPUT=       "CLOCK_OUTPUT";
 const char *STORAGE_WRITE=      "STORAGE_WRITE";
 const char *STORAGE_READ=       "STORAGE_READ";
+const char *STORAGE_ADDRESS=    "STORAGE_ADDRESS";
+const char *STORAGE_DATA=       "STORAGE_DATA";
 
 const char *LOOP_COUNTER=       "LOOP_COUNTER";
 const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
@@ -81,7 +83,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //& CONSOLE_LOGGER
+        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
             static uint16_t logCounter;
 
             console.log("[",++logCounter,"]-> ",operatorData);
@@ -89,7 +91,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //& LOOP
+        operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
             utils::highLevelMemory loopMemory(BUFFER_SIZE_1);
 
             // console.log("LOOP --->> ",operatorData);
@@ -106,7 +108,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
         };
 
-        operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //& MEMORY_WRITE
+        operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
@@ -123,13 +125,38 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                              //& MEMORY_READ
+        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
             instruction(localBuffer[OPERATOR]);
 
             operatorsMemoryCallbacks[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
+            return;
+        };
+
+        operatorsMemoryCallbacks[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+            localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_WRITE]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[STORAGE_ADDRESS]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(STORAGE_DATA,operatorsMemoryCallbacks[STORAGE_WRITE]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[STORAGE_DATA]=localBuffer[OPERATOR];
+
+            operatorsMemoryCallbacks[STORAGE_WRITE]=localStorage.setItem((char*)localBuffer[STORAGE_ADDRESS],localBuffer[STORAGE_DATA]).c_str();
+            return;
+        };
+
+        operatorsMemoryCallbacks[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+            
+            localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_READ]);
+            instruction(localBuffer[OPERATOR]);
+
+            operatorsMemoryCallbacks[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
             return;
         };
 

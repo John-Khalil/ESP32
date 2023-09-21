@@ -21,6 +21,8 @@ export default class pipeline{
     static CLOCK_OUTPUT=       "CLOCK_OUTPUT";
     static STORAGE_WRITE=      "STORAGE_WRITE";
     static STORAGE_READ=       "STORAGE_READ";
+    static STORAGE_ADDRESS=    "STORAGE_ADDRESS";
+    static STORAGE_DATA=       "STORAGE_DATA";
 
     static LOOP_COUNTER=       "LOOP_COUNTER";
     static LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
@@ -73,6 +75,27 @@ export default class pipeline{
             [pipeline.OPERATOR]:pipeline.MEMORY_READ,
             [pipeline.DATA]:{
                 [pipeline.MEMORY_ADDRESS]:this.get(memoryAddress)
+            }
+        })
+        return this;
+    }
+
+    storageWrite=(storageAddress,storageData)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.STORAGE_WRITE,
+            [pipeline.DATA]:{
+                [pipeline.STORAGE_ADDRESS]:this.get(storageAddress),
+                [pipeline.STORAGE_DATA]:this.get(storageData)
+            }
+        })
+        return this;
+    }
+
+    storageRead=(storageAddress)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.STORAGE_READ,
+            [pipeline.DATA]:{
+                [pipeline.STORAGE_ADDRESS]:this.get(storageAddress)
             }
         })
         return this;

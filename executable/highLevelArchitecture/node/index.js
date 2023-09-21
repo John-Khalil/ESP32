@@ -44,11 +44,11 @@ app.get('/',(req,res)=>{
     
     new pipeline()
     .memoryWrite(10,10)
-    .memoryWrite("consoleData","this is memory read Test")
+    .storageWrite("consoleData","this is localStorage read Test")
     .run()
     // .consoleLogger(new pipeline().memoryRead(10))
     // .run();
-    .loop(new pipeline().memoryRead(10),new pipeline().loop(new pipeline().memoryRead(10),new pipeline().consoleLogger(new pipeline().memoryRead("consoleData")))).run();
+    .loop(new pipeline().memoryRead(10),new pipeline().loop(new pipeline().memoryRead(10),new pipeline().consoleLogger(new pipeline().storageRead("consoleData")))).run();
 
     // new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))))).run();
 })
