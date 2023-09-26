@@ -694,3 +694,5 @@ public:
 };
 
 }
+
+utils::highLevelMemory appLinker(1024);

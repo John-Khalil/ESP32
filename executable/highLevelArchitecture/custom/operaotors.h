@@ -57,6 +57,11 @@ const char *STORAGE_DATA=       "STORAGE_DATA";
 const char *LOOP_COUNTER=       "LOOP_COUNTER";
 const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
+const char *THREAD_ADD=         "ADD_THREAD";
+const char *THREAD_ID=          "THREAD_ID";
+const char *THREAD_EXECUTABLE=  "THREAD_EXECUTABLE";
+const char *THREAD_PRIORITY=    "THREAD_PRIORITY";
+
 
 
 
@@ -159,6 +164,27 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             operatorsMemoryCallbacks[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
             return;
         };
+
+        operatorsMemoryCallbacks[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+            localBuffer[OPERATOR]=json(THREAD_ID,threadData);
+            instruction(localBuffer[OPERATOR]);
+
+            operatorsMemory[([&](uint8_t *threadID){
+                uint32_t loopCounter=0;
+                while((operatorsMemory[loopCounter]!=UNDEFINED)&&(operatorsMemory[loopCounter]!=localBuffer[OPERATOR]))loopCounter++;
+                return loopCounter;
+            })(localBuffer[OPERATOR])]=localBuffer[OPERATOR];
+
+            
+
+            
+
+            return;
+        };
+
+
 
         return;
     })(operatorObjectMemory);
