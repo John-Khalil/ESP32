@@ -170,14 +170,19 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             localBuffer[OPERATOR]=json(THREAD_ID,threadData);
             instruction(localBuffer[OPERATOR]);
+            localBuffer[THREAD_ID]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
 
             operatorsMemory[([&](uint8_t *threadID){
                 uint32_t loopCounter=0;
-                while((operatorsMemory[loopCounter]!=UNDEFINED)&&(operatorsMemory[loopCounter]!=localBuffer[OPERATOR]))loopCounter++;
+                while((operatorsMemory[loopCounter]!=UNDEFINED)&&(operatorsMemory[loopCounter]!=threadID))loopCounter++;
                 return loopCounter;
-            })(localBuffer[OPERATOR])]=localBuffer[OPERATOR];
+            })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
 
-            
+            operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
 
             
 
