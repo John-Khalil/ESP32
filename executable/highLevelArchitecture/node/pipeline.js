@@ -27,6 +27,12 @@ export default class pipeline{
     static LOOP_COUNTER=       "LOOP_COUNTER";
     static LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
+    static THREAD_ADD=         "ADD_THREAD";
+    static THREAD_ID=          "THREAD_ID";
+    static THREAD_EXECUTABLE=  "THREAD_EXECUTABLE";
+    static THREAD_PRIORITY=    "THREAD_PRIORITY";
+
+
     static callbackFunctionList=[];
     fingerPrint='pipeline';
     
@@ -96,6 +102,20 @@ export default class pipeline{
             [pipeline.OPERATOR]:pipeline.STORAGE_READ,
             [pipeline.DATA]:{
                 [pipeline.STORAGE_ADDRESS]:this.get(storageAddress)
+            }
+        })
+        return this;
+    }
+
+    task=(taskID,priority,task)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.THREAD_ADD,
+            [pipeline.DATA]:{
+                [pipeline.THREAD_ID]:this.get(taskID),
+                [pipeline.THREAD_EXECUTABLE]:{
+                    [pipeline.THREAD_PRIORITY]:this.get(priority),
+                    [pipeline.THREAD_EXECUTABLE]:this.get(task),
+                }
             }
         })
         return this;
