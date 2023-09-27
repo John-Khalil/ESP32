@@ -217,6 +217,28 @@ void threadRunner(uint8_t *operatorObject){
     return;
 }
 
+void runThreads(void){
+    static uint64_t loopCounter;
+    static uint32_t threadCounter;
+
+    if(!operatorsMemory[threadCounter]){
+        threadCounter=0;
+        return;
+    }
+    utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+    
+    localBuffer[THREAD_ID]=operatorsMemory[threadCounter++];
+
+    localBuffer[OPERATOR]=json(THREAD_PRIORITY,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+    instruction(localBuffer[OPERATOR]);
+    
+    if(!(loopCounter++%getInt(localBuffer[OPERATOR]))){
+        localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+        instruction(localBuffer[OPERATOR]);
+    }
+    return;
+}
+
 
 
 
