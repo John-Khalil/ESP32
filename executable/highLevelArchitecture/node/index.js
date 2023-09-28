@@ -42,9 +42,16 @@ app.get('/',(req,res)=>{
     // new pipeline().loop(500,new pipeline().consoleLogger("this is test this is test this is test this is test")).run();
     
     
+    
     new pipeline()
+        
+        .task("task0",5000,new pipeline().consoleLogger("this is test from a running task "))
+        .consoleLogger(new pipeline().memoryRead("task0"))
+        .run()
+
+
         .memoryWrite(10,10)
-        // .storageWrite("consoleData","this is localStorage read Test")
+        .storageWrite("consoleData","this is localStorage read Test")
         .run()
         // .consoleLogger(new pipeline().memoryRead(10))
         // .run();

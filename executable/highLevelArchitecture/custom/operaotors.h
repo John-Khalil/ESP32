@@ -178,7 +178,8 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             operatorsMemory[([&](uint8_t *threadID){
                 uint32_t loopCounter=0;
-                while((operatorsMemory[loopCounter]!=UNDEFINED)&&(operatorsMemory[loopCounter]!=threadID))loopCounter++;
+                while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
+                    loopCounter++;
                 return loopCounter;
             })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
 
@@ -221,7 +222,7 @@ void runThreads(void){
     static uint64_t loopCounter;
     static uint32_t threadCounter;
 
-    if(!operatorsMemory[threadCounter]){
+    if(!stringCounter(operatorsMemory[threadCounter])){
         threadCounter=0;
         return;
     }
@@ -229,11 +230,14 @@ void runThreads(void){
     
     localBuffer[THREAD_ID]=operatorsMemory[threadCounter++];
 
-    localBuffer[OPERATOR]=json(THREAD_PRIORITY,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+    uint8_t *threadPriority=json(THREAD_PRIORITY,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+
+    localBuffer[OPERATOR]=threadPriority;
     instruction(localBuffer[OPERATOR]);
     
     if(!(loopCounter++%getInt(localBuffer[OPERATOR]))){
-        localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+        uint8_t* threadExecutable=json(THREAD_EXECUTABLE,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
+        localBuffer[OPERATOR]=threadExecutable;
         instruction(localBuffer[OPERATOR]);
     }
     return;
