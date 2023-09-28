@@ -45,9 +45,10 @@ app.get('/',(req,res)=>{
     
     new pipeline()
         
-        .task("task0",50,new pipeline().consoleLogger("this is test from a running task "))
-        .consoleLogger(new pipeline().memoryRead("task0"))
+        .task("task1",50,new pipeline().consoleLogger("this is test from a running ............task1 "))
+        .task("task0",5,new pipeline().consoleLogger("this is test from a running task0 "))
         .run()
+        
 
 
         // .memoryWrite(10,10)

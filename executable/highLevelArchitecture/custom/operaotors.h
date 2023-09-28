@@ -224,6 +224,7 @@ void runThreads(void){
 
     if(!stringCounter(operatorsMemory[threadCounter])){
         threadCounter=0;
+        loopCounter++;
         return;
     }
     static utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
@@ -235,13 +236,13 @@ void runThreads(void){
     localBuffer[OPERATOR]=threadPriority;
     instruction(localBuffer[OPERATOR]);
     
-    if(!(loopCounter++%getInt(localBuffer[OPERATOR]))){
+    if(!(loopCounter%getInt(localBuffer[OPERATOR]))){
         uint8_t* threadExecutable=json(THREAD_EXECUTABLE,operatorsMemory[(char*)localBuffer[THREAD_ID]]);
         localBuffer[OPERATOR]=threadExecutable;
         instruction(localBuffer[OPERATOR]);
     }
     else
-        _delay_ms(1);
+        _delay_ms(10);
     return;
 }
 
