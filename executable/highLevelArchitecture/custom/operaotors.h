@@ -226,7 +226,7 @@ void runThreads(void){
         threadCounter=0;
         return;
     }
-    utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+    static utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
     
     localBuffer[THREAD_ID]=operatorsMemory[threadCounter++];
 
@@ -240,6 +240,8 @@ void runThreads(void){
         localBuffer[OPERATOR]=threadExecutable;
         instruction(localBuffer[OPERATOR]);
     }
+    else
+        _delay_ms(1);
     return;
 }
 
