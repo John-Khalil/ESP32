@@ -684,12 +684,22 @@ public:
     //     return UNDEFINED;
     // }
 
+    uint8_t dynamicAllocation=0;
+
     highLevelMemory(uint32_t memorySize){
+        dynamicAllocation=1;
         MAIN_MEMORY_SIZE=memorySize;
-        MAIN_MEMORY=(uint8_t*)calloc(++memorySize,sizeof(uint8_t));
+        MAIN_MEMORY=(uint8_t*)calloc(sizeof(uint8_t),++memorySize);
     }
+
+    highLevelMemory(uint8_t *preAllocatedMemory,uint32_t memorySize){
+        MAIN_MEMORY_SIZE=memorySize;
+        MAIN_MEMORY=preAllocatedMemory;
+    }
+
     ~highLevelMemory(){
-        free(MAIN_MEMORY);
+        if(dynamicAllocation)
+            free(MAIN_MEMORY);
     }
 };
 

@@ -78,6 +78,12 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
     if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
         return operatorObject[OPERATOR];
 
+    static uint16_t nestedCounter;
+
+    // #define NESTING_LIMIT 5
+    // static uint8_t staticBuffer[NESTING_LIMIT][BUFFER_SIZE_1]={{}};
+    // utils::highLevelMemory operatorObjectMemory(CLR(staticBuffer[nestedCounter++],BUFFER_SIZE_1),BUFFER_SIZE_1);
+
     utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
 
 
@@ -206,6 +212,8 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
     // uint8_t* returnData=operatorObjectMemory[json(OPERATOR,operatorObject)];
 
     operatorObject[OPERATOR]=operatorObjectMemory[json(OPERATOR,operatorObject[OPERATOR])];
+
+    --nestedCounter;
 
     return operatorObject[OPERATOR];
 }

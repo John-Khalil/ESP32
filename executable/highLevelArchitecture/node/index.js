@@ -46,7 +46,7 @@ app.get('/',(req,res)=>{
     new pipeline()
         
         .task("task1",50,new pipeline().consoleLogger("this is test from a running ............task1 "))
-        .task("task0",5,new pipeline().consoleLogger("this is test from a running task0 "))
+        .task("task0",1,new pipeline().consoleLogger("this is test from a running task0 "))
         .run()
         
 
