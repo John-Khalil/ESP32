@@ -77,11 +77,21 @@ void setup(){
 	EEPROM_UTILS::ssidSave((uint8_t*)"RISC-V");					//^ for testing only
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
+
+
+
+
 	const char* testInstruction0="{\"OPERATOR\":\"LOOP\",\"DATA\":{\"LOOP_COUNTER\":1,\"LOOP_ELEMENENTS\":[{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task1\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":50,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running ............task1 \"}}}},{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task0\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":1,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running task0 \"}}}}]}}";
 	threadRunner((uint8_t*)testInstruction0);
 	console.log("threadRunner return");
 	while(1)
 		runThreads();
+
+
+
+
+
+
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
@@ -104,40 +114,7 @@ void setup(){
 
 	});
 
-	MEMORY["BUFFER"]=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)MEMORY_READ,(uint8_t*)"{\"MEMORY_ADDRESS\":\"manga\",\"MEMORY_VALUE\":\"this is a test\"}"));	
-	uint8_t *testPtr=JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)CONSOLE_LOGGER,(uint8_t*)MEMORY["BUFFER"]));
-
-		// thraedRunner(testPtr);
-
-	MEMORY["BUFFER"]=testPtr;
-
-	std::string testInstruction=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)MEMORY["BUFFER"])+std::string("]}");
-	// (char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str()))
-	std::string testInstruction2=std::string("{\"LOOP_COUNTER\":5,\"LOOP_ELEMENENTS\":[")+std::string((char*)JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())))+std::string("]}");;
-
-
-
-	// std::make_shared<$json>(testInstruction2);
-	// auto test0=jsonParser(testInstruction2)["LOOP_COUNTER"];
-	// auto test2=jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"];
-	// auto test1=jsonParser(testInstruction2)["LOOP_ELEMENENTS"];
-
-	auto testCall=[&](uint8_t *param1,uint8_t *param2,uint8_t *param3){
-		console.log("test0 >> ",param1);
-		console.log("test0 >> ",param2);
-		console.log("test0 >> ",param3);
-		return;
-	};
 	
-
-	// testCall(jsonParser(testInstruction2)["LOOP_COUNTER"],jsonParser(testInstruction2)["LOOP_ELEMENENTS[0]"],jsonParser(testInstruction2)["LOOP_ELEMENENTS"]);
-	
-
-	// console.log(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
-
-	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction.c_str())));
-	// threadRunner(JSON_OBJECT(JSON_KEYS(OPERATOR,DATA),JSON_VALUES((uint8_t*)LOOP,(uint8_t*)testInstruction2.c_str())));
-	// threadRunner(testPtr);
 
 
 
