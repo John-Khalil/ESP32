@@ -13,7 +13,7 @@ const remoteClient=new mqttClient({serverAddress:'mqtt-dashboard.com',topic:mqtt
 
     pipeline.onStart(data=>{
 
-        console.log(JSON.stringify(data).length)
+        console.log(JSON.stringify(data))
 
         remoteClient.send(data);
     })
