@@ -69,8 +69,8 @@ const char *THREAD_PRIORITY=    "THREAD_PRIORITY";
 utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
     // console.log("start >> ",(uint8_t*)operatorObject[OPERATOR]);
-
-    if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
+    uint8_t *userOperator;
+    if((userOperator=json(OPERATOR,operatorObject[OPERATOR]))==UNDEFINED)
         return operatorObject[OPERATOR];
 
     static uint16_t nestedCounter;
@@ -79,13 +79,14 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
     ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
 
+        #define SET_OPERATOR(USER_OPERATOR) if(equalStrings((uint8_t*)USER_OPERATOR,userOperator))operatorsMemoryCallbacks[USER_OPERATOR]
 
-        operatorsMemoryCallbacks["readTest"]<<[&](void){
+        SET_OPERATOR("readTest")<<[&](void){
             operatorsMemoryCallbacks["readTest"]="readTest !!!";
             return;
         };
 
-        operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
+        SET_OPERATOR(CONSOLE_LOGGER)>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
             static uint16_t logCounter;
 
             console.log("[",++logCounter,"]-> ",operatorData);
@@ -93,7 +94,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
+        SET_OPERATOR(LOOP)>>[&](uint8_t *operatorData){                                     //^ LOOP
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             // console.log("LOOP --->> ",operatorData);
@@ -109,7 +110,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
         };
 
-        operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
+        SET_OPERATOR(MEMORY_WRITE)<<[&](void){                                              //^ MEMORY_WRITE
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
@@ -126,7 +127,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
+        SET_OPERATOR(MEMORY_READ)<<[&](void){                                               //^ MEMORY_READ
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
             localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
@@ -136,7 +137,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
+        SET_OPERATOR(STORAGE_WRITE)<<[&](void){                                              //^ STORAGE_WRITE
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_WRITE]);
@@ -151,7 +152,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
+        SET_OPERATOR(STORAGE_READ)<<[&](void){                                               //^ STORAGE_READ
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
             localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_READ]);
@@ -161,7 +162,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        operatorsMemoryCallbacks[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
+        SET_OPERATOR(THREAD_ADD)>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(THREAD_ID,threadData);
@@ -215,367 +216,372 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
 
 
-utils::highLevelMemory& instruction0000000000(utils::highLevelMemory& operatorObject){
+// utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
-    console.log("start >> ",(uint8_t*)operatorObject[OPERATOR]);
+//     // console.log("start >> ",(uint8_t*)operatorObject[OPERATOR]);
 
-    if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
-        return operatorObject[OPERATOR];
+//     if(json(OPERATOR,operatorObject[OPERATOR])==UNDEFINED)
+//         return operatorObject[OPERATOR];
 
-    static uint16_t nestedCounter;
-
-    // #define NESTING_LIMIT 5
-    // static uint8_t staticBuffer[NESTING_LIMIT][BUFFER_SIZE_1*2]={{}};
-    // uint8_t* allocatedMemoryPointer=staticBuffer[nestedCounter++];
-    // utils::highLevelMemory operatorObjectMemory(CLR(allocatedMemoryPointer,BUFFER_SIZE_1),BUFFER_SIZE_1);
-    // utils::highLevelMemory operatorLocalBuffer(CLR(allocatedMemoryPointer+BUFFER_SIZE_1,BUFFER_SIZE_1),BUFFER_SIZE_1);
+//     static uint16_t nestedCounter;
 
 
-    static std::vector<utils::highLevelMemory> operatorObjectMemoryVector;
-    // static std::vector<utils::highLevelMemory> operatorLocalBufferVector;
+//     // #define NESTING_LIMIT 5
+//     // static uint8_t staticBuffer[NESTING_LIMIT][BUFFER_SIZE_1*2]={{}};
+//     // uint8_t* allocatedMemoryPointer=staticBuffer[nestedCounter++];
+//     // utils::highLevelMemory operatorObjectMemory(CLR(allocatedMemoryPointer,BUFFER_SIZE_1),BUFFER_SIZE_1);
+//     // utils::highLevelMemory operatorLocalBuffer(CLR(allocatedMemoryPointer+BUFFER_SIZE_1,BUFFER_SIZE_1),BUFFER_SIZE_1);
 
-    if(nestedCounter>=operatorObjectMemoryVector.size()){
 
-        console.log("see if this ever triggers");
+//     static std::vector<utils::highLevelMemory> operatorObjectMemoryVector;
+//     // static std::vector<utils::highLevelMemory> operatorLocalBufferVector;
 
-        // operatorObjectMemoryVector.emplace_back(BUFFER_SIZE_1);
-        // operatorLocalBufferVector.emplace_back(BUFFER_SIZE_1);
+//     if(nestedCounter>=operatorObjectMemoryVector.size()){
 
-        operatorObjectMemoryVector.emplace_back((uint8_t*)calloc(BUFFER_SIZE_1+1,sizeof(uint8_t)),BUFFER_SIZE_1);
+//         console.log("see if this ever triggers");
+
+//         // operatorObjectMemoryVector.emplace_back(BUFFER_SIZE_1);
+//         // operatorLocalBufferVector.emplace_back(BUFFER_SIZE_1);
+
+//         operatorObjectMemoryVector.emplace_back((uint8_t*)calloc(BUFFER_SIZE_1+1,sizeof(uint8_t)),BUFFER_SIZE_1);
         
-        ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+//         ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
 
-    /*
+//     /*
 
 
-            static auto CONSOLE_LOGGER_FUNCTION=[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
-                static uint16_t logCounter;
+//             static auto CONSOLE_LOGGER_FUNCTION=[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
+//                 static uint16_t logCounter;
 
-                console.log("[",++logCounter,"]-> ",operatorData);
+//                 console.log("[",++logCounter,"]-> ",operatorData);
 
-                return;
-            };
+//                 return;
+//             };
 
-            operatorsMemoryCallbacks[CONSOLE_LOGGER]>>CONSOLE_LOGGER_FUNCTION;
+//             operatorsMemoryCallbacks[CONSOLE_LOGGER]>>CONSOLE_LOGGER_FUNCTION;
 
             
-            static auto LOOP_FUNCTION=[&](uint8_t *operatorData){                                     //^ LOOP
-                // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             static auto LOOP_FUNCTION=[&](uint8_t *operatorData){                                     //^ LOOP
+//                 // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-                // console.log("LOOP --->> ",operatorData);
+//                 // console.log("LOOP --->> ",operatorData);
 
-                localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
-                uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
-                while(loopLimit--){
-                    uint16_t loopCounter=0;
-                    while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
-                        instruction(localBuffer[OPERATOR]);
-                }
+//                 localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
+//                 uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
+//                 while(loopLimit--){
+//                     uint16_t loopCounter=0;
+//                     while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
+//                         instruction(localBuffer[OPERATOR]);
+//                 }
 
-                return;
+//                 return;
 
-            };
+//             };
 
-            operatorsMemoryCallbacks[LOOP]>>LOOP_FUNCTION;
+//             operatorsMemoryCallbacks[LOOP]>>LOOP_FUNCTION;
 
 
-            static auto THREAD_ADD_FUNCTION=[&](uint8_t *threadData){                                 //^ THREAD_ADD
-                // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             static auto THREAD_ADD_FUNCTION=[&](uint8_t *threadData){                                 //^ THREAD_ADD
+//                 // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-                localBuffer[OPERATOR]=json(THREAD_ID,threadData);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[THREAD_ID]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(THREAD_ID,threadData);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[THREAD_ID]=localBuffer[OPERATOR];
 
-                localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
 
-                operatorsMemory[([&](uint8_t *threadID){
-                    uint32_t loopCounter=0;
-                    while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
-                        loopCounter++;
-                    return loopCounter;
-                })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
+//                 operatorsMemory[([&](uint8_t *threadID){
+//                     uint32_t loopCounter=0;
+//                     while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
+//                         loopCounter++;
+//                     return loopCounter;
+//                 })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
 
-                operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
+//                 operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
 
                 
 
-                return;
-            };
+//                 return;
+//             };
 
-            operatorsMemoryCallbacks[THREAD_ADD]>>THREAD_ADD_FUNCTION;
-
-
-    */
-
-            operatorsMemoryCallbacks["readTest"]<<[&](void){
-                operatorsMemoryCallbacks["readTest"]="readTest !!!";
-                return;
-            };
-
-            operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
-                static uint16_t logCounter;
-
-                console.log("[",++logCounter,"]-> ",operatorData);
-
-                return;
-            };
-
-            operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
-
-                // console.log("LOOP --->> ",operatorData);
-
-                localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
-                uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
-                while(loopLimit--){
-                    uint16_t loopCounter=0;
-                    while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED){
-                        // console.log(" -------------> ",json($(LOOP_ELEMENENTS,"[",loopCounter+1,"]"),operatorData));
-                        instruction(localBuffer[OPERATOR]);
-                        // console.log(" =============> ",operatorData);
-                    }
-                }
-
-                // console.log("LOOP --->> ",operatorData);
-
-                return;
-
-            };
-
-            operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
-
-                localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
-
-                localBuffer[OPERATOR]=json(MEMORY_DATA,operatorsMemoryCallbacks[MEMORY_WRITE]);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
+//             operatorsMemoryCallbacks[THREAD_ADD]>>THREAD_ADD_FUNCTION;
 
 
-                operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
-                operatorsMemoryCallbacks[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
-                return;
-            };
+//     */
 
-            operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             operatorsMemoryCallbacks["readTest"]<<[&](void){
+//                 operatorsMemoryCallbacks["readTest"]="readTest !!!";
+//                 return;
+//             };
+
+//             operatorsMemoryCallbacks[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
+//                 static uint16_t logCounter;
+
+//                 console.log("[",++logCounter,"]-> ",operatorData);
+
+//                 return;
+//             };
+
+//             operatorsMemoryCallbacks[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+//                 // console.log("LOOP --->> ",operatorData);
+
+//                 localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
+//                 uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
+//                 while(loopLimit--){
+//                     uint16_t loopCounter=0;
+//                     while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED){
+//                         // console.log(" -------------> ",json($(LOOP_ELEMENENTS,"[",loopCounter+1,"]"),operatorData));
+//                         instruction(localBuffer[OPERATOR]);
+//                         // console.log(" =============> ",operatorData);
+//                     }
+//                 }
+
+//                 // console.log("LOOP --->> ",operatorData);
+
+//                 return;
+
+//             };
+
+//             operatorsMemoryCallbacks[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+//                 localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_WRITE]);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
+
+//                 localBuffer[OPERATOR]=json(MEMORY_DATA,operatorsMemoryCallbacks[MEMORY_WRITE]);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
+
+
+//                 operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
+//                 operatorsMemoryCallbacks[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
+//                 return;
+//             };
+
+//             operatorsMemoryCallbacks[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
                 
-                localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
-                instruction(localBuffer[OPERATOR]);
+//                 localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorsMemoryCallbacks[MEMORY_READ]);
+//                 instruction(localBuffer[OPERATOR]);
 
-                operatorsMemoryCallbacks[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
-                return;
-            };
+//                 operatorsMemoryCallbacks[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
+//                 return;
+//             };
 
-            operatorsMemoryCallbacks[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             operatorsMemoryCallbacks[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-                localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_WRITE]);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[STORAGE_ADDRESS]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_WRITE]);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[STORAGE_ADDRESS]=localBuffer[OPERATOR];
 
-                localBuffer[OPERATOR]=json(STORAGE_DATA,operatorsMemoryCallbacks[STORAGE_WRITE]);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[STORAGE_DATA]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(STORAGE_DATA,operatorsMemoryCallbacks[STORAGE_WRITE]);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[STORAGE_DATA]=localBuffer[OPERATOR];
 
-                operatorsMemoryCallbacks[STORAGE_WRITE]=localStorage.setItem((char*)localBuffer[STORAGE_ADDRESS],localBuffer[STORAGE_DATA]).c_str();
-                return;
-            };
+//                 operatorsMemoryCallbacks[STORAGE_WRITE]=localStorage.setItem((char*)localBuffer[STORAGE_ADDRESS],localBuffer[STORAGE_DATA]).c_str();
+//                 return;
+//             };
 
-            operatorsMemoryCallbacks[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             operatorsMemoryCallbacks[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
                 
-                localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_READ]);
-                instruction(localBuffer[OPERATOR]);
+//                 localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_READ]);
+//                 instruction(localBuffer[OPERATOR]);
 
-                operatorsMemoryCallbacks[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
-                return;
-            };
+//                 operatorsMemoryCallbacks[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
+//                 return;
+//             };
 
-            operatorsMemoryCallbacks[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
-                utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//             operatorsMemoryCallbacks[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
+//                 utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-                localBuffer[OPERATOR]=json(THREAD_ID,threadData);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[THREAD_ID]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(THREAD_ID,threadData);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[THREAD_ID]=localBuffer[OPERATOR];
 
-                localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
-                instruction(localBuffer[OPERATOR]);
-                localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
+//                 localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
+//                 instruction(localBuffer[OPERATOR]);
+//                 localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
 
-                operatorsMemory[([&](uint8_t *threadID){
-                    uint32_t loopCounter=0;
-                    while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
-                        loopCounter++;
-                    return loopCounter;
-                })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
+//                 operatorsMemory[([&](uint8_t *threadID){
+//                     uint32_t loopCounter=0;
+//                     while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
+//                         loopCounter++;
+//                     return loopCounter;
+//                 })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
 
-                operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
+//                 operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
 
-                console.log("thread load return");
+//                 console.log("thread load return");
 
-                return;
-            };
-
-
-
-            return;
-        })(operatorObjectMemoryVector[operatorObjectMemoryVector.size()-1]);
-    }
+//                 return;
+//             };
 
 
-    // utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
-    // utils::highLevelMemory operatorLocalBuffer(BUFFER_SIZE_1);
 
-    // console.log(inttostring(operatorObjectMemoryVector.size())," - - ",nestedCounter);
+//             return;
+//         })(operatorObjectMemoryVector[operatorObjectMemoryVector.size()-1]);
+//     }
 
-    // operatorObjectMemoryVector[operatorObjectMemoryVector.size()-1][CONSOLE_LOGGER]=inttostring(operatorObjectMemoryVector.size());
+
+//     // utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
+//     // utils::highLevelMemory operatorLocalBuffer(BUFFER_SIZE_1);
+
+//     // console.log(inttostring(operatorObjectMemoryVector.size())," - - ",nestedCounter);
+
+//     // operatorObjectMemoryVector[operatorObjectMemoryVector.size()-1][CONSOLE_LOGGER]=inttostring(operatorObjectMemoryVector.size());
     
-    utils::highLevelMemory &operatorObjectMemory=operatorObjectMemoryVector[nestedCounter++];
+//     utils::highLevelMemory &operatorObjectMemory=operatorObjectMemoryVector[nestedCounter++];
 
-    // operatorObjectMemory[CONSOLE_LOGGER]=inttostring(operatorObjectMemoryVector.size());
+//     // operatorObjectMemory[CONSOLE_LOGGER]=inttostring(operatorObjectMemoryVector.size());
 
-    /*
+//     /*
 
-    // ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
+//     // ([&](utils::highLevelMemory &operatorsMemoryCallbacks){
 
-        // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
-        // operatorObjectMemory["readTest"]<<[&](void){
-        //     operatorObjectMemory["readTest"]="readTest !!!";
-        //     return;
-        // };
+//         // operatorObjectMemory["readTest"]<<[&](void){
+//         //     operatorObjectMemory["readTest"]="readTest !!!";
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
-        //     static uint16_t logCounter;
+//         // operatorObjectMemory[CONSOLE_LOGGER]>>[&](uint8_t *operatorData){                           //^ CONSOLE_LOGGER
+//         //     static uint16_t logCounter;
 
-        //     console.log("[",++logCounter,"]-> ",operatorData);
+//         //     console.log("[",++logCounter,"]-> ",operatorData);
 
-        //     return;
-        // };
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[LOOP]>>[&](uint8_t *operatorData){                                     //^ LOOP
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-        //     // console.log("LOOP --->> ",operatorData);
+//         //     // console.log("LOOP --->> ",operatorData);
 
-        //     localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
-        //     uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
-        //     while(loopLimit--){
-        //         uint16_t loopCounter=0;
-        //         while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
-        //             instruction(localBuffer[OPERATOR]);
-        //     }
+//         //     localBuffer[OPERATOR]=json(LOOP_COUNTER,operatorData);
+//         //     uint32_t loopLimit=getInt32_t(instruction(localBuffer[OPERATOR]));
+//         //     while(loopLimit--){
+//         //         uint16_t loopCounter=0;
+//         //         while((localBuffer[OPERATOR]=json($(LOOP_ELEMENENTS,"[",loopCounter++,"]"),operatorData))!=UNDEFINED)
+//         //             instruction(localBuffer[OPERATOR]);
+//         //     }
 
-        //     return;
+//         //     return;
 
-        // };
+//         // };
 
-        // operatorObjectMemory[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[MEMORY_WRITE]<<[&](void){                                              //^ MEMORY_WRITE
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-        //     localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorObjectMemory[MEMORY_WRITE]);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorObjectMemory[MEMORY_WRITE]);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[MEMORY_ADDRESS]=localBuffer[OPERATOR];
 
-        //     localBuffer[OPERATOR]=json(MEMORY_DATA,operatorObjectMemory[MEMORY_WRITE]);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(MEMORY_DATA,operatorObjectMemory[MEMORY_WRITE]);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[MEMORY_DATA]=localBuffer[OPERATOR];
 
 
-        //     operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
-        //     operatorObjectMemory[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
-        //     return;
-        // };
+//         //     operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]]=localBuffer[MEMORY_DATA];
+//         //     operatorObjectMemory[MEMORY_WRITE]=operatorsMemory[(uint8_t*)localBuffer[MEMORY_ADDRESS]];
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[MEMORY_READ]<<[&](void){                                               //^ MEMORY_READ
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
-        //     localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorObjectMemory[MEMORY_READ]);
-        //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[OPERATOR]=json(MEMORY_ADDRESS,operatorObjectMemory[MEMORY_READ]);
+//         //     instruction(localBuffer[OPERATOR]);
 
-        //     operatorObjectMemory[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
-        //     return;
-        // };
+//         //     operatorObjectMemory[MEMORY_READ]=operatorsMemory[(uint8_t*)localBuffer[OPERATOR]];
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[STORAGE_WRITE]<<[&](void){                                              //^ STORAGE_WRITE
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-        //     localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorObjectMemory[STORAGE_WRITE]);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[STORAGE_ADDRESS]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorObjectMemory[STORAGE_WRITE]);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[STORAGE_ADDRESS]=localBuffer[OPERATOR];
 
-        //     localBuffer[OPERATOR]=json(STORAGE_DATA,operatorObjectMemory[STORAGE_WRITE]);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[STORAGE_DATA]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(STORAGE_DATA,operatorObjectMemory[STORAGE_WRITE]);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[STORAGE_DATA]=localBuffer[OPERATOR];
 
-        //     operatorObjectMemory[STORAGE_WRITE]=localStorage.setItem((char*)localBuffer[STORAGE_ADDRESS],localBuffer[STORAGE_DATA]).c_str();
-        //     return;
-        // };
+//         //     operatorObjectMemory[STORAGE_WRITE]=localStorage.setItem((char*)localBuffer[STORAGE_ADDRESS],localBuffer[STORAGE_DATA]).c_str();
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[STORAGE_READ]<<[&](void){                                               //^ STORAGE_READ
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
-        //     localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorObjectMemory[STORAGE_READ]);
-        //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorObjectMemory[STORAGE_READ]);
+//         //     instruction(localBuffer[OPERATOR]);
 
-        //     operatorObjectMemory[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
-        //     return;
-        // };
+//         //     operatorObjectMemory[STORAGE_READ]=localStorage.getItem((char*)localBuffer[OPERATOR]).c_str();
+//         //     return;
+//         // };
 
-        // operatorObjectMemory[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
-        //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+//         // operatorObjectMemory[THREAD_ADD]>>[&](uint8_t *threadData){                                 //^ THREAD_ADD
+//         //     // utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-        //     localBuffer[OPERATOR]=json(THREAD_ID,threadData);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[THREAD_ID]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(THREAD_ID,threadData);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[THREAD_ID]=localBuffer[OPERATOR];
 
-        //     localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
-        //     instruction(localBuffer[OPERATOR]);
-        //     localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
+//         //     localBuffer[OPERATOR]=json(THREAD_EXECUTABLE,threadData);
+//         //     instruction(localBuffer[OPERATOR]);
+//         //     localBuffer[THREAD_EXECUTABLE]=localBuffer[OPERATOR];
 
-        //     operatorsMemory[([&](uint8_t *threadID){
-        //         uint32_t loopCounter=0;
-        //         while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
-        //             loopCounter++;
-        //         return loopCounter;
-        //     })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
+//         //     operatorsMemory[([&](uint8_t *threadID){
+//         //         uint32_t loopCounter=0;
+//         //         while(stringCounter(operatorsMemory[loopCounter])&&!equalStrings(operatorsMemory[loopCounter],threadID))
+//         //             loopCounter++;
+//         //         return loopCounter;
+//         //     })(localBuffer[THREAD_ID])]=localBuffer[THREAD_ID];
 
-        //     operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
+//         //     operatorsMemory[(uint8_t*)localBuffer[THREAD_ID]]=localBuffer[THREAD_EXECUTABLE];
 
             
 
-        //     return;
-        // };
+//         //     return;
+//         // };
 
 
 
-    //     return;
-    // })(operatorObjectMemory);
+//     //     return;
+//     // })(operatorObjectMemory);
     
-    */
+//     */
     
 
-    operatorObjectMemory[OPERATOR]=json(DATA,operatorObject[OPERATOR]);
+//     operatorObjectMemory[OPERATOR]=json(DATA,operatorObject[OPERATOR]);
 
-    instruction(operatorObjectMemory[OPERATOR]);
+//     instruction(operatorObjectMemory[OPERATOR]);
 
-    // uint8_t* operatorData=operatorObjectMemory[OPERATOR];
+//         console.log("nestedCounter => ",nestedCounter);
 
-    operatorObjectMemory[json(OPERATOR,operatorObject[OPERATOR])]=operatorObjectMemory[OPERATOR];
+//     // uint8_t* operatorData=operatorObjectMemory[OPERATOR];
 
-    // uint8_t* returnData=operatorObjectMemory[json(OPERATOR,operatorObject)];
+//     operatorObjectMemory[json(OPERATOR,operatorObject[OPERATOR])]=operatorObjectMemory[OPERATOR];
 
-    operatorObject[OPERATOR]=operatorObjectMemory[json(OPERATOR,operatorObject[OPERATOR])];
+//     // uint8_t* returnData=operatorObjectMemory[json(OPERATOR,operatorObject)];
 
-    --nestedCounter;
+//     operatorObject[OPERATOR]=operatorObjectMemory[json(OPERATOR,operatorObject[OPERATOR])];
 
-    return operatorObject[OPERATOR];
-}
+//     nestedCounter--;
+
+//     console.log("nestedCounter >> ",nestedCounter);
+
+//     return operatorObject[OPERATOR];
+// }
 
 
 void threadRunner(uint8_t *operatorObject){
