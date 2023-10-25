@@ -62,6 +62,10 @@ const char *THREAD_ID=          "THREAD_ID";
 const char *THREAD_EXECUTABLE=  "THREAD_EXECUTABLE";
 const char *THREAD_PRIORITY=    "THREAD_PRIORITY";
 
+const char *STARTUP_ADD=         "STARTUP_ADD";
+const char *STARTUP_ID=          "STARTUP_ID";
+const char *STARTUP_SCRIPT=      "STARTUP_SCRIPT";
+
 
 
 
@@ -137,7 +141,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        SET_OPERATOR(STORAGE_WRITE)<<[&](void){                                              //^ STORAGE_WRITE
+        SET_OPERATOR(STORAGE_WRITE)<<[&](void){                                             //^ STORAGE_WRITE
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
             localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_WRITE]);
@@ -152,7 +156,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
-        SET_OPERATOR(STORAGE_READ)<<[&](void){                                               //^ STORAGE_READ
+        SET_OPERATOR(STORAGE_READ)<<[&](void){                                              //^ STORAGE_READ
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
             localBuffer[OPERATOR]=json(STORAGE_ADDRESS,operatorsMemoryCallbacks[STORAGE_READ]);
@@ -185,6 +189,30 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
             return;
         };
+
+        SET_OPERATOR(STARTUP_ADD)>>[&](uint8_t *startupData){                               //^ STARTUP_ADD
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+            localBuffer[OPERATOR]=json(STARTUP_ID,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[STARTUP_ID]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(STARTUP_SCRIPT,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[STARTUP_SCRIPT]=localBuffer[OPERATOR];
+
+            localStorage.setItem(([&](uint8_t* scriptID){
+                uint32_t loopCounter=0;
+                while((!equalStrings((uint8_t*)localStorage.getItem(loopCounter).c_str(),UNDEFINED))&&(!equalStrings((uint8_t*)localStorage.getItem(loopCounter).c_str(),scriptID)))
+                    loopCounter++;
+                return loopCounter;
+            })(localBuffer[STARTUP_ID]),localBuffer[STARTUP_ID]);
+
+            localStorage.setItem((char*)localBuffer[STARTUP_ID],(char*)localBuffer[STARTUP_SCRIPT]);
+
+            return;
+        };
+        
 
 
 
@@ -617,6 +645,19 @@ void runThreads(void){
     }
     else
         _delay_ms(1);
+    return;
+}
+
+void loadStartupScripts(void){
+    uint32_t scriptCounter=0;
+    static utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+    while(!equalStrings((localBuffer[STARTUP_ID]=(uint8_t*)localStorage.getItem(scriptCounter++).c_str()),UNDEFINED)){
+        uint8_t *startupScript=(uint8_t*)localStorage.getItem((char*)localBuffer[STARTUP_ID]).c_str();
+        localBuffer[OPERATOR]=startupScript;
+        instruction(localBuffer[OPERATOR]);
+    }
+
     return;
 }
 

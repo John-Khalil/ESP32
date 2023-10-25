@@ -78,7 +78,8 @@ void setup(){
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
 
-
+	console.log(" -->> ",localStorage.getItem(556).c_str());
+	while(1);
 
 
 	const char* testInstruction0="{\"OPERATOR\":\"LOOP\",\"DATA\":{\"LOOP_COUNTER\":1,\"LOOP_ELEMENENTS\":[{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task1\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":50,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running ............task1 \"}}}},{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task0\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":1,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running task0 \"}}}}]}}";
