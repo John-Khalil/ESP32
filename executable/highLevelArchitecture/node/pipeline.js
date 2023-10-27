@@ -32,6 +32,10 @@ export default class pipeline{
     static THREAD_EXECUTABLE=  "THREAD_EXECUTABLE";
     static THREAD_PRIORITY=    "THREAD_PRIORITY";
 
+    static STARTUP_ADD=        "STARTUP_ADD";
+    static STARTUP_ID=         "STARTUP_ID";
+    static STARTUP_SCRIPT=     "STARTUP_SCRIPT";
+
 
     static callbackFunctionList=[];
     fingerPrint='pipeline';
@@ -116,6 +120,17 @@ export default class pipeline{
                     [pipeline.THREAD_PRIORITY]:this.get(priority),
                     [pipeline.THREAD_EXECUTABLE]:this.get(task),
                 }
+            }
+        })
+        return this;
+    }
+
+    startupScript=(startupID,startupScript)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.STARTUP_ADD,
+            [pipeline.DATA]:{
+                [pipeline.STARTUP_ID]:this.get(startupID),
+                [pipeline.STARTUP_SCRIPT]:this.get(startupScript)
             }
         })
         return this;

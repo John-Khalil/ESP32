@@ -197,9 +197,11 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
             localBuffer[STARTUP_ID]=localBuffer[OPERATOR];
 
-            localBuffer[OPERATOR]=json(STARTUP_SCRIPT,startupData);
-            instruction(localBuffer[OPERATOR]);
-            localBuffer[STARTUP_SCRIPT]=localBuffer[OPERATOR];
+            localBuffer[STARTUP_SCRIPT]=json(STARTUP_SCRIPT,startupData);
+
+            //! localBuffer[OPERATOR]=json(STARTUP_SCRIPT,startupData);
+            //! instruction(localBuffer[OPERATOR]);
+            //! localBuffer[STARTUP_SCRIPT]=localBuffer[OPERATOR];
 
             localStorage.setItem(([&](uint8_t* scriptID){
                 uint32_t loopCounter=0;
@@ -651,6 +653,8 @@ void runThreads(void){
 void loadStartupScripts(void){
     uint32_t scriptCounter=0;
     static utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+    console.log("----> ",localStorage.getItem("script1").c_str());
 
     while(!equalStrings((localBuffer[STARTUP_ID]=(uint8_t*)localStorage.getItem(scriptCounter++).c_str()),UNDEFINED)){
         uint8_t *startupScript=(uint8_t*)localStorage.getItem((char*)localBuffer[STARTUP_ID]).c_str();

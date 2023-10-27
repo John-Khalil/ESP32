@@ -69,7 +69,10 @@ void setup(){
 		EEPROM_UTILS::wifiPasswordSave(MEMORY[NETWORK_PASSWORD]);
 		console.log("connecting to -> ",(char*)MEMORY[NETWORK_SSID]," <",(char*)MEMORY[NETWORK_PASSWORD],"> ...");
 		WIFI_UTILS::networkConnect();
-		WIFI_UTILS::connected()?console.log("CONNECTED @ <",WIFI_UTILS::currentIP(),">"):console.log("FAILED TO CONNECT -> ACCESS POINT ACTIVE <",WIFI_UTILS::currentIP(),"> same password");
+		WIFI_UTILS::connected()?([&](void){
+			console.log("CONNECTED @ <",WIFI_UTILS::currentIP(),">");
+			appLinker["networkConnect"]=$("CONNECTED @ <",WIFI_UTILS::currentIP(),">");
+		})():console.log("FAILED TO CONNECT -> ACCESS POINT ACTIVE <",WIFI_UTILS::currentIP(),"> same password");
 		WIFI_UTILS::accessPoint();
 	};
 
@@ -78,42 +81,45 @@ void setup(){
 	EEPROM_UTILS::wifiPasswordSave((uint8_t*)"threadripper");	//^ for testing only
 
 
-	console.log(" -->> ",localStorage.getItem(556).c_str());
-	while(1);
+	// console.log(" -->> ",localStorage.getItem(556).c_str());
+	// while(1);
 
 
-	const char* testInstruction0="{\"OPERATOR\":\"LOOP\",\"DATA\":{\"LOOP_COUNTER\":1,\"LOOP_ELEMENENTS\":[{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task1\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":50,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running ............task1 \"}}}},{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task0\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":1,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running task0 \"}}}}]}}";
-	threadRunner((uint8_t*)testInstruction0);
-	console.log("threadRunner return");
-	while(1)
-		runThreads();
+	// const char* testInstruction0="{\"OPERATOR\":\"LOOP\",\"DATA\":{\"LOOP_COUNTER\":1,\"LOOP_ELEMENENTS\":[{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task1\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":50,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running ............task1 \"}}}},{\"OPERATOR\":\"ADD_THREAD\",\"DATA\":{\"THREAD_ID\":\"task0\",\"THREAD_EXECUTABLE\":{\"THREAD_PRIORITY\":1,\"THREAD_EXECUTABLE\":{\"OPERATOR\":\"CONSOLE_LOGGER\",\"DATA\":\"this is test from a running task0 \"}}}}]}}";
+	// threadRunner((uint8_t*)testInstruction0);
+	// console.log("threadRunner return");
+	// while(1)
+	// 	runThreads();
 
+	appLinker["networkConnect"]>>[&](uint8_t *eventData){
 
+		mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
+		mqttServer.onData([&](uint8_t *data){
+			console.log("data >> ",data);
+			threadRunner(data);
+		});
 
+		webServer.onData([&](uint8_t *data){
+			console.log("data >> ",data);
+			// webServer.send(data);
+			// webServer.httpSetResponse(data);
+		});
 
+		console.log("starting service");
+		webServer.setup(80,"/");
+
+		loadStartupScripts();
+
+		return;
+	};
 
 
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
 
-	mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
-	mqttServer.onData([&](uint8_t *data){
-		console.log("data >> ",data);
-		threadRunner(data);
-	});
+	
 
-	webServer.onData([&](uint8_t *data){
-		console.log("data >> ",data);
-		// webServer.send(data);
-		// webServer.httpSetResponse(data);
-	});
 
-	async({
-		_delay_ms(10000);
-		console.log("starting service");
-		webServer.setup(80,"/");
-
-	});
 
 	
 
