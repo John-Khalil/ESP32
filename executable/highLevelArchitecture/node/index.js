@@ -46,7 +46,8 @@ app.get('/',(req,res)=>{
     new pipeline()
 
         .startupScript("script1",new pipeline().consoleLogger("api machine started"))
-        .startupScript("script2",new pipeline().consoleLogger(" ------------- "))
+        .startupScript("script2",new pipeline().consoleLogger(" +++++++++++++ "))
+        .startupScript("script3",new pipeline().consoleLogger(" ------------- "))
         .run()
         
         // .task("task1",50,new pipeline().consoleLogger("this is test from a running ............task1 "))

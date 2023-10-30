@@ -652,11 +652,12 @@ void runThreads(void){
 
 void loadStartupScripts(void){
     uint32_t scriptCounter=0;
-    static utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+    utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
-    console.log("----> ",localStorage.getItem("script1").c_str());
+    // console.log("----> ",localStorage.getItem("script1").c_str());
 
     while(!equalStrings((localBuffer[STARTUP_ID]=(uint8_t*)localStorage.getItem(scriptCounter++).c_str()),UNDEFINED)){
+        console.log(" [STARTUP_SCRIPT] ",(char*)localBuffer[STARTUP_ID]);
         uint8_t *startupScript=(uint8_t*)localStorage.getItem((char*)localBuffer[STARTUP_ID]).c_str();
         localBuffer[OPERATOR]=startupScript;
         instruction(localBuffer[OPERATOR]);
