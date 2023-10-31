@@ -66,6 +66,101 @@ const char *STARTUP_ADD=         "STARTUP_ADD";
 const char *STARTUP_ID=          "STARTUP_ID";
 const char *STARTUP_SCRIPT=      "STARTUP_SCRIPT";
 
+const char *ALOP=                "ALOP";
+const char *FIRST_OPERAND=       "FIRST_OPERAND";
+const char *SECOND_OPERAND=      "SECOND_OPERAND";
+
+const char *MATH_OPERATORS[]={
+    "ADD",
+    "SUB",
+    "MUL",
+    "DIV",
+    "MOD",
+    "_2sComp",
+    "XOR",
+    "OR",
+    "AND",
+    "COMP",
+    "SHIFT_RIGHT",
+    "SHIFT_LEFT",
+    "EQUAL",
+    "NOT_EQUAL",
+    "LOGIC_AND",
+    "LOGIC_OR",
+    "NOT",
+    "SMALLER",
+    "GREATER",
+    "SMALLER_EQUAL",
+    "GREATER_EQUAL"
+};
+
+const std::function<unsigned long(unsigned long,unsigned long)>MATH_OPERATIONS[]={			
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ ADD 				-ARITHMETIC
+        return firstOperand+secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ SUB 				-ARITHMETIC
+        return firstOperand-secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ MUL 				-ARITHMETIC
+        return firstOperand*secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ DIV 				-ARITHMETIC
+        return firstOperand/secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ MOD 				-ARITHMETIC
+        return firstOperand%secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ 2's COMP 			-ARITHMETIC
+        return (~firstOperand)+1;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ XOR 				-BITWISE
+        return firstOperand^secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 					-BITWISE
+        return firstOperand|secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 				-BITWISE
+        return firstOperand&secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ COMP 				-BITWISE
+        return ~firstOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT RIGHT 		-BITWISE
+        return firstOperand>>secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ SHIFT LEFT 			-BITWISE
+        return firstOperand<<secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ EQUAL 				-LOGIC
+        return (firstOperand==secondOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT EQUAL 			-LOGIC
+        return (firstOperand!=secondOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ AND 				-LOGIC
+        return firstOperand&&secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ OR 					-LOGIC
+        return firstOperand||secondOperand;
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ NOT 				-LOGIC
+        return (!firstOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ SMALLER 			-LOGIC
+        return (firstOperand<secondOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ GREATER 			-LOGIC
+        return (firstOperand>secondOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ SMALLER OR EQUAL	-LOGIC
+        return (firstOperand<=secondOperand);
+    },
+    [&](unsigned long firstOperand,unsigned long secondOperand){	//^ GREATER OR EQUAL	-LOGIC
+        return (firstOperand>=secondOperand);
+    }
+    // all the basic mathematical operations like Power, logarithmic , exponential , root , trignometric should be added further
+};
+
 
 
 
@@ -215,7 +310,29 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
         
+        SET_OPERATOR(ALOP)<<[&](void){                                                      //^ Arithmetic Logic operators
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
 
+            localBuffer[OPERATOR]=json(ALOP,operatorsMemoryCallbacks[ALOP]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[ALOP]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(FIRST_OPERAND,operatorsMemoryCallbacks[ALOP]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[FIRST_OPERAND]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(SECOND_OPERAND,operatorsMemoryCallbacks[ALOP]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[SECOND_OPERAND]=localBuffer[OPERATOR];
+
+            operatorsMemoryCallbacks[ALOP]=inttostring(MATH_OPERATIONS[([&](void){
+                uint16_t loopCounter=0;
+                while(!equalStrings(localBuffer[ALOP],(uint8_t*)MATH_OPERATORS[loopCounter++]));
+                return loopCounter-1;
+            })()](strint(localBuffer[FIRST_OPERAND]),strint(localBuffer[SECOND_OPERAND])));
+            
+            return;
+        };
 
 
         return;
