@@ -36,6 +36,34 @@ export default class pipeline{
     static STARTUP_ID=         "STARTUP_ID";
     static STARTUP_SCRIPT=     "STARTUP_SCRIPT";
 
+    static ALOP=                "ALOP";
+    static FIRST_OPERAND=       "FIRST_OPERAND";
+    static SECOND_OPERAND=      "SECOND_OPERAND";
+
+    static MATH_OPERATORS={
+        ADD:"ADD",
+        SUB:"SUB",
+        MUL:"MUL",
+        DIV:"DIV",
+        MOD:"MOD",
+        _2sComp:"_2sComp",
+        XOR:"XOR",
+        OR:"OR",
+        AND:"AND",
+        COMP:"COMP",
+        SHIFT_RIGHT:"SHIFT_RIGHT",
+        SHIFT_LEFT:"SHIFT_LEFT",
+        EQUAL:"EQUAL",
+        NOT_EQUAL:"NOT_EQUAL",
+        LOGIC_AND:"LOGIC_AND",
+        LOGIC_OR:"LOGIC_OR",
+        NOT:"NOT",
+        SMALLER:"SMALLER",
+        GREATER:"GREATER",
+        SMALLER_EQUAL:"SMALLER_EQUAL",
+        GREATER_EQUAL:"GREATER_EQUAL"
+    };
+
 
     static callbackFunctionList=[];
     fingerPrint='pipeline';
@@ -131,6 +159,18 @@ export default class pipeline{
             [pipeline.DATA]:{
                 [pipeline.STARTUP_ID]:this.get(startupID),
                 [pipeline.STARTUP_SCRIPT]:this.get(startupScript)
+            }
+        })
+        return this;
+    }
+
+    alop=(firstOperand,alop,secondOperand)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.ALOP,
+            [pipeline.DATA]:{
+                [pipeline.FIRST_OPERAND]:this.get(firstOperand),
+                [pipeline.ALOP]:this.get(alop),
+                [pipeline.SECOND_OPERAND]:this.get(secondOperand)
             }
         })
         return this;

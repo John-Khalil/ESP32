@@ -45,10 +45,13 @@ app.get('/',(req,res)=>{
     
     new pipeline()
 
-        .startupScript("script1",new pipeline().consoleLogger("api machine started"))
-        .startupScript("script2",new pipeline().consoleLogger(" +++++++++++++ "))
-        .startupScript("script3",new pipeline().consoleLogger(" ------------- "))
+        .consoleLogger(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"))
         .run()
+
+        // .startupScript("script1",new pipeline().consoleLogger("api machine started"))
+        // .startupScript("script2",new pipeline().consoleLogger(" +++++++++++++ "))
+        // .startupScript("script3",new pipeline().consoleLogger(" ------------- "))
+        // .run()
         
         // .task("task1",50,new pipeline().consoleLogger("this is test from a running ............task1 "))
         // .task("task0",1,new pipeline().consoleLogger("this is test from a running task0 "))
