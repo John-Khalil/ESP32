@@ -25,6 +25,13 @@
 #include <type_traits>
 
 
+const char *GENERIC_RX=      "WEB_SERVER_RX";
+
+const char *MQTT_TX=            "MQTT_TX";
+const char *MQTT_RX=            "MQTT_RX";
+const char *WEB_SERVER_TX=      "WEB_SERVER_TX";
+const char *WEB_SERVER_RX=      "WEB_SERVER_RX";
+
 
 
 

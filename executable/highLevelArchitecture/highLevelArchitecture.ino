@@ -95,14 +95,13 @@ void setup(){
 
 		mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
 		mqttServer.onData([&](uint8_t *data){
-			console.log("data >> ",data);
-			threadRunner(data);
+			// appLinker[MQTT_RX]=data;
+			appLinker[GENERIC_RX]=data;
 		});
 
 		webServer.onData([&](uint8_t *data){
-			console.log("data >> ",data);
-			// webServer.send(data);
-			// webServer.httpSetResponse(data);
+			// appLinker[WEB_SERVER_RX]=data;
+			appLinker[GENERIC_RX]=data;
 		});
 
 		console.log("starting service");
@@ -111,6 +110,30 @@ void setup(){
 		loadStartupScripts();
 
 		return;
+	};
+
+	appLinker[GENERIC_RX]>>[&](uint8_t *eventData){
+		console.log("data >> ",eventData);
+		threadRunner(eventData);
+	};
+
+	// appLinker[MQTT_RX]>>[&](uint8_t *eventData){
+	// 	console.log("data >> ",eventData);
+	// 	threadRunner(eventData);
+	// };
+
+	appLinker[MQTT_TX]>>[&](uint8_t *eventData){
+		mqttServer.send(eventData);
+	};
+
+	// appLinker[WEB_SERVER_RX]>>[&](uint8_t *eventData){
+	// 	console.log("data >> ",eventData);
+	// 	threadRunner(eventData);
+	// };
+
+	appLinker[WEB_SERVER_TX]>>[&](uint8_t *eventData){
+		webServer.send(eventData);
+		webServer.httpSetResponse(eventData);
 	};
 
 
@@ -137,8 +160,8 @@ void loop(){
 	static uint32_t loopCounter;
 	mqttServer.loop();
 
-	if(!(loopCounter++%99999))
-		mqttServer.send("this is test");
+	// if(!(loopCounter++%99999))
+	// 	mqttServer.send("this is test");
 
 	runThreads();
 
