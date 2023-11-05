@@ -53,6 +53,10 @@ const char *STORAGE_WRITE=      "STORAGE_WRITE";
 const char *STORAGE_READ=       "STORAGE_READ";
 const char *STORAGE_ADDRESS=    "STORAGE_ADDRESS";
 const char *STORAGE_DATA=       "STORAGE_DATA";
+const char *REGISTER_WRITE=     "REGISTER_WRITE";
+const char *REGISTER_READ=      "REGISTER_READ";
+const char *REGISTER_ADDRESS=   "REGISTER_ADDRESS";
+const char *REGISTER_DATA=      "REGISTER_DATA";
 
 const char *LOOP_COUNTER=       "LOOP_COUNTER";
 const char *LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
@@ -334,6 +338,32 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             return;
         };
 
+        SET_OPERATOR(REGISTER_WRITE)<<[&](void){                                            //^ REGISTER_WRITE
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+            localBuffer[OPERATOR]=json(REGISTER_ADDRESS,operatorsMemoryCallbacks[REGISTER_WRITE]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[REGISTER_ADDRESS]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(REGISTER_DATA,operatorsMemoryCallbacks[REGISTER_WRITE]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[REGISTER_DATA]=localBuffer[OPERATOR];
+
+
+            appLinker[(uint8_t*)localBuffer[REGISTER_ADDRESS]]=localBuffer[REGISTER_DATA];
+            operatorsMemoryCallbacks[REGISTER_WRITE]=appLinker[(uint8_t*)localBuffer[REGISTER_ADDRESS]];
+            return;
+        };
+
+        SET_OPERATOR(REGISTER_READ)<<[&](void){                                             //^ REGISTER_READ
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+            
+            localBuffer[OPERATOR]=json(REGISTER_ADDRESS,operatorsMemoryCallbacks[REGISTER_READ]);
+            instruction(localBuffer[OPERATOR]);
+
+            operatorsMemoryCallbacks[REGISTER_READ]=appLinker[(uint8_t*)localBuffer[OPERATOR]];
+            return;
+        };
 
         return;
     })(operatorObjectMemory);
