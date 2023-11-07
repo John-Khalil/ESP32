@@ -24,6 +24,11 @@ export default class pipeline{
     static STORAGE_ADDRESS=    "STORAGE_ADDRESS";
     static STORAGE_DATA=       "STORAGE_DATA";
 
+    static REGISTER_WRITE=     "REGISTER_WRITE";
+    static REGISTER_READ=      "REGISTER_READ";
+    static REGISTER_ADDRESS=   "REGISTER_ADDRESS";
+    static REGISTER_DATA=      "REGISTER_DATA";
+
     static LOOP_COUNTER=       "LOOP_COUNTER";
     static LOOP_ELEMENENTS=    "LOOP_ELEMENENTS";
 
@@ -62,6 +67,14 @@ export default class pipeline{
         GREATER:"GREATER",
         SMALLER_EQUAL:"SMALLER_EQUAL",
         GREATER_EQUAL:"GREATER_EQUAL"
+    };
+
+    static REGISTERS={
+        GENERIC_RX:"WEB_SERVER_RX",
+        MQTT_TX:"MQTT_TX",
+        MQTT_RX:"MQTT_RX",
+        WEB_SERVER_TX:"WEB_SERVER_TX",
+        WEB_SERVER_RX:"WEB_SERVER_RX"
     };
 
 
@@ -171,6 +184,27 @@ export default class pipeline{
                 [pipeline.FIRST_OPERAND]:this.get(firstOperand),
                 [pipeline.ALOP]:this.get(alop),
                 [pipeline.SECOND_OPERAND]:this.get(secondOperand)
+            }
+        })
+        return this;
+    }
+
+    registerWrite=(registerAddress,registerData)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.REGISTER_WRITE,
+            [pipeline.DATA]:{
+                [pipeline.REGISTER_ADDRESS]:this.get(registerAddress),
+                [pipeline.REGISTER_DATA]:this.get(registerData)
+            }
+        })
+        return this;
+    }
+
+    registerRead=(registerAddress)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.REGISTER_READ,
+            [pipeline.DATA]:{
+                [pipeline.REGISTER_ADDRESS]:this.get(registerAddress)
             }
         })
         return this;
