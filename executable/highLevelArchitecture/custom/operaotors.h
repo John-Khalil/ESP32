@@ -381,7 +381,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
         SET_OPERATOR(SET_OBJECT)<<[&](void){                                                //^ SET_OBJECT
             utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
             
-            localBuffer[OPERATOR]=(json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT])==UNDEFINED)?"{}":json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT]);
+            localBuffer[OPERATOR]=(json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT])==UNDEFINED)?(uint8_t*)"{}":json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT]);
             instruction(localBuffer[OPERATOR]);
             localBuffer[USER_OBJECT]=localBuffer[OPERATOR];
 
@@ -393,6 +393,7 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
             localBuffer[NEW_VALUE]=localBuffer[OPERATOR];
             
+            operatorsMemoryCallbacks[SET_OBJECT]=editJson((char*)localBuffer[USER_OBJECT],(char*)localBuffer[USER_KEY],(char*)localBuffer[NEW_VALUE]).c_str();
             return;
         };
 
