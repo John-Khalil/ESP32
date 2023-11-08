@@ -81,6 +81,12 @@ const char *ALOP=                "ALOP";
 const char *FIRST_OPERAND=       "FIRST_OPERAND";
 const char *SECOND_OPERAND=      "SECOND_OPERAND";
 
+const char *SET_OBJECT=          "SET_OBJECT";
+const char *USER_OBJECT=         "USER_OBJECT";
+const char *USER_KEY=            "USER_KEY";
+const char *NEW_VALUE=           "NEW_VALUE";
+
+
 const char *MATH_OPERATORS[]={
     "ADD",
     "SUB",
@@ -369,6 +375,24 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
 
             operatorsMemoryCallbacks[REGISTER_READ]=appLinker[(uint8_t*)localBuffer[OPERATOR]];
+            return;
+        };
+
+        SET_OPERATOR(SET_OBJECT)<<[&](void){                                                //^ SET_OBJECT
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+            
+            localBuffer[OPERATOR]=(json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT])==UNDEFINED)?"{}":json(USER_OBJECT,operatorsMemoryCallbacks[SET_OBJECT]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[USER_OBJECT]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(USER_KEY,operatorsMemoryCallbacks[SET_OBJECT]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[USER_KEY]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(NEW_VALUE,operatorsMemoryCallbacks[SET_OBJECT]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[NEW_VALUE]=localBuffer[OPERATOR];
+            
             return;
         };
 
