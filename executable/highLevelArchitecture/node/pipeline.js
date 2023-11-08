@@ -2,6 +2,9 @@
 
 export default class pipeline{
 
+    static CALL_BACKS={};
+    static CALL_BACKS_COUNTER=0;
+
     static OPERATOR=           "OPERATOR";
     static DATA=               "DATA";
 
@@ -248,6 +251,19 @@ export default class pipeline{
 
         return this;
     }
+
+    getValue=(asyncValue,connectionRegister)=>{
+
+        new pipeline().registerWrite((connectionRegister||pipeline.REGISTERS.MQTT_TX),new pipeline().newObject(`pipeline.CALL_BACKS<${pipeline.CALL_BACKS_COUNTER}>`,this.get(asyncValue))).run();
+
+        return new Promise((resolve,reject)=>{
+            pipeline.CALL_BACKS[`pipeline.CALL_BACKS<${pipeline.CALL_BACKS_COUNTER++}>`]=(asyncReturnValue)=>{
+                resolve(asyncReturnValue);
+            }
+        });
+    }
+
+
 
     static onStart=callbackFunction=>{
 
