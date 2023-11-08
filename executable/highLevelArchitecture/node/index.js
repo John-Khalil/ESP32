@@ -45,7 +45,10 @@ app.get('/',(req,res)=>{
     
     new pipeline()
 
-        .consoleLogger(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"))
+        // .consoleLogger(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"))
+        // .run()
+
+        .consoleLogger(new pipeline().setObject(new pipeline().newObject("test0",new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6")),"test1",new pipeline().newObject("test0",new pipeline().alop("6",pipeline.MATH_OPERATORS.MUL,"6"))))
         .run()
 
         // .startupScript("script1",new pipeline().consoleLogger("api machine started"))

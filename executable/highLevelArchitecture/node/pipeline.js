@@ -45,6 +45,11 @@ export default class pipeline{
     static FIRST_OPERAND=       "FIRST_OPERAND";
     static SECOND_OPERAND=      "SECOND_OPERAND";
 
+    static SET_OBJECT=          "SET_OBJECT";
+    static USER_OBJECT=         "USER_OBJECT";
+    static USER_KEY=            "USER_KEY";
+    static NEW_VALUE=           "NEW_VALUE";
+
     static MATH_OPERATORS={
         ADD:"ADD",
         SUB:"SUB",
@@ -208,6 +213,22 @@ export default class pipeline{
             }
         })
         return this;
+    }
+
+    setObject=(userObject,userKey,newValue)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.SET_OBJECT,
+            [pipeline.DATA]:{
+                [pipeline.USER_OBJECT]:this.get(userObject),
+                [pipeline.USER_KEY]:this.get(userKey),
+                [pipeline.NEW_VALUE]:this.get(newValue)
+            }
+        })
+        return this;
+    }
+
+    newObject=(userKey,newValue)=>{
+        return this.setObject("{}",userKey,newValue);
     }
 
 
