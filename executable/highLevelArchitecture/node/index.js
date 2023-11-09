@@ -13,13 +13,22 @@ const remoteClient=new mqttClient({serverAddress:'mqtt-dashboard.com',topic:mqtt
 
     pipeline.onStart(data=>{
 
-        console.log(JSON.stringify(data).length)
+        console.log("data length >> ",JSON.stringify(data).length)
 
         remoteClient.send(data);
     })
 
     remoteClient.onData(data=>{
-        console.log(data);
+
+        // console.log(data);
+        try {
+            Object.keys(data).forEach(key=>{
+                pipeline.CALL_BACKS?.[key](data[key]);
+            })
+        } catch (error) {
+            
+        }
+
     });
 
 
@@ -41,12 +50,16 @@ app.get('/',(req,res)=>{
     // new pipeline().consoleLogger("this is test this is test this is test this is test").run()
     // new pipeline().loop(500,new pipeline().consoleLogger("this is test this is test this is test this is test")).run();
     
+    (async()=>{
+        let test=await new pipeline().getValue(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"));
+        console.log(test);
+    })();
     
     
-    new pipeline()
+    // new pipeline()
 
-        .registerWrite(pipeline.REGISTERS.MQTT_TX,new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"))
-        .run()
+    //     .registerWrite(pipeline.REGISTERS.MQTT_TX,new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"))
+    //     .run()
 
         // .registerWrite(pipeline.REGISTERS.MQTT_TX,new pipeline().setObject(new pipeline().newObject("test0",new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6")),"test1",new pipeline().newObject("test0",new pipeline().alop("6",pipeline.MATH_OPERATORS.MUL,"6"))))
         // .run()

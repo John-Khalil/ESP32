@@ -85,6 +85,8 @@ export default class pipeline{
         WEB_SERVER_RX:"WEB_SERVER_RX"
     };
 
+    static ASYNC_VALUE_DEFAULT_REGISTER=pipeline.REGISTERS.MQTT_TX;
+
 
     static callbackFunctionList=[];
     fingerPrint='pipeline';
@@ -254,10 +256,9 @@ export default class pipeline{
 
     getValue=(asyncValue,connectionRegister)=>{
 
-        new pipeline().registerWrite((connectionRegister||pipeline.REGISTERS.MQTT_TX),new pipeline().newObject(`pipeline.CALL_BACKS<${pipeline.CALL_BACKS_COUNTER}>`,this.get(asyncValue))).run();
-
+        new pipeline().registerWrite((connectionRegister||pipeline.ASYNC_VALUE_DEFAULT_REGISTER),new pipeline().newObject(`pipeline_CALL_BACKS_${pipeline.CALL_BACKS_COUNTER}`,this.get(asyncValue))).run();
         return new Promise((resolve,reject)=>{
-            pipeline.CALL_BACKS[`pipeline.CALL_BACKS<${pipeline.CALL_BACKS_COUNTER++}>`]=(asyncReturnValue)=>{
+            pipeline.CALL_BACKS[`pipeline_CALL_BACKS_${pipeline.CALL_BACKS_COUNTER++}`]=(asyncReturnValue)=>{
                 resolve(asyncReturnValue);
             }
         });

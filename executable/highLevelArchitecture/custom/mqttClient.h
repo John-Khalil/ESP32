@@ -50,12 +50,12 @@ class mqttClient{
     }
 
     mqttClient &send(uint8_t *message){
-      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),$("\"",message,"\""))));
+      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),((message[0]=='{')&&(message[stringCounter(message)-1]=='}'))?message:$("\"",message,"\""))));
       return (*this);
     }
 
     mqttClient &send(char *message){
-      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),$("\"",message,"\""))));
+      mqttServer->publish(userTopic.c_str(),(char*)JSON_OBJECT(JSON_KEYS("id","data"),JSON_VALUES((std::string("\"")+SYSTEM_UNIQUE_IDENTIFIER+std::string("\"")).c_str(),((message[0]=='{')&&(message[stringCounter((uint8_t*)message)-1]=='}'))?(uint8_t*)message:$("\"",message,"\""))));
       return (*this);
     }
 
