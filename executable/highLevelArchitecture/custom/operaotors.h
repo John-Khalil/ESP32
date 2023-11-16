@@ -86,6 +86,10 @@ const char *USER_OBJECT=         "USER_OBJECT";
 const char *USER_KEY=            "USER_KEY";
 const char *NEW_VALUE=           "NEW_VALUE";
 
+const char *FETCH_API=           "FETCH_API";
+const char *FETCH_URL=           "FETCH_URL";
+const char *FETCH_BODY=          "FETCH_BODY";
+
 
 const char *MATH_OPERATORS[]={
     "ADD",
@@ -394,6 +398,28 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             localBuffer[NEW_VALUE]=localBuffer[OPERATOR];
             
             operatorsMemoryCallbacks[SET_OBJECT]=editJson((char*)localBuffer[USER_OBJECT],(char*)localBuffer[USER_KEY],(char*)localBuffer[NEW_VALUE]).c_str();
+            return;
+        };
+
+        SET_OPERATOR(FETCH_API)<<[&](void){                                                 //^ FETCH_API
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+            
+            localBuffer[OPERATOR]=json(FETCH_URL,operatorsMemoryCallbacks[FETCH_API]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[FETCH_URL]=localBuffer[OPERATOR];
+
+            if(json(FETCH_BODY,operatorsMemoryCallbacks[FETCH_API])==UNDEFINED){
+                _delay_ms(500);
+                operatorsMemoryCallbacks[FETCH_API]=fetch((uint8_t*)localBuffer[FETCH_URL]);
+                return;
+            }
+
+            localBuffer[OPERATOR]=json(FETCH_BODY,operatorsMemoryCallbacks[FETCH_API]);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[FETCH_BODY]=localBuffer[OPERATOR];
+            
+            _delay_ms(500);
+            operatorsMemoryCallbacks[FETCH_API]=fetch((uint8_t*)localBuffer[FETCH_URL],(uint8_t*)localBuffer[FETCH_BODY]);
             return;
         };
 

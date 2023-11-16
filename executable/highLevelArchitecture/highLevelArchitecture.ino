@@ -109,6 +109,8 @@ void setup(){
 
 		loadStartupScripts();
 
+		// console.log("api call >> ",fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
+
 		return;
 	};
 

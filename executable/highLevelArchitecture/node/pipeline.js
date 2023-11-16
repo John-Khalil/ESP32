@@ -53,6 +53,10 @@ export default class pipeline{
     static USER_KEY=            "USER_KEY";
     static NEW_VALUE=           "NEW_VALUE";
 
+    static FETCH_API=           "FETCH_API";
+    static FETCH_URL=           "FETCH_URL";
+    static FETCH_BODY=          "FETCH_BODY";
+
     static MATH_OPERATORS={
         ADD:"ADD",
         SUB:"SUB",
@@ -234,6 +238,19 @@ export default class pipeline{
 
     newObject=(userKey,newValue)=>{
         return this.setObject("{}",userKey,newValue);
+    }
+
+    fetch=(url,postBody)=>{
+        this.instructionsList.push({
+            [pipeline.OPERATOR]:pipeline.FETCH_API,
+            [pipeline.DATA]:postBody?{
+                [pipeline.FETCH_URL]:this.get(url),
+                [pipeline.FETCH_BODY]:this.get(postBody)
+            }:{
+                [pipeline.FETCH_URL]:this.get(url)
+            }
+        })
+        return this;
     }
 
 

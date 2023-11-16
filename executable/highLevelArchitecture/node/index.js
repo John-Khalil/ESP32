@@ -51,7 +51,8 @@ app.get('/',(req,res)=>{
     // new pipeline().loop(500,new pipeline().consoleLogger("this is test this is test this is test this is test")).run();
     
     (async()=>{
-        let test=await new pipeline().getValue(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"));
+        // let test=await new pipeline().getValue(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"));
+        let test=await new pipeline().getValue(new pipeline().fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
         console.log(test);
     })();
     
