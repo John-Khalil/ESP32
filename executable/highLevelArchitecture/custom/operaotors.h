@@ -409,7 +409,6 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             localBuffer[FETCH_URL]=localBuffer[OPERATOR];
 
             if(json(FETCH_BODY,operatorsMemoryCallbacks[FETCH_API])==UNDEFINED){
-                _delay_ms(500);
                 operatorsMemoryCallbacks[FETCH_API]=fetch((uint8_t*)localBuffer[FETCH_URL]);
                 return;
             }
@@ -418,7 +417,6 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             instruction(localBuffer[OPERATOR]);
             localBuffer[FETCH_BODY]=localBuffer[OPERATOR];
             
-            _delay_ms(500);
             operatorsMemoryCallbacks[FETCH_API]=fetch((uint8_t*)localBuffer[FETCH_URL],(uint8_t*)localBuffer[FETCH_BODY]);
             return;
         };

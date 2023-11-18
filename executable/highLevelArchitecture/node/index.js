@@ -42,7 +42,7 @@ app.listen(port,()=>{
     console.log(`-------- server started @ port ${port}`);
 });
 
-app.get('/',(req,res)=>{
+app.get('/run',(req,res)=>{
 
     
     res.send('ack');
@@ -53,7 +53,8 @@ app.get('/',(req,res)=>{
     (async()=>{
         // let test=await new pipeline().getValue(new pipeline().alop("5",pipeline.MATH_OPERATORS.ADD,"6"));
         let test=await new pipeline().getValue(new pipeline().fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json"));
-        console.log(test);
+        // let test=await new pipeline().getValue(new pipeline().fetch("http://192.168.1.4:766/test",{test:10}));
+        console.log("getValue >> ",test);
     })();
     
     
@@ -84,6 +85,11 @@ app.get('/',(req,res)=>{
         // .loop(new pipeline().memoryRead(10),new pipeline().loop(new pipeline().memoryRead(10),new pipeline().consoleLogger(new pipeline().storageRead("consoleData")))).run();
 
     // new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))))).run();
+})
+
+app.use("/test",(req,res)=>{
+    res.send("testAck")
+    console.log("request >> ",req.body);
 })
 
 app.post('/upload',(req,res)=>{
