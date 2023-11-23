@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <functional>
+#include "highLevelMemory.cpp"
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
@@ -8,7 +9,7 @@
 #ifdef ESP32
 
 
-    #define BUFFER_SIZE_1 1024
+    #define BUFFER_SIZE_1 3072
     #define BUFFER_SIZE_2 1024
     #define BUFFER_SIZE_3 1024
     #define BUFFER_SIZE_4 1024
@@ -188,5 +189,7 @@
     #define disableInt() //interruptEnable=0
 
 #endif
+
+utils::highLevelMemory appLinker(BUFFER_SIZE_1);
 
 #endif

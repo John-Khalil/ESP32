@@ -47,7 +47,7 @@ app.get('/run',(req,res)=>{
     
     res.send('ack');
 
-    // new pipeline().consoleLogger("this is test this is test this is test this is test").run()
+    // new pipeline().consoleLogger(new pipeline().fetch("https://raw.githubusercontent.com/engkhalil/xtensa32plus/main/dnsSquared.json")).run()
     // new pipeline().loop(500,new pipeline().consoleLogger("this is test this is test this is test this is test")).run();
     
     (async()=>{

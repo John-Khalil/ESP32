@@ -705,4 +705,4 @@ public:
 
 }
 
-utils::highLevelMemory appLinker(1024);
+// utils::highLevelMemory appLinker(1024);

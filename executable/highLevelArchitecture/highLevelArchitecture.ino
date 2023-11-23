@@ -144,9 +144,19 @@ void setup(){
 
 	
 
-
+	// async({
+	// 	for(;;){
+	// 		while(!Serial.available())_delay_ms(1);
+	// 		mqttServer.send((uint8_t*)Serial.readStringUntil('\n').c_str());
+	// 	}
+	// });
 
 	
+	async({
+		for(;;){
+			mqttServer.loop();
+		}
+	});
 
 
 
@@ -160,7 +170,7 @@ void setup(){
 void loop(){
 	// ws.cleanupClients();
 	static uint32_t loopCounter;
-	mqttServer.loop();
+	// mqttServer.loop();
 
 	// if(!(loopCounter++%99999))
 	// 	mqttServer.send("this is test");

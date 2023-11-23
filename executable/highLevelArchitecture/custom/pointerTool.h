@@ -997,7 +997,8 @@ uint8_t *addToObject(uint8_t* userObjectStr,std::string newKey,std::string newVa
   std::string userObject=(char*)userObjectStr;
   userObject[userObject.length()-1]=',';    // replace '}' with ',' 0x2c
   userObject=(equalStrings(userObjectStr,(uint8_t*)"{}"))?"{":userObject;
-  return (uint8_t*)(userObject+="\""+newKey+"\""+":"+"\""+newValue+"\"}").c_str();
+//   return (uint8_t*)(userObject+="\""+newKey+"\""+":"+ "\""+newValue+"\"" +"}").c_str();
+	return (uint8_t*)(userObject+="\""+newKey+"\""+":"+ ((newValue[0]=='{')?""+newValue+"":"\""+newValue+"\"") +"}").c_str();
 }
 
 std::string editJson(std::string editObject,std::string keyString,std::string newValue){
