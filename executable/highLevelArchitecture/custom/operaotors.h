@@ -10,7 +10,7 @@
 #include "platform.h"
 #include "http.h"
 #include "webService.h"
-#include"fetch.h"
+#include "fetch.h"
 
 #include "jsonParser.h"
 #include "localStorage.h"

@@ -18,6 +18,8 @@
 
 #include "custom/mqttClient.h"
 
+#include "custom/cyclicBinary.cpp"
+
 // #include "custom/ledMatrix.h"
 
 #include <iostream>
@@ -94,8 +96,10 @@ void setup(){
 	appLinker["networkConnect"]>>[&](uint8_t *eventData){
 
 		mqttServer.setup("SnNvbi1NYWNoaW5l","SnNvbi1NYWNoaW5l",(char*)MQTT_TOPIC,"mqtt-dashboard.com");
+		// mqttServer.setup("U25OdmJpMU5ZV05vYVc1bA==","U25OdmJpMU5ZV05vYVc1bA==","U25OdmJpMU5ZV05vYVc1bA==","mqtt-dashboard.com");
 		mqttServer.onData([&](uint8_t *data){
 			// appLinker[MQTT_RX]=data;
+			// console.log(data);
 			appLinker[GENERIC_RX]=data;
 		});
 
@@ -106,6 +110,12 @@ void setup(){
 
 		console.log("starting service");
 		webServer.setup(80,"/");
+
+		async({
+			for(;;){
+				mqttServer.loop();
+			}
+		});
 
 		loadStartupScripts();
 
@@ -138,6 +148,28 @@ void setup(){
 		webServer.httpSetResponse(eventData);
 	};
 
+	appLinker["base64decode"]>>[&](uint8_t *eventData){
+		union{
+			uint8_t* base64;
+			uint32_t* rawData;
+		}signalBuffer;
+
+		uint32_t rawDataLength=(stringCounter(eventData)*0.75)/4;
+		signalBuffer.base64=base64Decode(eventData);
+
+		uint32_t outputCounter=0;
+		while(rawDataLength--){
+			console.log(intToHexaDecimal(signalBuffer.rawData[outputCounter++]));
+		}
+
+
+
+		
+
+		return;
+	};
+
+
 
 
 	MEMORY[WIFI_SETTINGS]=JSON_OBJECT(JSON_KEYS(NETWORK_SSID,NETWORK_PASSWORD),JSON_VALUES(EEPROM_UTILS::userSSID(),EEPROM_UTILS::userPassword()));
@@ -152,11 +184,43 @@ void setup(){
 	// });
 
 	
-	async({
-		for(;;){
-			mqttServer.loop();
-		}
-	});
+	// uint8_t *testPtr=(uint8_t*)calloc(5,sizeof(uint8_t));
+	
+	// testPtr[0]=255;
+	// testPtr[1]=0;
+	// testPtr[2]=255;
+	// testPtr[3]=255;
+
+	// uint32_t* testPtr16=(uint32_t*)testPtr;
+
+	// union{
+	// 	uint8_t* testPtr=(uint8_t*)calloc(50,sizeof(uint8_t));
+	// 	uint32_t* testPtr32;
+	// }testPtr;
+
+	// uint16_t testCounter=0;
+
+	// testPtr.testPtr[testCounter++]=0x11;
+	// testPtr.testPtr[testCounter++]=0x22;
+	// testPtr.testPtr[testCounter++]=0x33;
+	// testPtr.testPtr[testCounter++]=0x44;
+
+	// testPtr.testPtr[testCounter++]=0x55;
+	// testPtr.testPtr[testCounter++]=0x66;
+	// testPtr.testPtr[testCounter++]=0x77;
+	// testPtr.testPtr[testCounter++]=0x88;
+
+	// testPtr.testPtr[testCounter++]=0x99;
+	// testPtr.testPtr[testCounter++]=0xAA;
+	// testPtr.testPtr[testCounter++]=0xBB;
+	// testPtr.testPtr[testCounter++]=0xCC;
+
+
+
+	// console.log(intToHexaDecimal(testPtr.testPtr32[0]));
+	// console.log(intToHexaDecimal(testPtr.testPtr32[1]));
+	// console.log(intToHexaDecimal(testPtr.testPtr32[2]));
+
 
 
 
@@ -174,6 +238,8 @@ void loop(){
 
 	// if(!(loopCounter++%99999))
 	// 	mqttServer.send("this is test");
+	// if(Serial.available())
+	// 	mqttServer.send((uint8_t*)Serial.readStringUntil('\n').c_str());
 
 	runThreads();
 
