@@ -39,6 +39,8 @@
 
 utils::highLevelMemory MEMORY(5000);
 
+cyclicBinaryDecompression outputPort([&](uint32_t sysTick){});
+
 
 mqttClient mqttServer;
 web::service webServer;
@@ -147,22 +149,26 @@ void setup(){
 		webServer.send(eventData);
 		webServer.httpSetResponse(eventData);
 	};
+	
+	outputPort.onData([&](uint16_t portValue){
+		console.log(intToHexaDecimal(portValue));
+	});
 
 	appLinker["base64decode"]>>[&](uint8_t *eventData){
-		union{
-			uint8_t* base64;
-			uint32_t* rawData;
-		}signalBuffer;
+		// union{
+		// 	uint8_t* base64;
+		// 	uint32_t* rawData;
+		// }signalBuffer;
 
-		uint32_t rawDataLength=(stringCounter(eventData)*0.75)/4;
-		signalBuffer.base64=base64Decode(eventData);
+		// uint32_t rawDataLength=(stringCounter(eventData)*0.75)/4;
+		// signalBuffer.base64=base64Decode(eventData);
 
-		uint32_t outputCounter=0;
-		while(rawDataLength--){
-			console.log(intToHexaDecimal(signalBuffer.rawData[outputCounter++]));
-		}
+		// uint32_t outputCounter=0;
+		// while(rawDataLength--){
+		// 	console.log(intToHexaDecimal(signalBuffer.rawData[outputCounter++]));
+		// }
 
-
+		outputPort.decode(eventData);
 
 		
 
