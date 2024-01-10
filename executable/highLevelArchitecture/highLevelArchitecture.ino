@@ -39,7 +39,9 @@
 
 utils::highLevelMemory MEMORY(5000);
 
-cyclicBinaryDecompression outputPort([&](uint32_t sysTick){});
+cyclicBinaryDecompression outputPort([&](uint32_t sysTick){
+	// console.log("sysTick >> ",intToHexaDecimal((0x1<<31)|sysTick));
+});
 
 
 mqttClient mqttServer;
@@ -151,7 +153,9 @@ void setup(){
 	};
 	
 	outputPort.onData([&](uint16_t portValue){
-		console.log(intToHexaDecimal(portValue));
+		static uint32_t logCounter;
+		appLinker["test"]=intToHexaDecimal((0x1<<31)|logCounter++);
+		console.log(" >> ",(char*)appLinker["test"]," - ",intToHexaDecimal(portValue));
 	});
 
 	appLinker["base64decode"]>>[&](uint8_t *eventData){

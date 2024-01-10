@@ -99,9 +99,10 @@ app.get('/run',(req,res)=>{
     // new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().loop(10,new pipeline().consoleLogger("this is test this is test this is test this is test"))))).run();
 
     new pipeline().registerWrite("base64decode",btoa(bytesToString(uint32ArrayToBytesArray([
-        0xFFCC1122,
-        0x12300678,
-        0xFFFFFFFF
+        0x00000001,
+        0x00010003,
+        0x000205FD,
+        0x00F105FD
     ])))).run()
 })
 
