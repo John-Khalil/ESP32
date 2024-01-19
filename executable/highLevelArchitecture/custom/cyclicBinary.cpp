@@ -57,6 +57,11 @@ class cyclicBinaryDecompression{
             return (*this);
         }
 
+        if(!((*binaryCompressed)&((1<<16)-1))){
+            exitCounter++;
+            return decode((uint32_t*)(binaryCompressed+exitCounter),length);
+        }
+
         uint32_t loopCounter=((*binaryCompressed)>>16)|((((*binaryCompressed)&((uint16_t)-1))==1)*((*(binaryCompressed+1))&0xffff0000));
         uint16_t loopBody=((*(binaryCompressed+(((*binaryCompressed)&((uint16_t)-1))==1)))&((uint16_t)-1))-1;
         uint32_t *startAddress=(binaryCompressed+(((*binaryCompressed)&((uint16_t)-1))==1))+1;
