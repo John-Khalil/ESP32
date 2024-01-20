@@ -58,8 +58,8 @@ class cyclicBinaryDecompression{
         }
 
         if(!((*binaryCompressed)&((1<<16)-1))){
-            exitCounter++;
-            return decode((uint32_t*)(binaryCompressed+exitCounter),length);
+            mask=((*binaryCompressed)>>16);
+            return decode((uint32_t*)(binaryCompressed+(++exitCounter)),length);
         }
 
         uint32_t loopCounter=((*binaryCompressed)>>16)|((((*binaryCompressed)&((uint16_t)-1))==1)*((*(binaryCompressed+1))&0xffff0000));
