@@ -1,4 +1,4 @@
-/*
+
 
 #include <bits/stdc++.h>
 
@@ -11,6 +11,8 @@
 #include <Wire.h>
 #include "MAX30105.h"
 #include "heartRate.h"
+
+#include <ArduinoJson.h>
 
 #define LOCAL_STARTUP(startupCode) {static std::function<void(void)>localStartup=[&](void){startupCode;localStartup=[](){};};localStartup();}
 
@@ -51,6 +53,14 @@ uint32_t heartRate(void){
     return (beatAvg/RATE_AVG);
 }
 
+std::string getHeartRate(void){
+    DynamicJsonDocument bleObject(200);
+    bleObject["heartRate"]=heartRate();
+    std::string jsonString;
+    serializeJson(bleObject, jsonString);
+    return jsonString;
+}
+
 BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
 BLEDescriptor *pDescr;
@@ -78,9 +88,7 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 void setup() {
   Serial.begin(115200);
-  while(1){
-    Serial.println(heartRate());
-  }
+
 
   // Create the BLE Device
   BLEDevice::init("ESP32");
@@ -123,7 +131,7 @@ void setup() {
 void loop() {
     // notify changed value
     if (deviceConnected) {
-        pCharacteristic->setValue("value");
+        pCharacteristic->setValue(getHeartRate());
         pCharacteristic->notify();
         value++;
         delay(1000);
@@ -210,4 +218,3 @@ void loop() {
 //   Serial.println();
 // }
 
-*/
