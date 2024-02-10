@@ -24,7 +24,7 @@
 #include <string>
 #include <type_traits>
 
-class cyclicBinaryDecompression{
+class cyclicBinary{
     public:
 
     std::function<void(uint32_t)>sysTick;
@@ -33,7 +33,7 @@ class cyclicBinaryDecompression{
     uint16_t mask=-1;
     uint16_t previousValue=0;
 
-    cyclicBinaryDecompression &onData(const std::function<void(uint16_t)>onReadCallback){
+    cyclicBinary &onData(const std::function<void(uint16_t)>onReadCallback){
         readCallbackList.push_back(onReadCallback);
         return (*this);
     }
@@ -49,18 +49,43 @@ class cyclicBinaryDecompression{
         return previousValue;
     }
 
+    cyclicBinary &fastDecode(uint32_t *binaryCompressed,uint16_t length){
+        while(length--){
+            for(auto &readCallback:readCallbackList)
+                readCallback(updateMasked((*binaryCompressed)&((uint16_t)-1)));
+            sysTick((*binaryCompressed)>>16);
+            binaryCompressed++;
+        }
+        return (*this);
+    }
 
-    cyclicBinaryDecompression &decode(uint32_t *binaryCompressed,uint16_t length){
+    cyclicBinary &fastDecode(uint8_t *binaryCompressed,uint32_t loopCounter=1){
+        union{
+			uint8_t* base64;
+			uint32_t* rawData;
+		}compressionBuffer;
+
+        uint32_t length=(stringCounter(binaryCompressed)*0.75)/4;
+		compressionBuffer.base64=base64Decode(binaryCompressed);
+
+        while(loopCounter--)
+            fastDecode(compressionBuffer.rawData,length);
+
+        return (*this);
+    }
+
+
+    cyclicBinary &decode(uint32_t *binaryCompressed,uint16_t length){
         static uint16_t exitCounter;
         if(exitCounter>=length){
             exitCounter=0;
             return (*this);
         }
 
-        if(!((*binaryCompressed)&((1<<16)-1))){
-            mask=((*binaryCompressed)>>16);
-            return decode((uint32_t*)(binaryCompressed+(++exitCounter)),length);
-        }
+        // if(!((*binaryCompressed)&((1<<16)-1))){
+        //     mask=((*binaryCompressed)>>16);
+        //     return decode((uint32_t*)(binaryCompressed+(++exitCounter)),length);
+        // }
 
         uint32_t loopCounter=((*binaryCompressed)>>16)|((((*binaryCompressed)&((uint16_t)-1))==1)*((*(binaryCompressed+1))&0xffff0000));
         uint16_t loopBody=((*(binaryCompressed+(((*binaryCompressed)&((uint16_t)-1))==1)))&((uint16_t)-1))-1;
@@ -78,7 +103,7 @@ class cyclicBinaryDecompression{
         return decode((uint32_t*)(binaryCompressed+exitCounter),length);
     }
 
-    cyclicBinaryDecompression &decode(uint8_t *binaryCompressed){
+    cyclicBinary &decode(uint8_t *binaryCompressed){
         union{
 			uint8_t* base64;
 			uint32_t* rawData;
@@ -86,20 +111,25 @@ class cyclicBinaryDecompression{
 
         uint32_t length=(stringCounter(binaryCompressed)*0.75)/4;
 		compressionBuffer.base64=base64Decode(binaryCompressed);
+
+        for(uint32_t itr=0;itr<=length;itr++)
+            Serial.println(compressionBuffer.rawData[itr]);
+        return (*this);
+
         
         return decode(compressionBuffer.rawData,length);
     }
 
-    cyclicBinaryDecompression &decode(char *binaryCompressed){
+    cyclicBinary &decode(char *binaryCompressed){
         return decode((uint8_t*)binaryCompressed);
     }
 
-    cyclicBinaryDecompression(const std::function<void(uint32_t)>_sysTick,uint16_t _previousValue=0){
+    cyclicBinary(const std::function<void(uint32_t)>_sysTick,uint16_t _previousValue=0){
         sysTick=_sysTick;
         previousValue=_previousValue;
     }
 
-    ~cyclicBinaryDecompression(){
+    ~cyclicBinary(){
 
     }
 

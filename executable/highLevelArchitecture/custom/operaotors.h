@@ -14,6 +14,7 @@
 
 #include "jsonParser.h"
 #include "localStorage.h"
+#include "cyclicBinary.cpp"
 
 
 #include <stdint.h>
@@ -89,6 +90,12 @@ const char *NEW_VALUE=           "NEW_VALUE";
 const char *FETCH_API=           "FETCH_API";
 const char *FETCH_URL=           "FETCH_URL";
 const char *FETCH_BODY=          "FETCH_BODY";
+
+const char *FAST_DECODE=        "FAST_DECODE";
+const char *DECODE_REGISTER=    "DECODE_REGISTER";
+const char *DECODE_DATA=        "DECODE_DATA";
+const char *DECODE_MASK=        "DECODE_MASK";
+const char *DECODE_LOOP=        "DECODE_LOOP";
 
 
 const char *MATH_OPERATORS[]={
@@ -418,6 +425,39 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             localBuffer[FETCH_BODY]=localBuffer[OPERATOR];
             
             operatorsMemoryCallbacks[FETCH_API]=fetch((uint8_t*)localBuffer[FETCH_URL],(uint8_t*)localBuffer[FETCH_BODY]);
+            return;
+        };
+
+        SET_OPERATOR(FAST_DECODE)>>[&](uint8_t *startupData){                               //^ FAST_DECODE
+            utils::highLevelMemory localBuffer(BUFFER_SIZE_1);
+
+            localBuffer[OPERATOR]=json(DECODE_REGISTER,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[DECODE_REGISTER]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(DECODE_DATA,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[DECODE_DATA]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(DECODE_MASK,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[DECODE_MASK]=localBuffer[OPERATOR];
+
+            localBuffer[OPERATOR]=json(DECODE_LOOP,startupData);
+            instruction(localBuffer[OPERATOR]);
+            localBuffer[DECODE_LOOP]=localBuffer[OPERATOR];
+
+            cyclicBinary outputPort([&](uint32_t sysTick){
+                // console.log("sysTick >> ",intToHexaDecimal((0x1<<31)|sysTick));
+            });
+
+            outputPort.onData([&](uint16_t portValue){
+                // appLinker[(uint8_t*)localBuffer[DECODE_REGISTER]]=portValue;
+            });
+
+            // outputPort.fastDecode((uint8_t*)localBuffer[DECODE_DATA],)
+
+
             return;
         };
 

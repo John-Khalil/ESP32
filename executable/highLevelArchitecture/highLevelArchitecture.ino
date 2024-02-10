@@ -39,7 +39,7 @@
 
 utils::highLevelMemory MEMORY(5000);
 
-cyclicBinaryDecompression outputPort([&](uint32_t sysTick){
+cyclicBinary outputPort([&](uint32_t sysTick){
 	// console.log("sysTick >> ",intToHexaDecimal((0x1<<31)|sysTick));
 });
 
@@ -154,8 +154,9 @@ void setup(){
 	
 	outputPort.onData([&](uint16_t portValue){
 		static uint32_t logCounter;
-		appLinker["test"]=intToHexaDecimal((0x1<<31)|logCounter++);
-		console.log(" >> ",(char*)appLinker["test"]," - ",intToHexaDecimal(portValue));
+		// appLinker["test"]=intToHexaDecimal((0x1<<31)|logCounter++);
+		// console.log(" >> ",(char*)appLinker["test"]," - ",intToHexaDecimal(portValue));
+		console.log(" >> ",intToHexaDecimal(portValue));
 	});
 
 	appLinker["base64decode"]>>[&](uint8_t *eventData){
