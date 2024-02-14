@@ -39,10 +39,6 @@
 
 utils::highLevelMemory MEMORY(5000);
 
-cyclicBinary outputPort([&](uint32_t sysTick){
-	// console.log("sysTick >> ",intToHexaDecimal((0x1<<31)|sysTick));
-});
-
 
 mqttClient mqttServer;
 web::service webServer;
@@ -151,32 +147,9 @@ void setup(){
 		webServer.send(eventData);
 		webServer.httpSetResponse(eventData);
 	};
-	
-	outputPort.onData([&](uint16_t portValue){
-		static uint32_t logCounter;
-		// appLinker["test"]=intToHexaDecimal((0x1<<31)|logCounter++);
-		// console.log(" >> ",(char*)appLinker["test"]," - ",intToHexaDecimal(portValue));
-		console.log(" >> ",intToHexaDecimal(portValue));
-	});
 
 	appLinker["base64decode"]>>[&](uint8_t *eventData){
-		// union{
-		// 	uint8_t* base64;
-		// 	uint32_t* rawData;
-		// }signalBuffer;
-
-		// uint32_t rawDataLength=(stringCounter(eventData)*0.75)/4;
-		// signalBuffer.base64=base64Decode(eventData);
-
-		// uint32_t outputCounter=0;
-		// while(rawDataLength--){
-		// 	console.log(intToHexaDecimal(signalBuffer.rawData[outputCounter++]));
-		// }
-
-		outputPort.decode(eventData);
-
-		
-
+		console.log("eventData >> ",eventData);
 		return;
 	};
 
