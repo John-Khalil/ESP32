@@ -33,6 +33,16 @@ class cyclicBinary{
     uint16_t mask=-1;
     uint16_t previousValue=0;
 
+    void sysTick32Bit(uint32_t ticks,uint16_t portValue){
+        static uint32_t lastPortValue=-1UL;
+        if(lastPortValue==portValue){
+            ticks=ticks<<16;
+        }
+        lastPortValue=portValue;
+        sysTick(ticks);
+        return;
+    }
+
     cyclicBinary &onData(const std::function<void(uint16_t)>onReadCallback){
         readCallbackList.push_back(onReadCallback);
         return (*this);
@@ -53,7 +63,7 @@ class cyclicBinary{
         while(length--){
             for(auto &readCallback:readCallbackList)
                 readCallback(updateMasked((*binaryCompressed)&((uint16_t)-1)));
-            sysTick((*binaryCompressed)>>16);
+            sysTick32Bit((*binaryCompressed)>>16,(*binaryCompressed)&((uint16_t)-1));
             binaryCompressed++;
         }
         return (*this);
