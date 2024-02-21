@@ -448,7 +448,8 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             localBuffer[DECODE_LOOP]=localBuffer[OPERATOR];
 
             cyclicBinary outputPort([&](uint32_t sysTick){
-                // console.log("sysTick >> ",intToHexaDecimal((0x1<<31)|sysTick));
+                while(sysTick--)
+                    asm("nop");
             });
             outputPort.mask=strint((uint8_t*)localBuffer[DECODE_MASK]);
             outputPort.previousValue=strint((uint8_t*)appLinker[(uint8_t*)localBuffer[DECODE_REGISTER]]);
