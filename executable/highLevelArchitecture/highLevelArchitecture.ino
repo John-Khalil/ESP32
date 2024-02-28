@@ -20,6 +20,10 @@
 
 #include "custom/cyclicBinary.cpp"
 
+#include "custom/registersSetup.h"
+
+
+
 // #include "custom/ledMatrix.h"
 
 #include <iostream>
@@ -152,6 +156,8 @@ void setup(){
 		console.log("eventData >> ",eventData);
 		return;
 	};
+
+	regsitersSetup();
 
 
 
