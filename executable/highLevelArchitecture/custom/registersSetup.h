@@ -34,6 +34,8 @@ static const char *PIN_OUTPUT=          "0";
 static const char *PIN_INPUT=           "1";
 static const char *PIN_INPUT_PULLUP=    "2";
 static const char *PIN_INPUT_PULLDOWN=  "3";
+static const char *PIN_HIGH=            "0";
+static const char *PIN_LOW=             "1";
 
 
 void regsitersSetup(void){
@@ -43,11 +45,11 @@ void regsitersSetup(void){
 	};
 
     appLinker[DIGITAL_WRITE]>>[&](uint8_t *eventData){
-		
+		_DW(strint(json(PIN_NUMBER,eventData)),strint(json(PIN_STATE,eventData)));
 	};
 
     appLinker[DIGITAL_READ]<<[&](void){
-		
+		appLinker[DIGITAL_READ]=_DR(strint(json(PIN_NUMBER,eventData)));
 	};
 
     return;
