@@ -30,10 +30,10 @@ static const char *PIN_NUMBER=          "PIN_NUMBER";
 static const char *PIN_STATE=           "PIN_STATE";
 static const char *DIGITAL_WRITE=       "DIGITAL_WRITE";
 static const char *DIGITAL_READ=        "DIGITAL_READ";
-static const char *PIN_OUTPUT=          "PIN_MODE";
-static const char *PIN_INPUT=           "PIN_MODE";
-static const char *PIN_INPUT_PULLUP=    "PIN_MODE";
-static const char *PIN_INPUT_PULLDOWN=  "PIN_MODE";
+static const char *PIN_OUTPUT=          "0";
+static const char *PIN_INPUT=           "1";
+static const char *PIN_INPUT_PULLUP=    "2";
+static const char *PIN_INPUT_PULLDOWN=  "3";
 
 
 void regsitersSetup(void){
