@@ -36,6 +36,7 @@ static const char *PIN_INPUT_PULLUP=    "2";
 static const char *PIN_INPUT_PULLDOWN=  "3";
 static const char *PIN_HIGH=            "0";
 static const char *PIN_LOW=             "1";
+static const char *ANALOG_READ=         "ANALOG_READ";
 
 
 void regsitersSetup(void){
@@ -50,6 +51,10 @@ void regsitersSetup(void){
 
     appLinker[DIGITAL_READ]<<[&](void){
 		appLinker[DIGITAL_READ]=_DR(strint(json(PIN_NUMBER,eventData)));
+	};
+    
+    appLinker[ANALOG_READ]<<[&](void){
+		appLinker[ANALOG_READ]=analogRead(strint(json(PIN_NUMBER,eventData)));
 	};
 
     return;
