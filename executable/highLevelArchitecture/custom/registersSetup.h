@@ -40,6 +40,13 @@ static const char *ANALOG_READ=         "ANALOG_READ";
 
 
 void regsitersSetup(void){
+
+    appLinker["testRegister"]>>[&](uint8_t *eventData){
+		console.log("eventData >> ",eventData);
+        // appLinker["testRegister"]="testRegister -- modified";
+		return;
+	};
+
     appLinker[PIN_MODE]>>[&](uint8_t *eventData){
         int modes[]={OUTPUT,INPUT,INPUT_PULLUP,INPUT_PULLDOWN};
 		_PM(strint(json(PIN_NUMBER,eventData)),modes[strint(json(PIN_MODE,eventData))]);
@@ -49,13 +56,13 @@ void regsitersSetup(void){
 		_DW(strint(json(PIN_NUMBER,eventData)),strint(json(PIN_STATE,eventData)));
 	};
 
-    appLinker[DIGITAL_READ]<<[&](void){
-		appLinker[DIGITAL_READ]=_DR(strint(json(PIN_NUMBER,eventData)));
-	};
+    // appLinker[DIGITAL_READ]<<[&](void){
+	// 	appLinker[DIGITAL_READ]=_DR(strint(json(PIN_NUMBER,eventData)));
+	// };
     
-    appLinker[ANALOG_READ]<<[&](void){
-		appLinker[ANALOG_READ]=analogRead(strint(json(PIN_NUMBER,eventData)));
-	};
+    // appLinker[ANALOG_READ]<<[&](void){
+	// 	appLinker[ANALOG_READ]=analogRead(strint(json(PIN_NUMBER,eventData)));
+	// };
 
     return;
 }
