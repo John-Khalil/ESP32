@@ -56,13 +56,15 @@ void regsitersSetup(void){
 		_DW(strint(json(PIN_NUMBER,eventData)),strint(json(PIN_STATE,eventData)));
 	};
 
-    // appLinker[DIGITAL_READ]<<[&](void){
-	// 	appLinker[DIGITAL_READ]=_DR(strint(json(PIN_NUMBER,eventData)));
-	// };
-    
-    // appLinker[ANALOG_READ]<<[&](void){
-	// 	appLinker[ANALOG_READ]=analogRead(strint(json(PIN_NUMBER,eventData)));
-	// };
+    appLinker[DIGITAL_READ]<<[&](void){
+        uint32_t digitalReadValue=_DR(strint(json(PIN_NUMBER,(uint8_t*)appLinker[DIGITAL_READ])));
+		appLinker[DIGITAL_READ]=inttostring(digitalReadValue);
+	};
+
+    appLinker[ANALOG_READ]<<[&](void){
+        uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
+		appLinker[ANALOG_READ]=inttostring(analogReadValue);
+	};
 
     return;
 }
