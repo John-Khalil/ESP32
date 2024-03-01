@@ -43,7 +43,11 @@ void regsitersSetup(void){
 
     appLinker["testRegister"]>>[&](uint8_t *eventData){
 		console.log("eventData >> ",eventData);
-        // appLinker["testRegister"]="testRegister -- modified";
+		return;
+	};
+
+    appLinker["testRegister"]<<[&](void){
+		appLinker["testRegister"]="this is a read test !!";
 		return;
 	};
 
@@ -62,8 +66,10 @@ void regsitersSetup(void){
 	};
 
     appLinker[ANALOG_READ]<<[&](void){
-        uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
-		appLinker[ANALOG_READ]=inttostring(analogReadValue);
+        // uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
+		// appLinker[ANALOG_READ]=inttostring(analogReadValue);
+
+        appLinker[ANALOG_READ]=inttostring(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ]))*2);
 	};
 
     return;

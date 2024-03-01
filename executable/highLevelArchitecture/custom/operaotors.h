@@ -384,8 +384,18 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
             
             localBuffer[OPERATOR]=json(REGISTER_ADDRESS,operatorsMemoryCallbacks[REGISTER_READ]);
             instruction(localBuffer[OPERATOR]);
+            localBuffer[REGISTER_ADDRESS]=localBuffer[OPERATOR];
 
-            operatorsMemoryCallbacks[REGISTER_READ]=appLinker[(uint8_t*)localBuffer[OPERATOR]];
+            if(json(REGISTER_DATA,operatorsMemoryCallbacks[REGISTER_READ])!=UNDEFINED){
+                localBuffer[OPERATOR]=json(REGISTER_DATA,operatorsMemoryCallbacks[REGISTER_READ]);
+                instruction(localBuffer[OPERATOR]);
+                localBuffer[REGISTER_DATA]=localBuffer[OPERATOR];
+
+
+                appLinker[(uint8_t*)localBuffer[REGISTER_ADDRESS]]=localBuffer[REGISTER_DATA];
+            }
+
+            operatorsMemoryCallbacks[REGISTER_READ]=appLinker[(uint8_t*)localBuffer[REGISTER_ADDRESS]];
             return;
         };
 
