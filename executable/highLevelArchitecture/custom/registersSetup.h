@@ -66,10 +66,8 @@ void regsitersSetup(void){
 	};
 
     appLinker[ANALOG_READ]<<[&](void){
-        // uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
-		// appLinker[ANALOG_READ]=inttostring(analogReadValue);
-
-        appLinker[ANALOG_READ]=inttostring(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ]))*2);
+        uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
+		appLinker[ANALOG_READ]=inttostring(analogReadValue);
 	};
 
     return;
