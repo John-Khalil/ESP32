@@ -25,6 +25,9 @@
 #include <string>
 #include <type_traits>
 
+utils::highLevelMemory REGISTER_MATRIX(512);
+static const char *MAIN_TX_REGISTER=	"MQTT_TX";
+
 static const char *PIN_MODE=            "PIN_MODE";
 static const char *PIN_NUMBER=          "PIN_NUMBER";
 static const char *PIN_STATE=           "PIN_STATE";
@@ -37,6 +40,8 @@ static const char *PIN_INPUT_PULLDOWN=  "3";
 static const char *PIN_HIGH=            "0";
 static const char *PIN_LOW=             "1";
 static const char *ANALOG_READ=         "ANALOG_READ";
+
+static const char *SERIAL_SETUP=		"SERIAL_SETUP";
 
 
 void regsitersSetup(void){
