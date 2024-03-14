@@ -42,6 +42,12 @@ static const char *PIN_LOW=             "1";
 static const char *ANALOG_READ=         "ANALOG_READ";
 
 static const char *SERIAL_SETUP=		"SERIAL_SETUP";
+static const char *SERIAL_SEND=			"SERIAL_SEND";
+static const char *SERIAL_RX_REGISTER=	"SERIAL_RX_REGISTER";
+static const char *SERIAL_BAUD=			"SERIAL_BAUD";
+static const char *SERIAL_TX_PIN=		"SERIAL_TX_PIN";
+static const char *SERIAL_RX_PIN=		"SERIAL_RX_PIN";
+
 
 
 void regsitersSetup(void){
@@ -59,20 +65,36 @@ void regsitersSetup(void){
     appLinker[PIN_MODE]>>[&](uint8_t *eventData){
         int modes[]={OUTPUT,INPUT,INPUT_PULLUP,INPUT_PULLDOWN};
 		_PM(strint(json(PIN_NUMBER,eventData)),modes[strint(json(PIN_MODE,eventData))]);
+
+		return;
 	};
 
     appLinker[DIGITAL_WRITE]>>[&](uint8_t *eventData){
 		_DW(strint(json(PIN_NUMBER,eventData)),strint(json(PIN_STATE,eventData)));
+
+		return;
 	};
 
     appLinker[DIGITAL_READ]<<[&](void){
         uint32_t digitalReadValue=_DR(strint(json(PIN_NUMBER,(uint8_t*)appLinker[DIGITAL_READ])));
 		appLinker[DIGITAL_READ]=inttostring(digitalReadValue);
+
+		return;
 	};
 
     appLinker[ANALOG_READ]<<[&](void){
         uint32_t analogReadValue=analogRead(strint(json(PIN_NUMBER,(uint8_t*)appLinker[ANALOG_READ])));
 		appLinker[ANALOG_READ]=inttostring(analogReadValue);
+
+		return;
+	};
+
+	appLinker[SERIAL_SETUP]>>[&](uint8_t *eventData){
+		uint32_t baudRate=strint(json(SERIAL_BAUD,eventData));
+		uint32_t txPin=strint(json(SERIAL_TX_PIN,eventData));
+		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
+
+		return;
 	};
 
     return;
