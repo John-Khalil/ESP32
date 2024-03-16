@@ -25,8 +25,7 @@
 #include <string>
 #include <type_traits>
 
-#include <HardwareSerial.h>
-HardwareSerial SERIAL_PORT_1(1); 
+static std::vector<std::function<void(uint32_t)>>registersThreads;
 
 utils::highLevelMemory REGISTER_MATRIX(512);
 static const char *MAIN_TX_REGISTER=	"MQTT_TX";
@@ -96,14 +95,23 @@ void regsitersSetup(void){
 		uint32_t baudRate=strint(json(SERIAL_BAUD,eventData));
 		uint32_t txPin=strint(json(SERIAL_TX_PIN,eventData));
 		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
-		SERIAL_PORT_1.begin(baudRate, SERIAL_8N1, rxPin, txPin);
+		Serial1.begin(baudRate, SERIAL_8N1, rxPin, txPin);
 		// Serial1.onReceive(NULL);
-		SERIAL_PORT_1.onReceive([&](void){
+		// Serial1.onReceive([&](void){
 
-		},true);
+		// },true);
 
 		return;
 	};
 
     return;
+}
+
+void runRegistersThreads(void){
+	static uint32_t sysTick;
+	static uint64_t vectorIndexCounter;
+	registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++)();
+	_delay_ms(1);
+	
+	return;
 }

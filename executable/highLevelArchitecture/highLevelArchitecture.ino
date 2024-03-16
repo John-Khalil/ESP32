@@ -232,6 +232,7 @@ void loop(){
 	// 	mqttServer.send((uint8_t*)Serial.readStringUntil('\n').c_str());
 
 	runThreads();
+	runRegistersThreads();
 
 }
 
