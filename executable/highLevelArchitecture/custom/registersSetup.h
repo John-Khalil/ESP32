@@ -100,11 +100,12 @@ void regsitersSetup(void){
 		auto serialEvent=[&](uint32_t systick){
 			#define TIME_OUT 20
 			if(!systick%TIME_OUT){
-				static uint32_t receivedBytes;
-				if((Serial1.available()==receivedBytes)&&Serial1.available()){
+				static uint32_t receivedBytes=-1UL;
+				uint32_t currentBytes=Serial1.available();
+				if(currentBytes==receivedBytes){
 
 				}
-				receivedBytes=Serial1.available();
+				receivedBytes=currentBytes;
 			}
 		};
 
