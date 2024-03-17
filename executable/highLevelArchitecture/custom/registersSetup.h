@@ -96,6 +96,11 @@ void regsitersSetup(void){
 		uint32_t txPin=strint(json(SERIAL_TX_PIN,eventData));
 		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
 		Serial1.begin(baudRate, SERIAL_8N1, rxPin, txPin);
+
+		static uint32_t threadAddress=-1UL;
+		if(threadAddress==-1UL){
+			
+		}
 		// Serial1.onReceive(NULL);
 		// Serial1.onReceive([&](void){
 
