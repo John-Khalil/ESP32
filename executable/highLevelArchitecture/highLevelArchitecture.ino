@@ -223,16 +223,21 @@ void setup(){
 
 void loop(){
 	// ws.cleanupClients();
-	static uint32_t loopCounter;
+	uint32_t oneTimeRun=0;
 	// mqttServer.loop();
 
 	// if(!(loopCounter++%99999))
 	// 	mqttServer.send("this is test");
 	// if(Serial.available())
 	// 	mqttServer.send((uint8_t*)Serial.readStringUntil('\n').c_str());
-
-	runThreads();
-	runRegistersThreads();
+	auto systemDelay=[&](void){
+		if(!oneTimeRun++){
+			_delay_ms(1);
+		}
+		return;
+	};
+	runThreads(systemDelay);
+	runRegistersThreads(systemDelay);
 
 }
 

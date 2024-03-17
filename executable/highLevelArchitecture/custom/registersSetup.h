@@ -107,11 +107,11 @@ void regsitersSetup(void){
     return;
 }
 
-void runRegistersThreads(void){
+void runRegistersThreads(std::function<void(void)>systemDelay){
 	static uint32_t sysTick;
 	static uint64_t vectorIndexCounter;
 	registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++);
-	_delay_ms(1);
+	systemDelay();
 	
 	return;
 }

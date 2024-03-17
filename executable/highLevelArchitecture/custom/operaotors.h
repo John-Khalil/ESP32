@@ -505,7 +505,7 @@ void threadRunner(uint8_t *operatorObject){
     return;
 }
 
-void runThreads(void){
+void runThreads(std::function<void(void)>systemDelay){
     static uint64_t loopCounter;
     static uint32_t threadCounter;
 
@@ -529,7 +529,7 @@ void runThreads(void){
         instruction(localBuffer[OPERATOR]);
     }
     else
-        _delay_ms(1);
+        systemDelay();
     return;
 }
 
