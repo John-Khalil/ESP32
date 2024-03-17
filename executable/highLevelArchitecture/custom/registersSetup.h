@@ -97,10 +97,24 @@ void regsitersSetup(void){
 		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
 		Serial1.begin(baudRate, SERIAL_8N1, rxPin, txPin);
 
+		auto serialEvent=[&](uint32_t systick){
+			#define TIME_OUT 20
+			if(!systick%TIME_OUT){
+				static uint32_t receivedBytes;
+				if((Serial1.available()==receivedBytes)&&Serial1.available()){
+
+				}
+				receivedBytes=Serial1.available();
+			}
+		};
+
 		static uint32_t threadAddress=-1UL;
 		if(threadAddress==-1UL){
-			
+			threadAddress=registersThreads.size();
+			registersThreads.push_back(serialEvent);
 		}
+		else
+			registersThreads[threadAddress]=serialEvent;
 		// Serial1.onReceive(NULL);
 		// Serial1.onReceive([&](void){
 
