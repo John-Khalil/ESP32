@@ -110,7 +110,7 @@ void regsitersSetup(void){
 void runRegistersThreads(void){
 	static uint32_t sysTick;
 	static uint64_t vectorIndexCounter;
-	registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++)();
+	registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++);
 	_delay_ms(1);
 	
 	return;
