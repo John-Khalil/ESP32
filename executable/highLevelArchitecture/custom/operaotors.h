@@ -36,7 +36,7 @@ const char *WEB_SERVER_RX=      "WEB_SERVER_RX";
 
 
 
-static utils::highLevelMemory operatorsMemory(BUFFER_SIZE_5);
+utils::highLevelMemory operatorsMemory(BUFFER_SIZE_5);
 // static utils::highLevelMemory BUFFER(5000);
 // static utils::highLevelMemory RETURN_BUFFER(5000);
 

@@ -15,6 +15,7 @@
 #include "jsonParser.h"
 #include "localStorage.h"
 #include "cyclicBinary.cpp"
+#include "operaotors.h"
 
 
 #include <stdint.h>
@@ -46,6 +47,7 @@ static const char *ANALOG_READ=         "ANALOG_READ";
 static const char *SERIAL_SETUP=		"SERIAL_SETUP";
 static const char *SERIAL_SEND=			"SERIAL_SEND";
 static const char *SERIAL_RX_REGISTER=	"SERIAL_RX_REGISTER";
+static const char *SERIAL_BUFFER=		"SERIAL_BUFFER";
 static const char *SERIAL_BAUD=			"SERIAL_BAUD";
 static const char *SERIAL_TX_PIN=		"SERIAL_TX_PIN";
 static const char *SERIAL_RX_PIN=		"SERIAL_RX_PIN";
@@ -103,7 +105,10 @@ void regsitersSetup(void){
 				static uint32_t receivedBytes=-1UL;
 				uint32_t currentBytes=Serial1.available();
 				if(currentBytes==receivedBytes){
+					operatorsMemory.write((uint8_t*)SERIAL_BUFFER,(uint8_t*)"",((currentBytes*1.334)+20));		//* dynamic memory allocation -- operatorsMemory[SERIAL_BUFFER] should be the new address
 
+
+					// base64Encode((uint8_t*)Serial1.readString().c_str(),,currentBytes);
 				}
 				receivedBytes=currentBytes;
 			}
