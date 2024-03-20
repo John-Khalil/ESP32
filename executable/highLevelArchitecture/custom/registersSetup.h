@@ -106,9 +106,12 @@ void regsitersSetup(void){
 				uint32_t currentBytes=Serial1.available();
 				if(currentBytes==receivedBytes){
 					operatorsMemory.write((uint8_t*)SERIAL_BUFFER,(uint8_t*)"",((currentBytes*1.334)+20));		//* dynamic memory allocation -- operatorsMemory[SERIAL_BUFFER] should be the new address
+					uint8_t *serialBuffer=operatorsMemory[SERIAL_BUFFER];
 
 
 					// base64Encode((uint8_t*)Serial1.readString().c_str(),,currentBytes);
+					
+					operatorsMemory[SERIAL_BUFFER]=(uint8_t*)"";
 				}
 				receivedBytes=currentBytes;
 			}
