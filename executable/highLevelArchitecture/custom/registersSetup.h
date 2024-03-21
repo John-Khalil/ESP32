@@ -55,6 +55,7 @@ static const char *SERIAL_RX_PIN=		"SERIAL_RX_PIN";
 
 
 void regsitersSetup(void){
+	operatorsMemory[SERIAL_RX_REGISTER]=MAIN_TX_REGISTER;
 
     appLinker["testRegister"]>>[&](uint8_t *eventData){
 		console.log("eventData >> ",eventData);
@@ -113,6 +114,7 @@ void regsitersSetup(void){
 					base64Encode((uint8_t*)Serial1.readString().c_str(),serialBuffer+stringCounter(serialBuffer),currentBytes);
 					_CS(serialBuffer,(uint8_t*)"\"}");
 
+					appLinker[(uint8_t*)operatorsMemory[SERIAL_RX_REGISTER]]=(uint8_t*)operatorsMemory[SERIAL_BUFFER];
 
 					
 					operatorsMemory[SERIAL_BUFFER]=(uint8_t*)"";
