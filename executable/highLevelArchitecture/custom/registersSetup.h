@@ -105,11 +105,15 @@ void regsitersSetup(void){
 				static uint32_t receivedBytes=-1UL;
 				uint32_t currentBytes=Serial1.available();
 				if(currentBytes==receivedBytes){
-					operatorsMemory.write((uint8_t*)SERIAL_BUFFER,(uint8_t*)"",((currentBytes*1.334)+20));		//* dynamic memory allocation -- operatorsMemory[SERIAL_BUFFER] should be the new address
+					operatorsMemory.write((uint8_t*)SERIAL_BUFFER,(uint8_t*)"",((currentBytes*1.334)+30));		//* dynamic memory allocation -- operatorsMemory[SERIAL_BUFFER] should be the new address
 					uint8_t *serialBuffer=operatorsMemory[SERIAL_BUFFER];
+					_CS(serialBuffer,(uint8_t*)"{\"");
+					_CS(serialBuffer,(uint8_t*)SERIAL_BUFFER);
+					_CS(serialBuffer,(uint8_t*)"\":\"");
+					base64Encode((uint8_t*)Serial1.readString().c_str(),serialBuffer+stringCounter(serialBuffer),currentBytes);
+					_CS(serialBuffer,(uint8_t*)"\"}");
 
 
-					// base64Encode((uint8_t*)Serial1.readString().c_str(),,currentBytes);
 					
 					operatorsMemory[SERIAL_BUFFER]=(uint8_t*)"";
 				}
@@ -138,7 +142,8 @@ void regsitersSetup(void){
 void runRegistersThreads(std::function<void(void)>systemDelay){
 	static uint32_t sysTick;
 	static uint64_t vectorIndexCounter;
-	registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++);
+	if(registersThreads.size())		//! avoid devide by zero exception
+		registersThreads[vectorIndexCounter++%registersThreads.size()](sysTick++);
 	systemDelay();
 	
 	return;
