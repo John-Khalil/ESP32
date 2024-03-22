@@ -139,6 +139,11 @@ void regsitersSetup(void){
 		return;
 	};
 
+	appLinker[SERIAL_SEND]>>[&](uint8_t *eventData){
+
+		return;
+	};
+
     return;
 }
 
