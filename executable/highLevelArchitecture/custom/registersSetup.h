@@ -99,6 +99,7 @@ void regsitersSetup(void){
 		uint32_t txPin=strint(json(SERIAL_TX_PIN,eventData));
 		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
 		Serial1.begin(baudRate, SERIAL_8N1, rxPin, txPin);
+		Serial1.setRxBufferSize(4096);
 
 		auto serialEvent=[&](uint32_t systick){
 			#define TIME_OUT 20
