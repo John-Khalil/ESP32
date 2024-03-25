@@ -95,6 +95,7 @@ void regsitersSetup(void){
 	};
 
 	appLinker[SERIAL_SETUP]>>[&](uint8_t *eventData){
+		console.log("SERIAL_SETUP >> ",eventData);
 		uint32_t baudRate=strint(json(SERIAL_BAUD,eventData));
 		uint32_t txPin=strint(json(SERIAL_TX_PIN,eventData));
 		uint32_t rxPin=strint(json(SERIAL_RX_PIN,eventData));
@@ -140,7 +141,9 @@ void regsitersSetup(void){
 	};
 
 	appLinker[SERIAL_SEND]>>[&](uint8_t *eventData){
-
+		uint8_t binaryDataLength=stringCounter(eventData)*0.75;
+		Serial1.write(base64Decode(eventData), binaryDataLength);
+		console.log("SERIAL_SEND >> ",eventData);
 		return;
 	};
 
