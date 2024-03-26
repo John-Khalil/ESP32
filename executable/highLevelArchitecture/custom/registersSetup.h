@@ -141,9 +141,10 @@ void regsitersSetup(void){
 	};
 
 	appLinker[SERIAL_SEND]>>[&](uint8_t *eventData){
-		uint8_t binaryDataLength=stringCounter(eventData)*0.75;
-		Serial1.write(base64Decode(eventData), binaryDataLength);
-		console.log("SERIAL_SEND >> ",eventData);
+		uint8_t binaryDataLength=stringCounter(eventData);
+		binaryDataLength-=((eventData[binaryDataLength-1]=='=')+(eventData[binaryDataLength-2]=='='));		// checking for base64 padding '='
+		Serial1.write(base64Decode(eventData), binaryDataLength*0.75);
+		console.log("SERIAL_SEND >> ",(uint16_t)binaryDataLength);
 		return;
 	};
 
