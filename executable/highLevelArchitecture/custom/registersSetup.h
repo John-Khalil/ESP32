@@ -104,10 +104,10 @@ void regsitersSetup(void){
 
 		auto serialEvent=[&](uint32_t systick){
 			#define TIME_OUT 20
-			if(!systick%TIME_OUT){
+			if(!(systick%TIME_OUT)){
 				static uint32_t receivedBytes=-1UL;
 				uint32_t currentBytes=Serial1.available();
-				if(currentBytes==receivedBytes){
+				if((currentBytes==receivedBytes)&&currentBytes){
 					operatorsMemory.write((uint8_t*)SERIAL_BUFFER,(uint8_t*)"",((currentBytes*1.334)+30));		//* dynamic memory allocation -- operatorsMemory[SERIAL_BUFFER] should be the new address
 					uint8_t *serialBuffer=operatorsMemory[SERIAL_BUFFER];
 					_CS(serialBuffer,(uint8_t*)"{\"");
@@ -117,7 +117,6 @@ void regsitersSetup(void){
 					_CS(serialBuffer,(uint8_t*)"\"}");
 
 					appLinker[(uint8_t*)operatorsMemory[SERIAL_RX_REGISTER]]=(uint8_t*)operatorsMemory[SERIAL_BUFFER];
-
 					
 					operatorsMemory[SERIAL_BUFFER]=(uint8_t*)"";
 				}
@@ -144,7 +143,6 @@ void regsitersSetup(void){
 		uint8_t binaryDataLength=stringCounter(eventData);
 		binaryDataLength-=((eventData[binaryDataLength-1]=='=')+(eventData[binaryDataLength-2]=='='));		// checking for base64 padding '='
 		Serial1.write(base64Decode(eventData), binaryDataLength*0.75);
-		console.log("SERIAL_SEND >> ",(uint16_t)binaryDataLength);
 		return;
 	};
 
