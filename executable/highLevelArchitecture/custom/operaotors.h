@@ -499,6 +499,11 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
 void threadRunner(uint8_t *operatorObject){
     // console.log("operatorObject >> ",operatorObject);
+    if(json(REGISTER_ADDRESS,operatorObject)!=UNDEFINED){
+        appLinker[json(REGISTER_ADDRESS,operatorObject)]=json(REGISTER_DATA,operatorObject);
+        return;
+    }
+
     utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
     operatorObjectMemory[OPERATOR]=operatorObject;
     instruction(operatorObjectMemory[OPERATOR]);
