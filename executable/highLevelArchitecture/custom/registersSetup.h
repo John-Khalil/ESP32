@@ -52,6 +52,8 @@ static const char *SERIAL_BAUD=			"SERIAL_BAUD";
 static const char *SERIAL_TX_PIN=		"SERIAL_TX_PIN";
 static const char *SERIAL_RX_PIN=		"SERIAL_RX_PIN";
 
+static const char *CALLBACK_ADDRESS=	"CALLBACK_ADDRESS";
+static const char *CALLBACK_BUFFER=		"CALLBACK_BUFFER";
 
 
 void regsitersSetup(void){
@@ -144,6 +146,10 @@ void regsitersSetup(void){
 		binaryDataLength-=((eventData[binaryDataLength-1]=='=')+(eventData[binaryDataLength-2]=='='));		// checking for base64 padding '='
 		Serial1.write(base64Decode(eventData), binaryDataLength*0.75);
 		return;
+	};
+
+	appLinker[REGISTER_READ]>>[&](uint8_t *eventData){
+		
 	};
 
     return;
