@@ -29,7 +29,7 @@
 static std::vector<std::function<void(uint32_t)>>registersThreads;
 
 utils::highLevelMemory REGISTER_MATRIX(512);
-static const char *MAIN_TX_REGISTER=	"MQTT_TX";
+// static const char *MAIN_TX_REGISTER=	"MQTT_TX";
 
 static const char *PIN_MODE=            "PIN_MODE";
 static const char *PIN_NUMBER=          "PIN_NUMBER";
@@ -52,8 +52,7 @@ static const char *SERIAL_BAUD=			"SERIAL_BAUD";
 static const char *SERIAL_TX_PIN=		"SERIAL_TX_PIN";
 static const char *SERIAL_RX_PIN=		"SERIAL_RX_PIN";
 
-static const char *CALLBACK_ADDRESS=	"CALLBACK_ADDRESS";
-static const char *CALLBACK_BUFFER=		"CALLBACK_BUFFER";
+
 
 
 void regsitersSetup(void){

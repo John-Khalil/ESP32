@@ -4,7 +4,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-
+static const char *MAIN_TX_REGISTER=	"MQTT_TX";
 
 #ifdef ESP32
 
