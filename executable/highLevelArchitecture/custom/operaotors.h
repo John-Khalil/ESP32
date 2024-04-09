@@ -505,12 +505,14 @@ void threadRunner(uint8_t *operatorObject){
     // console.log("operatorObject >> ",operatorObject);
     if(json(REGISTER_ADDRESS,operatorObject)!=UNDEFINED){
         appLinker[json(REGISTER_ADDRESS,operatorObject)]=json(REGISTER_DATA,operatorObject);
-        return;
     }
-    else if(json(REGISTER_READ,operatorObject)!=UNDEFINED){
-        uint8_t* registerRead=(uint8_t*)appLinker[json(REGISTER_READ,operatorObject)];
+    if(json(CALLBACK_ADDRESS,operatorObject)!=UNDEFINED){
+        
+        uint8_t* registerRead=(uint8_t*)appLinker[json(REGISTER_ADDRESS,operatorObject)];
+
         operatorsMemory.write((uint8_t*)CALLBACK_BUFFER,(uint8_t*)"",(stringCounter(registerRead)*1.334)+30);
         uint8_t *callbackBuffer=operatorsMemory[CALLBACK_BUFFER];
+
         _CS(callbackBuffer,(uint8_t*)"{\"");
         _CS(callbackBuffer,(uint8_t*)json(CALLBACK_ADDRESS,operatorObject));
         _CS(callbackBuffer,(uint8_t*)"\":\"");
