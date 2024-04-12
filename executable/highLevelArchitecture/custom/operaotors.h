@@ -503,25 +503,28 @@ utils::highLevelMemory& instruction(utils::highLevelMemory& operatorObject){
 
 void threadRunner(uint8_t *operatorObject){
     // console.log("operatorObject >> ",operatorObject);
-    if(json(REGISTER_ADDRESS,operatorObject)!=UNDEFINED){
+    if((json(REGISTER_ADDRESS,operatorObject)!=UNDEFINED)&&(json(REGISTER_DATA,operatorObject))){
         appLinker[json(REGISTER_ADDRESS,operatorObject)]=json(REGISTER_DATA,operatorObject);
-    }
-    if(json(CALLBACK_ADDRESS,operatorObject)!=UNDEFINED){
-        
-        uint8_t* registerRead=(uint8_t*)appLinker[json(REGISTER_ADDRESS,operatorObject)];
 
-        operatorsMemory.write((uint8_t*)CALLBACK_BUFFER,(uint8_t*)"",(stringCounter(registerRead)*1.334)+30);
-        uint8_t *callbackBuffer=operatorsMemory[CALLBACK_BUFFER];
+        if(json(CALLBACK_ADDRESS,operatorObject)!=UNDEFINED){
+            
+            uint8_t* registerRead=(uint8_t*)appLinker[json(REGISTER_ADDRESS,operatorObject)];
 
-        _CS(callbackBuffer,(uint8_t*)"{\"");
-        _CS(callbackBuffer,(uint8_t*)json(CALLBACK_ADDRESS,operatorObject));
-        _CS(callbackBuffer,(uint8_t*)"\":\"");
-        base64Encode(registerRead,callbackBuffer+stringCounter(callbackBuffer),stringCounter(registerRead));
-        _CS(callbackBuffer,(uint8_t*)"\"}");
+            operatorsMemory.write((uint8_t*)CALLBACK_BUFFER,(uint8_t*)"",(stringCounter(registerRead)*1.334)+30);
+            uint8_t *callbackBuffer=operatorsMemory[CALLBACK_BUFFER];
 
-        appLinker[MAIN_TX_REGISTER]=callbackBuffer;
+            _CS(callbackBuffer,(uint8_t*)"{\"");
+            _CS(callbackBuffer,(uint8_t*)json(CALLBACK_ADDRESS,operatorObject));
+            _CS(callbackBuffer,(uint8_t*)"\":\"");
+            base64Encode(registerRead,callbackBuffer+stringCounter(callbackBuffer),stringCounter(registerRead));
+            _CS(callbackBuffer,(uint8_t*)"\"}");
 
-        operatorsMemory[CALLBACK_BUFFER]=(uint8_t*)"";
+            appLinker[MAIN_TX_REGISTER]=callbackBuffer;
+
+            operatorsMemory[CALLBACK_BUFFER]=(uint8_t*)"";
+        }
+
+        return;
     }
 
     utils::highLevelMemory operatorObjectMemory(BUFFER_SIZE_1);
