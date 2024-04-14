@@ -111,22 +111,22 @@ class mqttClient{
       mqttServer->setServer((char*)serverAddress, serverPort);
       mqttServer->setBufferSize(BUFFER_SIZE_1);
       mqttServer->setCallback([&](char* topic,uint8_t* payload,uint32_t length){
-        // utils::highLevelMemory mqttBuffer(BUFFER_SIZE_1);
+        static utils::highLevelMemory mqttBuffer(BUFFER_SIZE_1);
 
-        // mqttBuffer["id"]=json("id",payload);
-        // if(mqttBuffer["id"]==SYSTEM_UNIQUE_IDENTIFIER)
-        //   return;
-
-        // mqttBuffer["data"]=json("data",payload);
-        // for(auto &readCallback:readCallbackList)
-        //   readCallback(mqttBuffer["data"]);
-
-        if(equalStrings(json("id",payload),(uint8_t*)SYSTEM_UNIQUE_IDENTIFIER))
+        mqttBuffer["id"]=json("id",payload);
+        if(mqttBuffer["id"]==SYSTEM_UNIQUE_IDENTIFIER)
           return;
-        
-        static uint8_t mqttBuffer[BUFFER_SIZE_1];
+
+        mqttBuffer["data"]=json("data",payload);
         for(auto &readCallback:readCallbackList)
-          readCallback(_CS(CLR(mqttBuffer,BUFFER_SIZE_1),json("data",payload)));
+          readCallback(mqttBuffer["data"]);
+
+        // if(equalStrings(json("id",payload),(uint8_t*)SYSTEM_UNIQUE_IDENTIFIER))
+        //   return;
+        
+        // static uint8_t mqttBuffer[BUFFER_SIZE_1];
+        // for(auto &readCallback:readCallbackList)
+        //   readCallback(_CS(CLR(mqttBuffer,BUFFER_SIZE_1),json("data",payload)));
 
 
 
