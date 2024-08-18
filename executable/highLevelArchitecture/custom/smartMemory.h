@@ -48,6 +48,8 @@ class memory{
 				else{// not found and still in memory bound -> create new
 					_CS(&(memoryStringAddress[nextStringIndex]),inputAddress);
 					// _CS(&(memoryStringAddress[nextStringIndex]),"\0");
+
+					return nextStringIndex;
 				}
 
 			}
