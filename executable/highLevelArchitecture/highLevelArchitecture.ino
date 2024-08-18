@@ -22,6 +22,8 @@
 
 #include "custom/registersSetup.h"
 
+#include "custom/smartMemory.h"
+
 
 
 // #include "custom/ledMatrix.h"
