@@ -32,26 +32,24 @@ class memory{
 		// std::vector<char[20]>memoryStringAddress;
 		uint8_t *memoryStringAddress;
 		uint32_t stringAddressSize=0;
+		
 		uint32_t getStringAddress(uint8_t *inputAddress){
 			uint32_t nextStringIndex=0;
 			while(1){
-				if(equalStrings(inputAddress,&(memoryStringAddress[nextStringIndex]))){ //found / already exist
-					return nextStringIndex;
+				if(equalStrings(inputAddress,&(memoryStringAddress[nextStringIndex+1]))){ //found / already exist
+					return nextStringIndex+1;
 				}
-				while((nextStringIndex<stringAddressSize)&&memoryStringAddress[nextStringIndex++]);
+				while((nextStringIndex<stringAddressSize)&&memoryStringAddress[++nextStringIndex]);
 				if((nextStringIndex+stringCounter(inputAddress)+1)>=stringAddressSize){
 					return -1UL;
 				}
-				if(memoryStringAddress[nextStringIndex++]){ //  look for the next lable in the memory space
+				if(memoryStringAddress[nextStringIndex+1]){ //  look for the next lable in the memory space
 					continue;
 				}
 				else{// not found and still in memory bound -> create new
-					_CS(&(memoryStringAddress[nextStringIndex]),inputAddress);
-					// _CS(&(memoryStringAddress[nextStringIndex]),"\0");
-
-					return nextStringIndex;
+					_CS(&memoryStringAddress[nextStringIndex+1],inputAddress);
+					return nextStringIndex+1;
 				}
-
 			}
 
 		}
