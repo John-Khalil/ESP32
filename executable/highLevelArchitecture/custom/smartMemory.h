@@ -54,9 +54,37 @@ class memory{
 
 		}
 
+		uint8_t *dataMemory=nullptr;
+		uint32_t dataMemorySize=0;
+
+		uint16_t write(uint8_t *storedData){
+			if(dataMemory==nullptr)
+				return -1;
+
+			uint16_t storedDataSize=stringCounter(storedData);
+
+			uint32_t storedDataIndex=0; 
+			while(dataMemory[storedDataIndex++]);
+			
+			uint32_t emptySpace=storedDataIndex;
+			while((emptySpace<dataMemorySize)&&(!dataMemory[emptySpace++]));
+			if(emptySpace>=dataMemorySize)
+				return -1;
+
+			
+
+
+
+		}
+
 		struct memoryElement{
 			uint32_t address=-1;
 			uint16_t stringAddress=-1;      //^ to be used with vector lookup table
+
+			uint16_t memoryAddress=-1;
+			uint16_t length=-1;
+
+
 			
 		};
 
