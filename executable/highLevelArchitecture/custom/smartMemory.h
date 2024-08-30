@@ -29,7 +29,18 @@
 class memory{
 	public:
 
-		// std::vector<char[20]>memoryStringAddress;
+		struct memoryElement{
+			uint32_t address=-1;
+			uint16_t stringAddress=-1;      //^ to be used with vector lookup table
+
+			uint16_t memoryAddress=-1;
+			uint16_t length=-1;
+
+
+		};
+
+		std::vector<memoryElement>allocationTable;
+
 		uint8_t *memoryStringAddress;
 		uint32_t stringAddressSize=0;
 		
@@ -77,23 +88,17 @@ class memory{
 		}
 
 		void remove(uint16_t memoryAddress){
-
+			uint8_t *dataAddress=&(dataMemory[memoryAddress]);
+			uint16_t addressOffset=stringCounter(dataAddress)+1;
+			CLR(dataAddress);
+			
 		}
 
 
 
 
 
-		struct memoryElement{
-			uint32_t address=-1;
-			uint16_t stringAddress=-1;      //^ to be used with vector lookup table
-
-			uint16_t memoryAddress=-1;
-			uint16_t length=-1;
-
-
-			
-		};
+		
 
 		memory(uint8_t *mainMemory,uint32_t mainMemorySize,uint8_t *addrSpace,uint32_t addrSpaceSize){
 			memoryStringAddress=addrSpace;
