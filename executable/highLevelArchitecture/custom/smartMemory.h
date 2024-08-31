@@ -31,11 +31,8 @@ class memory{
 
 		struct memoryElement{
 			uint32_t address=-1;
-			uint16_t stringAddress=-1;
-
 			uint16_t memoryAddress=-1;
 			uint16_t length=-1;
-
 
 		};
 
@@ -106,6 +103,26 @@ class memory{
 
 			return;
 		}
+
+		uint8_t *read(uint32_t address){
+			address&=~(1<<31);
+			for(auto &allocationTableElement:allocationTable)
+				if((allocationTableElement.address==address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
+          return &(dataMemory[allocationTableElement.memoryAddress]);
+        return UNDEFINED;
+		}
+
+    uint8_t *read(uint8_t *address){
+			for(auto &allocationTableElement:allocationTable)
+				if(equalStrings(&(dataMemory[(allocationTableElement.address&((1<<31)-1))]),address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
+          return &(dataMemory[allocationTableElement.memoryAddress]);
+        return UNDEFINED;
+		}
+
+    uint8_t *read(char *address){
+      return read((uint8_t*)address);
+    }
+
 
 
 
