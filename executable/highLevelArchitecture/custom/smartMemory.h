@@ -76,7 +76,7 @@ class memory{
 
 
 			uint32_t storedDataIndex=0; 
-			while(dataMemory[storedDataIndex]||dataMemory[++storedDataIndex]);
+			while(dataMemory[++storedDataIndex]||dataMemory[(storedDataIndex-1)]);
 			
 			uint32_t emptySpace=storedDataIndex;
 			while((emptySpace<dataMemorySize)&&(!dataMemory[emptySpace++]));
@@ -94,8 +94,10 @@ class memory{
 
 			// offset the data from memory
 			uint8_t *offsetAddress=dataAddress+addressOffset;
-			while(*offsetAddress)
-				*(dataAddress++)=(*(offsetAddress++));
+			while(*offsetAddress){
+				*(dataAddress++)=*offsetAddress;
+				(*(offsetAddress++))=0;
+			}
 
 			// offset the allocation table
 			for(auto &allocationTableElement:allocationTable)
