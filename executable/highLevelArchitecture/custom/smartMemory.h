@@ -31,7 +31,7 @@ class memory{
 
 		struct memoryElement{
 			uint32_t address=-1;
-			uint16_t stringAddress=-1;      //^ to be used with vector lookup table
+			uint16_t stringAddress=-1;
 
 			uint16_t memoryAddress=-1;
 			uint16_t length=-1;
@@ -91,7 +91,18 @@ class memory{
 			uint8_t *dataAddress=&(dataMemory[memoryAddress]);
 			uint16_t addressOffset=stringCounter(dataAddress)+1;
 			CLR(dataAddress);
-			
+
+			// offset the data from memory
+			uint8_t *offsetAddress=dataAddress+addressOffset;
+			while(*offsetAddress)
+				*(dataAddress++)=(*(offsetAddress++));
+
+			// offset the allocation table
+			for(auto &allocationTableElement:allocationTable)
+				if(allocationTableElement.memoryAddress>memoryAddress)
+					allocationTableElement.memoryAddress-=addressOffset;
+
+			return;
 		}
 
 
