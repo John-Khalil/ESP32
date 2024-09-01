@@ -126,8 +126,22 @@ class Memory{
 		uint8_t *write(uint32_t address,uint8_t *data){
 			for(auto &allocationTableElement:allocationTable){
 				if(allocationTableElement.address==address){
-					
+					if(allocationTableElement.length==stringCounter(data)){
+						CLR(&(dataMemory[allocationTableElement.memoryAddress]));
+						_CS(&(dataMemory[allocationTableElement.memoryAddress]),data);
+						return read(address);
+					}
+					remove(address);
+					uint16_t memoryAddress=write(data);
+					if(memoryAddress!=((uint16_t)-1)){
+						allocationTableElement.memoryAddress=memoryAddress;
+						allocationTableElement.length=stringCounter(data);
+						return read(address);
+					}
+
+					return Memory::undefined;
 				}
+
 			}
 			uint16_t memoryAddress=write(data);
 			if(memoryAddress!=((uint16_t)-1)){
