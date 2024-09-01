@@ -26,6 +26,8 @@
 #include <string>
 #include <type_traits>
 
+const char* EMPTY_STRING="";
+
 class Memory{
 	public:
 		static uint8_t *undefined;
@@ -114,7 +116,7 @@ class Memory{
 
     uint8_t *read(uint8_t *address){
 			for(auto &allocationTableElement:allocationTable)
-				if(equalStrings(&(dataMemory[(allocationTableElement.address&((1<<31)-1))]),address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
+				if(equalStrings(&(memoryStringAddress[(allocationTableElement.address&((1<<31)-1))]),address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
           return &(dataMemory[allocationTableElement.memoryAddress]);
         return Memory::undefined;
 		}
@@ -133,16 +135,14 @@ class Memory{
 					}
 					remove(address);
 					uint16_t memoryAddress=write(data);
-					if(memoryAddress!=((uint16_t)-1)){
-						allocationTableElement.memoryAddress=memoryAddress;
-						allocationTableElement.length=stringCounter(data);
-						return read(address);
-					}
+          allocationTableElement.memoryAddress=memoryAddress;
+          allocationTableElement.length=stringCounter(data);
 
-					return Memory::undefined;
+          return (memoryAddress!=((uint16_t)-1))?read(address):Memory::undefined;
 				}
 
 			}
+      // create new
 			uint16_t memoryAddress=write(data);
 			if(memoryAddress!=((uint16_t)-1)){
 				memoryElement newMemoryElement;
@@ -155,6 +155,10 @@ class Memory{
 			return Memory::undefined;
 		}
 
+    uint8_t *write(uint8_t * address,uint8_t *data){
+      return write((1<<31)|getStringAddress(address),data);
+    }
+
 
 
 
@@ -166,6 +170,8 @@ class Memory{
 			memoryStringAddress=addrSpace;
 			stringAddressSize=addrSpaceSize;
 			CLR(memoryStringAddress);
+
+      Memory::undefined=(uint8_t*)EMPTY_STRING;
 
 		}
 		~Memory(){
