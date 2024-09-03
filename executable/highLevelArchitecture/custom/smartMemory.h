@@ -88,6 +88,8 @@ class Memory{
 		}
 
 		void remove(uint16_t memoryAddress){
+      if(memoryAddress==((uint16_t)-1))
+		    return;
 			uint8_t *dataAddress=&(dataMemory[memoryAddress]);
 			uint16_t addressOffset=stringCounter(dataAddress)+1;
 			CLR(dataAddress);
@@ -133,7 +135,7 @@ class Memory{
 						_CS(&(dataMemory[allocationTableElement.memoryAddress]),data);
 						return read(address);
 					}
-					remove(address);
+					remove(allocationTableElement.memoryAddress);
 					uint16_t memoryAddress=write(data);
           allocationTableElement.memoryAddress=memoryAddress;
           allocationTableElement.length=stringCounter(data);
