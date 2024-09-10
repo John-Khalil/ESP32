@@ -37,6 +37,10 @@ class Memory{
 			uint16_t memoryAddress=-1;
 			uint16_t length=-1;
 
+      uint8_t nonRecursiveWrite=0;
+      std::vector<std::function<void(uint8_t*)>>*writeEvents=nullptr;
+      uint8_t nonRecursiveRead=0;
+      std::vector<std::function<void(void)>>*readEvents=nullptr;
 		};
 
 		std::vector<memoryElement>allocationTable;
@@ -159,6 +163,17 @@ class Memory{
 
     uint8_t *write(uint8_t * address,uint8_t *data){
       return write((1<<31)|getStringAddress(address),data);
+    }
+
+    void onWrite(uint32_t address,std::function<void(uint8_t*)>&writeEvent){
+			
+      for(auto &allocationTableElement:allocationTable)
+				if(allocationTableElement.address==address){
+					((allocationTableElement.writeEvents==nullptr)
+						?(allocationTableElement.writeEvents=new std::vector<std::function<void(uint8_t*)>>)
+						:allocationTableElement.writeEvents
+					)->push_back(writeEvent);
+        }
     }
 
 
