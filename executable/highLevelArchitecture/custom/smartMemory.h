@@ -166,7 +166,13 @@ class Memory{
     }
 
     void onWrite(uint32_t address,std::function<void(uint8_t*)>&writeEvent){
-			
+			if(read(address)==Memory::undefined){
+				memoryElement newMemoryElement;
+				newMemoryElement.address=address;
+				newMemoryElement.memoryAddress=((uint16_t)-1);
+				newMemoryElement.length=0;
+				allocationTable.push_back(newMemoryElement);
+			}
       for(auto &allocationTableElement:allocationTable)
 				if(allocationTableElement.address==address){
 					((allocationTableElement.writeEvents==nullptr)
