@@ -172,6 +172,9 @@ class Memory{
 				newMemoryElement.memoryAddress=((uint16_t)-1);
 				newMemoryElement.length=0;
 				allocationTable.push_back(newMemoryElement);
+				allocationTable[allocationTable.size()-1].writeEvents=new std::vector<std::function<void(uint8_t*)>>;
+				allocationTable[allocationTable.size()-1].writeEvents->push_back(writeEvent);
+				return;
 			}
       for(auto &allocationTableElement:allocationTable)
 				if(allocationTableElement.address==address){
@@ -179,6 +182,28 @@ class Memory{
 						?(allocationTableElement.writeEvents=new std::vector<std::function<void(uint8_t*)>>)
 						:allocationTableElement.writeEvents
 					)->push_back(writeEvent);
+					return;
+        }
+    }
+
+		void onRead(uint32_t address,std::function<void(void)>&readEvent){
+			if(read(address)==Memory::undefined){
+				memoryElement newMemoryElement;
+				newMemoryElement.address=address;
+				newMemoryElement.memoryAddress=((uint16_t)-1);
+				newMemoryElement.length=0;
+				allocationTable.push_back(newMemoryElement);
+				allocationTable[allocationTable.size()-1].readEvents=new std::vector<std::function<void(void)>>;
+				allocationTable[allocationTable.size()-1].readEvents->push_back(readEvent);
+				return;
+			}
+      for(auto &allocationTableElement:allocationTable)
+				if(allocationTableElement.address==address){
+					((allocationTableElement.readEvents==nullptr)
+						?(allocationTableElement.readEvents=new std::vector<std::function<void(void)>>)
+						:allocationTableElement.readEvents
+					)->push_back(readEvent);
+					return;
         }
     }
 
@@ -198,6 +223,11 @@ class Memory{
 
 		}
 		~Memory(){
-
+			for(auto &allocationTableElement:allocationTable){
+				if(allocationTableElement.writeEvents!=nullptr)
+					delete allocationTableElement.writeEvents;
+				if(allocationTableElement.readEvents!=nullptr)
+					delete allocationTableElement.readEvents;
+			}
 		}
 };
