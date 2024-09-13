@@ -113,10 +113,30 @@ class Memory{
 			return;
 		}
 
+		void elementReadEvent(memoryElement& memoryElement){
+			if((memoryElement.readEvents==nullptr)||(memoryElement.nonRecursiveRead))
+				return;
+			memoryElement.nonRecursiveRead=1;
+			for(auto &readEvent:(*memoryElement.readEvents))
+				readEvent();
+			memoryElement.nonRecursiveRead=0;
+		}
+
+		void elementWriteEvent(memoryElement& memoryElement,uint8_t *data){
+			if((memoryElement.writeEvents==nullptr)||(memoryElement.nonRecursiveWrite))
+				return;
+			memoryElement.nonRecursiveWrite=1;
+			for(auto &writeEvent:(*memoryElement.writeEvents))
+				writeEvent(data);
+			memoryElement.nonRecursiveWrite=0;
+		}
+
 		uint8_t *read(uint32_t address){
 			for(auto &allocationTableElement:allocationTable)
-				if((allocationTableElement.address==address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
+				if((allocationTableElement.address==address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1))){
+					elementReadEvent(allocationTableElement);
           return &(dataMemory[allocationTableElement.memoryAddress]);
+				}
         return Memory::undefined;
 		}
 
@@ -137,13 +157,14 @@ class Memory{
 					if(allocationTableElement.length==stringCounter(data)){
 						CLR(&(dataMemory[allocationTableElement.memoryAddress]));
 						_CS(&(dataMemory[allocationTableElement.memoryAddress]),data);
+						elementWriteEvent(allocationTableElement,data);
 						return read(address);
 					}
 					remove(allocationTableElement.memoryAddress);
 					uint16_t memoryAddress=write(data);
           allocationTableElement.memoryAddress=memoryAddress;
           allocationTableElement.length=stringCounter(data);
-
+					elementWriteEvent(allocationTableElement,data);
           return (memoryAddress!=((uint16_t)-1))?read(address):Memory::undefined;
 				}
 
