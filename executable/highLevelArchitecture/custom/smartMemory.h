@@ -142,9 +142,10 @@ class Memory{
 
     uint8_t *read(uint8_t *address){
 			for(auto &allocationTableElement:allocationTable)
-				if(equalStrings(&(memoryStringAddress[(allocationTableElement.address&((1<<31)-1))]),address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1)))
+				if(equalStrings(&(memoryStringAddress[(allocationTableElement.address&((1<<31)-1))]),address)&&(allocationTableElement.memoryAddress!=((uint16_t)-1))){
           elementReadEvent(allocationTableElement);
 					return &(dataMemory[allocationTableElement.memoryAddress]);
+				}
         return Memory::undefined;
 		}
 
