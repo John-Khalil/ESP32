@@ -188,7 +188,7 @@ class Memory{
       return write((1<<31)|getStringAddress(address),data);
     }
 
-    void onWrite(uint32_t address,std::function<void(uint8_t*)>&writeEvent){
+    void onWrite(uint32_t address,const std::function<void(uint8_t*)>&writeEvent){
 			if(read(address)==Memory::undefined){
 				memoryElement newMemoryElement;
 				newMemoryElement.address=address;
@@ -209,7 +209,7 @@ class Memory{
         }
     }
 
-		void onRead(uint32_t address,std::function<void(void)>&readEvent){
+		void onRead(uint32_t address,const std::function<void(void)>&readEvent){
 			if(read(address)==Memory::undefined){
 				memoryElement newMemoryElement;
 				newMemoryElement.address=address;
