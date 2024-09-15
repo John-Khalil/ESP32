@@ -160,14 +160,14 @@ class Memory{
 						CLR(&(dataMemory[allocationTableElement.memoryAddress]));
 						_CS(&(dataMemory[allocationTableElement.memoryAddress]),data);
 						elementWriteEvent(allocationTableElement,data);
-						return read(address);
+						return (allocationTableElement.memoryAddress!=((uint16_t)-1))?(&(dataMemory[allocationTableElement.memoryAddress])):Memory::undefined;
 					}
 					remove(allocationTableElement.memoryAddress);
 					uint16_t memoryAddress=write(data);
           allocationTableElement.memoryAddress=memoryAddress;
           allocationTableElement.length=stringCounter(data);
 					elementWriteEvent(allocationTableElement,data);
-          return (memoryAddress!=((uint16_t)-1))?read(address):Memory::undefined;
+          return (allocationTableElement.memoryAddress!=((uint16_t)-1))?(&(dataMemory[allocationTableElement.memoryAddress])):Memory::undefined;
 				}
 
 			}
@@ -179,7 +179,7 @@ class Memory{
 				newMemoryElement.memoryAddress=memoryAddress;
 				newMemoryElement.length=stringCounter(data);
 				allocationTable.push_back(newMemoryElement);
-				return read(address);
+				return (newMemoryElement.memoryAddress!=((uint16_t)-1))?(&(dataMemory[newMemoryElement.memoryAddress])):Memory::undefined;
 			}
 			return Memory::undefined;
 		}
