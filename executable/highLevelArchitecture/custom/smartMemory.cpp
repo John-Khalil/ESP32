@@ -240,6 +240,10 @@ class Memory{
 			stringAddressSize=addrSpaceSize;
 			CLR(memoryStringAddress);
 
+			dataMemory=mainMemory;
+			dataMemorySize=mainMemorySize;
+			CLR(mainMemory);
+
       Memory::undefined=(uint8_t*)EMPTY_STRING;
 
 		}
