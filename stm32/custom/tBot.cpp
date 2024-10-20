@@ -21,18 +21,33 @@ class tBot{
             int32_t d1=0;
             int32_t d2=0;
         };
+        #define TBOT_DELAY(U_Second)
     public:
         point refPoint;
         point currentPoint;
 
-        void followRef(void){
+        void followRef(uint32_t delayTime){
             *OUTPUT_SET|=en;
             if(refPoint.d1!=currentPoint.d1){
                 *OUTPUT_SET|=(currentPoint.d1<refPoint.d1)?dir1:dir2;
                 *OUTPUT_RESET|=(currentPoint.d1>refPoint.d1)?dir1:dir2;
+                while(refPoint.d1!=currentPoint.d1){
+                    *OUTPUT_SET|=clk;
+                    TBOT_DELAY(delayTime);
+                    *OUTPUT_RESET|=clk;
+                    TBOT_DELAY(delayTime);
+                    (currentPoint.d1<refPoint.d1)?currentPoint.d1++:currentPoint.d1--;
+                }
             }
             if(refPoint.d2!=currentPoint.d2){
-                
+                (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=clk):(*OUTPUT_SET|=clk);
+                while(refPoint.d2!=currentPoint.d2){
+                    *OUTPUT_SET|=clk;
+                    TBOT_DELAY(delayTime);
+                    *OUTPUT_RESET|=clk;
+                    TBOT_DELAY(delayTime);
+                    (currentPoint.d2<refPoint.d2)?currentPoint.d2++:currentPoint.d2--;
+                }
             }
             return;
         }
@@ -42,28 +57,53 @@ class tBot{
             return;
         }
 
+        void setup(
+            volatile uint32_t* _output_set,
+            volatile uint32_t* _output_reset,
+            uint32_t _en,
+            uint32_t _dir1,
+            uint32_t _dir2,
+            uint32_t _clk1,
+            uint32_t _clk2,
+            uint16_t _stepsPerUnit
+        ){
+            OUTPUT_SET=_output_set;
+            OUTPUT_RESET=_output_reset;
+            en=(1<<_en);
+            dir1=(1<<_dir1);
+            dir2=(1<<_dir2);
+            clk=(1<<_clk1)|(1<<_clk2);
+            stepsPerUnit=_stepsPerUnit;
+        }
 
 
-    tBot(
-        volatile uint32_t* _output_set,
-        volatile uint32_t* _output_reset,
-        uint32_t _en,
-        uint32_t _dir1,
-        uint32_t _dir2,
-        uint32_t _clk1,
-        uint32_t _clk2,
-        uint16_t _stepsPerUnit
-    ){
-        OUTPUT_SET=_output_set;
-        OUTPUT_RESET=_output_reset;
-        en=(1<<_en);
-        dir1=(1<<_dir1);
-        dir2=(1<<_dir2);
-        clk=(1<<_clk1)|(1<<_clk2);
-        stepsPerUnit=_stepsPerUnit;
-    }
-    ~tBot(){
-        
-    }
+
+        tBot(
+            volatile uint32_t* _output_set,
+            volatile uint32_t* _output_reset,
+            uint32_t _en,
+            uint32_t _dir1,
+            uint32_t _dir2,
+            uint32_t _clk1,
+            uint32_t _clk2,
+            uint16_t _stepsPerUnit
+        ){
+            setup(
+                _output_set,
+                _output_reset,
+                _en,
+                _dir1,
+                _dir2,
+                _clk1,
+                _clk2,
+                _stepsPerUnit
+            );
+        }
+        tBot(){
+            
+        }
+        ~tBot(){
+            
+        }
 
 };
