@@ -57,6 +57,13 @@ class tBot{
             return;
         }
 
+        tBot& move(uint32_t d1,uint32_t d2,uint16_t feedRate){
+            refPoint.d1=d1;
+            refPoint.d2=d2;
+            followRef(feedRate);
+            return (*this);
+        }
+
         void setup(
             volatile uint32_t* _output_set,
             volatile uint32_t* _output_reset,
