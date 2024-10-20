@@ -1,5 +1,7 @@
 #include "custom/pointerTool.h"
 #include "custom/smartMemory.cpp"
+#include "custom/tBot.cpp"
+
 
 
 // #include <iostream>
@@ -11,11 +13,11 @@
 #include <string>
 #include <type_traits>
 
-int main(void){
-    Serial.begin(115200);
-    // Serial.print 
-    return 0;
-}
+// int main(void){
+//     Serial.begin(115200);
+//     // Serial.print 
+//     return 0;
+// }
 
 // // Pin definitions
 // const int interruptPin = PB12;  // Pin to attach interrupt to (can be any GPIO pin)
@@ -57,3 +59,35 @@ int main(void){
 //   pinState++;
 // //   digitalWrite(PC13,pinState);
 // }
+
+#include <Arduino.h>
+
+// Create a HardwareTimer instance for TIM1
+HardwareTimer *MyTim = new HardwareTimer(TIM1);
+
+void onTimerInterrupt() {
+  // Code to execute on timer overflow
+  digitalToggle(LED_BUILTIN); // Toggle the LED as an example
+}
+
+void setup() {
+  // Initialize LED pin
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // Configure TIM1 to count every microsecond (1 MHz frequency)
+  MyTim->setPrescaleFactor(80);  // Assuming 80 MHz clock, this sets 1 MHz timer frequency (1 µs per tick)
+  
+  // Set overflow period to 1000 ticks (1 ms)
+  MyTim->setOverflow(65535); 
+
+  // Attach interrupt handler
+  MyTim->attachInterrupt(onTimerInterrupt);
+
+  // Start the timer
+  MyTim->resume();
+  while(1);
+}
+
+void loop() {
+  // Main loop does nothing, the timer interrupt handles everything
+}
