@@ -58,8 +58,8 @@ class tBot{
         }
 
         tBot& move(uint32_t d1,uint32_t d2,uint16_t feedRate){
-            refPoint.d1=d1;
-            refPoint.d2=d2;
+            refPoint.d1=d1*stepsPerUnit;
+            refPoint.d2=d2*stepsPerUnit;
             followRef(feedRate);
             return (*this);
         }
@@ -107,7 +107,7 @@ class tBot{
             );
         }
         tBot(){
-            
+
         }
         ~tBot(){
             
