@@ -28,14 +28,14 @@
 HardwareTimer *Timer1 = new HardwareTimer(TIM1);
 
 volatile uint64_t TIMER_ACCUMULATOR=0;
-#define GET_TIMER() ((uint64_t)(TIMER_ACCUMULATOR|Timer1->getCount))
+#define GET_TIMER() ((uint64_t)(TIMER_ACCUMULATOR|Timer1->getCount()))
 
 void onTimerInterrupt() {
-    TIMER_ACCUMULATOR|=65536;   //adding 2^16
+    TIMER_ACCUMULATOR+=65536;   //adding 2^16
 }
 
 void setupTimer(void){
-    Timer1->setPrescaleFactor(80);
+    Timer1->setPrescaleFactor(72);
     Timer1->setOverflow(65535);
     Timer1->attachInterrupt(onTimerInterrupt);
     Timer1->resume();
