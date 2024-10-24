@@ -29,6 +29,7 @@ HardwareTimer *Timer1 = new HardwareTimer(TIM1);
 
 volatile uint64_t TIMER_ACCUMULATOR=0;
 #define GET_TIMER() ((uint64_t)(TIMER_ACCUMULATOR|Timer1->getCount()))
+#define HW_DELAY(delayTime) {uint64_t startTime=GET_TIMER();while((startTime+delayTime)>GET_TIMER());}
 
 void onTimerInterrupt() {
     TIMER_ACCUMULATOR+=65536;   //adding 2^16

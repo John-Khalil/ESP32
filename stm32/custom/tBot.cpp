@@ -1,5 +1,7 @@
 #pragma once
 
+#include "platformUtils.cpp"
+
 #include <stdint.h>
 #include <functional>
 #include <vector>
@@ -21,7 +23,6 @@ class tBot{
             int32_t d1=0;
             int32_t d2=0;
         };
-        #define TBOT_DELAY(U_Second)
     public:
         point refPoint;
         point currentPoint;
@@ -33,9 +34,9 @@ class tBot{
                 *OUTPUT_RESET|=(currentPoint.d1>refPoint.d1)?dir1:dir2;
                 while(refPoint.d1!=currentPoint.d1){
                     *OUTPUT_SET|=clk;
-                    TBOT_DELAY(delayTime);
+                    HW_DELAY(delayTime);
                     *OUTPUT_RESET|=clk;
-                    TBOT_DELAY(delayTime);
+                    HW_DELAY(delayTime);
                     (currentPoint.d1<refPoint.d1)?currentPoint.d1++:currentPoint.d1--;
                 }
             }
@@ -43,9 +44,9 @@ class tBot{
                 (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=clk):(*OUTPUT_SET|=clk);
                 while(refPoint.d2!=currentPoint.d2){
                     *OUTPUT_SET|=clk;
-                    TBOT_DELAY(delayTime);
+                    HW_DELAY(delayTime);
                     *OUTPUT_RESET|=clk;
-                    TBOT_DELAY(delayTime);
+                    HW_DELAY(delayTime);
                     (currentPoint.d2<refPoint.d2)?currentPoint.d2++:currentPoint.d2--;
                 }
             }

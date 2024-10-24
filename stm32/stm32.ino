@@ -1,4 +1,4 @@
-#include "custom/platform.cpp"
+#include "custom/platformUtils.cpp"
 #include "custom/pointerTool.h"
 #include "custom/smartMemory.cpp"
 #include "custom/tBot.cpp"
