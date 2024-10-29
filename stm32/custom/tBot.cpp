@@ -41,7 +41,7 @@ class tBot{
                 }
             }
             if(refPoint.d2!=currentPoint.d2){
-                (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=clk):(*OUTPUT_SET|=clk);
+                (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=(dir1|dir2)):(*OUTPUT_SET|=(dir1|dir2));
                 while(refPoint.d2!=currentPoint.d2){
                     *OUTPUT_SET|=clk;
                     HW_DELAY(delayTime);
