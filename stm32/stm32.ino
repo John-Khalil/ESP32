@@ -2,6 +2,7 @@
 #include "custom/pointerTool.h"
 #include "custom/smartMemory.cpp"
 #include "custom/tBot.cpp"
+#include "custom/taskLauncher.cpp"
 
 
 
@@ -17,6 +18,7 @@
 void setup(void){
     Serial.begin(250000);
     setupTimer();
+    taskLauncher();
 
     uint64_t test[2]={};
     uint32_t loopCounter=0;
