@@ -30,23 +30,27 @@ class tBot{
         void followRef(uint32_t delayTime){
             *OUTPUT_SET|=en;
             if(refPoint.d1!=currentPoint.d1){
-                *OUTPUT_SET|=(currentPoint.d1<refPoint.d1)?dir1:dir2;
-                *OUTPUT_RESET|=(currentPoint.d1>refPoint.d1)?dir1:dir2;
                 while(refPoint.d1!=currentPoint.d1){
+                    *OUTPUT_SET|=(currentPoint.d1<refPoint.d1)?dir1:dir2;
+                    *OUTPUT_RESET|=(currentPoint.d1>refPoint.d1)?dir1:dir2;
+
                     *OUTPUT_SET|=clk;
                     HW_DELAY(delayTime);
                     *OUTPUT_RESET|=clk;
                     HW_DELAY(delayTime);
+
                     (currentPoint.d1<refPoint.d1)?currentPoint.d1++:currentPoint.d1--;
                 }
             }
             if(refPoint.d2!=currentPoint.d2){
-                (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=(dir1|dir2)):(*OUTPUT_SET|=(dir1|dir2));
                 while(refPoint.d2!=currentPoint.d2){
+                    (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=(dir1|dir2)):(*OUTPUT_SET|=(dir1|dir2));
+
                     *OUTPUT_SET|=clk;
                     HW_DELAY(delayTime);
                     *OUTPUT_RESET|=clk;
                     HW_DELAY(delayTime);
+                    
                     (currentPoint.d2<refPoint.d2)?currentPoint.d2++:currentPoint.d2--;
                 }
             }
