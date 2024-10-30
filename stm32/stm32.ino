@@ -3,6 +3,7 @@
 #include "custom/smartMemory.cpp"
 #include "custom/tBot.cpp"
 #include "custom/taskLauncher.cpp"
+#include "custom/headlessCommunication.cpp"
 
 
 
