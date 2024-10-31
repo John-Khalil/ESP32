@@ -17,7 +17,7 @@
 #include <type_traits>
 
 void setup(void){
-    Serial.begin(250000);
+    Serial.begin(921600);
     setupTimer();
     taskLauncher();
 

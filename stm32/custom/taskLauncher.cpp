@@ -43,17 +43,31 @@ void task2(void *pvParameters){
     return;
 }
 
+void headlessEndpointTask(void *pvParameters){
+    headlessEndpoint();
+    return;
+}
+
 void taskLauncher(void){
+    // xTaskCreate(
+    //     task1,
+    //     (const portCHAR *) "",
+    //     128,  // Stack size
+    //     NULL,
+    //     1,  // Priority
+    //     NULL
+    // );
+    // xTaskCreate(
+    //     task2,
+    //     (const portCHAR *) "",
+    //     128,  // Stack size
+    //     NULL,
+    //     1,  // Priority
+    //     NULL
+    // );
+
     xTaskCreate(
-        task1,
-        (const portCHAR *) "",
-        128,  // Stack size
-        NULL,
-        1,  // Priority
-        NULL
-    );
-    xTaskCreate(
-        task2,
+        headlessEndpointTask,
         (const portCHAR *) "",
         128,  // Stack size
         NULL,
