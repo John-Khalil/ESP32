@@ -48,7 +48,17 @@ void headlessEndpoint(void){
             if(!(DeserializationError)deserializeJson(doc, receivedObject)){
                 JsonObject obj = doc.as<JsonObject>();
                 for(JsonPair pair : obj){
+                    const char* key = pair.key().c_str();
+                    String value;
+                    if(pair.value().is<JsonObject>())
+                        serializeJson(pair.value(),value);
+                    else
+                        value = pair.value().as<String>();
                     
+                    Serial.print("Key: ");
+                    Serial.print(key);
+                    Serial.print(" Value: ");
+                    Serial.println(value);
                 }
             }
         }
