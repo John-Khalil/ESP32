@@ -231,6 +231,12 @@ class Memory{
       Memory::undefined=(uint8_t*)EMPTY_STRING;
 
 		}
+		Memory(const int mainMemorySize,const int addrSpaceSize){
+			uint8_t mainMemory[mainMemorySize]={};
+			uint8_t addrSpace[addrSpaceSize]={};
+			Memory::undefined=(uint8_t*)EMPTY_STRING;
+			Memory(mainMemory,mainMemorySize,addrSpace,addrSpaceSize);
+		}
 		~Memory(){
 			for(auto &allocationTableElement:allocationTable){
 				if(allocationTableElement.writeEvents!=nullptr)
@@ -240,3 +246,5 @@ class Memory{
 			}
 		}
 };
+
+Memory appLinker(3000,500);
