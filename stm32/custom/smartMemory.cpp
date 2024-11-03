@@ -217,7 +217,7 @@ class Memory{
 
 
 
-		
+		uint8_t dynamicMemory=0;
 
 		Memory(uint8_t *mainMemory,uint32_t mainMemorySize,uint8_t *addrSpace,uint32_t addrSpaceSize){
 			memoryStringAddress=addrSpace;
@@ -227,25 +227,13 @@ class Memory{
 			dataMemory=mainMemory;
 			dataMemorySize=mainMemorySize;
 			CLR(mainMemory);
-
-      Memory::undefined=(uint8_t*)EMPTY_STRING;
-
 		}
 
 		Memory(uint32_t mainMemorySize,uint32_t addrSpaceSize){
+			dynamicMemory=1;
 			uint8_t *mainMemory=(uint8_t*)calloc(mainMemorySize, sizeof(uint8_t));
 			uint8_t *addrSpace=(uint8_t*)calloc(addrSpaceSize, sizeof(uint8_t));
-			// Memory(mainMemory,mainMemorySize,addrSpace,addrSpaceSize);
-
-			memoryStringAddress=addrSpace;
-			stringAddressSize=addrSpaceSize;
-			// CLR(memoryStringAddress);
-
-			dataMemory=mainMemory;
-			dataMemorySize=mainMemorySize;
-			// CLR(mainMemory);
-
-      Memory::undefined=(uint8_t*)EMPTY_STRING;
+			Memory(mainMemory,mainMemorySize,addrSpace,addrSpaceSize);
 		}
 
 		~Memory(){
@@ -255,7 +243,11 @@ class Memory{
 				if(allocationTableElement.readEvents!=nullptr)
 					delete allocationTableElement.readEvents;
 			}
+			if(dynamicMemory){
+				free(memoryStringAddress);
+				free(dataMemory);
+			}
 		}
-};
-
+}; 
+uint8_t* Memory::undefined=(uint8_t*)EMPTY_STRING;
 Memory appLinker(3000,500);
