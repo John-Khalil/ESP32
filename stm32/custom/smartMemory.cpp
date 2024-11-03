@@ -231,12 +231,23 @@ class Memory{
       Memory::undefined=(uint8_t*)EMPTY_STRING;
 
 		}
-		Memory(const int mainMemorySize,const int addrSpaceSize){
-			uint8_t mainMemory[mainMemorySize]={};
-			uint8_t addrSpace[addrSpaceSize]={};
-			Memory::undefined=(uint8_t*)EMPTY_STRING;
-			Memory(mainMemory,mainMemorySize,addrSpace,addrSpaceSize);
+
+		Memory(uint32_t mainMemorySize,uint32_t addrSpaceSize){
+			uint8_t *mainMemory=(uint8_t*)calloc(mainMemorySize, sizeof(uint8_t));
+			uint8_t *addrSpace=(uint8_t*)calloc(addrSpaceSize, sizeof(uint8_t));
+			// Memory(mainMemory,mainMemorySize,addrSpace,addrSpaceSize);
+
+			memoryStringAddress=addrSpace;
+			stringAddressSize=addrSpaceSize;
+			// CLR(memoryStringAddress);
+
+			dataMemory=mainMemory;
+			dataMemorySize=mainMemorySize;
+			// CLR(mainMemory);
+
+      Memory::undefined=(uint8_t*)EMPTY_STRING;
 		}
+
 		~Memory(){
 			for(auto &allocationTableElement:allocationTable){
 				if(allocationTableElement.writeEvents!=nullptr)
