@@ -4,6 +4,7 @@
 #include "custom/tBot.cpp"
 #include "custom/taskLauncher.cpp"
 #include "custom/headlessCommunication.cpp"
+#include "custom/registersSetup.cpp"
 
 
 
@@ -19,15 +20,9 @@
 void setup(void){
     Serial.begin(921600);
     setupTimer();
-    taskLauncher();
 
-    uint64_t test[2]={};
-    uint32_t loopCounter=0;
-    while(1){
-        test[(loopCounter++)%2]=GET_TIMER();
-        Serial.println((test[0]>test[1])?(test[0]-test[1]):(test[1]-test[0]));
-        delay(1000);
-    }
+
+    taskLauncher();
     return;
 }
 

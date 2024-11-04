@@ -2,6 +2,7 @@
 
 #include "pointerTool.h"
 #include "smartMemory.cpp"
+#include "registersSetup.cpp"
 
 #include <stdint.h>
 #include <functional>
@@ -55,10 +56,7 @@ void headlessEndpoint(void){
                     else
                         value = pair.value().as<String>();
                     
-                    Serial.print("Key: ");
-                    Serial.print(key);
-                    Serial.print(" Value: ");
-                    Serial.println(value);
+                    registerSet(atoi(key),(char*)value.c_str());
                 }
             }
         }
