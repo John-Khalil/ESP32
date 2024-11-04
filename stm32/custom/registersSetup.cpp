@@ -21,6 +21,31 @@
 
 
 void registersSetup(void){
+    appLinker.onWrite(INPUT,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(INPUT_PULLUP,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(INPUT_PULLDOWN,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(OUTPUT,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(DW1,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(DW0,[&](uint8_t* data){
+        
+    });
+    appLinker.onWrite(DR,[&](uint8_t* data){
+        
+    });
+    
+
+
+
     appLinker.onWrite(TBOT,[&](uint8_t* data){
         Serial.println((char*)data);
     });
