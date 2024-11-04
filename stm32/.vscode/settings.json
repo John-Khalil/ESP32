@@ -38,10 +38,7 @@
   "C_Cpp_Runner.compilerArgs": [],
   "C_Cpp_Runner.linkerArgs": [],
   "C_Cpp_Runner.includePaths": [],
-  "C_Cpp_Runner.includeSearch": [
-    "*",
-    "**/*"
-  ],
+  "C_Cpp_Runner.includeSearch": ["*", "**/*"],
   "C_Cpp_Runner.excludeSearch": [
     "**/build",
     "**/build/**",
@@ -61,6 +58,8 @@
     "expected": "cpp",
     "optional": "cpp",
     "system_error": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "compare": "cpp",
+    "cstdint": "cpp"
   }
 }

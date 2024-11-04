@@ -20,6 +20,7 @@
 void setup(void){
     Serial.begin(921600);
     setupTimer();
+    registersSetup();
 
 
     taskLauncher();

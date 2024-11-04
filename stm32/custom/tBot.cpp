@@ -62,6 +62,11 @@ class tBot{
             return;
         }
 
+        tBot& setStepsPerUnit(uint16_t _stepsPerUnit){
+            stepsPerUnit=_stepsPerUnit;
+            return (*this);
+        }
+
         tBot& move(uint32_t d1,uint32_t d2,uint16_t feedRate){
             refPoint.d1=d1*stepsPerUnit;
             refPoint.d2=d2*stepsPerUnit;
@@ -119,3 +124,5 @@ class tBot{
         }
 
 };
+
+tBot tbot(); 
