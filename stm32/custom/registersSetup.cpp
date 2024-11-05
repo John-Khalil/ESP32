@@ -46,12 +46,30 @@ void registersSetup(void){
 
 
 
-    appLinker.onWrite(TBOT,[&](uint8_t* data){
+    appLinker.onWrite(TBOT_MOVE,[&](uint8_t* data){
+        Serial.print("[TBOT] : ");
         Serial.println((char*)data);
+
+        tbot.move(
+            atoi((char*)json("d1",data)),
+            atoi((char*)json("d1",data)),
+            atoi((char*)json("d1",data))
+        );
     });
     appLinker.onWrite(TBOT_SETUP,[&](uint8_t* data){
+        Serial.print("[TBOT_SETUP] : ");
         Serial.println((char*)data);
-        tbot;
+
+        tbot.setup(
+            (uint32_t*)atoi((char*)json("output_set",data)),
+            (uint32_t*)atoi((char*)json("output_reset",data)),
+            atoi((char*)json("en",data)),
+            atoi((char*)json("dir1",data)),
+            atoi((char*)json("dir2",data)),
+            atoi((char*)json("clk1",data)),
+            atoi((char*)json("clk2",data)),
+            atoi((char*)json("stepsPerUnit",data))
+        );
     });
     return;
 }

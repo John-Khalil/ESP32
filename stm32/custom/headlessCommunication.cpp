@@ -45,7 +45,7 @@ void headlessEndpoint(void){
         if(Serial.available()){
             StaticJsonDocument<1024> doc;
             String receivedObject=Serial.readStringUntil('\n');
-            Serial.println(receivedObject);
+            // Serial.println(receivedObject);
             if(!(DeserializationError)deserializeJson(doc, receivedObject)){
                 JsonObject obj = doc.as<JsonObject>();
                 for(JsonPair pair : obj){
