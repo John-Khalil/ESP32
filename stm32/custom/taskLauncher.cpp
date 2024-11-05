@@ -69,7 +69,7 @@ void taskLauncher(void){
     xTaskCreate(
         headlessEndpointTask,
         (const portCHAR *) "",
-        128,  // Stack size
+        256,  // Stack size
         NULL,
         1,  // Priority
         NULL

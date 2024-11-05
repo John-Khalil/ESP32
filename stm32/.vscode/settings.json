@@ -60,6 +60,13 @@
     "system_error": "cpp",
     "regex": "cpp",
     "compare": "cpp",
-    "cstdint": "cpp"
+    "cstdint": "cpp",
+    "ratio": "cpp",
+    "array": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "variant": "cpp"
   }
 }

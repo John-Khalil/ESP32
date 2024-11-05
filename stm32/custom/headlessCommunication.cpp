@@ -43,7 +43,7 @@ void headlessAttribute(T1 key,T2 value){
 void headlessEndpoint(void){
     while(1){
         if(Serial.available()){
-            StaticJsonDocument<1024> doc;
+            StaticJsonDocument<500> doc;
             String receivedObject=Serial.readStringUntil('\n');
             // Serial.println(receivedObject);
             if(!(DeserializationError)deserializeJson(doc, receivedObject)){
@@ -57,7 +57,14 @@ void headlessEndpoint(void){
                         value = pair.value().as<String>();
                     
                     registerSet(atoi(key),(char*)value.c_str());
+                    // Serial.print("Key: ");
+                    // Serial.print(key);
+                    // Serial.print(" Value: ");
+                    // Serial.println(value);
                 }
+            }
+            else{
+                Serial.print("deserializeJson() failed\n");
             }
         }
     }

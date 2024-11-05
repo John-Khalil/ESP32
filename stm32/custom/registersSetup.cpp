@@ -52,11 +52,12 @@ void registersSetup(void){
 
         tbot.move(
             atoi((char*)json("d1",data)),
-            atoi((char*)json("d1",data)),
-            atoi((char*)json("d1",data))
+            atoi((char*)json("d2",data)),
+            atoi((char*)json("feedRate",data))
         );
     });
     appLinker.onWrite(TBOT_SETUP,[&](uint8_t* data){
+        //{"266":{"output_set":1073809424,"output_reset":1073809428,"en":0,"dir1":1,"dir2":2,"clk1":3,"clk2":4,"stepsPerUnit":80}}
         Serial.print("[TBOT_SETUP] : ");
         Serial.println((char*)data);
 
