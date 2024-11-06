@@ -5,6 +5,7 @@
 #include "custom/taskLauncher.cpp"
 #include "custom/headlessCommunication.cpp"
 #include "custom/registersSetup.cpp"
+#include "custom/startup.cpp"
 
 
 
@@ -20,6 +21,7 @@
 void setup(void){
     Serial.begin(921600);
     setupTimer();
+    tbotSetup();
     registersSetup();
 
 

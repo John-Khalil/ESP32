@@ -28,7 +28,7 @@ class tBot{
         point currentPoint;
 
         void followRef(uint32_t delayTime){
-            *OUTPUT_SET|=en;
+            *OUTPUT_RESET|=en;
             if(refPoint.d1!=currentPoint.d1){
                 while(refPoint.d1!=currentPoint.d1){
                     *OUTPUT_SET|=(currentPoint.d1<refPoint.d1)?dir1:dir2;
@@ -58,7 +58,7 @@ class tBot{
         }
 
         void disable(void){
-            *OUTPUT_RESET|=en;
+            *OUTPUT_SET|=en;
             return;
         }
 

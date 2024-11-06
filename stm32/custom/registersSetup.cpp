@@ -21,27 +21,27 @@
 
 
 void registersSetup(void){
-    appLinker.onWrite(INPUT,[&](uint8_t* data){
+    // appLinker.onWrite(INPUT,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(INPUT_PULLUP,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(INPUT_PULLUP,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(INPUT_PULLDOWN,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(INPUT_PULLDOWN,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(OUTPUT,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(OUTPUT,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(DW1,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(DW1,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(DW0,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(DW0,[&](uint8_t* data){
         
-    });
-    appLinker.onWrite(DR,[&](uint8_t* data){
+    // });
+    // appLinker.onWrite(DR,[&](uint8_t* data){
         
-    });
+    // });
     
 
 
@@ -61,16 +61,16 @@ void registersSetup(void){
         Serial.print("[TBOT_SETUP] : ");
         Serial.println((char*)data);
 
-        tbot.setup(
-            (uint32_t*)atoi((char*)json("output_set",data)),
-            (uint32_t*)atoi((char*)json("output_reset",data)),
-            atoi((char*)json("en",data)),
-            atoi((char*)json("dir1",data)),
-            atoi((char*)json("dir2",data)),
-            atoi((char*)json("clk1",data)),
-            atoi((char*)json("clk2",data)),
-            atoi((char*)json("stepsPerUnit",data))
-        );
+        // tbot.setup(
+        //     (uint32_t*)atoi((char*)json("output_set",data)),
+        //     (uint32_t*)atoi((char*)json("output_reset",data)),
+        //     atoi((char*)json("en",data)),
+        //     atoi((char*)json("dir1",data)),
+        //     atoi((char*)json("dir2",data)),
+        //     atoi((char*)json("clk1",data)),
+        //     atoi((char*)json("clk2",data)),
+        //     atoi((char*)json("stepsPerUnit",data))
+        // );
     });
     return;
 }
