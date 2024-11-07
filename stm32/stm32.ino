@@ -24,8 +24,8 @@ void setup(void){
     tbotSetup();
     registersSetup();
 
-
-    taskLauncher();
+    headlessEndpoint();
+    // taskLauncher();
     return;
 }
 
