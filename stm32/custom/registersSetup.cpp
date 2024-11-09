@@ -18,6 +18,12 @@
 #include <string>
 #include <type_traits>
 
+#define PRINT_JSON(key, value)         \
+            Serial.print("{\"");       \
+            Serial.print(key);         \
+            Serial.print("\":\"");     \
+            Serial.print(value);       \
+            Serial.print("\"}\n");
 
 
 void registersSetup(void){
@@ -40,7 +46,7 @@ void registersSetup(void){
         DW(atoi((char*)data),0);
     });
     appLinker.onWrite(DR,[&](uint8_t* data){
-        // headlessAttribute(data,"(int)digitalRead(atoi((char*)data)"));
+        PRINT_JSON((char*)data,(int)digitalRead(atoi((char*)data)));
     });
     
 
