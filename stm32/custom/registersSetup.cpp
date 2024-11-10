@@ -46,7 +46,7 @@ void registersSetup(void){
         DW(atoi((char*)data),0);
     });
     appLinker.onWrite(DR,[&](uint8_t* data){
-        PRINT_JSON((char*)data,(int)digitalRead(atoi((char*)data)));
+        PRINT_JSON((char*)data,(int)digitalRead(atoi((char*)data)&~INPUT_REGISTERS_BASE));
     });
     
 
