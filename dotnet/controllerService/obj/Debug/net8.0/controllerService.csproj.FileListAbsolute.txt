@@ -1,0 +1,5 @@
+C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.AssemblyInfoInputs.cache
+C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.AssemblyInfo.cs
+C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.csproj.CoreCompileInputs.cache
+C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.sourcelink.json
