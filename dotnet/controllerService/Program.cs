@@ -1,35 +1,54 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Threading;
 
 class Program
 {
+    private static UInt128 counter=0;
     static void Main()
     {
-        SerialPort serialPort = new SerialPort("COM14", 9600, Parity.None, 8, StopBits.One);
+        // Create serial port instance
+        SerialPort serialPort = new SerialPort();
+        
+        // Basic configuration
+        serialPort.PortName = "COM30";  // Change this to your port name
+        serialPort.BaudRate = 921600;
+        serialPort.DtrEnable = true;
+        serialPort.RtsEnable = true;
 
+        
         try
         {
+            // Open the port
             serialPort.Open();
-            Console.WriteLine("Serial Port Opened");
+            Console.WriteLine("Port opened successfully!");
 
-            // Write to the serial port
-            serialPort.WriteLine("Hello, Serial Port!");
+            // Send some data
 
-            // Read from the serial port
-            string response = serialPort.ReadLine();
-            Console.WriteLine("Received: " + response);
+            Task.Run(async ()=>{
+                while(true){
+                    serialPort.Write("manga!\n");
+                    Console.WriteLine("Sent: manga!");
+                    await Task.Delay(10);
+                }
+            });
+
+            Task.Run(()=>{
+                while(true){
+                    string response = serialPort.ReadLine();
+                    Console.WriteLine($"Received: {response}");
+                }
+            });
+
+            // Close the port
+            while (Console.ReadKey().Key != ConsoleKey.Enter);
+            serialPort.Close();
+            Console.WriteLine("Port closed!");
+            return;
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error: " + ex.Message);
-        }
-        finally
-        {
-            if (serialPort.IsOpen)
-            {
-                serialPort.Close();
-                Console.WriteLine("Serial Port Closed");
-            }
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }

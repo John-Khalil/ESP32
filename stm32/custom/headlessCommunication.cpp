@@ -64,7 +64,7 @@ void headlessEndpoint(void){
                 }
             }
             else{
-                Serial.print("deserializeJson() failed\n");
+                Serial.println("deserializeJson() failed");
             }
         }
     }

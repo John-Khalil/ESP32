@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "tqZ76mFLoFc=",
+  "dgSpecHash": "m1KbSlOdoJI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.linux-arm.runtime.native.system.io.ports\\8.0.0\\runtime.linux-arm.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.linux-arm64.runtime.native.system.io.ports\\8.0.0\\runtime.linux-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.linux-x64.runtime.native.system.io.ports\\8.0.0\\runtime.linux-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.native.system.io.ports\\8.0.0\\runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.osx-arm64.runtime.native.system.io.ports\\8.0.0\\runtime.osx-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\runtime.osx-x64.runtime.native.system.io.ports\\8.0.0\\runtime.osx-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "C:\\Users\\JOHN\\.nuget\\packages\\system.io.ports\\8.0.0\\system.io.ports.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
