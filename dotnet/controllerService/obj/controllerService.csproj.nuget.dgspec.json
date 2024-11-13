@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\controllerService.csproj": {}
+    "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\controllerService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\controllerService.csproj": {
+    "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\controllerService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
+        "projectUniqueName": "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
         "projectName": "controllerService",
-        "projectPath": "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
-        "packagesPath": "C:\\Users\\John Khalil\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\John Khalil\\Desktop\\projects\\ESP32\\dotnet\\controllerService\\obj\\",
+        "projectPath": "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\controllerService.csproj",
+        "packagesPath": "C:\\Users\\JOHN\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\JOHN\\Desktop\\cMake\\active\\ESP32\\dotnet\\controllerService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\John Khalil\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\JOHN\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,8 +22,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://sitecore.myget.org/F/sc-packages/api/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

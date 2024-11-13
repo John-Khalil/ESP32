@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("controllerService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84dbee49554fdaef534ead7a5c0431c3ec5c4748")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4dac4d3ecb18553cd4512c03ab3dc0f87b6a6d3")]
 [assembly: System.Reflection.AssemblyProductAttribute("controllerService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("controllerService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

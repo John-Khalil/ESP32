@@ -48,3 +48,4 @@ C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\n
 C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.pdb
 C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\controllerService.genruntimeconfig.cache
 C:\Users\John Khalil\Desktop\projects\ESP32\dotnet\controllerService\obj\Debug\net8.0\ref\controllerService.dll
+C:\Users\JOHN\Desktop\cMake\active\ESP32\dotnet\controllerService\bin\Debug\net8.0\Newtonsoft.Json.dll
