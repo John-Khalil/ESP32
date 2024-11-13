@@ -20,7 +20,7 @@ class Program
         serialPort.PortName = "COM14";  // Change this to your port name
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
-        serialPort.RtsEnable = true;
+        serialPort.RtsEnable = true; 
 
         
         try
