@@ -7,6 +7,7 @@ class AppLinker{
         private bool disableReadAction=false;
 
         public string key="";
+        public long lastUpdate=0;
         private dynamic _value="";
         public dynamic value{
             get{
@@ -20,7 +21,8 @@ class AppLinker{
             }
             set{
                 _value=value;
-                Console.WriteLine("val >> {0}",value);
+                lastUpdate=getTime();
+                // Console.WriteLine("val >> {0}",value);
                 if(!disableWriteAction){
                     disableWriteAction=true;
                     foreach(var writeCallBack in writeCallBackList)
@@ -70,6 +72,16 @@ class AppLinker{
             memoryElements.Add(new registeredMemoryElement(key));
             memoryElements[memoryElements.Count-1]=value;
         }
+    }
+
+    public static long getTime(){
+        return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+
+    public static dynamic resolve(registeredMemoryElement elem){
+        var currentTime=getTime();
+        while(currentTime>elem.lastUpdate);
+        return elem.value;
     }
 
     // public Action<Action<object>> this[string key]{
