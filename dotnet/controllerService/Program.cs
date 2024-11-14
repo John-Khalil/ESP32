@@ -7,7 +7,7 @@ using Constants;
 
 class Program
 {
-    private static UInt128 counter=0;
+    public static AppLinker appLinker=new AppLinker();
     static void Main(){
         Startup.controllerSetup();
 
