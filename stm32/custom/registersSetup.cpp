@@ -28,7 +28,6 @@
 
 void registersSetup(void){
     appLinker.onWrite(DIGITAL_INPUT,[&](uint8_t* data){
-        // Serial.println((char*)data);
         PM(atoi((char*)data),INPUT);
     });
     appLinker.onWrite(DIGITAL_INPUT_PULLUP,[&](uint8_t* data){
