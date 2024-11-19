@@ -10,6 +10,7 @@ class Program
     public static AppLinker appLinker=new AppLinker();
     static void Main(){
         Startup.appLinker=appLinker;
+        utils.appLinker=appLinker;
         Startup.controllerSetup();
 
         Task.Run(async ()=>{

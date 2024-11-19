@@ -37,6 +37,15 @@ public static class Startup
         appLinker[keys.Output].setAction((object data)=>{
             serialSerialize(Registers.DIGITAL_OUTPUT,data.ToString());
         });
+        appLinker[keys.SetPin].setAction((object data)=>{
+            serialSerialize(Registers.DW1,data.ToString());
+        });
+        appLinker[keys.ClearPin].setAction((object data)=>{
+            serialSerialize(Registers.DW0,data.ToString());
+        });
+        appLinker[keys.ReadPin].setAction((object data)=>{
+            serialSerialize(Registers.DR,data.ToString());
+        });
 
 
         var IsValidJson=(string input)=>{

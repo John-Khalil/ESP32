@@ -80,4 +80,16 @@ namespace Constants
         }
 
     }
+
+    public static class utils{
+        public static AppLinker appLinker{get;set;}
+        public static dynamic controllerRead(string key,string value){
+            appLinker[key].value=value;
+            return AppLinker.resolve(appLinker[value]);
+        }
+
+        public static dynamic readPin(string key,uint value){
+            return controllerRead(key,$"{Registers.INPUT_REGISTERS_BASE|value}");
+        }
+    }
 }
