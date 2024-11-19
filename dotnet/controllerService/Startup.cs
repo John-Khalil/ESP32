@@ -7,21 +7,35 @@ using Constants;
 
 public static class Startup
 {
+    public static AppLinker appLinker{get;set;}
     public static void controllerSetup(){
+
         SerialPort serialPort = new SerialPort();
         
-        // Basic configuration
-        serialPort.PortName = "COM30";  // Change this to your port name
+        serialPort.PortName = "COM30";
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
-        serialPort.RtsEnable = true; 
+        serialPort.RtsEnable = true;
 
-        
-        try
-        {
-            // Open the port
+        appLinker["test0"].setAction((object data)=>{
+            Console.WriteLine(data);
+        });
+
+
+        var IsValidJson=(string input)=>{
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+            try{
+                var obj = JsonConvert.DeserializeObject<object>(input);
+                return true;
+            }
+            catch (JsonException){
+                return false;
+            }
+        };
+
+        try{
             serialPort.Open();
-            Console.WriteLine("Port opened successfully!");
 
             // Send some data
 
@@ -37,19 +51,15 @@ public static class Startup
                 while(true){
                     string response = serialPort.ReadLine();
                     Console.WriteLine($"Received: {response}");
-                    // JObject jObject = JObject.Parse(response);
-                    // foreach (var property in jObject.Properties())
-                    // {
-                    //     Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
-                    // }
+                    if(IsValidJson(response)){
+                        JObject jObject = JObject.Parse(response);
+                        foreach (var property in jObject.Properties()){
+                            Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+
+                        }
+                    }
                 }
             });
-
-            // Close the port
-            while (Console.ReadKey().Key != ConsoleKey.Enter);
-            serialPort.Close();
-            Console.WriteLine("Port closed!");
-            return;
         }
         catch (Exception ex)
         {

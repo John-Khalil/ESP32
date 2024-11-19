@@ -1,4 +1,4 @@
-class AppLinker{
+public class AppLinker{
 
     public class registeredMemoryElement{
         private List<Action<object>> writeCallBackList=[];

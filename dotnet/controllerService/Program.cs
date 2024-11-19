@@ -9,11 +9,12 @@ class Program
 {
     public static AppLinker appLinker=new AppLinker();
     static void Main(){
-        Startup.controllerSetup();
+        Startup.appLinker=appLinker;
+        Console.WriteLine(keys.SerialSend);
+        // Startup.controllerSetup();
 
         
-        // Create serial port instance
-        
+        while (Console.ReadKey().Key != ConsoleKey.Enter);
     }
 }
 

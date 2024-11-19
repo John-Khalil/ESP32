@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace Constants
 {
     public static class Registers
@@ -59,5 +61,16 @@ namespace Constants
         public const int C13 = 17;
         public const int C14 = 18;
         public const int C15 = 19;
+    }
+
+    public static class keys{
+        public static string SerialSend{get;set;}
+        static keys(){
+            var properties = typeof(keys).GetProperties();
+            foreach (var property in properties){
+                property.SetValue(null,property.Name);
+            }
+        }
+
     }
 }
