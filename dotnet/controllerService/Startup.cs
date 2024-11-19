@@ -25,16 +25,16 @@ public static class Startup
         appLinker[keys.SerialSend].setAction((object data)=>{
             serialPort.WriteLine(data.ToString());
         });
-        appLinker[keys.DigitalInput].setAction((object data)=>{
+        appLinker[keys.Input].setAction((object data)=>{
             serialSerialize(Registers.DIGITAL_INPUT,data.ToString());
         });
-        appLinker[keys.DigitalInputPullUp].setAction((object data)=>{
+        appLinker[keys.InputPullUp].setAction((object data)=>{
             serialSerialize(Registers.DIGITAL_INPUT_PULLUP,data.ToString());
         });
-        appLinker[keys.DigitalInputPullDown].setAction((object data)=>{
+        appLinker[keys.InputPullDown].setAction((object data)=>{
             serialSerialize(Registers.DIGITAL_INPUT_PULLDOWN,data.ToString());
         });
-        appLinker[keys.DigitalOutput].setAction((object data)=>{
+        appLinker[keys.Output].setAction((object data)=>{
             serialSerialize(Registers.DIGITAL_OUTPUT,data.ToString());
         });
 

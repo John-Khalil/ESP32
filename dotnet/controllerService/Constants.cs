@@ -65,10 +65,13 @@ namespace Constants
 
     public static class keys{
         public static string SerialSend{get;set;}
-        public static string DigitalInput{get;set;}
-        public static string DigitalInputPullUp{get;set;}
-        public static string DigitalInputPullDown{get;set;}
-        public static string DigitalOutput{get;set;}
+        public static string Input{get;set;}
+        public static string InputPullUp{get;set;}
+        public static string InputPullDown{get;set;}
+        public static string Output{get;set;}
+        public static string SetPin{get;set;}
+        public static string ClearPin{get;set;}
+        public static string ReadPin{get;set;}
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){
