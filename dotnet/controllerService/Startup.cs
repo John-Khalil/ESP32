@@ -17,8 +17,25 @@ public static class Startup
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
 
+
+        var serialSerialize=(int key,string value)=>{
+            serialPort.WriteLine( $"{"{\""}{key}{"\":"}{value}{"}"}");
+        };
+
         appLinker[keys.SerialSend].setAction((object data)=>{
             serialPort.WriteLine(data.ToString());
+        });
+        appLinker[keys.DigitalInput].setAction((object data)=>{
+            serialSerialize(Registers.DIGITAL_INPUT,data.ToString());
+        });
+        appLinker[keys.DigitalInputPullUp].setAction((object data)=>{
+            serialSerialize(Registers.DIGITAL_INPUT_PULLUP,data.ToString());
+        });
+        appLinker[keys.DigitalInputPullDown].setAction((object data)=>{
+            serialSerialize(Registers.DIGITAL_INPUT_PULLDOWN,data.ToString());
+        });
+        appLinker[keys.DigitalOutput].setAction((object data)=>{
+            serialSerialize(Registers.DIGITAL_OUTPUT,data.ToString());
         });
 
 
@@ -44,7 +61,7 @@ public static class Startup
                         JObject jObject = JObject.Parse(response);
                         foreach (var property in jObject.Properties()){
                             Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
-
+                            appLinker[property.Name].value=property.Value;
                         }
                     }
                 }
