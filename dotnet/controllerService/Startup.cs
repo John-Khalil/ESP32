@@ -17,8 +17,8 @@ public static class Startup
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
 
-        appLinker["test0"].setAction((object data)=>{
-            Console.WriteLine(data);
+        appLinker[keys.SerialSend].setAction((object data)=>{
+            serialPort.WriteLine(data.ToString());
         });
 
 
@@ -36,17 +36,6 @@ public static class Startup
 
         try{
             serialPort.Open();
-
-            // Send some data
-
-            Task.Run(async ()=>{
-                while(true){
-                    serialPort.Write("manga!\n");
-                    Console.WriteLine("Sent: manga!");
-                    await Task.Delay(10);
-                }
-            });
-
             Task.Run(()=>{
                 while(true){
                     string response = serialPort.ReadLine();

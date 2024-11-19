@@ -10,8 +10,15 @@ class Program
     public static AppLinker appLinker=new AppLinker();
     static void Main(){
         Startup.appLinker=appLinker;
-        Console.WriteLine(keys.SerialSend);
-        // Startup.controllerSetup();
+        Startup.controllerSetup();
+
+        Task.Run(async ()=>{
+            while(true){
+                appLinker[keys.SerialSend].value="manga";
+                Console.WriteLine("Sent: manga!");
+                await Task.Delay(10);
+            }
+        });
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);
