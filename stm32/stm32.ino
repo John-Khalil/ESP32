@@ -1,3 +1,5 @@
+#define SERIAL_RX_BUFFER_SIZE 1024 
+
 #include "custom/platformUtils.cpp"
 #include "custom/pointerTool.h"
 #include "custom/smartMemory.cpp"

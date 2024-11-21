@@ -41,9 +41,9 @@ void headlessAttribute(T1 key,T2 value){
 
 // intended to run as a task
 void headlessEndpoint(void){
+    StaticJsonDocument<1024> doc;
     while(1){
         if(Serial.available()){
-            StaticJsonDocument<500> doc;
             String receivedObject=Serial.readStringUntil('\n');
             // Serial.println(receivedObject);
             if(!(DeserializationError)deserializeJson(doc, receivedObject)){
@@ -61,10 +61,11 @@ void headlessEndpoint(void){
                     // Serial.print(key);
                     // Serial.print(" Value: ");
                     // Serial.println(value);
+                    // Serial.flush();
                 }
             }
             else{
-                Serial.println("deserializeJson() failed");
+                headlessAttribute("ack",0);
             }
         }
     }

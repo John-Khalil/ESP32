@@ -250,4 +250,7 @@ class Memory{
 		}
 }; 
 uint8_t* Memory::undefined=(uint8_t*)EMPTY_STRING;
-Memory appLinker(3000,500);
+
+uint8_t mainMemory[3000]={};
+uint8_t addrSpace[500]={};
+Memory appLinker(mainMemory,3000,addrSpace,500);

@@ -88,8 +88,8 @@ namespace Constants
             return AppLinker.resolve(appLinker[value]);
         }
 
-        public static dynamic readPin(string key,uint value){
-            return controllerRead(key,$"{Registers.INPUT_REGISTERS_BASE|value}");
+        public static dynamic readPin(uint value){
+            return controllerRead(keys.ReadPin,$"{Registers.INPUT_REGISTERS_BASE|value}");
         }
     }
 }

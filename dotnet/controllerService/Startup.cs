@@ -12,7 +12,7 @@ public static class Startup
 
         SerialPort serialPort = new SerialPort();
         
-        serialPort.PortName = "COM30";
+        serialPort.PortName = "COM12";
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
@@ -20,6 +20,7 @@ public static class Startup
 
         var serialSerialize=(int key,string value)=>{
             serialPort.WriteLine( $"{"{\""}{key}{"\":"}{value}{"}"}");
+            // AppLinker.resolve(appLinker["ack"]);
         };
 
         appLinker[keys.SerialSend].setAction((object data)=>{

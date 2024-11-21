@@ -13,13 +13,26 @@ class Program
         utils.appLinker=appLinker;
         Startup.controllerSetup();
 
+        appLinker[keys.InputPullDown].value=Pins.B12;
+        appLinker[keys.Output].value=Pins.C13;
+
         Task.Run(async ()=>{
             while(true){
-                appLinker[keys.SerialSend].value="manga";
-                Console.WriteLine("Sent: manga!");
+                // appLinker[keys.SerialSend].value="manga";
+                Console.WriteLine($" >> {utils.readPin(Pins.B12)}");
                 await Task.Delay(10);
             }
         });
+        // Task.Run(async ()=>{
+        //     while(true){
+        //         // appLinker[keys.SerialSend].value="manga";
+        //         // Console.WriteLine($" >> {utils.readPin(Pins.B12)}");
+        //         appLinker[keys.SetPin].value=Pins.C13;
+        //         await Task.Delay(100);
+        //         appLinker[keys.ClearPin].value=Pins.C13;
+        //         await Task.Delay(100);
+        //     }
+        // });
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);
