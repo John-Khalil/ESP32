@@ -21,6 +21,10 @@ namespace Constants
         public static readonly int TBOT_MOVE = OUTPUT_REGISTERS_BASE + 0x08;
         public static readonly int TBOT_STEPS_PER_UNIT = OUTPUT_REGISTERS_BASE + 0x09;
         public static readonly int TBOT_SETUP = OUTPUT_REGISTERS_BASE + 0x0A;
+        public static readonly int CLOCK = OUTPUT_REGISTERS_BASE + 0x0B;
+        public static readonly int PORTA =1;
+        public static readonly int PORTB =2;
+        public static readonly int PORTC =3;
     }
 
     public static class Pins
