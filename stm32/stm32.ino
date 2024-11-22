@@ -1,4 +1,5 @@
 #define SERIAL_RX_BUFFER_SIZE 1024 
+#define SERIAL_TX_BUFFER_SIZE 256
 
 #include "custom/platformUtils.cpp"
 #include "custom/pointerTool.h"

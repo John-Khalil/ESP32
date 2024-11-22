@@ -12,7 +12,7 @@ public static class Startup
 
         SerialPort serialPort = new SerialPort();
         
-        serialPort.PortName = "COM12";
+        serialPort.PortName = "COM31";
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
@@ -66,11 +66,11 @@ public static class Startup
             Task.Run(()=>{
                 while(true){
                     string response = serialPort.ReadLine();
-                    Console.WriteLine($"Received: {response}");
+                    // Console.WriteLine($"Received: {response}");
                     if(IsValidJson(response)){
                         JObject jObject = JObject.Parse(response);
                         foreach (var property in jObject.Properties()){
-                            Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+                            // Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
                             appLinker[property.Name].value=property.Value;
                         }
                     }
