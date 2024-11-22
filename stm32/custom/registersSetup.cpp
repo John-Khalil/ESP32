@@ -56,12 +56,18 @@ void registersSetup(void){
         Serial.print("[TBOT] : ");
         Serial.println((char*)data);
 
-        tbot.move(
-            atoi((char*)json("d1",data)),
-            atoi((char*)json("d2",data)),
-            atoi((char*)json("feedRate",data))
-        );
+        uint32_t d1=tbot.currentPoint.d1;
+        uint32_t d2=tbot.currentPoint.d2;
+
+        uint8_t *_d1=json("d1",data);
+        d1=(_d1!=UNDEFINED)?atoi((char*)_d1):d1;
+        
+        uint8_t *_d2=json("d2",data);
+        d2=(_d2!=UNDEFINED)?atoi((char*)_d2):d2;
+        
+        tbot.move(d1,d2,atoi((char*)json("feedRate",data)));
     });
+    
     appLinker.onWrite(TBOT_SETUP,[&](uint8_t* data){
         //{"266":{"output_set":1073809424,"output_reset":1073809428,"en":0,"dir1":1,"dir2":2,"clk1":3,"clk2":4,"stepsPerUnit":80}}
         Serial.print("[TBOT_SETUP] : ");

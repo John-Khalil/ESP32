@@ -12,7 +12,7 @@ public static class Startup
 
         SerialPort serialPort = new SerialPort();
         
-        serialPort.PortName = "COM17";
+        serialPort.PortName = "COM15";
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
