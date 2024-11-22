@@ -12,7 +12,7 @@ public static class Startup
 
         SerialPort serialPort = new SerialPort();
         
-        serialPort.PortName = "COM15";
+        serialPort.PortName = "COM17";
         serialPort.BaudRate = 921600;
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
@@ -21,6 +21,7 @@ public static class Startup
         var serialSerialize=(int key,string value)=>{
             serialPort.WriteLine( $"{"{\""}{key}{"\":"}{value}{"}"}");
             // AppLinker.resolve(appLinker["ack"]);
+            Thread.Sleep(10);
         };
 
         appLinker[keys.SerialSend].setAction((object data)=>{
@@ -46,6 +47,9 @@ public static class Startup
         });
         appLinker[keys.ReadPin].setAction((object data)=>{
             serialSerialize(Registers.DR,data.ToString());
+        });
+        appLinker[keys.Clock].setAction((object data)=>{
+            serialSerialize(Registers.CLOCK,data.ToString());
         });
 
 

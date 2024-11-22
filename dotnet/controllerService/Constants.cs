@@ -76,6 +76,7 @@ namespace Constants
         public static string SetPin{get;set;}
         public static string ClearPin{get;set;}
         public static string ReadPin{get;set;}
+        public static string Clock{get;set;}
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){
