@@ -35,8 +35,8 @@ class Program
         appLinker[keys.Output].value=Pins.B14;
         appLinker[keys.Output].value=Pins.B12;
 
+        appLinker[keys.ClearPin].value=Pins.B14;
         appLinker[keys.ClearPin].value=Pins.B13;
-        appLinker[keys.SetPin].value=Pins.B12;
 
         // appLinker[keys.Clock].value=JsonConvert.SerializeObject(new{
         //     reg = Registers.PORTB,
@@ -85,9 +85,9 @@ class Program
 
          appLinker[keys.Clock].value=JsonConvert.SerializeObject(new{
             reg = Registers.PORTB,
-            mask = 1<<13,
+            mask = 1<<12,
             delay = 100,
-            clks = 10000
+            clks = 1000
         });
 
         
