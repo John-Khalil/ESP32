@@ -51,6 +51,9 @@ public static class Startup
         appLinker[keys.Clock].setAction((object data)=>{
             serialSerialize(Registers.CLOCK,data.ToString());
         });
+        appLinker[keys.AnalogRead].setAction((object data)=>{
+            serialSerialize(Registers.ANALOG_READ,data.ToString());
+        });
 
 
         var IsValidJson=(string input)=>{

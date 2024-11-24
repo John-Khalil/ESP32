@@ -48,6 +48,9 @@ void registersSetup(void){
     appLinker.onWrite(DR,[&](uint8_t* data){
         PRINT_JSON((char*)data,(int)digitalRead(atoi((char*)data)&~INPUT_REGISTERS_BASE));
     });
+    appLinker.onWrite(ANALOG_READ,[&](uint8_t* data){
+        PRINT_JSON((char*)data,(int)analogRead(atoi((char*)data)&~INPUT_REGISTERS_BASE));
+    });
     
 
     appLinker.onWrite(TBOT_MOVE,[&](uint8_t* data){

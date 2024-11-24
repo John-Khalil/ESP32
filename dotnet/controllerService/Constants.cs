@@ -22,6 +22,7 @@ namespace Constants
         public static readonly int TBOT_STEPS_PER_UNIT = OUTPUT_REGISTERS_BASE + 0x09;
         public static readonly int TBOT_SETUP = OUTPUT_REGISTERS_BASE + 0x0A;
         public static readonly int CLOCK = OUTPUT_REGISTERS_BASE + 0x0B;
+        public static readonly int ANALOG_READ = OUTPUT_REGISTERS_BASE + 0x0C;
         public static readonly int PORTA =1;
         public static readonly int PORTB =2;
         public static readonly int PORTC =3;
@@ -77,6 +78,7 @@ namespace Constants
         public static string ClearPin{get;set;}
         public static string ReadPin{get;set;}
         public static string Clock{get;set;}
+        public static string AnalogRead{get;set;}
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){
@@ -95,6 +97,9 @@ namespace Constants
 
         public static dynamic readPin(uint value){
             return controllerRead(keys.ReadPin,$"{Registers.INPUT_REGISTERS_BASE|value}");
+        }
+        public static dynamic analogRaed(uint value){
+            return controllerRead(keys.AnalogRead,$"{Registers.INPUT_REGISTERS_BASE|value}");
         }
     }
 }
