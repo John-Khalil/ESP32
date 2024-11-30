@@ -16,13 +16,12 @@ class Program
         Startup.controllerSetup();
 
         DB.Create(new Settings{
-            Id=4,
             Name="manga",
         });
 
-        var entity=DB.GetById<Settings>(2);
-        entity.Name="new value";
-        DB.Update<Settings>(entity);
+        // var entity=DB.GetById<Settings>(2);
+        // entity.Name="new value";
+        // DB.Update<Settings>(entity);
 
         var list=DB.GetAll<Settings>();
         foreach(var item in list)

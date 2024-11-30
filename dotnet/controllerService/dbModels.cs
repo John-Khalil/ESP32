@@ -2,14 +2,14 @@ using Microsoft.EntityFrameworkCore;
 // Interface to mark entity classes
 public interface IEntity
 {
-    int Id { get; set; }
+    Guid Id { get; set; }
 }
 
 namespace EFCore.Models
 {
     public class Settings: IEntity
     { 
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public String Name { get; set; }
     }
 
@@ -39,7 +39,10 @@ namespace EFCore
 
             // Register each type with EF Core
             foreach (var type in entityTypes){
-                modelBuilder.Entity(type);
+                modelBuilder.Entity(type)
+                    .Property("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValue(Guid.NewGuid());
             }
 
             base.OnModelCreating(modelBuilder);
