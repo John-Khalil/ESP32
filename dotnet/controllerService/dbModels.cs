@@ -10,7 +10,7 @@ namespace EFCore.Models
     public class Settings: IEntity
     { 
         public int Id { get; set; }
-        public int Name { get; set; }
+        public String Name { get; set; }
     }
 
 

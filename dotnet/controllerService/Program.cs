@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Constants;
 using EFCore;
+using EFCore.Models;
 
 class Program
 {
@@ -14,15 +15,28 @@ class Program
         utils.appLinker=appLinker;
         Startup.controllerSetup();
 
+        DB.Create(new Settings{
+            Id=4,
+            Name="manga",
+        });
+
+        var entity=DB.GetById<Settings>(2);
+        entity.Name="new value";
+        DB.Update<Settings>(entity);
+
+        var list=DB.GetAll<Settings>();
+        foreach(var item in list)
+            Console.WriteLine(JsonConvert.SerializeObject(item));
+
 
         // appLinker[keys.InputPullDown].value=Pins.B12;
         // appLinker[keys.Output].value=Pins.C13;
-        appLinker[keys.Output].value=Pins.B13;
-        appLinker[keys.Output].value=Pins.B14;
-        appLinker[keys.Output].value=Pins.B12;
+        // appLinker[keys.Output].value=Pins.B13;
+        // appLinker[keys.Output].value=Pins.B14;
+        // appLinker[keys.Output].value=Pins.B12;
 
-        appLinker[keys.ClearPin].value=Pins.B14;
-        appLinker[keys.ClearPin].value=Pins.B13;
+        // appLinker[keys.ClearPin].value=Pins.B14;
+        // appLinker[keys.ClearPin].value=Pins.B13;
 
         // appLinker[keys.Clock].value=JsonConvert.SerializeObject(new{
         //     reg = Registers.PORTB,
@@ -69,12 +83,12 @@ class Program
         //     }
         // });
 
-         appLinker[keys.Clock].value=JsonConvert.SerializeObject(new{
-            reg = Registers.PORTB,
-            mask = 1<<12,
-            delay = 100,
-            clks = 10000
-        });
+        //  appLinker[keys.Clock].value=JsonConvert.SerializeObject(new{
+        //     reg = Registers.PORTB,
+        //     mask = 1<<12,
+        //     delay = 100,
+        //     clks = 10000
+        // });
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);
