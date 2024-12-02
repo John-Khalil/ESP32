@@ -14,6 +14,7 @@ class Program
         Startup.appLinker=appLinker;
         utils.appLinker=appLinker;
         Startup.controllerSetup();
+        Startup.webSocketServerStart();
 
         DB.Create(new Settings{
             Name="manga",

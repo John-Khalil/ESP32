@@ -89,4 +89,9 @@ public static class Startup
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
+
+    public static void webSocketServerStart(){
+        var server = new WebSocketServer("http://localhost:8080/");
+        _ = server.StartAsync();
+    }
 }
