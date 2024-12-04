@@ -79,6 +79,10 @@ namespace Constants
         public static string ReadPin{get;set;}
         public static string Clock{get;set;}
         public static string AnalogRead{get;set;}
+
+        public static string WebSocket{get;set;}
+        public static string WebSocketBroadCast{get;set;}
+        public static string WebSocketClients{get;set;}
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){
@@ -90,6 +94,7 @@ namespace Constants
 
     public static class utils{
         public static AppLinker appLinker{get;set;}
+        public static WebSocketServer webSocket{get;set;}
         public static dynamic controllerRead(string key,string value){
             appLinker[key].value=value;
             return AppLinker.resolve(appLinker[value]);

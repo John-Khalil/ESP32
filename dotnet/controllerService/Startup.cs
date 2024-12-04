@@ -92,6 +92,10 @@ public static class Startup
 
     public static void webSocketServerStart(){
         var server = new WebSocketServer("http://localhost:8080/");
+        utils.webSocket=server;
+        utils.appLinker[keys.WebSocketBroadCast].setAction(async (object data)=>{
+            await server.BroadcastMessage(data.ToString());
+        });
         _ = server.StartAsync();
     }
 }

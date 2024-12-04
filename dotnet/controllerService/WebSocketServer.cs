@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Newtonsoft.Json;
+using Constants;
 
-class WebSocketServer
+public class WebSocketServer
 {
     private HttpListener httpListener;
     private CancellationTokenSource cancellationTokenSource;
@@ -58,7 +60,8 @@ class WebSocketServer
             var clientId = Guid.NewGuid();
             clients.TryAdd(clientId, webSocket);
 
-            Console.WriteLine($"Client connected. Total clients: {clients.Count}");
+            utils.appLinker[keys.WebSocketClients].value=clients.Count;
+
 
             await HandleWebSocketConnection(clientId, webSocket);
         }
@@ -72,7 +75,7 @@ class WebSocketServer
 
     private async Task HandleWebSocketConnection(Guid clientId, WebSocket webSocket)
     {
-        var buffer = new byte[1024 * 4];
+        var buffer = new byte[1024 * 100];
 
         try
         {
@@ -85,10 +88,13 @@ class WebSocketServer
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    Console.WriteLine($"Received from client {clientId}: {message}");
 
                     // Broadcast message to all clients
-                    await BroadcastMessage($"Client {clientId}: {message}");
+                    // await BroadcastMessage($"Client {clientId}: {message}");
+                    utils.appLinker[keys.WebSocket].value=JsonConvert.SerializeObject(new{
+                        clientId,
+                        message
+                    });
                 }
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
@@ -106,7 +112,7 @@ class WebSocketServer
         }
     }
 
-    private async Task BroadcastMessage(string message)
+    public async Task BroadcastMessage(string message)
     {
         var tasks = new List<Task>();
         var disconnectedClients = new List<Guid>();
@@ -163,7 +169,7 @@ class WebSocketServer
             {
                 Console.WriteLine($"Error disconnecting client {clientId}: {ex.Message}");
             }
-            Console.WriteLine($"Client {clientId} disconnected. Total clients: {clients.Count}");
+            utils.appLinker[keys.WebSocketClients].value=clients.Count;
         }
     }
 
