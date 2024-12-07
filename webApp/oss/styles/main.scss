@@ -1,4 +1,132 @@
-.test{
- 
-    background-color: red;
+// Colors
+$primary: #6200ee;
+$primary-dark: #3700b3;
+$secondary: #03dac6;
+$secondary-dark: #018786;
+$background: #ffffff;
+$surface: #f1f1f1;
+$error: #b00020;
+$success: #4caf50;
+$warning: #ff9800;
+$info: #2196f3;
+$text-primary: #000000;
+$text-secondary: #757575;
+$divider: #bdbdbd;
+$disabled: #e0e0e0;
+$highlight: #ffeb3b;
+$shadow: rgba(0, 0, 0, 0.2);
+
+// Typography
+$font-family-sans: 'Roboto', 'Arial', sans-serif;
+$font-family-serif: 'Merriweather', serif;
+$font-size-base: 16px;
+$line-height-base: 1.5;
+
+$heading-font-size: (
+  h1: 2.5rem,
+  h2: 2rem,
+  h3: 1.75rem,
+  h4: 1.5rem,
+  h5: 1.25rem,
+  h6: 1rem
+);
+
+// Typography mixins
+@mixin heading-style($level) {
+  font-family: $font-family-sans;
+  font-size: map-get($heading-font-size, $level);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+}
+
+@mixin text-style($size, $weight: 400) {
+  font-family: $font-family-sans;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height-base;
+}
+
+// Base styles
+body {
+  background-color: $background;
+  color: $text-primary;
+  font-family: $font-family-sans;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  @each $level in (h1, h2, h3, h4, h5, h6) {
+    &#{$level} {
+      @include heading-style($level);
+    }
+  }
+}
+
+// Text elements
+p {
+  @include text-style(1rem);
+  margin: 0 0 1em;
+}
+
+small {
+  @include text-style(0.875rem, 300);
+  color: $text-secondary;
+}
+
+// Components
+button {
+  background-color: $primary;
+  color: $background;
+  font-family: $font-family-sans;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: $primary-dark;
+  }
+}
+
+// Alert variations
+.alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  
+  &.success {
+    background-color: $success;
+    color: $text-primary;
+  }
+  
+  &.warning {
+    background-color: $warning;
+    color: $text-primary;
+  }
+  
+  &.error {
+    background-color: $error;
+    color: $background;
+  }
+  
+  &.info {
+    background-color: $info;
+    color: $background;
+  }
+}
+
+// Card component
+.card {
+  background-color: $surface;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px $shadow;
 }
