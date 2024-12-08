@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import NavBar from "@/components/NavBar";
 import Tbot from "@/assets/Tbot";
 import ConveyorBelt from "@/assets/ConveyorBelt";
+import BoxOpener from "@/assets/BoxOpener";
 
 export default function Home() {
   return (
@@ -25,8 +26,8 @@ export default function Home() {
             }
           },
           {
-            title:'T-Bot',
-            icon:<Tbot/>,
+            title:'Box Opener',
+            icon:<BoxOpener/>,
             onclick:()=>{
 
             }
