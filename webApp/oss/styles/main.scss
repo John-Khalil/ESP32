@@ -58,6 +58,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  user-select: none;
 }
 
 // Headings
