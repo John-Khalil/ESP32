@@ -34,7 +34,21 @@ export default function Home() {
           },
         ],
         notificationPanel:[
-
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
+          <div>test</div>,
         ]
       }} />
     </>

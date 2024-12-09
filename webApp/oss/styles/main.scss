@@ -1,20 +1,55 @@
 // Colors
-$primary: #6200ee;
-$primary-dark: #3700b3;
-$secondary: #03dac6;
-$secondary-dark: #018786;
-$background: #ffffff;
-$surface: #f1f1f1;
-$error: #b00020;
-$success: #4caf50;
-$warning: #ff9800;
-$info: #2196f3;
-$text-primary: #000000;
-$text-secondary: #757575;
-$divider: #bdbdbd;
-$disabled: #e0e0e0;
-$highlight: #ffeb3b;
-$shadow: rgba(0, 0, 0, 0.2);
+// $primary: #6200ee;
+// $primary-dark: #3700b3;
+// $secondary: #03dac6;
+// $secondary-dark: #018786;
+// $background: #ffffff;
+// $surface: #f1f1f1;
+// $error: #b00020;
+// $success: #4caf50;
+// $warning: #ff9800;
+// $info: #2196f3;
+// $text-primary: #000000;
+// $text-secondary: #757575;
+// $divider: #bdbdbd;
+// $disabled: #e0e0e0;
+// $highlight: #ffeb3b;
+// $shadow: rgba(0, 0, 0, 0.2);
+
+
+$primary: #2563eb;         // Vibrant blue, main brand color
+$primary-dark: #1e40af;    // Deeper blue for emphasis
+$secondary: #38bdf8;       // Light blue for accents
+$secondary-dark: #0284c7;  // Ocean blue for secondary emphasis
+$background: #0f172a;      // Navy blue dark background
+$surface: #1e293b;        // Slightly lighter navy for surfaces
+$error: #dc6f8f;          // Blue-tinted pink for errors
+$success: #0d9488;        // Blue-tinted teal for success
+$warning: #0891b2;        // Blue-leaning cyan for warnings
+$info: #60a5fa;          // Soft blue for info
+$text-primary: #f8fafc;   // Ice blue white for primary text
+$text-secondary: #94a3b8; // Cool grey with blue undertone
+$divider: #334155;       // Dark blue-grey for dividers
+$disabled: #475569;      // Medium blue-grey for disabled state
+$highlight: #3b82f6;     // Electric blue for highlights
+$shadow: rgba(15, 23, 42, 0.3); // Blue-tinted shadow
+
+// $primary: #2563eb;         // Vibrant blue, main brand color
+// $primary-dark: #1e40af;    // Deeper blue for emphasis
+// $secondary: #818cf8;       // Purple-blue for accents (changed from light blue)
+// $secondary-dark: #4f46e5;  // Deep purple-blue for secondary emphasis
+// $background: #0f172a;      // Navy blue dark background
+// $surface: #1e293b;        // Slightly lighter navy for surfaces
+// $error: #e879f9;          // Purple-tinted pink for errors
+// $success: #0d9488;        // Blue-tinted teal for success
+// $warning: #0891b2;        // Blue-leaning cyan for warnings
+// $info: #60a5fa;          // Soft blue for info
+// $text-primary: #f8fafc;   // Ice blue white for primary text
+// $text-secondary: #a5b4fc; // Purple-blue undertone (adjusted)
+// $divider: #334155;       // Dark blue-grey for dividers
+// $disabled: #4c5888;      // Purple-blue grey for disabled state
+// $highlight: #6366f1;     // Electric purple-blue for highlights
+// $shadow: rgba(15, 23, 42, 0.3); // Blue-tinted shadow
 
 // Typography
 $font-family-sans: 'Roboto', 'Arial', sans-serif;
@@ -131,3 +166,78 @@ button {
   border-radius: 4px;
   box-shadow: 0 2px 4px $shadow;
 }
+
+
+// Scrollbar Mixins
+@mixin scrollbar-base {
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: $surface;
+      border-radius: 4px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background: $primary-dark;
+      border-radius: 4px;
+      border: 2px solid $surface;
+      transition: background 0.2s ease;
+  
+      &:hover {
+        background: $primary;
+      }
+    }
+  
+    // Firefox support
+    scrollbar-width: thin;
+    scrollbar-color: $primary-dark $surface;
+  }
+  
+  @mixin scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  @mixin scrollbar-custom {
+    overflow: auto;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba($surface, 0.5);
+      backdrop-filter: blur(10px);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba($primary-dark, 0.8);
+      border-radius: 4px;
+      transition: background 0.2s ease;
+      
+      &:hover {
+        background: rgba($primary, 0.9);
+      }
+    }
+  }
+  
+  // Apply styles in your main.scss
+  html {
+    @include scrollbar-base;
+  }
+  
+  // Usage examples:
+  .custom-scroll {
+    @include scrollbar-custom;
+  }
+  
+  .no-scroll {
+    @include scrollbar-hidden;
+  }
