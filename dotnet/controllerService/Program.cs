@@ -28,9 +28,9 @@ class Program
         foreach(var item in list)
             Console.WriteLine(JsonConvert.SerializeObject(item));
 
-        utils.appLinker[keys.WebSocket].setAction((object data)=>{
+        utils.appLinker[keys.WebSocket].setAction(async (object data)=>{
             Console.WriteLine($" --> {data.ToString()}");
-            // utils.webSocket.SendToClient(data?.clientId,"this is test");
+            await utils.webSocket.SendToClient(Guid.Parse((string)JObject.Parse(data?.ToString())["clientId"]),"this is test");
         });
 
         // appLinker[keys.InputPullDown].value=Pins.B12;
