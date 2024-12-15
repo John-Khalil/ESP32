@@ -1,3 +1,5 @@
+'use client';
+
 export const stringToBytes=inputString=>(Array.from(Array(inputString.length)).map((__,index)=>(inputString.charCodeAt(index))));
 
 export const bytesToString=inputArray=>{

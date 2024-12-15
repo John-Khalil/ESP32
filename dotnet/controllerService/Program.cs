@@ -28,6 +28,10 @@ class Program
         foreach(var item in list)
             Console.WriteLine(JsonConvert.SerializeObject(item));
 
+        utils.appLinker[keys.WebSocket].setAction((object data)=>{
+            Console.WriteLine($" --> {data.ToString()}");
+            // utils.webSocket.SendToClient(data?.clientId,"this is test");
+        });
 
         // appLinker[keys.InputPullDown].value=Pins.B12;
         // appLinker[keys.Output].value=Pins.C13;

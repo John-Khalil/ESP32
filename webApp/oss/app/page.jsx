@@ -5,8 +5,16 @@ import NavBar from "@/components/NavBar";
 import Tbot from "@/assets/Tbot";
 import ConveyorBelt from "@/assets/ConveyorBelt";
 import BoxOpener from "@/assets/BoxOpener";
+import appLinker from "@/utils/utils";
+import setupWebSocket from "@/utils/webSocket";
 
 export default function Home() {
+  setupWebSocket();
+
+  appLinker.addListener("",data=>{
+    
+  })
+  appLinker.send("ws","this is test");
   return (
     <>
       <NavBar {...{

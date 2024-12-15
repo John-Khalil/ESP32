@@ -4,7 +4,7 @@ import Tbot from '@/assets/Tbot'
 
 export default function NavBar(props) {
   return (
-    <div className='appNavBar'>
+    <nav className='appNavBar'>
 			<div className='navItems'>
 				{Array.from(Array(props?.navList?.length)).map((__,index)=>
 					<div 
@@ -29,6 +29,6 @@ export default function NavBar(props) {
 					</div>
 				)}
 			</div>
-    </div>
+    </nav>
   )
 }
