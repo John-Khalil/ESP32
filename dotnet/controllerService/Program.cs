@@ -30,7 +30,8 @@ class Program
 
         utils.appLinker[keys.WebSocket].setAction(async (object data)=>{
             Console.WriteLine($" --> {data.ToString()}");
-            await utils.webSocket.SendToClient(Guid.Parse((string)JObject.Parse(data?.ToString())["clientId"]),"this is test");
+            var dataObj=JObject.Parse(data?.ToString());
+            await utils.webSocket.SendToClient(Guid.Parse((string)dataObj["clientId"]),"this is test");
         });
 
         // appLinker[keys.InputPullDown].value=Pins.B12;

@@ -14,7 +14,9 @@ export default function Home() {
   appLinker.addListener("",data=>{
     
   })
-  appLinker.send("ws","this is test");
+  setTimeout(() => {
+    appLinker.send("ws","this is test");
+  }, 500);
   return (
     <>
       <NavBar {...{
