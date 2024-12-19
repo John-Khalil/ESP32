@@ -1,6 +1,29 @@
+@import  '../main.scss';
 .Notification{
-  
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+
+  padding-top: 4px;
+  .title{
+    padding-top: 4px;
+
+  }
 }
 .NotificationDialog{
-  
+  width: 80vw;
+  height: 80vh;
+  background-color: $surface;
+  color: $text-primary;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 0 50000px 50000px rgba(50, 50, 50, 0.8);
+
+  .titleBar{
+    display: flex;
+    justify-content: space-between;
+    div{
+      // padding: 5px 5px 5px 5px;
+    }
+  }
 }

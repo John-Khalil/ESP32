@@ -8,7 +8,8 @@ import ConveyorBelt from "@/assets/ConveyorBelt";
 import BoxOpener from "@/assets/BoxOpener";
 import appLinker from "@/utils/utils";
 import setupWebSocket from "@/utils/webSocket";
-
+import { MdOutlineErrorOutline } from "react-icons/md";
+import { IoIosWarning } from "react-icons/io";
 export default function Home() {
   setupWebSocket();
 
@@ -45,10 +46,25 @@ export default function Home() {
           },
         ],
         notificationPanel:[
-          <Notification>
-            test
-            test
-          </Notification>
+          <Notification {...{
+            title:"Tbot Error",
+            icon:<MdOutlineErrorOutline size={25} color="red"/>
+          }}>
+            <Tbot/>
+            some random content
+          </Notification>,
+          <Notification {...{
+            title:"Tbot Warning",
+            icon:<IoIosWarning size={25} color="yellow"/>
+          }}>
+            
+          </Notification>,
+          <Notification {...{
+            title:"Another Notification",
+          }}>
+            
+          </Notification>,
+          
         ]
       }} />
       
