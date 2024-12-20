@@ -8,8 +8,9 @@
     .navItems{
         display: flex;
         gap: 16px;
-        width: calc(100% - 500px);
-        overflow-x: scroll;
+        width: calc(100vw - 500px);
+        overflow-x: auto;
+        white-space: nowrap;
         position: relative; 
         .navItem{
             display: flex;
@@ -45,7 +46,7 @@
         gap: 16px;
         // border: 2px solid #FF00ff;
         // border-radius: 15px;
-        overflow-y: scroll;
+        overflow-y: auto;
         // background-color: $secondary;
         background-color: $surface;
         // padding: 1rem;
