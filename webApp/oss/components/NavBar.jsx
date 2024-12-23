@@ -50,7 +50,7 @@ export default function NavBar(props){
 						<Paper elevation={3}>
 							<Stack>
 								<Box display="flex" justifyContent="center"
-    alignItems="center" sx={{
+    							alignItems="center" sx={{
 									position:'absolute',
 									paddingTop:'100px',
 									width:'max-content',
