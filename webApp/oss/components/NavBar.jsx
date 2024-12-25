@@ -1,7 +1,7 @@
 // 'use client'
 import React from 'react'
 import Tbot from '@/assets/Tbot'
-import { Stack,Box,Paper } from '@mui/material'
+import { Stack,Box,Paper,Card,CardActionArea,Typography } from '@mui/material'
 
 export  function NavBar2(props) {
   return (
@@ -36,39 +36,62 @@ export  function NavBar2(props) {
 
 export default function NavBar(props){
   return (
-    <Stack direction="row" spacing={2}>
+    <Box sx={{
+			display:'flex',
+			padding:'10px 16px 10px 16px',
+			gap:'16px',
+			
+		}}>
 			<Box sx={{
 				display:'flex',
+				gap:'16px',
+				width:'calc(100vw - 500px)',
 				overflowX:'auto',
 				position:'nowrap',
+				position:'relative',
 			}}>
 				{Array.from(Array(props?.navList?.length)).map((__,index)=>
-					<Stack key={`appNavBar - ${index}`} spacing={2} sx={{
-						// display:'flex',
-						// alignItems:'center'
-					}}>
-						<Paper elevation={3}>
-							<Stack>
-								<Box display="flex" justifyContent="center"
-    							alignItems="center" sx={{
-									position:'absolute',
-									paddingTop:'100px',
-									width:'max-content',
-									// alignItems:'center'
-								}}>
+					<Card elevation={6} key={`appNavBar - ${index}`}>
+						<CardActionArea>
+						<Stack sx={{
+							alignItems:'center',
+							borderRadius:'10px',
+						}}>
+							<Box sx={{
+								position:'absolute',
+								paddingTop:'120px',
+								width:'max-content',
+							}}>
+								<Typography gutterBottom variant="h6" component="div">
 									{props?.navList[index]?.title}
-								</Box>
+								</Typography>
+							</Box>
+							<Box>
 								{props?.navList[index]?.icon}
-							</Stack>
-						</Paper>
-					</Stack>
+							</Box>
+						</Stack>
+						</CardActionArea>
+					</Card>
 				)}
 			</Box>
-			<Box sx={{
-				
+			<Paper elevation={6} sx={{
+				marginLeft: "auto",
+				padding: "10px 16px",
+				width: "350px",
+				height: "160px",
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "flex-start",
+				gap: "16px",
+				overflowY: "auto",
+				borderRadius: "15px",
 			}}>
-
-			</Box>
-		</Stack>
+				{props?.notificationPanel.map((elem,index)=>
+					<div key={`appNavBar-notificationPanel-${index}`}>
+						{elem}
+					</div>
+				)}
+			</Paper>
+		</Box>
   )
 }
