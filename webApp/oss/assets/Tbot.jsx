@@ -17,8 +17,8 @@ const Tbot = (props) => (
     <line x1={65} y1={165} x2={235} y2={165} stroke="#c0c0c0" strokeWidth={2} />
 
     <rect
-      x={140}
-      y={110}
+      x={70+(((props?.x??50)*(1.4)))%141}
+      y={60+(((props?.y??100)*(0.5)))%51}
       width={20}
       height={130}
       fill="#585656"
@@ -26,7 +26,7 @@ const Tbot = (props) => (
       strokeWidth={2}
     />
 
-    <circle cx={150} cy={240} r={10} fill="#c0c0c0" />
+    <circle cx={80+(((props?.x??50)*(1.4)))%141} cy={190+(((props?.y??100)*(0.5)))%51} r={props?.active?13:10} fill={props?.active?"#1daa61":"#c0c0c0"} />
     <line x1={80} y1={270} x2={220} y2={270} stroke="#585656" strokeWidth={4} />
   </svg>
 );

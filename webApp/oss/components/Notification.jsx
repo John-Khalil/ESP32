@@ -99,8 +99,8 @@ export default function Notification(props) {
         }}
         sx={{
           '& .MuiPaper-root': {
-            width: '80vw',
-            height: '85vh',
+            // width: '80vw',
+            // height: '85vh',
 
             borderRadius: '20px',
           },

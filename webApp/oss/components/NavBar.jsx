@@ -51,7 +51,7 @@ export default function NavBar(props){
 				position:'relative',
 			}}>
 				{Array.from(Array(props?.navList?.length)).map((__,index)=>
-					<Card elevation={6} key={`appNavBar - ${index}`}>
+					<Card elevation={6} key={`appNavBar - ${index}`} onClick={props?.navList[index]?.onClick}>
 						<CardActionArea>
 						<Stack sx={{
 							alignItems:'center',
