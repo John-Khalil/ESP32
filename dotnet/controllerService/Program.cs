@@ -16,9 +16,9 @@ class Program
         Startup.controllerSetup();
         Startup.webSocketServerStart();
 
-        DB.Create(new Settings{
-            Name="manga",
-        });
+        // DB.Create(new Settings{
+        //     Name="manga",
+        // });
 
         // var entity=DB.GetById<Settings>(2);
         // entity.Name="new value";
@@ -95,6 +95,12 @@ class Program
         //     delay = 100,
         //     clks = 10000
         // });
+
+        appLinker[keys.TbotMove].value=JsonConvert.SerializeObject(new{
+            d1 = 200,
+            // d2 = 100,
+            feedRate = 100,
+        });
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);

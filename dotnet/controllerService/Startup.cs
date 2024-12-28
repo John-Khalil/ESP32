@@ -54,6 +54,9 @@ public static class Startup
         appLinker[keys.AnalogRead].setAction((object data)=>{
             serialSerialize(Registers.ANALOG_READ,data.ToString());
         });
+        appLinker[keys.TbotMove].setAction((object data)=>{
+            serialSerialize(Registers.TBOT_MOVE,data.ToString());
+        });
 
 
         var IsValidJson=(string input)=>{

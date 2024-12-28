@@ -10,8 +10,14 @@ import appLinker from "@/utils/utils";
 import setupWebSocket from "@/utils/webSocket";
 import { MdOutlineErrorOutline } from "react-icons/md";
 import { IoIosWarning } from "react-icons/io";
+import { Box } from "@mui/material";
+import TbotControls from "@/components/TbotControls";
+import { useState } from "react";
 export default function Home() {
+  const [selectedApp,setSelectedApp]=useState(<TbotControls/>);
+
   setupWebSocket();
+
 
   // appLinker.addListener("",data=>{
     
@@ -20,32 +26,35 @@ export default function Home() {
   //   appLinker.send("ws","this is test");
   // }, 500);
   return (
-    <>
+    <Box sx={{
+      display:'flex',
+      flexDirection:'column',
+    }}>
       <NavBar {...{
         navList:[
           {
             title:'T-Bot',
             icon:<Tbot {...{
-              x:50,
-              y:100,
-              active:true
+              // x:50,
+              // y:100,
+              // active:true
             }}/>,
             onClick:()=>{
-              console.log("this is test")
+              setSelectedApp(<TbotControls/>);
             }
           },
           {
             title:'Conveyor Belt',
             icon:<ConveyorBelt/>,
             onClick:()=>{
-
+              setSelectedApp("ConveyorBelt");
             }
           },
           {
             title:'Box Opener',
             icon:<BoxOpener/>,
             onClick:()=>{
-
+              setSelectedApp("BoxOpener");
             }
           },
         ],
@@ -66,12 +75,16 @@ export default function Home() {
           <Notification {...{
             title:"Another Notification",
           }}>
-            
           </Notification>,
           
         ]
       }} />
+      <Box sx={{
+        padding:' 10px 16px 10px 16px;'
+      }}>
+        {selectedApp}
+      </Box>
       
-    </>
+    </Box>
   );
 }

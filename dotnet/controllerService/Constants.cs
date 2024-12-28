@@ -83,6 +83,9 @@ namespace Constants
         public static string WebSocket{get;set;}
         public static string WebSocketBroadCast{get;set;}
         public static string WebSocketClients{get;set;}
+        
+        public static string TbotMove{get;set;}
+
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){
