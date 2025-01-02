@@ -97,8 +97,8 @@ class Program
         // });
 
         appLinker[keys.TbotMove].value=JsonConvert.SerializeObject(new{
-            d1 = 200,
-            // d2 = 100,
+            d1 = 800,
+            // d2 = 500,
             feedRate = 100,
         });
 
