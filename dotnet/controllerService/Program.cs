@@ -13,8 +13,10 @@ class Program
     static void Main(){
         Startup.appLinker=appLinker;
         utils.appLinker=appLinker;
-        Startup.controllerSetup();
+        Startup.controllerSetup(["COM31"]);
         Startup.webSocketServerStart();
+
+
 
         // DB.Create(new Settings{
         //     Name="manga",
@@ -23,6 +25,12 @@ class Program
         // var entity=DB.GetById<Settings>(2);
         // entity.Name="new value";
         // DB.Update<Settings>(entity);
+
+        dynamic test=new{
+            x=5
+        };
+
+        Console.WriteLine(JObject.FromObject(test).ContainsKey("y")?"found":"not found");
 
         var list=DB.GetAll<Settings>();
         foreach(var item in list)
