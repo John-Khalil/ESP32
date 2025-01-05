@@ -75,7 +75,7 @@ class tBot{
             refPoint.d1=d1*stepsPerUnit;
             refPoint.d2=d2*stepsPerUnit;
 
-            followRef(feedRate);
+            followRef(500000/(feedRate*stepsPerUnit));
 
             refPoint.d1/=stepsPerUnit;
             refPoint.d2/=stepsPerUnit;
