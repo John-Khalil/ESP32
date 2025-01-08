@@ -9,7 +9,7 @@ public static class Startup
 {
     public static AppLinker appLinker{get;set;}
 
-    
+
     public static void controllerSetup(string[] SerialPorts){
          
         var serialPortList=new List<SerialPort>();
@@ -116,7 +116,7 @@ public static class Startup
         var server = new WebSocketServer("http://localhost:8080/");
         utils.webSocket=server;
         utils.appLinker[keys.WebSocketBroadCast].setAction(async (object data)=>{
-            await server.BroadcastMessage(data.ToString());
+            await server.BroadcastMessage(JsonConvert.SerializeObject(data));
         });
         _ = server.StartAsync();
     }

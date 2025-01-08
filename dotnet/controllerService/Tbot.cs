@@ -59,18 +59,27 @@ public class Tbot{
         while(!startPacking);
 
         var moveArm=(Point p,UInt32 feedRate)=>{
-          dynamic expando=new ExpandoObject();
+          dynamic TbotMove=new ExpandoObject();
 
-          expando.feedRate=feedRate;
+          TbotMove.feedRate=feedRate;
           if(p.d1!=int.MinValue)
-            expando.d1=p.d1;
+            TbotMove.d1=p.d1;
           if(p.d2!=int.MinValue)
-            expando.d2=p.d2;
+            TbotMove.d2=p.d2;
 
           utils.appLinker[keys.TbotMove].value=new{
-            PortName=serialPortID,
-            value=expando
+            port=serialPortID,
+            value=TbotMove
           };
+
+          utils.appLinker[keys.WebSocketBroadCast].value=new{
+            eventID=keys.TbotMove,
+            data=new{
+              port=serialPortID,
+              value=TbotMove
+            }
+          };
+          
         };
 
 
