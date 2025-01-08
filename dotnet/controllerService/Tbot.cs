@@ -58,6 +58,8 @@ public class Tbot{
       for(;;){
         while(!startPacking);
 
+
+        // lamda exp to move the arm and provide user feedback
         var moveArm=(Point p,UInt32 feedRate)=>{
           dynamic TbotMove=new ExpandoObject();
 
@@ -79,7 +81,6 @@ public class Tbot{
               value=TbotMove
             }
           };
-          
         };
 
 
