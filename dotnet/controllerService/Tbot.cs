@@ -4,37 +4,81 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Constants;
+using System.Dynamic;
 
 public class Tbot{
   public class Point{
     public int d1=0;  //x
     public int d2=0;  //y
+    public Point(int d1, int d2){
+        this.d1 = d1;
+        this.d2 = d2;
+    }
   }
-  public string id;
+  public string serialPortID;
 
   public Point pickup;
-  public Point Placement;
+  public Point placement;
 
-  public int FeedRateD1;
-  public int FeedRateD2;
-  public UInt32 en;
-  public UInt32 dir1;
-  public UInt32 dir2;
-  public UInt32 clk;
+  public int feedRateD1;
+  public int feedRateD2;
   public UInt32 stepsPerUnit=1;
 
-  
+  public int vacuumON;
 
+  private bool startPacking=false;
+  public void start(){
+    startPacking=true;
+  }
 
-  public Tbot(dynamic setup){
-    id=setup?.id??"";
-    FeedRateD1=setup?.FeedRateD1;
-    FeedRateD2=setup?.FeedRateD2;
-    en=1<<setup?.en;
-    dir1=1<<setup?.dir1;
-    dir2=1<<setup?.dir2;
-    clk=(1<<setup?.clk1)|(1<<setup?.clk2);
+  public Action cycleComplete=()=>{};
+  public Action<object> movementUpdate=(object x)=>{};
+
+  public List<int> placementFeedBack;
+
+  public Func<UInt32> PositionFeedBack;
+
+  public void init(dynamic setup){
+    serialPortID=setup?.serialPortID;
+    pickup=setup?.pickup;
+    placement=setup?.placement;
+    feedRateD1=setup?.feedRateD1;
+    feedRateD2=setup?.feedRateD2;
     stepsPerUnit=setup?.stepsPerUnit;
+    vacuumON=setup?.vacuumON;
+    cycleComplete=setup?.cycleComplete;
+    movementUpdate=setup?.movementUpdate;
+    placementFeedBack=setup?.placementFeedBack;
+    PositionFeedBack=setup?.PositionFeedBack;
+  }
+
+  public Tbot(object setup){
+    init(setup);
+    Task.Run(()=>{
+      for(;;){
+        while(!startPacking);
+
+        var moveArm=(Point p,UInt32 feedRate)=>{
+          dynamic expando=new ExpandoObject();
+
+          expando.feedRate=feedRate;
+          if(p.d1!=int.MinValue)
+            expando.d1=p.d1;
+          if(p.d2!=int.MinValue)
+            expando.d2=p.d2;
+
+          utils.appLinker[keys.TbotMove].value=new{
+            PortName=serialPortID,
+            value=expando
+          };
+        };
+
+
+        startPacking=false;
+        cycleComplete();
+      }
+    });
+
   }
 
 

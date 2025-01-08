@@ -8,6 +8,8 @@ using Constants;
 public static class Startup
 {
     public static AppLinker appLinker{get;set;}
+
+    
     public static void controllerSetup(string[] SerialPorts){
          
         var serialPortList=new List<SerialPort>();

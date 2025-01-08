@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Constants;
 using EFCore;
 using EFCore.Models;
+using System.Dynamic;
 
 class Program
 {
@@ -15,6 +16,13 @@ class Program
         utils.appLinker=appLinker;
         Startup.controllerSetup(["COM31"]);
         Startup.webSocketServerStart();
+
+        dynamic expando=new ExpandoObject();
+        expando.test="manga";
+        Console.WriteLine(JsonConvert.SerializeObject(new{
+            d1 = 800,
+            prop=expando
+        }));
 
 
 
