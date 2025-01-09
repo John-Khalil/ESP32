@@ -4,6 +4,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Constants;
+using System.Dynamic;
 
 public static class Startup
 {
@@ -23,12 +24,13 @@ public static class Startup
                 return;
             try{
                 var value=JObject.FromObject(data).ContainsKey("value")?data?.value:data;
-                serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new{key,value}));
+                serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
+                // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // AppLinker.resolve(appLinker["ack"]);
                 Thread.Sleep(10);
             }
             catch (Exception ex){
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error : {ex.Message}");
             }
         };
 

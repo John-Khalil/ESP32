@@ -17,12 +17,7 @@ class Program
         Startup.controllerSetup(["COM31"]);
         Startup.webSocketServerStart();
 
-        dynamic expando=new ExpandoObject();
-        expando.test="manga";
-        Console.WriteLine(JsonConvert.SerializeObject(new{
-            d1 = 800,
-            prop=expando
-        }));
+       Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[123]="value"}));
 
 
 
@@ -112,11 +107,14 @@ class Program
         //     clks = 10000
         // });
 
-        appLinker[keys.TbotMove].value=JsonConvert.SerializeObject(new{
-            d1 = 800,
-            // d2 = 500,
-            feedRate = 100,
-        });
+        appLinker[keys.TbotMove].value=new{
+            port="COM31",
+            value=new{
+                d1 = 800,
+                // d2 = 500,
+                feedRate = 100,
+            }
+        };
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);

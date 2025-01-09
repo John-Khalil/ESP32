@@ -25,6 +25,7 @@ public class Tbot{
   public UInt32 stepsPerUnit=1;
 
   public int vacuumON;
+  public int roundCount;
 
   private bool startPacking=false;
   public void start(){
@@ -46,6 +47,7 @@ public class Tbot{
     feedRateD2=setup?.feedRateD2;
     stepsPerUnit=setup?.stepsPerUnit;
     vacuumON=setup?.vacuumON;
+    roundCount=setup?.roundCount;
     cycleComplete=setup?.cycleComplete;
     movementUpdate=setup?.movementUpdate;
     placementFeedBack=setup?.placementFeedBack;
@@ -74,14 +76,16 @@ public class Tbot{
             value=TbotMove
           };
 
-          utils.appLinker[keys.WebSocketBroadCast].value=new{
-            eventID=keys.TbotMove,
-            data=new{
-              port=serialPortID,
-              value=TbotMove
-            }
-          };
+          utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=TbotMove};
         };
+
+
+        // start cycle
+        int loopCounter=0;
+        while(loopCounter++<roundCount){
+          
+        }
+
 
 
         startPacking=false;
