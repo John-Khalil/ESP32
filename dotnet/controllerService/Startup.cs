@@ -101,7 +101,9 @@ public static class Startup
                             JObject jObject = JObject.Parse(response);
                             foreach (var property in jObject.Properties()){
                                 // Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
-                                appLinker[property.Name].value=property.Value;
+                                appLinker[property.Name].value=property.Value;                              // set general property
+                                appLinker[$"{property.Name}-{serialPort.PortName}"].value=property.Value;   // tie it to a specific comm port
+
                             }
                         }
                     }

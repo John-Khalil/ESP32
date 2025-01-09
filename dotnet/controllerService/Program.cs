@@ -17,7 +17,8 @@ class Program
         Startup.controllerSetup(["COM31"]);
         Startup.webSocketServerStart();
 
-       Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[123]="value"}));
+        // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[123]="value"}));
+       
 
 
 
@@ -46,7 +47,10 @@ class Program
             await utils.webSocket.SendToClient(Guid.Parse(clientID??""),"this is test");
         });
 
-        // appLinker[keys.InputPullDown].value=Pins.B12;
+        appLinker[keys.InputPullDown].value=new{
+            port="COM31",
+            value=Pins.B12
+        };
         // appLinker[keys.Output].value=Pins.C13;
         // appLinker[keys.Output].value=Pins.B13;
         // appLinker[keys.Output].value=Pins.B14;
@@ -71,13 +75,14 @@ class Program
 
         // appLinker[keys.Output].value=Pins.C13;
 
-        // Task.Run(async ()=>{
-        //     while(true){
-        //         // appLinker[keys.SerialSend].value="manga";
-        //         Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed(Pins.A0)}");
-        //         await Task.Delay(10);
-        //     }
-        // });
+        Task.Run(async ()=>{
+            while(true){
+                // appLinker[keys.SerialSend].value="manga";
+                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed(Pins.A0)}");
+                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
+                await Task.Delay(10);
+            }
+        });
         // Task.Run(async ()=>{
         //     while(true){
         //         // appLinker[keys.SerialSend].value="manga";

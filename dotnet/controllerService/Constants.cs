@@ -98,16 +98,19 @@ namespace Constants
     public static class utils{
         public static AppLinker appLinker{get;set;}
         public static WebSocketServer webSocket{get;set;}
-        public static dynamic controllerRead(string key,string value){
-            appLinker[key].value=value;
-            return AppLinker.resolve(appLinker[value]);
+        public static dynamic controllerRead(string key,object value,string portID){
+            appLinker[key].value=new{
+                port=portID,
+                value,
+            };
+            return AppLinker.resolve(appLinker[$"{value.ToString()}-{portID}"]);
         }
 
-        public static dynamic readPin(uint value){
-            return controllerRead(keys.ReadPin,$"{Registers.INPUT_REGISTERS_BASE|value}");
+        public static dynamic readPin(string portID,object value){
+            return controllerRead(keys.ReadPin,Registers.INPUT_REGISTERS_BASE|(uint)value,portID);
         }
-        public static dynamic analogRaed(uint value){
-            return controllerRead(keys.AnalogRead,$"{Registers.INPUT_REGISTERS_BASE|value}");
+        public static dynamic analogRaed(string portID,object value){
+            return controllerRead(keys.AnalogRead,Registers.INPUT_REGISTERS_BASE|(uint)value,portID);
         }
     }
 }
