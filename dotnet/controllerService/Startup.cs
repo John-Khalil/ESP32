@@ -27,7 +27,7 @@ public static class Startup
                 serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // AppLinker.resolve(appLinker["ack"]);
-                Thread.Sleep(10);
+                // Thread.Sleep(10);
             }
             catch (Exception ex){
                 Console.WriteLine($"Error : {ex.Message}");
@@ -93,7 +93,7 @@ public static class Startup
 
             try{
                 serialPort.Open();
-                Task.Run(()=>{
+                Task.Run(async ()=>{
                     while(true){
                         string response = serialPort.ReadLine();
                         // Console.WriteLine($"Received: {response}");
@@ -101,11 +101,13 @@ public static class Startup
                             JObject jObject = JObject.Parse(response);
                             foreach (var property in jObject.Properties()){
                                 // Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
-                                
+                                // Console.Write("-");
+                                await Task.Delay(10);
+
                                 appLinker[property.Name].value=property.Value;                              // set general property
                                 appLinker[$"{property.Name}-{serialPort.PortName}"].value=property.Value;   // tie it to a specific comm port
 
-                                Thread.Sleep(100);
+                                // await Task.Delay(20);
                             }
                         }
                     }

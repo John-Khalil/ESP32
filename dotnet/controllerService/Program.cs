@@ -75,12 +75,31 @@ class Program
 
         // appLinker[keys.Output].value=Pins.C13;
 
-        Task.Run(()=>{
+        _=Task.Run(async ()=>{
             while(true){
                 // appLinker[keys.SerialSend].value="manga";
-                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed("COM31",Pins.A0)}");
+                Console.ForegroundColor=ConsoleColor.Red;
+                Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{utils.analogRaed("COM31",Pins.A0)}");
                 // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
-                // Task.Delay(10);
+                await Task.Delay(1);
+            }
+        });
+        _ =Task.Run(async ()=>{
+            while(true){
+                // appLinker[keys.SerialSend].value="manga";
+                Console.ForegroundColor=ConsoleColor.Green;
+                Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{utils.analogRaed("COM31",Pins.A7)}");
+                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
+                await Task.Delay(1);
+            }
+        });
+        _ =Task.Run(async ()=>{
+            while(true){
+                // appLinker[keys.SerialSend].value="manga";
+                Console.ForegroundColor=ConsoleColor.Blue;
+                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed("COM31",Pins.A0)}");
+                Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
+                await Task.Delay(1);
             }
         });
         // Task.Run(async ()=>{
