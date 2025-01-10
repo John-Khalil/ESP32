@@ -30,11 +30,11 @@ class Program
         // entity.Name="new value";
         // DB.Update<Settings>(entity);
 
-        dynamic test=new{
-            x=5
-        };
+        // dynamic test=new{
+        //     x=5
+        // };
 
-        Console.WriteLine(JObject.FromObject(test).ContainsKey("y")?"found":"not found");
+        // Console.WriteLine(JObject.FromObject(test).ContainsKey("y")?"found":"not found");
 
         var list=DB.GetAll<Settings>();
         foreach(var item in list)
@@ -47,7 +47,7 @@ class Program
             await utils.webSocket.SendToClient(Guid.Parse(clientID??""),"this is test");
         });
 
-        appLinker[keys.InputPullDown].value=new{
+        appLinker[keys.InputPullUp].value=new{
             port="COM31",
             value=Pins.B12
         };
@@ -75,12 +75,12 @@ class Program
 
         // appLinker[keys.Output].value=Pins.C13;
 
-        Task.Run(async ()=>{
+        Task.Run(()=>{
             while(true){
                 // appLinker[keys.SerialSend].value="manga";
-                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed(Pins.A0)}");
-                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
-                await Task.Delay(10);
+                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed("COM31",Pins.A0)}");
+                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin("COM31",Pins.B12)}");
+                // Task.Delay(10);
             }
         });
         // Task.Run(async ()=>{
@@ -112,14 +112,14 @@ class Program
         //     clks = 10000
         // });
 
-        appLinker[keys.TbotMove].value=new{
-            port="COM31",
-            value=new{
-                d1 = 800,
-                // d2 = 500,
-                feedRate = 100,
-            }
-        };
+        // appLinker[keys.TbotMove].value=new{
+        //     port="COM31",
+        //     value=new{
+        //         d1 = 800,
+        //         // d2 = 500,
+        //         feedRate = 100,
+        //     }
+        // };
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);

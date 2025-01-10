@@ -106,11 +106,11 @@ namespace Constants
             return AppLinker.resolve(appLinker[$"{value.ToString()}-{portID}"]);
         }
 
-        public static dynamic readPin(string portID,object value){
-            return controllerRead(keys.ReadPin,Registers.INPUT_REGISTERS_BASE|(uint)value,portID);
+        public static dynamic readPin(string portID,uint value){
+            return controllerRead(keys.ReadPin,Registers.INPUT_REGISTERS_BASE|value,portID);
         }
-        public static dynamic analogRaed(string portID,object value){
-            return controllerRead(keys.AnalogRead,Registers.INPUT_REGISTERS_BASE|(uint)value,portID);
+        public static dynamic analogRaed(string portID,uint value){
+            return controllerRead(keys.AnalogRead,Registers.INPUT_REGISTERS_BASE|value,portID);
         }
     }
 }
