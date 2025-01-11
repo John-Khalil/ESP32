@@ -35,9 +35,28 @@ public class Tbot{
   public Action cycleComplete=()=>{};
   public Action<object> movementUpdate=(object x)=>{};
 
-  public List<int> placementFeedBack;
+  public List<uint> placementFeedBack;
 
   public Func<UInt32> PositionFeedBack;
+
+  public void placementFeedBackInit(){
+    foreach(uint feedbackPin in placementFeedBack){
+        utils.appLinker[keys.InputPullUp].value=new{
+          port=serialPortID,
+          value=feedbackPin
+        };
+    }
+  }
+
+  public bool itemsInPlace(){
+    bool logicAccumulate=true;
+    foreach(uint feedbackPin in placementFeedBack){
+      logicAccumulate=logicAccumulate&&((int)utils.readPin(serialPortID,feedbackPin)==1);
+      if(!logicAccumulate)
+        break;
+    }
+    return logicAccumulate;
+  }
 
   public void init(dynamic setup){
     serialPortID=setup?.serialPortID;
@@ -56,6 +75,7 @@ public class Tbot{
 
   public Tbot(object setup){
     init(setup);
+    placementFeedBackInit();
     Task.Run(()=>{
       for(;;){
         while(!startPacking);
