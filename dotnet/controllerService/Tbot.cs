@@ -24,7 +24,7 @@ public class Tbot{
   public int feedRateD2;
   public UInt32 stepsPerUnit=1;
 
-  public int vacuumON;
+  public int vacuum;
   public int roundCount;
 
   private bool startPacking=false;
@@ -38,6 +38,20 @@ public class Tbot{
   public List<uint> placementFeedBack;
 
   public Func<UInt32> PositionFeedBack;
+
+  public void vacuumControlInit(){
+    utils.appLinker[keys.Output].value=new{
+      port=serialPortID,
+      value=vacuum
+    };
+  }
+
+  public void vacuumControl(bool state){
+    utils.appLinker[state?keys.SetPin:keys.ClearPin].value=new{
+      port=serialPortID,
+      value=vacuum
+    };
+  }
 
   public void placementFeedBackInit(){
     foreach(uint feedbackPin in placementFeedBack){
@@ -65,7 +79,7 @@ public class Tbot{
     feedRateD1=setup?.feedRateD1;
     feedRateD2=setup?.feedRateD2;
     stepsPerUnit=setup?.stepsPerUnit;
-    vacuumON=setup?.vacuumON;
+    vacuum=setup?.vacuum;
     roundCount=setup?.roundCount;
     cycleComplete=setup?.cycleComplete;
     movementUpdate=setup?.movementUpdate;
@@ -76,6 +90,7 @@ public class Tbot{
   public Tbot(object setup){
     init(setup);
     placementFeedBackInit();
+    vacuumControlInit();
     Task.Run(()=>{
       for(;;){
         while(!startPacking);
