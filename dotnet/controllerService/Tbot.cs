@@ -20,8 +20,8 @@ public class Tbot{
   public Point pickup;
   public Point placement;
 
-  public int feedRateD1;
-  public int feedRateD2;
+  public uint feedRateD1;
+  public uint feedRateD2;
   public UInt32 stepsPerUnit=1;
 
   public int vacuum;
@@ -38,6 +38,10 @@ public class Tbot{
   public List<uint> placementFeedBack;
 
   public Func<UInt32> PositionFeedBack;
+
+  public void home(){
+
+  }
 
   public void vacuumControlInit(){
     utils.appLinker[keys.Output].value=new{
@@ -78,13 +82,13 @@ public class Tbot{
     placement=setup?.placement;
     feedRateD1=setup?.feedRateD1;
     feedRateD2=setup?.feedRateD2;
-    stepsPerUnit=setup?.stepsPerUnit;
+    stepsPerUnit=setup?.stepsPerUnit;             // apply a method later that would set the steps per unit
     vacuum=setup?.vacuum;
     roundCount=setup?.roundCount;
     cycleComplete=setup?.cycleComplete;
-    movementUpdate=setup?.movementUpdate;
+    movementUpdate=setup?.movementUpdate;         //replaced by ws broadcast
     placementFeedBack=setup?.placementFeedBack;
-    PositionFeedBack=setup?.PositionFeedBack;
+    PositionFeedBack=setup?.PositionFeedBack;     // mechanical feedback mechanism
   }
 
   public Tbot(object setup){
@@ -116,9 +120,19 @@ public class Tbot{
 
 
         // start cycle
+        home();
         int loopCounter=0;
         while(loopCounter++<roundCount){
-          
+          moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
+          moveArm(new Point(int.MinValue,pickup.d2),feedRateD2);
+          moveArm(new Point(pickup.d1,int.MinValue),feedRateD1);
+          while(!itemsInPlace());
+          vacuumControl(true);
+          moveArm(new Point(0,int.MinValue),feedRateD1);
+          moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
+          moveArm(new Point(placement.d1,int.MinValue),feedRateD1);
+          vacuumControl(false);
+          moveArm(new Point(0,int.MinValue),feedRateD1);
         }
 
 
