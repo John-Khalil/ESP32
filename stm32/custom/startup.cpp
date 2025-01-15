@@ -22,7 +22,7 @@ void tbotSetup(void){
     PM(PA2,OUTPUT);
     PM(PA3,OUTPUT);
     PM(PA4,OUTPUT);
-    tbot.setup(GPIOA_BSRR,GPIOA_BRR,0,1,2,3,4,80);
+    tbot.setup(GPIOA_BSRR,GPIOA_BRR,0,1,2,3,4,80,Pin_A5,Pin_A6);
 }
 
 void startup(void){

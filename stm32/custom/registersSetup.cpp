@@ -109,7 +109,9 @@ void registersSetup(void){
             atoi((char*)json("dir2",data)),
             atoi((char*)json("clk1",data)),
             atoi((char*)json("clk2",data)),
-            atoi((char*)json("stepsPerUnit",data))
+            atoi((char*)json("stepsPerUnit",data)),
+            atoi((char*)json("homeSwitchD1",data)),
+            atoi((char*)json("homeSwitchD2",data))
         );
     });
     return;

@@ -9,6 +9,9 @@
 #include <algorithm>
 #include <string>
 #include <type_traits>
+
+#define HOME_FEED_RATE 100
+
 class tBot{
     private:
         volatile uint32_t* OUTPUT_SET;
@@ -17,6 +20,10 @@ class tBot{
         uint32_t dir1;
         uint32_t dir2;
         uint32_t clk;
+
+        uint32_t homeSwitchD1;
+        uint32_t homeSwitchD2;
+
 
         uint16_t stepsPerUnit=1;
         struct point{
@@ -62,6 +69,37 @@ class tBot{
             return;
         }
 
+        tBot& homeD1(void){
+            refPoint.d1=0;
+            *OUTPUT_SET|=(currentPoint.d1<refPoint.d1)?dir1:dir2;
+            *OUTPUT_RESET|=(currentPoint.d1>refPoint.d1)?dir1:dir2;
+
+            while(digitalRead(homeSwitchD1)){
+                *OUTPUT_SET|=clk;
+                HW_DELAY(HOME_FEED_RATE);
+                *OUTPUT_RESET|=clk;
+                HW_DELAY(HOME_FEED_RATE);
+            }
+            
+            currentPoint.d1=0;
+            return (*this);
+        }
+
+        tBot& homeD2(void){
+            refPoint.d2=0;
+            (currentPoint.d2<refPoint.d2)?(*OUTPUT_RESET|=(dir1|dir2)):(*OUTPUT_SET|=(dir1|dir2));
+
+            while(digitalRead(homeSwitchD2)){
+                *OUTPUT_SET|=clk;
+                HW_DELAY(HOME_FEED_RATE);
+                *OUTPUT_RESET|=clk;
+                HW_DELAY(HOME_FEED_RATE);
+            }
+            
+            currentPoint.d2=0;
+            return (*this);
+        }
+
         tBot& setStepsPerUnit(uint16_t _stepsPerUnit){
             stepsPerUnit=_stepsPerUnit;
             
@@ -91,7 +129,9 @@ class tBot{
             uint32_t _dir2,
             uint32_t _clk1,
             uint32_t _clk2,
-            uint16_t _stepsPerUnit
+            uint16_t _stepsPerUnit,
+            uint32_t _homeSwitchD1,
+            uint32_t _homeSwitchD2
         ){
             OUTPUT_SET=_output_set;
             OUTPUT_RESET=_output_reset;
@@ -100,6 +140,9 @@ class tBot{
             dir2=(1<<_dir2);
             clk=(1<<_clk1)|(1<<_clk2);
             setStepsPerUnit(_stepsPerUnit);
+            homeSwitchD1=_homeSwitchD1;
+            homeSwitchD2=_homeSwitchD2;
+
         }
 
 
@@ -112,7 +155,9 @@ class tBot{
             uint32_t _dir2,
             uint32_t _clk1,
             uint32_t _clk2,
-            uint16_t _stepsPerUnit
+            uint16_t _stepsPerUnit,
+            uint32_t _homeSwitchD1,
+            uint32_t _homeSwitchD2
         ){
             setup(
                 _output_set,
@@ -122,7 +167,9 @@ class tBot{
                 _dir2,
                 _clk1,
                 _clk2,
-                _stepsPerUnit
+                _stepsPerUnit,
+                _homeSwitchD1,
+                _homeSwitchD2
             );
         }
         tBot(){
