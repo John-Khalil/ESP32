@@ -69,6 +69,14 @@ void registersSetup(void){
         tbot.move(d1,d2,atoi((char*)json("feedRate",data)));
     });
 
+    appLinker.onWrite(TBOT_POS,[&](uint8_t* data)){
+        // Serial.print("{\"");       
+        // Serial.print(key);         
+        // Serial.print("\":\"");     
+        // Serial.print(value);       
+        // Serial.print("\"}\n");
+    };
+
     appLinker.onWrite(CLOCK,[&](uint8_t* data){
         uint32_t reg=atoi((char*)json("reg",data));
         uint32_t mask=atoi((char*)json("mask",data));

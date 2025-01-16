@@ -67,6 +67,10 @@ public static class Startup
         appLinker[keys.TbotMove].setAction((object data)=>{
             serialSerialize(Registers.TBOT_MOVE,data);
         });
+        appLinker[keys.TbotPosition].setAction((object data)=>{
+            serialSerialize(Registers.TBOT_POS,data);
+        });
+
 
 
         var IsValidJson=(string input)=>{

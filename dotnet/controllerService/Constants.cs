@@ -23,6 +23,7 @@ namespace Constants
         public static readonly int TBOT_SETUP = OUTPUT_REGISTERS_BASE + 0x0A;
         public static readonly int CLOCK = OUTPUT_REGISTERS_BASE + 0x0B;
         public static readonly int ANALOG_READ = OUTPUT_REGISTERS_BASE + 0x0C;
+        public static readonly int TBOT_POS = OUTPUT_REGISTERS_BASE+0x0E;
         public static readonly int PORTA =1;
         public static readonly int PORTB =2;
         public static readonly int PORTC =3;
@@ -85,6 +86,7 @@ namespace Constants
         public static string WebSocketClients{get;set;}
         
         public static string TbotMove{get;set;}
+        public static string TbotPosition{get;set;}
 
         static keys(){
             var properties = typeof(keys).GetProperties();
