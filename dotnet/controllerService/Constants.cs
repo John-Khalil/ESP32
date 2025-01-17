@@ -7,6 +7,7 @@ namespace Constants
         // Base addresses
         public const int OUTPUT_REGISTERS_BASE = 0x100;
         public const int INPUT_REGISTERS_BASE = 0x200;
+        public const int READ_REGISTERS_BASE = 0x400;
 
         // Digital I/O
         public static readonly int DIGITAL_INPUT = OUTPUT_REGISTERS_BASE + 0x01;
@@ -113,6 +114,9 @@ namespace Constants
         }
         public static dynamic analogRaed(string portID,uint value){
             return controllerRead(keys.AnalogRead,Registers.INPUT_REGISTERS_BASE|value,portID);
+        }
+        public static dynamic tbotPosition(string portID){
+            return controllerRead(keys.TbotPosition,Registers.READ_REGISTERS_BASE|Registers.TBOT_POS,portID);
         }
     }
 }

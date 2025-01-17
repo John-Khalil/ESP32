@@ -30,6 +30,8 @@
 
 #define INPUT_REGISTERS_BASE 0x200
 
+#define READ_REGISTERS_BASE 0x400
+
 #define Pin_A0    192
 #define Pin_A1    193
 #define Pin_A2    194
