@@ -80,18 +80,18 @@ class Program
             while(true){
                 // appLinker[keys.SerialSend].value="manga";
                 Console.ForegroundColor=ConsoleColor.Red;
-                Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{(int)utils.analogRaed(controllers[0],Pins.A0)}");
-                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin(controllers[0],Pins.B12)}");
-                await Task.Delay(1);
+                // Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{(int)utils.analogRaed(controllers[0],Pins.A0)}");
+                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin(controllers[0],Pins.B12)}");
+                // await Task.Delay(1);
             }
         });
         Task.Run(async ()=>{
             while(true){
                 // appLinker[keys.SerialSend].value="manga";
                 Console.ForegroundColor=ConsoleColor.Green;
-                Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{(int)utils.analogRaed(controllers[0],Pins.A7)}");
-                // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin(controllers[0],Pins.B12)}");
-                await Task.Delay(1);
+                // Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}]-{(int)utils.analogRaed(controllers[0],Pins.A7)}");
+                Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.readPin(controllers[0],Pins.B12)}");
+                // await Task.Delay(1);
             }
         });
         Task.Run(async ()=>{
@@ -100,7 +100,7 @@ class Program
                 Console.ForegroundColor=ConsoleColor.Blue;
                 // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.analogRaed(controllers[0],Pins.A0)}");
                 Console.WriteLine($">> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {(int)utils.readPin(controllers[0],Pins.B12)}");
-                await Task.Delay(1);
+                // await Task.Delay(1);
             }
         });
         // Task.Run(async ()=>{
@@ -130,16 +130,34 @@ class Program
         //     mask = 1<<12,
         //     delay = 100,
         //     clks = 10000
-        // });
+        // // });
+
+        
+        // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.tbotPosition(controllers[0])}");
 
         // appLinker[keys.TbotMove].value=new{
         //     port=controllers[0],
         //     value=new{
         //         d1 = 800,
-        //         // d2 = 500,
+        //         d2 = 500,
         //         feedRate = 100,
         //     }
         // };
+
+
+        // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.tbotPosition(controllers[0])}");
+
+        // appLinker[keys.TbotMove].value=new{
+        //     port=controllers[0],
+        //     value=new{
+        //         d1 = 500,
+        //         d2 = -700,
+        //         feedRate = 1000,
+        //     }
+        // };
+
+
+        // Console.WriteLine($" >> [{DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}] {utils.tbotPosition(controllers[0])}");
 
         
         while (Console.ReadKey().Key != ConsoleKey.Enter);

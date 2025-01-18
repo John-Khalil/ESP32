@@ -24,13 +24,13 @@ class tBot{
         uint32_t homeSwitchD1;
         uint32_t homeSwitchD2;
 
+    public:
 
         uint16_t stepsPerUnit=1;
         struct point{
             int32_t d1=0;
             int32_t d2=0;
         };
-    public:
         point refPoint;
         point currentPoint;
 

@@ -106,7 +106,7 @@ public static class Startup
                             foreach (var property in jObject.Properties()){
                                 // Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
                                 // Console.Write("-");
-                                await Task.Delay(10);
+                                await Task.Delay(1);
 
                                 appLinker[property.Name].value=property.Value;                              // set general property
                                 appLinker[$"{property.Name}-{serialPort.PortName}"].value=property.Value;   // tie it to a specific comm port

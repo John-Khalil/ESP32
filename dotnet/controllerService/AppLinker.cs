@@ -7,7 +7,7 @@ public class AppLinker{
         private bool disableReadAction=false;
 
         public string key="";
-        public long lastUpdate=0;
+        public UInt128 lastUpdate=0;
         private dynamic _value="";
         public dynamic value{
             get{
@@ -21,7 +21,8 @@ public class AppLinker{
             }
             set{
                 _value=value;
-                lastUpdate=getTime();
+                // lastUpdate=getTime();
+                lastUpdate++;
                 // Console.WriteLine("val >> {0}",value);
                 if(!disableWriteAction){
                     disableWriteAction=true;
@@ -79,8 +80,9 @@ public class AppLinker{
     }
 
     public static dynamic resolve(registeredMemoryElement elem){
-        var currentTime=getTime();
-        while(currentTime>elem.lastUpdate);
+        // var currentTime=getTime();
+        var currentTime=elem.lastUpdate;
+        while(currentTime==elem.lastUpdate);
         return elem.value;
     }
 

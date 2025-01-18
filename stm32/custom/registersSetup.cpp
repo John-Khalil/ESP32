@@ -76,11 +76,11 @@ void registersSetup(void){
             Serial.print("\"");  
                 Serial.print("d1");
             Serial.print("\":");
-                Serial.print(tbot.currentPoint.d1);
+                Serial.print(tbot.currentPoint.d1/tbot.stepsPerUnit);
             Serial.print(",\"");
                 Serial.print("d2");
             Serial.print("\":");
-                Serial.print(tbot.currentPoint.d2);
+                Serial.print(tbot.currentPoint.d2/tbot.stepsPerUnit);
         Serial.print("}}\n");
     });
 
