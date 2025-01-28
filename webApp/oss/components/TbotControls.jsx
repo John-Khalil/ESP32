@@ -5,6 +5,14 @@ import React from 'react'
 // import { Box } from '@mui/system';
 import { Stack,Grid2,Button,Box,Paper,Card,CardActionArea,Typography } from '@mui/material'
 
+const TbotControlsTypography=(props)=>{
+  return(
+    <Typography gutterBottom variant="h6" component="div">
+      {props?.text}
+    </Typography> 
+  )
+}
+
 export default function TbotControls() {
   const manualControlItemHieght=88;
   return (
@@ -37,7 +45,7 @@ export default function TbotControls() {
                 height: `${manualControlItemHieght}px`,
               }}
             >
-              D1+
+              <TbotControlsTypography text={'D1+'}/>
             </Grid2>
             <Grid2 size={1}/>
 
@@ -48,7 +56,7 @@ export default function TbotControls() {
                 height: `${manualControlItemHieght*2}px`,
               }}
             >
-              D2-
+              <TbotControlsTypography text={'D2-'}/>
             </Grid2>
             <Grid2
               size={2}
@@ -66,7 +74,7 @@ export default function TbotControls() {
                 height: `${manualControlItemHieght*2}px`,
               }}
             >
-              D2+
+              <TbotControlsTypography text={'D2+'}/>
             </Grid2>
 
             <Grid2 size={1}/>
@@ -77,17 +85,23 @@ export default function TbotControls() {
                 height: `${manualControlItemHieght}px`,
               }}
             >
-              D1-
+            <TbotControlsTypography text={'D1-'}/>
             </Grid2>
             <Grid2 size={1}/>
           </Grid2>
-          <Typography gutterBottom variant="h6" component="div">
-            UNIT mm
-          </Typography> 
+          <TbotControlsTypography text={'UNIT mm'}/>
           <Stack
             direction="row"
           >
-            
+            <Button>
+              <TbotControlsTypography text={'-'}/>
+            </Button>
+            <Paper>
+              test
+            </Paper>
+            <Button>
+              <TbotControlsTypography text={'+'}/>
+            </Button>
           </Stack>
 
         </Stack>
