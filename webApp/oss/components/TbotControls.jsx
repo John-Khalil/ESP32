@@ -21,17 +21,14 @@ const TbotControlsCenterPad=(props)=>{
           const abortController1 = new AbortController();
           const abortController2 = new AbortController();
 
-          const[interval,setInterval]=useReducer((state, action)=>{
-            console.log(action)
-            return action
-          },{});
+          const[intervalID,setIntervalID]=useState({});
 
 
           abortController1.signal.addEventListener("abort", () => {
-            clearInterval(interval.controller1);
+            clearInterval(intervalID.controller1);
           });
           abortController2.signal.addEventListener("abort", () => {
-            clearInterval(interval.controller2);
+            clearInterval(intervalID.controller2);
           });
           return(
             <Stack
@@ -47,11 +44,10 @@ const TbotControlsCenterPad=(props)=>{
           
               <Button color="error" variant="outlined"
                 onMouseDown={()=>{
-                  let controller1 =setInterval(() => {
-                    setParameter(parameter++)
-                  }, 100);
-                  console.log(controller1)
-                  setInterval({...interval,controller1});
+                  setParameter(parameter--)
+                  setIntervalID({...intervalID,controller1:setInterval(() => {
+                    setParameter(parameter--)
+                  }, 100)});
                 }}
                 onMouseUp={()=>{
                   abortController1.abort()
@@ -74,15 +70,18 @@ const TbotControlsCenterPad=(props)=>{
                 </Typography> 
               </Button>
               <Paper elevation={12} sx={{
-                flexGrow: 1
+                flexGrow: 1,
+                display:'flex',
+                justifyContent:'center'
               }}>
                 {`${parameter} ${["mm","mm/s"][index]}`}
               </Paper>
               <Button color="success" variant="outlined"
                 onMouseDown={()=>{
-                  setInterval({...interval,controller2:setInterval(() => {
+                  setParameter(parameter++)
+                  setIntervalID({...intervalID,controller2:setInterval(() => {
                     setParameter(parameter++)
-                  }, 100)});
+                  }, 50)});
                 }}
                 onMouseUp={()=>{
                   abortController2.abort()
