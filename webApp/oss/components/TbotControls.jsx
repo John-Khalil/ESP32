@@ -38,7 +38,7 @@ const TbotControlsCenterPad=(props)=>{
               sx={{
                 justifyContent: "space-around",
                 alignItems: "center",
-                paddingTop:'5px'
+                paddingTop:'10px'
               }}
             >
           
