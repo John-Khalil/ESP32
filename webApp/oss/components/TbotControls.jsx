@@ -1,47 +1,113 @@
 import Tbot from '@/assets/Tbot'
-import React from 'react'
+import React, { useReducer, useState } from 'react'
 // import Stack from '@mui/material/Stack';
 // import Grid2 from '@mui/material/Grid2';
 // import { Box } from '@mui/system';
 import { Stack,Grid2,Button,Box,Paper,Card,CardActionArea,Typography } from '@mui/material'
+import { v4 as uuidv4 } from 'uuid'; 
 
 const TbotControlsCenterPad=(props)=>{
   return(
     <>
-       <Stack
-          direction="row"
-          gap={2}
-          sx={{
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-      
-          <Button color="error" variant="outlined" sx={{
-            width: 40, 
-            height: 40, 
-            borderRadius: "50%", 
-            minWidth: "unset",
-            display:'flex',
-            justifyContent:"center",
-            alignItems: "center",
-          }}>
-            <Typography gutterBottom variant="h6" component="div">
-              -
-            </Typography> 
-          </Button>
-          <Paper sx={{
-            flexGrow: 1
-          }}>
-            test
-          </Paper>
-          <Button color="success" variant="outlined">
-            <Typography gutterBottom variant="h6" component="div">
-              +
-            </Typography> 
-          </Button>
+      {Array.from(Array(2)).map((__,index)=>(
+        (()=>{
 
-        </Stack>
+          let[parameter,setParameter]=useReducer((state, action)=>{
+            
+            return (action>0)?action:1;
+          },1);
+
+
+          const abortController1 = new AbortController();
+          const abortController2 = new AbortController();
+
+          const[interval,setInterval]=useReducer((state, action)=>{
+            console.log(action)
+            return action
+          },{});
+
+
+          abortController1.signal.addEventListener("abort", () => {
+            clearInterval(interval.controller1);
+          });
+          abortController2.signal.addEventListener("abort", () => {
+            clearInterval(interval.controller2);
+          });
+          return(
+            <Stack
+              key={uuidv4()}
+              direction="row"
+              gap={2}
+              sx={{
+                justifyContent: "space-around",
+                alignItems: "center",
+                paddingTop:'5px'
+              }}
+            >
+          
+              <Button color="error" variant="outlined"
+                onMouseDown={()=>{
+                  let controller1 =setInterval(() => {
+                    setParameter(parameter++)
+                  }, 100);
+                  console.log(controller1)
+                  setInterval({...interval,controller1});
+                }}
+                onMouseUp={()=>{
+                  abortController1.abort()
+                }}
+                sx={{
+                  width: 40, 
+                  height: 40, 
+                  borderRadius: "20%", 
+                  borderWidth: 4,
+                  minWidth: "unset",
+                  display:'flex',
+                  justifyContent:"center",
+                  alignItems: "center",
+                }
+              }>
+                <Typography gutterBottom variant="h6" component="div" sx={{
+                  paddingTop:'6px'
+                }}>
+                  -
+                </Typography> 
+              </Button>
+              <Paper elevation={12} sx={{
+                flexGrow: 1
+              }}>
+                {`${parameter} ${["mm","mm/s"][index]}`}
+              </Paper>
+              <Button color="success" variant="outlined"
+                onMouseDown={()=>{
+                  setInterval({...interval,controller2:setInterval(() => {
+                    setParameter(parameter++)
+                  }, 100)});
+                }}
+                onMouseUp={()=>{
+                  abortController2.abort()
+                }}
+                sx={{
+                  width: 40, 
+                  height: 40, 
+                  borderRadius: "20%",
+                  borderWidth: 4,
+                  minWidth: "unset",
+                  display:'flex',
+                  justifyContent:"center",
+                  alignItems: "center",
+                }
+              }>
+                <Typography gutterBottom variant="h6" component="div" sx={{
+                  paddingTop:'6px'
+                }}>
+                  +
+                </Typography> 
+              </Button>
+            </Stack>
+        )})()
+      ))}
+
     </>
   );
 }
