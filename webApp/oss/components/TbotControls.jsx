@@ -9,6 +9,27 @@ import { v4 as uuidv4 } from 'uuid';
 const TbotControlsCenterPad=(props)=>{
   return(
     <>
+
+      <Paper elevation={12} sx={{padding:'3px'}}>
+        <Grid2 container spacing={2}>
+          <Grid2 size={12} sx={{
+            display:'flex',
+            justifyContent:'center'
+          }}>
+            Vacuum / Pickup
+          </Grid2>
+          <Grid2 size={6}>
+            <Button color="error" variant="contained" sx={{width:'100%', color: 'white' }}>
+              OFF
+            </Button>
+          </Grid2>
+          <Grid2 size={6}>
+            <Button color="success" variant="contained" sx={{width:'100%', color: 'white' }}>
+              ON
+            </Button>
+          </Grid2>
+        </Grid2>
+      </Paper>
       {Array.from(Array(2)).map((__,index)=>(
         (()=>{
 
