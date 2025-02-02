@@ -3,8 +3,106 @@ import React, { useReducer, useState } from 'react'
 // import Stack from '@mui/material/Stack';
 // import Grid2 from '@mui/material/Grid2';
 // import { Box } from '@mui/system';
-import { Stack,Grid2,Button,Box,Paper,Card,CardActionArea,Typography } from '@mui/material'
+import { Stack,Grid2,Button,Box,Paper,Card,CardActionArea,Typography,TextField } from '@mui/material'
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { v4 as uuidv4 } from 'uuid'; 
+
+const ControlForm=(props)=>{
+  const availablePorts=['COM31','COM16']
+  const [serialPort,setSerialPort]=useReducer((state,action)=>{
+
+    return action;
+  },availablePorts[0]);
+  return (
+    <>
+      <Grid2 
+        container 
+        spacing={2}
+        sx={{
+          width: '400px',
+          height: '100%',
+          padding:'20px'
+        }
+      }>
+        <Grid2 size={12}>
+          <FormControl fullWidth>
+            <InputLabel>Serial Port</InputLabel>
+            <Select
+              value={serialPort}
+              onChange={(e) => setSerialPort(e.target.value)}
+              label="Serial Port"
+            >
+              {availablePorts.map(elem=><MenuItem value={elem}>{elem}</MenuItem>)}
+            </Select>
+          </FormControl>
+        </Grid2>
+        {([
+          {
+            label:"Pickup D1",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+          {
+            label:"Pickup D2",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+          {
+            label:"Placement D1",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+          {
+            label:"Placement D2",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+          {
+            label:"Steps/mm",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+          {
+            label:"Round Count",
+            ref:null,
+            onChange:(state)=>{
+
+            }
+          },
+        ]).map(elem=>(
+          <Grid2 size={6}>
+            <TextField 
+              label={elem?.label}
+              ref={elem?.ref}
+              type="number" 
+              variant="outlined"
+              onChange={event=>{
+                elem.onChange(event.target.value)
+              }}
+            />
+          </Grid2>
+        ))}
+        <Grid2 size={12}>
+          <Button variant='contained' color='success' sx={{
+            width:'100%'
+          }}>
+            Save
+          </Button>
+        </Grid2>
+      </Grid2>
+    </>
+  )
+}
 
 const TbotControlsCenterPad=(props)=>{
   return(
@@ -73,6 +171,12 @@ const TbotControlsCenterPad=(props)=>{
                 onMouseUp={()=>{
                   abortController1.abort()
                 }}
+                onMouseOut={()=>{
+                  abortController1.abort()
+                }}
+                // onMouseLeave={()=>{
+                //   abortController1.abort()
+                // }}
                 sx={{
                   width: 40, 
                   height: 40, 
@@ -107,6 +211,12 @@ const TbotControlsCenterPad=(props)=>{
                 onMouseUp={()=>{
                   abortController2.abort()
                 }}
+                onMouseOut={()=>{
+                  abortController2.abort()
+                }}
+                // onMouseLeave={()=>{
+                //   abortController1.abort()
+                // }}
                 sx={{
                   width: 40, 
                   height: 40, 
@@ -152,83 +262,102 @@ const TbotControlsTypography=(props)=>{
   )
 }
 
-export default function TbotControls() {
+const TbotControlPad=(props)=>{
   const manualControlItemHieght=88;
+  return(
+    <Stack sx={{
+      padding:'5px'
+    }}>
+      <Grid2 
+        container 
+        columns={4}
+        spacing={2} 
+        sx={{
+          width: '400px',
+          height: 'max-content',
+        }}
+      >
+        <Grid2 size={1}/>
+        <Grid2
+          size={2}
+          sx={{
+            height: `${manualControlItemHieght}px`,
+            borderRadius: "15px",
+          }}
+        >
+          <TbotControlsTypography text={'D1+'}/>
+        </Grid2>
+        <Grid2 size={1}/>
+
+        <Grid2
+          size={1}
+          sx={{
+            height: `${manualControlItemHieght*2}px`,
+            borderRadius: "15px",
+          }}
+        >
+          <TbotControlsTypography text={'D2-'}/>
+        </Grid2>
+        <Grid2
+          size={2}
+          sx={{
+            height: `${manualControlItemHieght*2}px`,
+            borderRadius: "15px",
+          }}
+        >
+        {/* <TbotControlsCenterPad/> */}
+        {props.children}
+        </Grid2>
+        <Grid2
+          size={1}
+          sx={{
+            height: `${manualControlItemHieght*2}px`,
+            borderRadius: "15px",
+          }}
+        >
+          <TbotControlsTypography text={'D2+'}/>
+        </Grid2>
+
+        <Grid2 size={1}/>
+        <Grid2
+          size={2}
+          sx={{
+            height: `${manualControlItemHieght}px`,
+            borderRadius: "15px",
+          }}
+        >
+        <TbotControlsTypography text={'D1-'}/>
+        </Grid2>
+        <Grid2 size={1}/>
+      </Grid2>
+
+    </Stack>
+  )
+}
+
+export default function TbotControls() {
   return (
-    <>
+    <Paper>
       <Stack
         direction="row"
         justifyContent="space-between"
+        sx={{ height: '400px' }}
       >
-        <Tbot width={500} height={500}/>
-        <Stack>
-          <Grid2 
-            container 
-            columns={4}
-            spacing={2} 
-            sx={{
-              width: '400px',
-              height: 'max-content',
-            }}
-          >
-            <Grid2 size={1}/>
-            <Grid2
-              size={2}
-              sx={{
-                height: `${manualControlItemHieght}px`,
-                borderRadius: "15px",
-              }}
-            >
-              <TbotControlsTypography text={'D1+'}/>
-            </Grid2>
-            <Grid2 size={1}/>
+        <Box sx={{
+          height:'100%'
+          // flexGrow:1
+        }}>
 
-            <Grid2
-              size={1}
-              sx={{
-                height: `${manualControlItemHieght*2}px`,
-                borderRadius: "15px",
-              }}
-            >
-              <TbotControlsTypography text={'D2-'}/>
-            </Grid2>
-            <Grid2
-              size={2}
-              sx={{
-                height: `${manualControlItemHieght*2}px`,
-                borderRadius: "15px",
-              }}
-            >
-            <TbotControlsCenterPad/>
-            </Grid2>
-            <Grid2
-              size={1}
-              sx={{
-                height: `${manualControlItemHieght*2}px`,
-                borderRadius: "15px",
-              }}
-            >
-              <TbotControlsTypography text={'D2+'}/>
-            </Grid2>
+          <Tbot height={'100%'}/>
+        </Box>
+        <ControlForm/>
 
-            <Grid2 size={1}/>
-            <Grid2
-              size={2}
-              sx={{
-                height: `${manualControlItemHieght}px`,
-                borderRadius: "15px",
-              }}
-            >
-            <TbotControlsTypography text={'D1-'}/>
-            </Grid2>
-            <Grid2 size={1}/>
-          </Grid2>
+        <TbotControlPad>
+          <TbotControlsCenterPad/>
+        </TbotControlPad>
 
-        </Stack>
+        
       </Stack>
-      <Grid2 container>
-
-      </Grid2>
-    </>
+    </Paper>
   )
 }

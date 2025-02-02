@@ -1,6 +1,6 @@
 import * as React from "react";
 const Tbot = (props) => (
-  <svg viewBox="0 50 300 300" width={150} height={150} {...props}>
+  <svg viewBox="0 50 300 300" width={props?.width??props?.height??150} height={props?.height??props?.width??150} {...props}>
     <rect x={50} y={260} width={200} height={20} fill="#7D7D7D" />
 
 
