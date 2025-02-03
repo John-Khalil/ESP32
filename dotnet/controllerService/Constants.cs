@@ -89,6 +89,18 @@ namespace Constants
         public static string TbotMove{get;set;}
         public static string TbotPosition{get;set;}
 
+        public static class ws{
+            public static string TbotPosition{get;set;}
+            public static string TbotManualControl{get;set;}
+    
+            static ws(){
+                var properties = typeof(ws).GetProperties();
+                foreach (var property in properties){
+                    property.SetValue(null,$"ws-{property.Name}");
+                }
+            }
+        }
+
         static keys(){
             var properties = typeof(keys).GetProperties();
             foreach (var property in properties){

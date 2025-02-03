@@ -6,6 +6,8 @@ import React, { useReducer, useState } from 'react'
 import { Stack,Grid2,Button,Box,Paper,Card,CardActionArea,Typography,TextField } from '@mui/material'
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { v4 as uuidv4 } from 'uuid'; 
+import Keys from '@/utils/keys';
+import appLinker from '@/utils/utils';
 
 const ControlForm=(props)=>{
   const availablePorts=['COM31','COM16']
@@ -254,7 +256,7 @@ const TbotControlsTypography=(props)=>{
         justifyContent:"center",
 				borderRadius: "15px",
 			}}>
-        <Typography gutterBottom variant="h6" component="div">
+        <Typography gutterBottom variant="h6" component="div" {...props}>
           {props?.text}
         </Typography> 
       </Paper>
@@ -285,7 +287,9 @@ const TbotControlPad=(props)=>{
             borderRadius: "15px",
           }}
         >
-          <TbotControlsTypography text={'D1+'}/>
+          <TbotControlsTypography text={'D1+'} onClick={()=>{
+            // appLinker.send(Keys.ws.TbotManualControl,)
+          }}/>
         </Grid2>
         <Grid2 size={1}/>
 
