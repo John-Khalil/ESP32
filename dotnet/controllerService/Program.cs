@@ -41,13 +41,7 @@ class Program
         foreach(var item in list)
             Console.WriteLine(JsonConvert.SerializeObject(item));
 
-        utils.appLinker[keys.WebSocket].setAction(async (object data)=>{
-            Console.WriteLine($" --> {data.ToString()}");
-            var dataObj=JObject.Parse(data?.ToString()??"{}");
-			var clientID = dataObj["clientId"]?.ToString();
-            await utils.webSocket.SendToClient(Guid.Parse(clientID??""),"this is test");
-        });
-
+        
         appLinker[keys.InputPullUp].value=new{
             port=controllers[0],
             value=Pins.B12

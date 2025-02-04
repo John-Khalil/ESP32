@@ -1,5 +1,9 @@
 using System.Drawing;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Dynamic;
+
 namespace Constants
 {
     public static class Registers
@@ -97,6 +101,14 @@ namespace Constants
                 var properties = typeof(ws).GetProperties();
                 foreach (var property in properties){
                     property.SetValue(null,$"ws-{property.Name}");
+                    utils.appLinker[property.GetValue(null).ToString()].setAction((dynamic data)=>{
+                        dynamic expando = new ExpandoObject();
+                        var expandoDict = (IDictionary<string, object>)expando;
+
+                        expando.clientId = data?.clientId;
+                        expandoDict[property?.GetValue(null)?.ToString()] = data?.message;
+                        utils.appLinker[keys.WebSocket].value = JsonConvert.SerializeObject(expando);
+                    });
                 }
             }
         }

@@ -288,7 +288,7 @@ const TbotControlPad=(props)=>{
           }}
         >
           <TbotControlsTypography text={'D1+'} onClick={()=>{
-            // appLinker.send(Keys.ws.TbotManualControl,)
+            appLinker.send(Keys.ws.TbotManualControl,"this is text")
           }}/>
         </Grid2>
         <Grid2 size={1}/>

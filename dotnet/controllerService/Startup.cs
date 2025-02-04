@@ -125,7 +125,23 @@ public static class Startup
     }
 
     public static void WebSocketRegisters(){
-        Console.WriteLine(keys.ws.TbotPosition);
+        utils.appLinker[keys.WebSocket].setAction(async (object data)=>{
+            var dataObj=JObject.Parse(data?.ToString()??"{}");
+			string clientId = dataObj["clientId"]?.ToString();
+            dataObj.Remove("clientId");
+            Console.WriteLine($" --> {JsonConvert.SerializeObject(dataObj)}");
+            await utils.webSocket.SendToClient(Guid.Parse(clientId??""),JsonConvert.SerializeObject(dataObj));
+        });
+
+
+        // Console.WriteLine(keys.ws.TbotPosition);
+        appLinker[keys.ws.TbotPosition].value=(new{
+            clientId="c694800b-5023-4150-863c-09ea05c4a9c2",
+            message="this is test"
+        });
+        appLinker[keys.ws.TbotManualControl].setAction((object data)=>{
+            Console.WriteLine(JsonConvert.SerializeObject(data));
+        });
     }
 
     public static void webSocketServerStart(){
