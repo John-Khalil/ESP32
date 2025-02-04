@@ -38,8 +38,12 @@ export default class Keys {
             validProperties.forEach(prop => {
                 this[prop] = `ws-${prop}`;
                 appLinker.addListener(this[prop],(data)=>{
+                    // console.log(data);
                     appLinker.send("ws",
-                        typeof data === "string" ? data : JSON.stringify(data)
+                        // typeof data === "string" ? data : JSON.stringify(data)
+                        JSON.stringify({
+                            [this[prop]]:data
+                        })
                     )
                 })
             });

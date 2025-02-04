@@ -46,6 +46,7 @@ export default  function setupWebSocket(){
     
   appLinker.addListener("ws",data=>{
     if (socket.readyState === WebSocket.OPEN) {
+      // console.log("------------>",data);
       socket.send(data);
     } else {
       console.log('Connection not open');

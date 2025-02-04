@@ -82,18 +82,18 @@ public class Tbot{
     placement=setup?.placement;
     feedRateD1=setup?.feedRateD1;
     feedRateD2=setup?.feedRateD2;
-    stepsPerUnit=setup?.stepsPerUnit;             // apply a method later that would set the steps per unit
     vacuum=setup?.vacuum;
+    // placementFeedBack=setup?.placementFeedBack;
     roundCount=setup?.roundCount;
     cycleComplete=setup?.cycleComplete;
-    movementUpdate=setup?.movementUpdate;         //replaced by ws broadcast
-    placementFeedBack=setup?.placementFeedBack;
-    PositionFeedBack=setup?.PositionFeedBack;     // mechanical feedback mechanism
+    // stepsPerUnit=setup?.stepsPerUnit;             // apply a method later that would set the steps per unit
+    // movementUpdate=setup?.movementUpdate;         //replaced by ws broadcast
+    // PositionFeedBack=setup?.PositionFeedBack;     // mechanical feedback mechanism
   }
 
   public Tbot(object setup){
     init(setup);
-    placementFeedBackInit();
+    // placementFeedBackInit();
     vacuumControlInit();
     Task.Run(()=>{
       for(;;){
@@ -124,15 +124,22 @@ public class Tbot{
         int loopCounter=0;
         while(loopCounter++<roundCount){
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
+          Console.WriteLine("1");
           moveArm(new Point(int.MinValue,pickup.d2),feedRateD2);
+          Console.WriteLine("2");
           moveArm(new Point(pickup.d1,int.MinValue),feedRateD1);
-          while(!itemsInPlace());
-          vacuumControl(true);
+          Console.WriteLine("3");
+          // while(!itemsInPlace());
+          // vacuumControl(true);
           moveArm(new Point(0,int.MinValue),feedRateD1);
+          Console.WriteLine("4");
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
+          Console.WriteLine("5");
           moveArm(new Point(placement.d1,int.MinValue),feedRateD1);
-          vacuumControl(false);
+          Console.WriteLine("6");
+          // vacuumControl(false);
           moveArm(new Point(0,int.MinValue),feedRateD1);
+          Console.WriteLine("7");
         }
 
 

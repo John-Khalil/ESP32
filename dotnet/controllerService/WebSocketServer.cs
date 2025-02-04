@@ -6,7 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Constants;
+using System.Dynamic;
 
 public class WebSocketServer
 {
@@ -88,14 +90,22 @@ public class WebSocketServer
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    var messageObj=JObject.Parse(message);
+                    foreach (var property in messageObj.Properties()){
+                        // var bufferObj=new JObject();
+                        // bufferObj["clientId"]=clientId;
+                        // bufferObj["message"]=messageObj[property.Name];
+                        // bufferObj["source"]=keys.WebSocket;
+                        dynamic expando = new ExpandoObject();
+                        expando.clientId=clientId;
+                        expando.message=messageObj[property.Name];
+                        expando.source=keys.WebSocket;
+                        // Console.WriteLine(JsonConvert.SerializeObject(expando));
 
-                    // Broadcast message to all clients
-                    // await BroadcastMessage($"Client {clientId}: {message}");
-                    utils.appLinker[keys.WebSocket].value=JsonConvert.SerializeObject(new{
-                        clientId,
-                        message
-                    });
-                }
+                        utils.appLinker[property.Name].value=expando;
+                    }
+                    }
+
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
                     await DisconnectClient(clientId);

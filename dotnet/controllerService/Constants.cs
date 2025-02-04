@@ -101,6 +101,7 @@ namespace Constants
                 var properties = typeof(ws).GetProperties();
                 foreach (var property in properties){
                     property.SetValue(null,$"ws-{property.Name}");
+                    // Console.WriteLine(property.GetValue(null).ToString());
                     utils.appLinker[property.GetValue(null).ToString()].setAction((dynamic data)=>{
                         dynamic expando = new ExpandoObject();
                         var expandoDict = (IDictionary<string, object>)expando;

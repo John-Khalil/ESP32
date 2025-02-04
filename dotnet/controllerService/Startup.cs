@@ -129,18 +129,24 @@ public static class Startup
             var dataObj=JObject.Parse(data?.ToString()??"{}");
 			string clientId = dataObj["clientId"]?.ToString();
             dataObj.Remove("clientId");
-            Console.WriteLine($" --> {JsonConvert.SerializeObject(dataObj)}");
+            // Console.WriteLine($" --> {JsonConvert.SerializeObject(dataObj)}");
             await utils.webSocket.SendToClient(Guid.Parse(clientId??""),JsonConvert.SerializeObject(dataObj));
         });
 
 
         // Console.WriteLine(keys.ws.TbotPosition);
-        appLinker[keys.ws.TbotPosition].value=(new{
-            clientId="c694800b-5023-4150-863c-09ea05c4a9c2",
-            message="this is test"
-        });
-        appLinker[keys.ws.TbotManualControl].setAction((object data)=>{
+        // appLinker[keys.ws.TbotPosition].value=(new{
+        //     clientId="c694800b-5023-4150-863c-09ea05c4a9c2",
+        //     message="TbotPosition"
+        // });
+        
+        appLinker[keys.ws.TbotManualControl].setAction((dynamic data)=>{
             Console.WriteLine(JsonConvert.SerializeObject(data));
+            appLinker[keys.ws.TbotPosition].value=(new{
+                clientId=data?.clientId,
+                message="TbotPosition"
+            });
+        
         });
     }
 
