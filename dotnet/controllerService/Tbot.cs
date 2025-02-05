@@ -51,14 +51,14 @@ public class Tbot{
   }
 
   public void vacuumControl(bool state){
-    utils.appLinker[state?keys.SetPin:keys.ClearPin].value=new{
+    utils.appLinker[(state==true)?keys.SetPin:keys.ClearPin].value=new{
       port=serialPortID,
       value=vacuum
     };
-    utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=new{
-      serialPortID,
-      vacuumControl=state
-    }};
+    // utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=new{
+    //   serialPortID,
+    //   vacuumControl=state
+    // }};
   }
 
   public void placementFeedBackInit(){
