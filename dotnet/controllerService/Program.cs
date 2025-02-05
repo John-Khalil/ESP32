@@ -25,7 +25,7 @@ class Program
             feedRateD1=(uint)100,
             feedRateD2=(uint)100,
             vacuum=Pins.B12,
-            roundCount=3,
+            roundCount=5,
             cycleComplete=new Action(()=>{
 
             })

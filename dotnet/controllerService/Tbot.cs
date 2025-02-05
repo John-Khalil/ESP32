@@ -55,6 +55,11 @@ public class Tbot{
       port=serialPortID,
       value=vacuum
     };
+    // utils.readPin(serialPortID,(uint)vacuum);
+    // utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=new{
+    //   serialPortID,
+    //   vacuumControl=state
+    // }};
   }
 
   public void placementFeedBackInit(){
@@ -115,7 +120,11 @@ public class Tbot{
             value=TbotMove
           };
 
-          utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=TbotMove};
+          // Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
+          var currentPosition=JObject.Parse(utils.tbotPosition(serialPortID).ToString());
+          currentPosition["serialPortID"]=serialPortID;
+          Console.WriteLine(JsonConvert.SerializeObject(currentPosition));
+          utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=currentPosition};
         };
 
 
@@ -124,22 +133,17 @@ public class Tbot{
         int loopCounter=0;
         while(loopCounter++<roundCount){
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
-          Console.WriteLine("1");
           moveArm(new Point(int.MinValue,pickup.d2),feedRateD2);
-          Console.WriteLine("2");
           moveArm(new Point(pickup.d1,int.MinValue),feedRateD1);
-          Console.WriteLine("3");
           // while(!itemsInPlace());
           // vacuumControl(true);
+          Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
           moveArm(new Point(0,int.MinValue),feedRateD1);
-          Console.WriteLine("4");
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
-          Console.WriteLine("5");
           moveArm(new Point(placement.d1,int.MinValue),feedRateD1);
-          Console.WriteLine("6");
           // vacuumControl(false);
+          Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
           moveArm(new Point(0,int.MinValue),feedRateD1);
-          Console.WriteLine("7");
         }
 
 

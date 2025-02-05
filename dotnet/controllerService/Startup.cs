@@ -28,6 +28,7 @@ public static class Startup
                 // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // AppLinker.resolve(appLinker["ack"]);
                 // Thread.Sleep(10);
+                // Task.Delay(10);
             }
             catch (Exception ex){
                 Console.WriteLine($"Error : {ex.Message}");
@@ -65,6 +66,7 @@ public static class Startup
             serialSerialize(Registers.ANALOG_READ,data);
         });
         appLinker[keys.TbotMove].setAction((object data)=>{
+            Console.WriteLine(JsonConvert.SerializeObject(data));
             serialSerialize(Registers.TBOT_MOVE,data);
         });
         appLinker[keys.TbotPosition].setAction((object data)=>{
