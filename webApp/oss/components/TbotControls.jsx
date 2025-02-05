@@ -94,11 +94,24 @@ const ControlForm=(props)=>{
             />
           </Grid2>
         ))}
-        <Grid2 size={12}>
-          <Button variant='contained' color='success' sx={{
+        <Grid2 size={6}>
+          <Button variant='contained' color='' sx={{
             width:'100%'
           }}>
-            Save
+            Load
+          </Button>
+        </Grid2>
+        <Grid2 size={6}>
+          <Button variant='contained' color='success' 
+            sx={{
+              width:'100%'
+            }}
+            onClick={()=>{
+              appLinker.send(Keys.ws.TbotStart,true);
+            }}
+
+          >
+            Start
           </Button>
         </Grid2>
       </Grid2>
@@ -340,6 +353,10 @@ const TbotControlPad=(props)=>{
 }
 
 export default function TbotControls() {
+  const [tbotX,setTbotX]=useState(50);
+  const [tbotY,setTbotY]=useState(100);
+  const [tbotActiv,setActiv]=useState(false);
+
   return (
     <Paper>
       <Stack
@@ -352,7 +369,7 @@ export default function TbotControls() {
           // flexGrow:1
         }}>
 
-          <Tbot height={'100%'}/>
+          <Tbot height={'100%'} x={tbotX} y={tbotY} active={tbotActiv}/>
         </Box>
         <ControlForm/>
 

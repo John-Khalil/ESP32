@@ -96,6 +96,7 @@ namespace Constants
         public static class ws{
             public static string TbotPosition{get;set;}
             public static string TbotManualControl{get;set;}
+            public static string TbotStart{get;set;}
     
             static ws(){
                 var properties = typeof(ws).GetProperties();

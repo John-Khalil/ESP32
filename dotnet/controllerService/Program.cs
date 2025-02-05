@@ -31,7 +31,11 @@ class Program
             })
         });
 
-        bot.start();
+        appLinker[keys.ws.TbotStart].setAction((object data)=>{
+
+            bot.start();
+        });
+
 
 
         // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[123]="value"}));

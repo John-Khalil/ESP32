@@ -55,11 +55,10 @@ public class Tbot{
       port=serialPortID,
       value=vacuum
     };
-    // utils.readPin(serialPortID,(uint)vacuum);
-    // utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=new{
-    //   serialPortID,
-    //   vacuumControl=state
-    // }};
+    utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=new{
+      serialPortID,
+      vacuumControl=state
+    }};
   }
 
   public void placementFeedBackInit(){
@@ -137,12 +136,10 @@ public class Tbot{
           moveArm(new Point(pickup.d1,int.MinValue),feedRateD1);
           // while(!itemsInPlace());
           // vacuumControl(true);
-          Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
           moveArm(new Point(0,int.MinValue),feedRateD1);
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
           moveArm(new Point(placement.d1,int.MinValue),feedRateD1);
           // vacuumControl(false);
-          Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
           moveArm(new Point(0,int.MinValue),feedRateD1);
         }
 

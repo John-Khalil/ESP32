@@ -23,6 +23,7 @@ export default class Keys {
     static ws = class {
         static TbotPosition;
         static TbotManualControl;
+        static TbotStart;
         
 
 
