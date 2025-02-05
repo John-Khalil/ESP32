@@ -20,8 +20,8 @@ class Program
 
         var bot=new Tbot(new{
             serialPortID=controllers[0],
-            pickup=new Tbot.Point(50,10),
-            placement=new Tbot.Point(50,50),
+            pickup=new Tbot.Point(50,50),
+            placement=new Tbot.Point(50,10),
             feedRateD1=(uint)100,
             feedRateD2=(uint)100,
             vacuum=Pins.B12,

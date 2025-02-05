@@ -1,5 +1,5 @@
 import Tbot from '@/assets/Tbot'
-import React, { useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 // import Stack from '@mui/material/Stack';
 // import Grid2 from '@mui/material/Grid2';
 // import { Box } from '@mui/system';
@@ -353,18 +353,23 @@ const TbotControlPad=(props)=>{
 }
 
 export default function TbotControls() {
-  const [tbotX,setTbotX]=useState(50);
-  const [tbotY,setTbotY]=useState(100);
+  const [tbotX,setTbotX]=useState(0);
+  const [tbotY,setTbotY]=useState(0);
   const [tbotActiv,setActiv]=useState(false);
-  appLinker.addListener(Keys.TbotMove,data=>{
-    console.log(data);
-    const d1Max=250;
-    const d2Max=700;
-    setTbotX((data?.d1*d1Max)*100);
-    setTbotY((data?.d2*d2Max)*100);
-    setActiv(data?.activ||false);
+  useEffect(()=>{
 
-  })
+    appLinker.addListener(Keys.TbotMove,data=>{
+      console.log(data);
+      const d1Max=25;
+      const d2Max=70;
+      // setTbotX((data?.d1/d1Max)*100);
+      // setTbotY((data?.d2/d2Max)*100);
+      setTbotX(data.d2);
+      setTbotY(data.d1);
+      setActiv(data?.activ||false);
+  
+    })
+  },[]);
 
   return (
     <Paper>
