@@ -104,6 +104,9 @@ namespace Constants
                     property.SetValue(null,$"ws-{property.Name}");
                     // Console.WriteLine(property.GetValue(null).ToString());
                     utils.appLinker[property.GetValue(null).ToString()].setAction((dynamic data)=>{
+                        Console.WriteLine(JsonConvert.SerializeObject(data));
+                        if(data?.source==keys.WebSocket)
+                            return;
                         dynamic expando = new ExpandoObject();
                         var expandoDict = (IDictionary<string, object>)expando;
 

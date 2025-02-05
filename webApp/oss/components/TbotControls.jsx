@@ -356,6 +356,15 @@ export default function TbotControls() {
   const [tbotX,setTbotX]=useState(50);
   const [tbotY,setTbotY]=useState(100);
   const [tbotActiv,setActiv]=useState(false);
+  appLinker.addListener(Keys.TbotMove,data=>{
+    console.log(data);
+    const d1Max=250;
+    const d2Max=700;
+    setTbotX((data?.d1*d1Max)*100);
+    setTbotY((data?.d2*d2Max)*100);
+    setActiv(data?.activ||false);
+
+  })
 
   return (
     <Paper>
@@ -369,7 +378,7 @@ export default function TbotControls() {
           // flexGrow:1
         }}>
 
-          <Tbot height={'100%'} x={tbotX} y={tbotY} active={tbotActiv}/>
+          <Tbot height={'100%'} x={tbotX} y={tbotY} />
         </Box>
         <ControlForm/>
 

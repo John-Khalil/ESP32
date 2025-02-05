@@ -12,9 +12,9 @@ export default  function setupWebSocket(){
   });
 
   socket.addEventListener('message', (event) => {
-    // console.log('Message from server:', event.data);
-    Object.keys(event.data).forEach(key=>{
-      appLinker.send(key,event?.data?.[key]);
+    console.log('Message from server:', event.data);
+    Object.keys(JSON.parse(event.data)).forEach(key=>{
+      appLinker.send(key,JSON.parse(event.data)?.[key]);
     });
   });
 

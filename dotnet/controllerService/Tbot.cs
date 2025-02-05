@@ -122,7 +122,7 @@ public class Tbot{
           // Console.WriteLine(JsonConvert.SerializeObject((utils.tbotPosition(serialPortID))));
           var currentPosition=JObject.Parse(utils.tbotPosition(serialPortID).ToString());
           currentPosition["serialPortID"]=serialPortID;
-          Console.WriteLine(JsonConvert.SerializeObject(currentPosition));
+          // Console.WriteLine(JsonConvert.SerializeObject(currentPosition));
           utils.appLinker[keys.WebSocketBroadCast].value=new Dictionary<string,object>{[keys.TbotMove]=currentPosition};
         };
 

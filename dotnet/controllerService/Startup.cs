@@ -66,7 +66,7 @@ public static class Startup
             serialSerialize(Registers.ANALOG_READ,data);
         });
         appLinker[keys.TbotMove].setAction((object data)=>{
-            Console.WriteLine(JsonConvert.SerializeObject(data));
+            // Console.WriteLine(JsonConvert.SerializeObject(data));
             serialSerialize(Registers.TBOT_MOVE,data);
         });
         appLinker[keys.TbotPosition].setAction((object data)=>{
@@ -156,6 +156,7 @@ public static class Startup
         var server = new WebSocketServer("http://localhost:8080/");
         utils.webSocket=server;
         utils.appLinker[keys.WebSocketBroadCast].setAction(async (object data)=>{
+            Console.WriteLine(JsonConvert.SerializeObject(data));
             await server.BroadcastMessage(JsonConvert.SerializeObject(data));
         });
         _ = server.StartAsync();
