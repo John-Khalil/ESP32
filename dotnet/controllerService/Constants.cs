@@ -97,6 +97,7 @@ namespace Constants
             public static string TbotPosition{get;set;}
             public static string TbotManualControl{get;set;}
             public static string TbotStart{get;set;}
+            public static string TbotParameters{get;set;}
     
             static ws(){
                 var properties = typeof(ws).GetProperties();
@@ -104,7 +105,7 @@ namespace Constants
                     property.SetValue(null,$"ws-{property.Name}");
                     // Console.WriteLine(property.GetValue(null).ToString());
                     utils.appLinker[property.GetValue(null).ToString()].setAction((dynamic data)=>{
-                        Console.WriteLine(JsonConvert.SerializeObject(data));
+                        // Console.WriteLine(JsonConvert.SerializeObject(data));
                         if(data?.source==keys.WebSocket)
                             return;
                         dynamic expando = new ExpandoObject();

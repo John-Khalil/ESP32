@@ -1,5 +1,5 @@
 import Tbot from '@/assets/Tbot'
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 // import Stack from '@mui/material/Stack';
 // import Grid2 from '@mui/material/Grid2';
 // import { Box } from '@mui/system';
@@ -15,6 +15,82 @@ const ControlForm=(props)=>{
 
     return action;
   },availablePorts[0]);
+  const [formValues, setFormValues] = useState({
+    'Pickup D1': '50',
+    'Pickup D2': '50',
+    'Placement D1': '50',
+    'Placement D2': '10',
+    'Feedrate D1': '100',
+    'Feedrate D2': '100',
+    'Steps/mm': '',
+    'Round Count': '5'
+  });
+  const controlParameters=[
+    {
+      label:"Pickup D1",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Pickup D2",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Placement D1",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Placement D2",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Feedrate D1",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Feedrate D2",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Steps/mm",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+    {
+      label:"Round Count",
+      ref:useRef(null),
+      onChange:(state)=>{
+
+      }
+    },
+  ]
+
+  const handleInputChange = (label, value) => {
+    setFormValues(prev => ({
+      ...prev,
+      [label]: value
+    }));
+  };
+
   return (
     <>
       <Grid2 
@@ -23,7 +99,8 @@ const ControlForm=(props)=>{
         sx={{
           width: '400px',
           height: '100%',
-          padding:'20px'
+          padding:'10px',
+          scale:0.85
         }
       }>
         <Grid2 size={12}>
@@ -38,66 +115,33 @@ const ControlForm=(props)=>{
             </Select>
           </FormControl>
         </Grid2>
-        {([
-          {
-            label:"Pickup D1",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-          {
-            label:"Pickup D2",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-          {
-            label:"Placement D1",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-          {
-            label:"Placement D2",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-          {
-            label:"Steps/mm",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-          {
-            label:"Round Count",
-            ref:null,
-            onChange:(state)=>{
-
-            }
-          },
-        ]).map(elem=>(
-          <Grid2 size={6}>
+        {controlParameters.map(elem=>(
+          <Grid2 size={6} key={uuidv4()}>
             <TextField 
-              label={elem?.label}
-              ref={elem?.ref}
+              label={elem.label}
+              inputRef={elem.ref}
               type="number" 
               variant="outlined"
-              onChange={event=>{
-                elem.onChange(event.target.value)
-              }}
+              value={formValues[elem.label]}
+              onChange={(event) => handleInputChange(elem.label, event.target.value)}
+              fullWidth
             />
           </Grid2>
         ))}
         <Grid2 size={6}>
-          <Button variant='contained' color='' sx={{
-            width:'100%'
-          }}>
+          <Button variant='contained' color='' 
+            sx={{
+              width:'100%'
+            }}
+            onClick={()=>{
+              const parametersObj = {};
+              controlParameters.forEach(elem => {
+                parametersObj[elem.label] = formValues[elem.label];
+              });
+              console.log(parametersObj);
+              appLinker.send(Keys.ws.TbotParameters, parametersObj);
+            }}
+          >
             Load
           </Button>
         </Grid2>

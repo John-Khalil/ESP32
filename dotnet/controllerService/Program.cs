@@ -31,6 +31,23 @@ class Program
             })
         });
 
+        appLinker[keys.ws.TbotParameters].setAction((dynamic data)=>{
+            var parameters=JObject.Parse(data.message.ToString());
+            // Console.WriteLine(JsonConvert.SerializeObject(parameters));
+            bot.init(new{
+                serialPortID=controllers[0],
+                pickup=new Tbot.Point(parameters["Pickup D1"],parameters["Pickup D2"]),
+                placement=new Tbot.Point(parameters["Placement D1"],parameters["Placement D2"]),
+                feedRateD1=(uint)parameters["Feedrate D1"],
+                feedRateD2=(uint)parameters["Feedrate D2"],
+                vacuum=Pins.B12,
+                roundCount=parameters["Round Count"],
+                cycleComplete=new Action(()=>{
+
+                })
+            });
+        });
+
         appLinker[keys.ws.TbotStart].setAction((object data)=>{
 
             bot.start();
