@@ -10,7 +10,7 @@ using System.Dynamic;
 
 class Program
 {   
-    public static string[] controllers=["COM31"];
+    public static string[] controllers=["COM5"];
     public static AppLinker appLinker=new AppLinker();
     static void Main(){
         Startup.appLinker=appLinker;

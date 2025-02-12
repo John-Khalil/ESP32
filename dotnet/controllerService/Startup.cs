@@ -29,6 +29,8 @@ public static class Startup
                 // AppLinker.resolve(appLinker["ack"]);
                 // Thread.Sleep(10);
                 // Task.Delay(10);
+                // !AppLinker.resolve(appLinker[$"{"ack"}-{data?.port}"]);
+                // Console.WriteLine($"{"ack"}-{data?.port}");
             }
             catch (Exception ex){
                 Console.WriteLine($"Error : {ex.Message}");
@@ -97,12 +99,17 @@ public static class Startup
             serialPort.DtrEnable = true;
             serialPort.RtsEnable = true;
 
+            // appLinker[$"{"ack"}-{serialPort.PortName}"].setAction((dynamic data)=>{
+            //     Console.Write($"{serialPort.PortName} >> ");
+            //     Console.WriteLine(JsonConvert.SerializeObject(data));
+            // });
+
             try{
                 serialPort.Open();
                 Task.Run(async ()=>{
                     while(true){
                         string response = serialPort.ReadLine();
-                        // Console.WriteLine($"Received: {response}");
+                        Console.WriteLine($"serial Received: {response}");
                         if(IsValidJson(response)){
                             JObject jObject = JObject.Parse(response);
                             foreach (var property in jObject.Properties()){
@@ -112,7 +119,7 @@ public static class Startup
 
                                 appLinker[property.Name].value=property.Value;                              // set general property
                                 appLinker[$"{property.Name}-{serialPort.PortName}"].value=property.Value;   // tie it to a specific comm port
-
+                                // Console.WriteLine($"{property.Name}-{serialPort.PortName}");
                                 // await Task.Delay(20);
                             }
                         }

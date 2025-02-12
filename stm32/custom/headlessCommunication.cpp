@@ -62,6 +62,7 @@ void headlessEndpoint(void){
                     // Serial.print(" Value: ");
                     // Serial.println(value);
                     // Serial.flush();
+                    headlessAttribute("ack",1);
                 }
             }
             else{

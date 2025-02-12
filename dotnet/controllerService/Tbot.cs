@@ -135,11 +135,11 @@ public class Tbot{
           moveArm(new Point(int.MinValue,pickup.d2),feedRateD2);
           moveArm(new Point(pickup.d1,int.MinValue),feedRateD1);
           // while(!itemsInPlace());
-          // vacuumControl(true);
+          vacuumControl(true);
           moveArm(new Point(0,int.MinValue),feedRateD1);
           moveArm(new Point(int.MinValue,placement.d2),feedRateD2);
           moveArm(new Point(placement.d1,int.MinValue),feedRateD1);
-          // vacuumControl(false);
+          vacuumControl(false);
           moveArm(new Point(0,int.MinValue),feedRateD1);
         }
 
