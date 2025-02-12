@@ -36,8 +36,8 @@ class Program
             // Console.WriteLine(JsonConvert.SerializeObject(parameters));
             bot.init(new{
                 serialPortID=controllers[0],
-                pickup=new Tbot.Point(parameters["Pickup D1"],parameters["Pickup D2"]),
-                placement=new Tbot.Point(parameters["Placement D1"],parameters["Placement D2"]),
+                pickup=new Tbot.Point((int)parameters["Pickup D1"],(int)parameters["Pickup D2"]),
+                placement=new Tbot.Point((int)parameters["Placement D1"],(int)parameters["Placement D2"]),
                 feedRateD1=(uint)parameters["Feedrate D1"],
                 feedRateD2=(uint)parameters["Feedrate D2"],
                 vacuum=Pins.B12,
@@ -82,6 +82,10 @@ class Program
         // appLinker[keys.InputPullUp].value=new{
         //     port=controllers[0],
         //     value=Pins.B12
+        // };
+        // appLinker[keys.InputPullUp].value=new{
+        //     port=controllers[0],
+        //     value=Pins.B11
         // };
         // appLinker[keys.Output].value=Pins.C13;
         // appLinker[keys.Output].value=Pins.B13;
