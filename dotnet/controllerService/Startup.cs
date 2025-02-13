@@ -27,7 +27,9 @@ public static class Startup
                 // Console.Write("serial send: ");
                 // // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // Console.WriteLine(JsonConvert.SerializeObject(data));
+                Task.Delay(1); //! do not remove that delay
                 serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
+                Task.Delay(1); //! do not remove that delay
                 // AppLinker.resolve(appLinker["ack"]);
                 // Thread.Sleep(10);
                 // Task.Delay(10);
@@ -55,14 +57,14 @@ public static class Startup
             serialSerialize(Registers.DIGITAL_OUTPUT,data);
         });
         appLinker[keys.SetPin].setAction((object data)=>{
-            Task.Delay(2);
+            // Task.Delay(2);
             serialSerialize(Registers.DW1,data);
-            Task.Delay(2);
+            // Task.Delay(2);
         });
         appLinker[keys.ClearPin].setAction((object data)=>{
-            Task.Delay(2);
+            // Task.Delay(2);
             serialSerialize(Registers.DW0,data);
-            Task.Delay(2);
+            // Task.Delay(2);
         });
         appLinker[keys.ReadPin].setAction((object data)=>{
             serialSerialize(Registers.DR,data);
