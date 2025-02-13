@@ -24,9 +24,9 @@ public static class Startup
                 return;
             try{
                 var value=JObject.FromObject(data).ContainsKey("value")?data?.value:data;
-                Console.Write("serial send: ");
-                // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
-                Console.WriteLine(JsonConvert.SerializeObject(data));
+                // Console.Write("serial send: ");
+                // // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
+                // Console.WriteLine(JsonConvert.SerializeObject(data));
                 serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // AppLinker.resolve(appLinker["ack"]);
                 // Thread.Sleep(10);
@@ -55,14 +55,14 @@ public static class Startup
             serialSerialize(Registers.DIGITAL_OUTPUT,data);
         });
         appLinker[keys.SetPin].setAction((object data)=>{
-            Task.Delay(10);
+            Task.Delay(2);
             serialSerialize(Registers.DW1,data);
-            Task.Delay(10);
+            Task.Delay(2);
         });
         appLinker[keys.ClearPin].setAction((object data)=>{
-            Task.Delay(10);
+            Task.Delay(2);
             serialSerialize(Registers.DW0,data);
-            Task.Delay(10);
+            Task.Delay(2);
         });
         appLinker[keys.ReadPin].setAction((object data)=>{
             serialSerialize(Registers.DR,data);
@@ -115,7 +115,7 @@ public static class Startup
                 Task.Run(async ()=>{
                     while(true){
                         string response = serialPort.ReadLine();
-                        Console.WriteLine($"serial Received: {response}");
+                        // Console.WriteLine($"serial Received: {response}");
                         if(IsValidJson(response)){
                             JObject jObject = JObject.Parse(response);
                             foreach (var property in jObject.Properties()){
@@ -169,7 +169,7 @@ public static class Startup
         var server = new WebSocketServer("http://localhost:8080/");
         utils.webSocket=server;
         utils.appLinker[keys.WebSocketBroadCast].setAction(async (object data)=>{
-            Console.WriteLine(JsonConvert.SerializeObject(data));
+            // Console.WriteLine(JsonConvert.SerializeObject(data));
             await server.BroadcastMessage(JsonConvert.SerializeObject(data));
         });
         _ = server.StartAsync();
