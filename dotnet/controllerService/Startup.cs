@@ -24,12 +24,14 @@ public static class Startup
                 return;
             try{
                 var value=JObject.FromObject(data).ContainsKey("value")?data?.value:data;
-                serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
+                Console.Write("serial send: ");
                 // Console.WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
+                Console.WriteLine(JsonConvert.SerializeObject(data));
+                serialPortResolve(data).WriteLine(JsonConvert.SerializeObject(new Dictionary<int,object>{[key]=value}));
                 // AppLinker.resolve(appLinker["ack"]);
                 // Thread.Sleep(10);
                 // Task.Delay(10);
-                // !AppLinker.resolve(appLinker[$"{"ack"}-{data?.port}"]);
+                // AppLinker.resolve(appLinker[$"{"ack"}-{data?.port}"]);
                 // Console.WriteLine($"{"ack"}-{data?.port}");
             }
             catch (Exception ex){
@@ -53,10 +55,14 @@ public static class Startup
             serialSerialize(Registers.DIGITAL_OUTPUT,data);
         });
         appLinker[keys.SetPin].setAction((object data)=>{
+            Task.Delay(10);
             serialSerialize(Registers.DW1,data);
+            Task.Delay(10);
         });
         appLinker[keys.ClearPin].setAction((object data)=>{
+            Task.Delay(10);
             serialSerialize(Registers.DW0,data);
+            Task.Delay(10);
         });
         appLinker[keys.ReadPin].setAction((object data)=>{
             serialSerialize(Registers.DR,data);

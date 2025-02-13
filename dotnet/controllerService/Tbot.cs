@@ -51,6 +51,7 @@ public class Tbot{
   }
 
   public void vacuumControl(bool state){
+    Console.WriteLine("vacuumControl");
     utils.appLinker[(state==true)?keys.SetPin:keys.ClearPin].value=new{
       port=serialPortID,
       value=vacuum
